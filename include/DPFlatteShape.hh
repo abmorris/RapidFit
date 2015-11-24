@@ -18,6 +18,7 @@ class DPFlatteShape: public virtual DPMassShape
   protected:
     double mean, g0, m0a, m0b, g1, m1a, m1b;
   private:
+    void setResonanceParameters( double mass, double sigma ); // Do not use!!
     void setResonanceParameters(double in_mean, double in_g0, double in_g1);
 };
 #endif

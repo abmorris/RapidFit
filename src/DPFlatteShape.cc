@@ -54,3 +54,8 @@ void DPFlatteShape::setResonanceParameters(double in_mean, double in_g0, double 
   g1=in_g1;
 }
 
+void DPFlatteShape::setResonanceParameters(double n, double o)
+{
+  return;
+}
+
