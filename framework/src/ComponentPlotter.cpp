@@ -1896,7 +1896,7 @@ double ComponentPlotter::operator() (double *x, double *p)
 
 	delete comp_obj;
 
-	cout << "Value At: " << left << setw(5) << setprecision(3) << x[0] << "\tis:\t" << setprecision(4) << integral_value << setw(20) << " " <<  "\r" << flush;
+	cout << "Value At: " << left << setw(5) << setprecision(3) << x[0] << "\t is:\t" << setprecision(4) << integral_value << setw(20) << " " <<  "\r" << flush;
 
 	return integral_value;
 }

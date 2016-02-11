@@ -55,6 +55,7 @@ numberRepeats(),
 	calculateFitFractionsFlag(),
 	calculateAcceptanceWeights(),
 	calculateAcceptanceCoefficients(),
+	calculateBackgroundCoefficients(),
 	calculateAcceptanceWeightsWithSwave(),
 	calculatePerEventAcceptance(),
 	defineContourFlag(),
@@ -145,6 +146,7 @@ numberRepeats(),
 		calculateFitFractionsFlag = false;
 		calculateAcceptanceWeights = false;
 		calculateAcceptanceCoefficients = false;
+		calculateBackgroundCoefficients = false;
 		calculateAcceptanceWeightsWithSwave = false;
 		calculatePerEventAcceptance = false;
 		defineContourFlag = false;

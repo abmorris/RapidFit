@@ -107,6 +107,8 @@ int calculateAcceptanceWeights( RapidFitConfiguration* config );
 
 int calculateAcceptanceCoefficients( RapidFitConfiguration* config );
 
+int calculateBackgroundCoefficients( RapidFitConfiguration* config );
+
 int calculateAcceptanceWeightsWithSwave( RapidFitConfiguration* config );
 
 int calculatePerEventAcceptance( RapidFitConfiguration* config );
