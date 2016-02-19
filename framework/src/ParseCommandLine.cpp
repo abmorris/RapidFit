@@ -119,6 +119,10 @@ void ParseCommandLine::RapidFitHelp()
 	cout << endl;
 	cout << "--calculateAcceptanceCoefficients" << endl;
 	cout << "       Calculate the Angular Acceptance Coefficients for Helicity Basis" << endl;
+	
+	cout << endl;
+	cout << "--calculateBackgroundCoefficients" << endl;
+	cout << "       Calculate the Sideband Background Coefficients for Helicity Basis" << endl;
 
 	cout << endl;
 	cout << "--WeightDataSet" << endl;
@@ -654,6 +658,7 @@ int ParseCommandLine::ParseThisCommandLine( RapidFitConfiguration& config, vecto
 		else if( currentArgument == "--calculateFitFractions" )			{	config.calculateFitFractionsFlag = true;		}
 		else if( currentArgument == "--calculateAcceptanceWeights" )		{	config.calculateAcceptanceWeights = true;		}
 		else if( currentArgument == "--calculateAcceptanceCoefficients" )       {	config.calculateAcceptanceCoefficients = true;		}
+		else if( currentArgument == "--calculateBackgroundCoefficients" )       {	config.calculateBackgroundCoefficients = true;		}
 		else if( currentArgument == "--calculateAcceptanceWeightsWithSwave" )	{	config.calculateAcceptanceWeightsWithSwave = true;	}
 		else if( currentArgument == "--calculatePerEventAcceptance" )		{	config.calculatePerEventAcceptance = true;		}
 		else if( currentArgument == "--doLLscan" )				{	config.doLLscanFlag = true;				}
