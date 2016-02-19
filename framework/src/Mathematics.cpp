@@ -1012,7 +1012,7 @@ namespace Mathematics
   };
 
 
-  int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool weight_with_phase_space = true)
+  int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool mass_dependent = true)
   {
     // This tries to implement the NIKHEF method for calculating the
     // acceptance corefficients using Legendre polynomials and real
@@ -1023,7 +1023,7 @@ namespace Mathematics
     ComponentRef * thisRef = new ComponentRef( "0", "dummyObservable" );
     PhaseSpaceBoundary * boundary = dataSet->GetBoundary();
 
-    const int l_max(3);
+    const int l_max = mass_dependent ? 3 : 0;
     const int i_max(3);
     const int k_max(2);
     const int j_max(2);
@@ -1118,21 +1118,19 @@ namespace Mathematics
       cosTheta = event->GetObservable("ctheta_1")->GetValue();
       phi      = event->GetObservable("phi")->GetValue();
       cosPsi   = event->GetObservable("ctheta_2")->GetValue();
-      mKK      = event->GetObservable("mKK")->GetValue();
-      mKK_mapped = (mKK - minima[3])/(maxima[3]-minima[3])*2.+ (-1);
+      if(mass_dependent)
+      {
+        mKK      = event->GetObservable("mKK")->GetValue();
+        mKK_mapped = (mKK - minima[3])/(maxima[3]-minima[3])*2.+ (-1);
+      }
       
       const double mK  = 493.677;
       const double mBs  = 5366.77;
       const double mPhi= 1019.461;
-      if(weight_with_phase_space)
+      if(mass_dependent)
       {
-        double t1 = mKK*mKK-(2*mK)*(2*mK);
-        double t2 = mKK*mKK;
-        double t31 = mBs*mBs - (mKK + mPhi)*(mKK + mPhi);
-        double t32 = mBs*mBs - (mKK - mPhi)*(mKK - mPhi);
-        double p1_st = sqrt(t1*t2)/mKK/2.;
-        double p3    = sqrt(t31*t32)/mBs/2.;
-        double pB = DPHelpers::daughterMomentum(mBs, mPhi, mKK);
+        double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
+        double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
         val = p1_st*p3/1e6; // GeV
       }
       else
@@ -1254,7 +1252,7 @@ namespace Mathematics
     tree->Draw("phi>>phiAccProj","weight");
     tree->Draw("ctheta_2>>cosPsiAccProj","weight");
     tree->Draw("mKK>>mKKAccProj","weight");
-    string filename = weight_with_phase_space ? "acceptance" : "background";
+    string filename = mass_dependent ? "acceptance" : "background";
     TFile * acceptance_file = TFile::Open(("sampled_"+filename+".root").c_str(),"RECREATE");
     tree->Write();
     acceptance_file->Close();
