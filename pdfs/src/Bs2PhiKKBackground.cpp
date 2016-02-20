@@ -23,12 +23,16 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) :
   , A(0.0)
   , B(0.0)
   , C(0.0)
+  , M(0.0)
   // Physics parameter names
   , AName ( config->getName("A") )
   , BName ( config->getName("B") )
   , CName ( config->getName("C") )
+  , CName ( config->getName("M") )
 {
   shape = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
+  this->SetNumericalNormalisation( true );
+	this->TurnCachingOff();
 }
 Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy) :
     BasePDF( (BasePDF) copy)
@@ -46,12 +50,16 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy) :
   , A(copy.A)
   , B(copy.B)
   , C(copy.C)
+  , M(copy.M)
   // Physics parameter names
   , AName(copy.AName)
   , BName(copy.BName)
   , CName(copy.CName)
+  , MName(copy.MName)
 {
   shape = new LegendreMomentShape(*copy.shape);
+  this->SetNumericalNormalisation( true );
+	this->TurnCachingOff();
 }
 Bs2PhiKKBackground::~Bs2PhiKKBackground()
 {
@@ -78,21 +86,12 @@ double Bs2PhiKKBackground::Evaluate(DataPoint* measurement)
   ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
   phi      = measurement->GetObservable(phiName     )->GetValue();
   double result(0);
-  result = shape->Evaluate(mKK, phi, ctheta_1, ctheta_2); // TODO: mass-dependent part!
-  return result;
-}
-double Bs2PhiKKBackground::Normalisation(PhaseSpaceBoundary* boundary)
-{
-  double result(0);
-  double mKKhi      = boundary->GetConstraint(mKKName)->GetMaximum(); 
-  double mKKlo      = boundary->GetConstraint(mKKName)->GetMinimum();
-  double phihi      = boundary->GetConstraint(phiName)->GetMaximum();
-  double philo      = boundary->GetConstraint(phiName)->GetMinimum();
-  double ctheta_1hi = boundary->GetConstraint(ctheta_1Name)->GetMaximum();
-  double ctheta_1lo = boundary->GetConstraint(ctheta_1Name)->GetMinimum();
-  double ctheta_2hi = boundary->GetConstraint(ctheta_2Name)->GetMaximum();
-  double ctheta_2lo = boundary->GetConstraint(ctheta_2Name)->GetMinimum();
-  result = shape->Integral(mKKhi, mKKlo, phihi, philo, ctheta_1hi, ctheta_1lo, ctheta_2hi, ctheta_2lo); // TODO: mass-dependent part!
+  double arg = mKK - M;
+  if(arg <= 0) return 0;
+  double ratio = mKK/M;
+  double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
+  result = val > 0 ? val : 0;
+  result *= shape->Evaluate(mKK, phi, ctheta_1, ctheta_2);
   return result;
 }
 bool Bs2PhiKKBackground::SetPhysicsParameters(ParameterSet* NewParameterSet)
