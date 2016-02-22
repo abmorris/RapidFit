@@ -223,14 +223,31 @@ vector<string> Bs2PhiKKTotal::PDFComponents()
   return componentlist;
 }
 /*****************************************************************************/
-// Evaluate a single component
-double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
+void Bs2PhiKKTotal::ReadDataPoint(DataPoint* measurement)
 {
   // Get values from the datapoint
   mKK      = measurement->GetObservable(mKKName     )->GetValue();
   ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
   ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
   phi      = measurement->GetObservable(phiName     )->GetValue();
+  // Check if the datapoint makes sense
+  if(phi < -TMath::Pi() || phi > TMath::Pi()
+       || ctheta_1 < -1 || ctheta_1 > 1
+       || ctheta_2 < -1 || ctheta_2 > 1
+       || mKK<2*Bs2PhiKKComponent::mK)
+  {
+    cout << "Received unphysical datapoint:" << endl;
+    cout << "m(KK)      :\t" << mKK << endl;
+    cout << "phi        :\t" << phi << endl;
+    cout << "cos(theta1):\t" << ctheta_1 << endl;
+    cout << "cos(theta2):\t" << ctheta_2 << endl;
+  }
+}
+/*****************************************************************************/
+// Evaluate a single component
+double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
+{
+  ReadDataPoint(measurement);
   // Get the real or imaginary part of the amplitude of the component
   double amplitude = 0;
   if(componentlist[0].compare(component->getComponentName()) == 0)
@@ -262,34 +279,18 @@ double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* co
                    + TComplex(sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK)),0);
     amplitude = total.Im();
   }
-  return amplitude * amplitude * Acceptance(mKK, phi, ctheta_1, ctheta_2) * 1e12;
+  return amplitude * amplitude * Acceptance(mKK, phi, ctheta_1, ctheta_2);
 }
 /*****************************************************************************/
 // Calculate the function value
 double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
 {
-  // Get values from the datapoint
-  mKK      = measurement->GetObservable(mKKName     )->GetValue();
-  ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
-  ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
-  phi      = measurement->GetObservable(phiName     )->GetValue();
-  // Check if the datapoint makes sense
-  if(phi < -TMath::Pi() || phi > TMath::Pi()
-       || ctheta_1 < -1 || ctheta_1 > 1
-       || ctheta_2 < -1 || ctheta_2 > 1
-       || mKK<2*Bs2PhiKKComponent::mK)
-  {
-    cout << "Bs2PhiKKComponent::Amplitude() received unphysical datapoint:" << endl;
-    cout << "m(KK)      :\t" << mKK << endl;
-    cout << "phi        :\t" << phi << endl;
-    cout << "cos(theta1):\t" << ctheta_1 << endl;
-    cout << "cos(theta2):\t" << ctheta_2 << endl;
-  }
+  ReadDataPoint(measurement);
   // Evaluate the PDF at this point
   double evalres;
   // Only do convolution around the phi.. or don't do it at all
   evalres = /* TMath::Abs(mKK-Bs2PhiKKComponent::mphi)<20 ? Convolution() : */ EvaluateBase(mKK, phi, ctheta_1, ctheta_2);
-  return evalres>0 ? evalres : 1e-9;
+  return evalres>0 ? evalres : 0;
 }
 /*****************************************************************************/
 // Base function for evaluation
@@ -300,7 +301,7 @@ double Bs2PhiKKTotal::EvaluateBase(double _mKK, double _phi, double _ctheta_1, d
                      + Pwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
                      + Dwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
                      + TComplex(sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(_mKK)),0);
-  double Gamma = amplitude.Rho2()*1e12; // Sensible order of magnitude
+  double Gamma = amplitude.Rho2();
   return  (Gamma) * Acceptance(_mKK, _phi, _ctheta_1, _ctheta_2);
 }
 /*****************************************************************************/
@@ -336,7 +337,7 @@ double Bs2PhiKKTotal::Convolution()
 // Get the angular acceptance
 double Bs2PhiKKTotal::Acceptance(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
- return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2)/0.04;
+ return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
 }
 /*****************************************************************************/
 // Insert analitical integral here, if one exists

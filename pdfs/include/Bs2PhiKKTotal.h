@@ -64,6 +64,7 @@ class Bs2PhiKKTotal : public BasePDF
       // Calculation
       double EvaluateBase(double, double, double, double);
       double Acceptance(double, double, double, double);
+      void ReadDataPoint(DataPoint*);
       double Convolution();
       bool debug = false;
 };
