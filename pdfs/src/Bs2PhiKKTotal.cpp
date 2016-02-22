@@ -138,6 +138,7 @@ void Bs2PhiKKTotal::Initialise()
   componentlist.push_back("Dwave");
   componentlist.push_back("nonresonant");
   componentlist.push_back("interference");
+  SetComponentAmplitudes();
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -205,13 +206,18 @@ bool Bs2PhiKKTotal::SetPhysicsParameters(ParameterSet* NewParameterSet)
     }
   }
   // Set the amplitudes
+  SetComponentAmplitudes();
+  return isOK;
+}
+/*****************************************************************************/
+void Bs2PhiKKTotal::SetComponentAmplitudes()
+{
   Swave->SetHelicityAmplitudes(0,sqrt(ASsq), deltaS);
   for(unsigned short i = 0; i < 3; i++)
   {
     Pwave->SetHelicityAmplitudes(i,sqrt(APsq[i]), deltaP[i]);
     Dwave->SetHelicityAmplitudes(i,sqrt(ADsq[i]), deltaD[i]);
   }
-  return isOK;
 }
 /*****************************************************************************/
 // List of components
@@ -251,43 +257,42 @@ double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* co
 {
   ReadDataPoint(measurement);
   string compName = component->getComponentName();
-  // Get the real or imaginary part of the amplitude of the component
-  double amplitude = 0;
+  double Gamma = 0;
   if(componentlist[0] == compName)
   {
     // f0(980)
-    amplitude = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Re();
+    Gamma = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
   }
   else if(componentlist[1] == compName)
   {
     // phi(1020)
-    amplitude = Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Re();
+    Gamma = Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
   }
   else if(componentlist[2] == compName)
   {
     // f2'(1525)
-    amplitude = Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Re();
+    Gamma = Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
   }
   else if(componentlist[3] == compName)
   {
     // non-resonant
-    amplitude = sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK));
+    Gamma = ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK);
   }  
   else if(componentlist[4] == compName)
   {
     // interference
-    TComplex total = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
-                   + Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
-                   + Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
-                   + TComplex(sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK)),0);
-    amplitude = total.Im();
+    Gamma =   TotalAmplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK);
   }
   else
   {
     // total?
     return Evaluate(measurement);
   }
-  return amplitude * amplitude * Acceptance(mKK, phi, ctheta_1, ctheta_2);
+  return Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2);
 }
 /*****************************************************************************/
 // Calculate the function value
@@ -295,21 +300,26 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
 {
   ReadDataPoint(measurement);
   // Evaluate the PDF at this point
-  double evalres;
+  double evalres = 0;
   // Only do convolution around the phi.. or don't do it at all
   evalres = /* TMath::Abs(mKK-Bs2PhiKKComponent::mphi)<20 ? Convolution() : */ EvaluateBase(mKK, phi, ctheta_1, ctheta_2);
   return evalres>0 ? evalres : 1e-37;
 }
 /*****************************************************************************/
-// Base function for evaluation
-double Bs2PhiKKTotal::EvaluateBase(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
+TComplex Bs2PhiKKTotal::TotalAmplitude(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
-  // Sum-square of component amplitudes 
   TComplex amplitude = Swave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
                      + Pwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
                      + Dwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
                      + TComplex(sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(_mKK)),0);
-  double Gamma = amplitude.Rho2();
+  return amplitude;
+}
+/*****************************************************************************/
+// Base function for evaluation
+double Bs2PhiKKTotal::EvaluateBase(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
+{
+  // Sum-square of component amplitudes
+  double Gamma = TotalAmplitude(_mKK, _phi, _ctheta_1, _ctheta_2).Rho2();
   return  (Gamma) * Acceptance(_mKK, _phi, _ctheta_1, _ctheta_2);
 }
 /*****************************************************************************/
@@ -345,7 +355,7 @@ double Bs2PhiKKTotal::Convolution()
 // Get the angular acceptance
 double Bs2PhiKKTotal::Acceptance(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
- return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
+ return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2)*1e9;
 }
 /*****************************************************************************/
 // Insert analitical integral here, if one exists

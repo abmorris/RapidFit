@@ -62,9 +62,11 @@ class Bs2PhiKKTotal : public BasePDF
       bool init;
       void MakePrototypes();
       // Calculation
+      TComplex TotalAmplitude(double, double, double, double);
       double EvaluateBase(double, double, double, double);
       double Acceptance(double, double, double, double);
       void ReadDataPoint(DataPoint*);
+      void SetComponentAmplitudes();
       double Convolution();
       bool debug = false;
 };
