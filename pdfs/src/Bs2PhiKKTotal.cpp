@@ -10,6 +10,7 @@
 #include "Bs2PhiKKNonResonant.h"
 // Std Libraries
 #include <iostream>
+#include <stdexcept>
 // ROOT Libraries
 #include "TComplex.h"
 // RapidFit
@@ -132,6 +133,11 @@ void Bs2PhiKKTotal::Initialise()
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( true );
   this->TurnCachingOff();
+  componentlist.push_back("Swave");
+  componentlist.push_back("Pwave");
+  componentlist.push_back("Dwave");
+  componentlist.push_back("nonresonant");
+  componentlist.push_back("interference");
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -212,14 +218,10 @@ bool Bs2PhiKKTotal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 vector<string> Bs2PhiKKTotal::PDFComponents()
 {
   // The ordering matters for the EvaluateComponent function
-  if(plotComponents)
-  {
-    componentlist.push_back("f0(980)");
-    componentlist.push_back("phi(1020)");
-    componentlist.push_back("f2'(1525)");
-    componentlist.push_back("non-resonant");
-    componentlist.push_back("interference");
-  }
+//  if(plotComponents)
+//  {
+
+//  }
   return componentlist;
 }
 /*****************************************************************************/
@@ -248,29 +250,30 @@ void Bs2PhiKKTotal::ReadDataPoint(DataPoint* measurement)
 double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
   ReadDataPoint(measurement);
+  string compName = component->getComponentName();
   // Get the real or imaginary part of the amplitude of the component
   double amplitude = 0;
-  if(componentlist[0].compare(component->getComponentName()) == 0)
+  if(componentlist[0] == compName)
   {
     // f0(980)
-    amplitude = Swave->Amplitude(mKK,ctheta_1,ctheta_2,phi).Re();
+    amplitude = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Re();
   }
-  if(componentlist[1].compare(component->getComponentName()) == 0)
+  else if(componentlist[1] == compName)
   {
     // phi(1020)
-    amplitude = Pwave->Amplitude(mKK,ctheta_1,ctheta_2,phi).Re();
+    amplitude = Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Re();
   }
-  if(componentlist[2].compare(component->getComponentName()) == 0)
+  else if(componentlist[2] == compName)
   {
     // f2'(1525)
-    amplitude = Dwave->Amplitude(mKK,ctheta_1,ctheta_2,phi).Re();
+    amplitude = Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Re();
   }
-  if(componentlist[3].compare(component->getComponentName()) == 0)
+  else if(componentlist[3] == compName)
   {
     // non-resonant
     amplitude = sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK));
   }  
-  if(componentlist[4].compare(component->getComponentName()) == 0)
+  else if(componentlist[4] == compName)
   {
     // interference
     TComplex total = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
@@ -278,6 +281,11 @@ double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* co
                    + Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
                    + TComplex(sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK)),0);
     amplitude = total.Im();
+  }
+  else
+  {
+    // total?
+    return Evaluate(measurement);
   }
   return amplitude * amplitude * Acceptance(mKK, phi, ctheta_1, ctheta_2);
 }
@@ -290,7 +298,7 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   double evalres;
   // Only do convolution around the phi.. or don't do it at all
   evalres = /* TMath::Abs(mKK-Bs2PhiKKComponent::mphi)<20 ? Convolution() : */ EvaluateBase(mKK, phi, ctheta_1, ctheta_2);
-  return evalres>0 ? evalres : 0;
+  return evalres>0 ? evalres : 1e-37;
 }
 /*****************************************************************************/
 // Base function for evaluation
