@@ -28,7 +28,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) :
   , AName ( config->getName("A") )
   , BName ( config->getName("B") )
   , CName ( config->getName("C") )
-  , CName ( config->getName("M") )
+  , MName ( config->getName("M") )
 {
   shape = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
   this->SetNumericalNormalisation( true );

@@ -28,7 +28,6 @@ class Bs2PhiKKBackground : public BasePDF
       ~Bs2PhiKKBackground();
       // Required methods
       virtual double Evaluate(DataPoint*);
-      virtual double Normalisation(PhaseSpaceBoundary*);
       virtual bool SetPhysicsParameters(ParameterSet*);
       virtual vector<string> GetDoNotIntegrateList();
     protected:
