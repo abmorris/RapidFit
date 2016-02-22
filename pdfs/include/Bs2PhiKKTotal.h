@@ -26,10 +26,12 @@ class Bs2PhiKKTotal : public BasePDF
       Bs2PhiKKTotal(const Bs2PhiKKTotal&);
       ~Bs2PhiKKTotal();
       // Required methods
-      virtual double Evaluate(DataPoint*);
-      virtual double Normalisation(PhaseSpaceBoundary*);
-      virtual bool SetPhysicsParameters(ParameterSet*);
-      virtual vector<string> GetDoNotIntegrateList();
+      double Evaluate(DataPoint*);
+      double Normalisation(PhaseSpaceBoundary*);
+      bool SetPhysicsParameters(ParameterSet*);
+      // Extra stuff
+      double EvaluateComponent( DataPoint*, ComponentRef* );
+      vector<string> PDFComponents();
     protected:
       // K+K− mass and helicity angles
       double        mKK,     ctheta_1,     ctheta_2,     phi;
@@ -47,11 +49,14 @@ class Bs2PhiKKTotal : public BasePDF
       double mKKmin, mKKmax;
       // Acceptance object
       LegendreMomentShape* acc;
+      // Options
+      bool plotComponents;
     private:
       // The m(KK) components
       Bs2PhiKKComponent* Swave;
       Bs2PhiKKComponent* Pwave;
       Bs2PhiKKComponent* Dwave;
+      vector<string> componentlist;
       // Stuff to do on creation
       void Initialise();
       bool init;
