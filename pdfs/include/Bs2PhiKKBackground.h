@@ -33,8 +33,8 @@ class Bs2PhiKKBackground : public BasePDF
       virtual vector<string> GetDoNotIntegrateList();
     protected:
       // Shape parameters
-      double        A,     B,     C;
-      ObservableRef AName, BName, CName;
+      double        A,     B,     C,     M;
+      ObservableRef AName, BName, CName, MName;
       // K+K− mass and helicity angles
       double        mKK,     ctheta_1,     ctheta_2,     phi;
       ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
