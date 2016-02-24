@@ -341,8 +341,8 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   double pB = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
   double pRpB = pR*pB;
   double phasespace = TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
-  return Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * phasespace;
-//  return evalres>0 && compIndex!=4 ? evalres : 1e-37;
+  evalres = Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * phasespace;
+  return evalres>0 && compIndex!=4 ? evalres : 1e-37;
 }
 /*****************************************************************************/
 TComplex Bs2PhiKKTotal::TotalAmplitude(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
