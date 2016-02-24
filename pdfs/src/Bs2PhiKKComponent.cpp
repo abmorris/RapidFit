@@ -14,6 +14,7 @@
 // RapidFit Dalitz Plot Libraries
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
+#include "DPNonresonant.hh"
 #include "DPBarrierL0.hh"
 #include "DPBarrierL1.hh"
 #include "DPBarrierL2.hh"
@@ -65,6 +66,10 @@ void Bs2PhiKKComponent::Initialise()
   if(_shape=="FT")
   {
     _M = new DPFlatteShape(_M2, 199, mpi, mpi, 199*3, mK, mK); // Values for g0 and g1 are taken from Table 8 in LHCb-PAPER-2012-005
+  }
+  if(_shape=="NR")
+  {
+    _M = new DPNonresonant(_M2, _W2, _J2, mK, mK, _RKK);
   }
   Bsbarrier = new DPBarrierL0(_RBs);
   switch (_J2)
@@ -147,6 +152,12 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
   // Barrier factors
   double barrierFactor = Bsbarrier->barrier(pBs0, pBs)*
                          KKbarrier->barrier(pKK0, pKK);
+  // Special case for non-resonant KK
+  if ( _shape == "NR" )
+  {
+    barrierFactor = 1.;
+    orbitalFactor = pBs/mBs;
+  }
   // Result
   return massPart * angularPart * orbitalFactor * barrierFactor;
 }
