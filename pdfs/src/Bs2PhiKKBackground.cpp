@@ -84,6 +84,11 @@ double Bs2PhiKKBackground::EvaluateComponent(DataPoint* measurement,ComponentRef
   (void)component;
   return Evaluate(measurement);
 }
+vector<string> Bs2PhiKKBackground::PDFComponents()
+{
+  vector<string> list;
+  return list;
+}
 double Bs2PhiKKBackground::Evaluate(DataPoint* measurement)
 {
   mKK      = measurement->GetObservable(mKKName     )->GetValue();

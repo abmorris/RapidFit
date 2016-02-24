@@ -31,6 +31,7 @@ class Bs2PhiKKBackground : public BasePDF
       double EvaluateComponent(DataPoint*,ComponentRef*);
       bool SetPhysicsParameters(ParameterSet*);
       vector<string> GetDoNotIntegrateList();
+      vector<string> PDFComponents();
     protected:
       // Shape parameters
       double        A,     B,     C,     M;
