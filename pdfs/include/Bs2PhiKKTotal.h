@@ -49,13 +49,12 @@ class Bs2PhiKKTotal : public BasePDF
       double mKKmin, mKKmax;
       // Acceptance object
       LegendreMomentShape* acc;
-      // Options
-      bool plotComponents;
     private:
       // The m(KK) components
       Bs2PhiKKComponent* Swave;
       Bs2PhiKKComponent* Pwave;
       Bs2PhiKKComponent* Dwave;
+      Bs2PhiKKComponent* NonRes;
       vector<string> componentlist;
       // Stuff to do on creation
       void Initialise();
@@ -63,11 +62,10 @@ class Bs2PhiKKTotal : public BasePDF
       void MakePrototypes();
       // Calculation
       TComplex TotalAmplitude(double, double, double, double);
-      double EvaluateBase(double, double, double, double);
       double Acceptance(double, double, double, double);
       void ReadDataPoint(DataPoint*);
       void SetComponentAmplitudes();
-      double Convolution();
+      int compIndex;
       bool debug = false;
 };
 #endif

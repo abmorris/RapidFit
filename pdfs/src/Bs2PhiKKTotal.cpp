@@ -7,7 +7,6 @@
  */
 // Self
 #include "Bs2PhiKKTotal.h"
-#include "Bs2PhiKKNonResonant.h"
 // Std Libraries
 #include <iostream>
 #include <stdexcept>
@@ -15,6 +14,7 @@
 #include "TComplex.h"
 // RapidFit
 #include "PDFConfigurator.h"
+#include "DPHelpers.hh"
 #define DEBUGFLAG true
 PDF_CREATOR( Bs2PhiKKTotal )
 /*****************************************************************************/
@@ -35,7 +35,6 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   , mKKmax( config->GetPhaseSpaceBoundary()->GetConstraint("mKK")->GetMaximum() )
   // Options
   , init(true)
-  , plotComponents( config->isTrue( "PlotComponents" ) )
 {
   // Set physics parameters to zero for now
   ANonRes   = 0;
@@ -86,8 +85,6 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
   // mKK boundaries
   , mKKmin(copy.mKKmin)
   , mKKmax(copy.mKKmax)
-  // Options
-  , plotComponents(copy.plotComponents)
 {
   ANonRes = copy.ANonRes;
   ASsq = copy.ASsq;
@@ -116,6 +113,7 @@ Bs2PhiKKTotal::~Bs2PhiKKTotal()
   delete Swave;
   delete Pwave;
   delete Dwave;
+  delete NonRes;
 //  delete acc;
 }
 /*****************************************************************************/
@@ -127,9 +125,10 @@ void Bs2PhiKKTotal::Initialise()
   double RKK = 1.7; // TODO: Get these from the config
   double mphi = Bs2PhiKKComponent::mphi;
   // Initialise the signal components
-  Swave = new Bs2PhiKKComponent(0, 980,100    ,"FT",RBs,RKK);
-  Pwave = new Bs2PhiKKComponent(1,mphi,  4.266,"BW",RBs,RKK);
-  Dwave = new Bs2PhiKKComponent(2,1525, 73    ,"BW",RBs,RKK);
+  Swave  = new Bs2PhiKKComponent(0, 980,100    ,"FT",RBs,RKK);
+  Pwave  = new Bs2PhiKKComponent(1,mphi,  4.266,"BW",RBs,RKK);
+  Dwave  = new Bs2PhiKKComponent(2,1525, 73    ,"BW",RBs,RKK);
+  NonRes = new Bs2PhiKKComponent(0,0   ,  0    ,"NR",RBs,RKK);
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( true );
   this->TurnCachingOff();
@@ -190,6 +189,7 @@ bool Bs2PhiKKTotal::SetPhysicsParameters(ParameterSet* NewParameterSet)
     deltaD[i] = allParameters.GetPhysicsParameter(deltaDName[i])->GetValue();
     sumq     += APsq[i] + ADsq[i];
   }
+  /* Doesn't do what I thought it would do
   // Normalise the amplitudes
   if(abs(sumq-1.0) > 0.00001)
   {
@@ -205,6 +205,7 @@ bool Bs2PhiKKTotal::SetPhysicsParameters(ParameterSet* NewParameterSet)
       allParameters.GetPhysicsParameter(ADsqName[i])->SetValue(ADsq[i]);
     }
   }
+  */
   // Set the amplitudes
   SetComponentAmplitudes();
   return isOK;
@@ -218,16 +219,12 @@ void Bs2PhiKKTotal::SetComponentAmplitudes()
     Pwave->SetHelicityAmplitudes(i,sqrt(APsq[i]), deltaP[i]);
     Dwave->SetHelicityAmplitudes(i,sqrt(ADsq[i]), deltaD[i]);
   }
+  NonRes->SetHelicityAmplitudes(0,sqrt(ANonRes), 0);
 }
 /*****************************************************************************/
 // List of components
 vector<string> Bs2PhiKKTotal::PDFComponents()
 {
-  // The ordering matters for the EvaluateComponent function
-//  if(plotComponents)
-//  {
-
-//  }
   return componentlist;
 }
 /*****************************************************************************/
@@ -255,44 +252,48 @@ void Bs2PhiKKTotal::ReadDataPoint(DataPoint* measurement)
 // Evaluate a single component
 double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
-  ReadDataPoint(measurement);
   string compName = component->getComponentName();
-  double Gamma = 0;
-  if(componentlist[0] == compName)
+  compIndex = component->getComponentNumber();
+  if( compIndex == -1)
   {
-    // f0(980)
-    Gamma = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+    if(componentlist[0] == compName)
+    {
+      // f0(980)
+      component->setComponentNumber(1);
+      compIndex = 1;
+    }
+    else if(componentlist[1] == compName)
+    {
+      // phi(1020)
+      component->setComponentNumber(2);
+      compIndex = 2;
+    }
+    else if(componentlist[2] == compName)
+    {
+      // f2'(1525)
+      component->setComponentNumber(3);
+      compIndex = 3;
+    }
+    else if(componentlist[3] == compName)
+    {
+      // non-resonant
+      component->setComponentNumber(4);
+      compIndex = 4;
+    }  
+    else if(componentlist[4] == compName)
+    {
+      // interference
+      component->setComponentNumber(5);
+      compIndex = 5;
+    }
+    else
+    {
+      // total
+      component->setComponentNumber(0);
+      compIndex = 0;
+    }
   }
-  else if(componentlist[1] == compName)
-  {
-    // phi(1020)
-    Gamma = Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
-  }
-  else if(componentlist[2] == compName)
-  {
-    // f2'(1525)
-    Gamma = Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
-  }
-  else if(componentlist[3] == compName)
-  {
-    // non-resonant
-    Gamma = ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK);
-  }  
-  else if(componentlist[4] == compName)
-  {
-    // interference
-    Gamma =   TotalAmplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          - Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          - Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          - Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          - ANonRes*Bs2PhiKKNonResonant::Evaluate(mKK);
-  }
-  else
-  {
-    // total?
-    return Evaluate(measurement);
-  }
-  return Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2);
+  return Evaluate(measurement);
 }
 /*****************************************************************************/
 // Calculate the function value
@@ -301,61 +302,62 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   ReadDataPoint(measurement);
   // Evaluate the PDF at this point
   double evalres = 0;
-  // Only do convolution around the phi.. or don't do it at all
-  evalres = /* TMath::Abs(mKK-Bs2PhiKKComponent::mphi)<20 ? Convolution() : */ EvaluateBase(mKK, phi, ctheta_1, ctheta_2);
-  return evalres>0 ? evalres : 1e-37;
+  double Gamma = 0;
+  switch(compIndex)
+  {
+    case 1:
+      // f0(980)
+      Gamma = Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      break;
+    case 2:
+      // phi(1020)
+      Gamma = Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      break;
+    case 3:
+      // f2'(1525)
+      Gamma = Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      break;
+    case 4:
+      // non-resonant
+      Gamma = NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      break;
+    case 5:
+      // interference
+      Gamma =    TotalAmplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+            -  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+            -  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+            -  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+            - NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      break;
+    default:
+      Gamma = TotalAmplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      break;
+  }
+  // Phase space part
+  const double mK   = Bs2PhiKKComponent::mK;
+  const double mBs  = Bs2PhiKKComponent::mBs;
+  const double mPhi = Bs2PhiKKComponent::mphi;
+  double pR = DPHelpers::daughterMomentum(mKK, mK, mK);
+  double pB = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
+  double pRpB = pR*pB;
+  double phasespace = TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
+  return Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * phasespace;
+//  return evalres>0 && compIndex!=4 ? evalres : 1e-37;
 }
 /*****************************************************************************/
 TComplex Bs2PhiKKTotal::TotalAmplitude(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
-  TComplex amplitude = Swave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
-                     + Pwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
-                     + Dwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
-                     + TComplex(sqrt(ANonRes*Bs2PhiKKNonResonant::Evaluate(_mKK)),0);
+  TComplex amplitude =  Swave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
+                     +  Pwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
+                     +  Dwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
+                     + NonRes->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2);
   return amplitude;
-}
-/*****************************************************************************/
-// Base function for evaluation
-double Bs2PhiKKTotal::EvaluateBase(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
-{
-  // Sum-square of component amplitudes
-  double Gamma = TotalAmplitude(_mKK, _phi, _ctheta_1, _ctheta_2).Rho2();
-  return  (Gamma) * Acceptance(_mKK, _phi, _ctheta_1, _ctheta_2);
-}
-/*****************************************************************************/
-// Do Gaussian convolution
-double Bs2PhiKKTotal::Convolution()
-{
-  double MassResolution = 0.747;
-  unsigned int nsteps = 100;
-  // Numerical integration method (super slow!)
-  // Range of convolution integral
-  double xlo = -5 * MassResolution;
-  double xhi = +5 * MassResolution;
-  // Step size
-  double stepSize = (xhi-xlo) / (double)nsteps;
-  // Result
-  double sum=0.;
-  // Shift away from mean so it's not calculated twice
-  double running_xlo=xlo-0.5*stepSize;
-  double running_xhi=xhi+0.5*stepSize;
-  // Do the integral
-  for(unsigned int i=0; i < nsteps/2; i++)
-  {
-    running_xlo += stepSize;
-    running_xhi -= stepSize;
-    sum += EvaluateBase(mKK - running_xlo, phi, ctheta_1, ctheta_2)
-         * TMath::Gaus( running_xlo, 0, MassResolution );
-    sum += EvaluateBase(mKK - running_xhi, phi, ctheta_1, ctheta_2)
-         * TMath::Gaus( running_xhi, 0, MassResolution );
-  }
-  return sum * stepSize;
 }
 /*****************************************************************************/
 // Get the angular acceptance
 double Bs2PhiKKTotal::Acceptance(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
- return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2)*1e9;
+ return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
 }
 /*****************************************************************************/
 // Insert analitical integral here, if one exists
@@ -363,15 +365,6 @@ double Bs2PhiKKTotal::Normalisation(PhaseSpaceBoundary* boundary)
 {
   (void)boundary;
   double norm = -1;
-  /*
-  norm += ANonRes;
-  norm += ASsq;
-  for(unsigned short i = 0; i < 3; i++)
-  {
-    norm+=APsq[i];
-    norm+=ADsq[i];
-  }
-  */
   return norm;
 }
 /*****************************************************************************/
