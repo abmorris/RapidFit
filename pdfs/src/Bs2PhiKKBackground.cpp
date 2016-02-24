@@ -79,6 +79,11 @@ void Bs2PhiKKBackground::MakePrototypes()
   allObservables.push_back(ctheta_1Name);
   allObservables.push_back(ctheta_2Name);
 }
+double Bs2PhiKKBackground::EvaluateComponent(DataPoint* measurement,ComponentRef* component)
+{
+  (void)component;
+  return Evaluate(measurement);
+}
 double Bs2PhiKKBackground::Evaluate(DataPoint* measurement)
 {
   mKK      = measurement->GetObservable(mKKName     )->GetValue();

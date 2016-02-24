@@ -27,9 +27,10 @@ class Bs2PhiKKBackground : public BasePDF
       Bs2PhiKKBackground(const Bs2PhiKKBackground&);
       ~Bs2PhiKKBackground();
       // Required methods
-      virtual double Evaluate(DataPoint*);
-      virtual bool SetPhysicsParameters(ParameterSet*);
-      virtual vector<string> GetDoNotIntegrateList();
+      double Evaluate(DataPoint*);
+      double EvaluateComponent(DataPoint*,ComponentRef*);
+      bool SetPhysicsParameters(ParameterSet*);
+      vector<string> GetDoNotIntegrateList();
     protected:
       // Shape parameters
       double        A,     B,     C,     M;
