@@ -110,6 +110,7 @@ bool Bs2PhiKKBackground::SetPhysicsParameters(ParameterSet* NewParameterSet)
   A = allParameters.GetPhysicsParameter(AName)->GetValue();
   B = allParameters.GetPhysicsParameter(BName)->GetValue();
   C = allParameters.GetPhysicsParameter(CName)->GetValue();
+  M = allParameters.GetPhysicsParameter(MName)->GetValue();
   return isOK;
 }
 vector<string> Bs2PhiKKBackground::GetDoNotIntegrateList()
