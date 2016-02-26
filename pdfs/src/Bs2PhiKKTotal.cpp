@@ -30,6 +30,30 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   , ctheta_1Name  ( config->getName("ctheta_1") )
   , ctheta_2Name  ( config->getName("ctheta_2") )
   , phiName       ( config->getName("phi"     ) )
+  // Pre-calculated angular parts
+  , ReFSzero(0.0)
+  , ReFPminus(0.0)
+  , ImFPminus(0.0)
+  , ReFPzero(0.0)
+  , ReFPplus(0.0)
+  , ImFPplus(0.0)
+  , ReFDminus(0.0)
+  , ImFDminus(0.0)
+  , ReFDzero(0.0)
+  , ReFDplus(0.0)
+  , ImFDplus(0.0)
+  // Pre-calculated angular parts names
+  , ReFSzeroName ( config->getName("ReFSzero" ) )
+  , ReFPminusName( config->getName("ReFPminus") )
+  , ImFPminusName( config->getName("ImFPminus") )
+  , ReFPzeroName ( config->getName("ReFPzero" ) )
+  , ReFPplusName ( config->getName("ReFPplus" ) )
+  , ImFPplusName ( config->getName("ImFPplus" ) )
+  , ReFDminusName( config->getName("ReFDminus") )
+  , ImFDminusName( config->getName("ImFDminus") )
+  , ReFDzeroName ( config->getName("ReFDzero" ) )
+  , ReFDplusName ( config->getName("ReFDplus" ) )
+  , ImFDplusName ( config->getName("ImFDplus" ) )
   // mKK boundaries
   , mKKmin( config->GetPhaseSpaceBoundary()->GetConstraint("mKK")->GetMinimum() )
   , mKKmax( config->GetPhaseSpaceBoundary()->GetConstraint("mKK")->GetMaximum() )
@@ -82,6 +106,30 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
   , ctheta_1Name  (copy.ctheta_1Name)
   , ctheta_2Name  (copy.ctheta_2Name)
   , phiName       (copy.phiName)
+  // Pre-calculated angular parts
+  , ReFSzero(copy.ReFSzero)
+  , ReFPminus(copy.ReFPminus)
+  , ImFPminus(copy.ImFPminus)
+  , ReFPzero(copy.ReFPzero)
+  , ReFPplus(copy.ReFPplus)
+  , ImFPplus(copy.ImFPplus)
+  , ReFDminus(copy.ReFDminus)
+  , ImFDminus(copy.ImFDminus)
+  , ReFDzero(copy.ReFDzero)
+  , ReFDplus(copy.ReFDplus)
+  , ImFDplus(copy.ImFDplus)
+  // Pre-calculated angular part names
+  , ReFSzeroName(copy.ReFSzeroName)
+  , ReFPminusName(copy.ReFPminusName)
+  , ImFPminusName(copy.ImFPminusName)
+  , ReFPzeroName(copy.ReFPzeroName)
+  , ReFPplusName(copy.ReFPplusName)
+  , ImFPplusName(copy.ImFPplusName)
+  , ReFDminusName(copy.ReFDminusName)
+  , ImFDminusName(copy.ImFDminusName)
+  , ReFDzeroName(copy.ReFDzeroName)
+  , ReFDplusName(copy.ReFDplusName)
+  , ImFDplusName(copy.ImFDplusName)
   // mKK boundaries
   , mKKmin(copy.mKKmin)
   , mKKmax(copy.mKKmax)
@@ -231,10 +279,21 @@ vector<string> Bs2PhiKKTotal::PDFComponents()
 void Bs2PhiKKTotal::ReadDataPoint(DataPoint* measurement)
 {
   // Get values from the datapoint
-  mKK      = measurement->GetObservable(mKKName     )->GetValue();
-  ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
-  ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
-  phi      = measurement->GetObservable(phiName     )->GetValue();
+  mKK       = measurement->GetObservable(mKKName      )->GetValue();
+  ctheta_1  = measurement->GetObservable(ctheta_1Name )->GetValue();
+  ctheta_2  = measurement->GetObservable(ctheta_2Name )->GetValue();
+  phi       = measurement->GetObservable(phiName      )->GetValue();
+  ReFSzero  = measurement->GetObservable(ReFSzeroName )->GetValue();
+  ReFPminus = measurement->GetObservable(ReFPminusName)->GetValue();
+  ImFPminus = measurement->GetObservable(ImFPminusName)->GetValue();
+  ReFPzero  = measurement->GetObservable(ReFPzeroName )->GetValue();
+  ReFPplus  = measurement->GetObservable(ReFPplusName )->GetValue();
+  ImFPplus  = measurement->GetObservable(ImFPplusName )->GetValue();
+  ReFDminus = measurement->GetObservable(ReFDminusName)->GetValue();
+  ImFDminus = measurement->GetObservable(ImFDminusName)->GetValue();
+  ReFDzero  = measurement->GetObservable(ReFDzeroName )->GetValue();
+  ReFDplus  = measurement->GetObservable(ReFDplusName )->GetValue();
+  ImFDplus  = measurement->GetObservable(ImFDplusName )->GetValue();
   // Check if the datapoint makes sense
   if(phi < -TMath::Pi() || phi > TMath::Pi()
        || ctheta_1 < -1 || ctheta_1 > 1
@@ -347,10 +406,14 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
 /*****************************************************************************/
 TComplex Bs2PhiKKTotal::TotalAmplitude(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
-  TComplex amplitude =  Swave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
-                     +  Pwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
-                     +  Dwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
-                     + NonRes->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2);
+//  TComplex amplitude =  Swave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
+//                     +  Pwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
+//                     +  Dwave->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2)
+//                     + NonRes->Amplitude(_mKK, _phi, _ctheta_1, _ctheta_2);
+  TComplex amplitude =  Swave->Amplitude(_mKK, TComplex(0,0), TComplex(ReFSzero,0), TComplex(0,0))
+                     +  Pwave->Amplitude(_mKK, TComplex(ReFPminus,ImFPminus), TComplex(ReFPzero,0), TComplex(ReFPplus,ImFPplus))
+                     +  Dwave->Amplitude(_mKK, TComplex(ReFDminus,ImFDminus), TComplex(ReFDzero,0), TComplex(ReFDplus,ImFDplus))
+                     + NonRes->Amplitude(_mKK, TComplex(0,0), TComplex(ReFSzero,0), TComplex(0,0));
   return amplitude;
 }
 /*****************************************************************************/
