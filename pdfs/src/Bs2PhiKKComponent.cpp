@@ -112,6 +112,7 @@ Bs2PhiKKComponent::~Bs2PhiKKComponent()
 // Get the corresponding helicity amplitude for a given value of helicity, instead of using array indices
 TComplex Bs2PhiKKComponent::A(int lambda)
 {
+  if(abs(lambda) > _lambda_max) return TComplex(0,0); //safety
   int i = lambda + _lambda_max;
   return TComplex(_Amag[i], _Aphase[i], true);
 }
@@ -130,13 +131,10 @@ TComplex Bs2PhiKKComponent::F(double Phi, double ctheta_1, double ctheta_2)
   }
   return result;
 }
-// The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
+// Orbital and barrier factor
+double Bs2PhiKKComponent::OFBF(double mKK)
 {
-  // Mass-dependent part
-  TComplex massPart    = M(mKK);
-  // Angular part
-  TComplex angularPart = F(phi, ctheta_1, ctheta_2);
+
   // Orbital factor
   // Masses
   double m_min  = mK + mK;
@@ -147,19 +145,36 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
   double pKK  = DPHelpers::daughterMomentum(mKK, mK , mK    );
   double pBs0 = DPHelpers::daughterMomentum(mBs, _M1, m0_eff);
   double pKK0 = DPHelpers::daughterMomentum(_M2, mK , mK    ); 
-  double orbitalFactor = TMath::Power(pBs/mBs,   0)*
+  // Special case for non-resonant KK
+  if ( _shape == "NR" )
+  {
+    return pBs/mBs;
+  }
+  double orbitalFactor = //TMath::Power(pBs/mBs,   0)*
                          TMath::Power(pKK/mKK, _J2);
   // Barrier factors
   double barrierFactor = Bsbarrier->barrier(pBs0, pBs)*
                          KKbarrier->barrier(pKK0, pKK);
-  // Special case for non-resonant KK
-  if ( _shape == "NR" )
-  {
-    barrierFactor = 1.;
-    orbitalFactor = pBs/mBs;
-  }
+  return orbitalFactor * barrierFactor;
+}
+// The full amplitude
+TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
+{
+  // Mass-dependent part
+  TComplex massPart    = M(mKK);
+  // Angular part
+  TComplex angularPart = F(phi, ctheta_1, ctheta_2);
   // Result
-  return massPart * angularPart * orbitalFactor * barrierFactor;
+  return massPart * angularPart * OFBF(mKK);
+}
+TComplex Bs2PhiKKComponent::Amplitude(double mKK, TComplex Fminus, TComplex Fzero, TComplex Fplus)
+{
+  // Mass-dependent part
+  TComplex massPart    = M(mKK);
+  // Angular part
+  TComplex angularPart = A(-1) * Fminus + A(0) * Fzero + A(1) * Fplus;
+  // Result
+  return massPart * angularPart * OFBF(mKK);
 }
 // Set helicity amplitude parameters
 void Bs2PhiKKComponent::SetHelicityAmplitudes(int i, double mag, double phase)
