@@ -30,6 +30,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) :
   , CName ( config->getName("C") )
   , MName ( config->getName("M") )
 {
+  MakePrototypes();
   shape = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
   this->SetNumericalNormalisation( true );
 	this->TurnCachingOff();
@@ -78,6 +79,13 @@ void Bs2PhiKKBackground::MakePrototypes()
   allObservables.push_back(phiName     );
   allObservables.push_back(ctheta_1Name);
   allObservables.push_back(ctheta_2Name);
+  // Make the parameter set
+  vector<string> parameterNames;
+  parameterNames.push_back(AName);
+  parameterNames.push_back(BName);
+  parameterNames.push_back(CName);
+  parameterNames.push_back(MName);
+  allParameters = *( new ParameterSet(parameterNames) );
 }
 double Bs2PhiKKBackground::EvaluateComponent(DataPoint* measurement,ComponentRef* component)
 {
