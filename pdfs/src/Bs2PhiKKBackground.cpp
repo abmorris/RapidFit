@@ -100,9 +100,9 @@ vector<string> Bs2PhiKKBackground::PDFComponents()
 double Bs2PhiKKBackground::Evaluate(DataPoint* measurement)
 {
   mKK      = measurement->GetObservable(mKKName     )->GetValue();
+  phi      = measurement->GetObservable(phiName     )->GetValue();
   ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
   ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
-  phi      = measurement->GetObservable(phiName     )->GetValue();
   double result(0);
   double arg = mKK - M;
   if(arg <= 0) return 0;
