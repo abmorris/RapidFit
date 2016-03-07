@@ -36,9 +36,6 @@ class Bs2PhiKKTotal : public BasePDF
       // K+K− mass and helicity angles
       double        mKK,     ctheta_1,     ctheta_2,     phi;
       ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
-      // Pre-calculated angular parts
-      double        ReFSzero    , ReFPminus    , ImFPminus    , ReFPzero    , ReFPplus    , ImFPplus    , ReFDminus    , ImFDminus    , ReFDzero    , ReFDplus    , ImFDplus    ;
-      ObservableRef ReFSzeroName, ReFPminusName, ImFPminusName, ReFPzeroName, ReFPplusName, ImFPplusName, ReFDminusName, ImFDminusName, ReFDzeroName, ReFDplusName, ImFDplusName;
       // Non-resonant component
       double        ANonRes;
       ObservableRef ANonResName;
@@ -64,9 +61,8 @@ class Bs2PhiKKTotal : public BasePDF
       bool init;
       void MakePrototypes();
       // Calculation
-      TComplex TotalAmplitude(double, double, double, double);
+      TComplex TotalAmplitude();
       double Acceptance(double, double, double, double);
-      void ReadDataPoint(DataPoint*);
       void SetComponentAmplitudes();
       int compIndex;
       bool debug = false;

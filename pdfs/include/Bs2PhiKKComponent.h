@@ -25,7 +25,6 @@ class Bs2PhiKKComponent
     ~Bs2PhiKKComponent();
     void SetHelicityAmplitudes(int, double, double); 
     TComplex Amplitude(double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
-    TComplex Amplitude(double, TComplex, TComplex, TComplex); // KK_M, Fminus, Fzero, Fplus
     void Print();
     static double mBs ;
     static double mphi;

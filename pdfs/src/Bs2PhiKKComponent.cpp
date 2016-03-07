@@ -167,15 +167,6 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
   // Result
   return massPart * angularPart * OFBF(mKK);
 }
-TComplex Bs2PhiKKComponent::Amplitude(double mKK, TComplex Fminus, TComplex Fzero, TComplex Fplus)
-{
-  // Mass-dependent part
-  TComplex massPart    = M(mKK);
-  // Angular part
-  TComplex angularPart = A(-1) * Fminus + A(0) * Fzero + A(1) * Fplus;
-  // Result
-  return massPart * angularPart * OFBF(mKK);
-}
 // Set helicity amplitude parameters
 void Bs2PhiKKComponent::SetHelicityAmplitudes(int i, double mag, double phase)
 {
