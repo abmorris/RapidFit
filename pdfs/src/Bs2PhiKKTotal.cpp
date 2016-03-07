@@ -97,39 +97,39 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
 Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) : 
     BasePDF( (BasePDF) copy)
   // Dependent variables
-  , mKK(copy.mKK)
-  , phi(copy.phi)
+  , mKK(copy.mKK          )
+  , phi(copy.phi          )
   , ctheta_1(copy.ctheta_1)
   , ctheta_2(copy.ctheta_2)
   // Dependent variable names
-  , mKKName       (copy.mKKName)
+  , mKKName       (copy.mKKName     )
   , ctheta_1Name  (copy.ctheta_1Name)
   , ctheta_2Name  (copy.ctheta_2Name)
-  , phiName       (copy.phiName)
+  , phiName       (copy.phiName     )
   // Pre-calculated angular parts
-  , ReFSzero(copy.ReFSzero)
+  , ReFSzero (copy.ReFSzero )
   , ReFPminus(copy.ReFPminus)
   , ImFPminus(copy.ImFPminus)
-  , ReFPzero(copy.ReFPzero)
-  , ReFPplus(copy.ReFPplus)
-  , ImFPplus(copy.ImFPplus)
+  , ReFPzero (copy.ReFPzero )
+  , ReFPplus (copy.ReFPplus )
+  , ImFPplus (copy.ImFPplus )
   , ReFDminus(copy.ReFDminus)
   , ImFDminus(copy.ImFDminus)
-  , ReFDzero(copy.ReFDzero)
-  , ReFDplus(copy.ReFDplus)
-  , ImFDplus(copy.ImFDplus)
+  , ReFDzero (copy.ReFDzero )
+  , ReFDplus (copy.ReFDplus )
+  , ImFDplus (copy.ImFDplus )
   // Pre-calculated angular part names
-  , ReFSzeroName(copy.ReFSzeroName)
+  , ReFSzeroName (copy.ReFSzeroName )
   , ReFPminusName(copy.ReFPminusName)
   , ImFPminusName(copy.ImFPminusName)
-  , ReFPzeroName(copy.ReFPzeroName)
-  , ReFPplusName(copy.ReFPplusName)
-  , ImFPplusName(copy.ImFPplusName)
+  , ReFPzeroName (copy.ReFPzeroName )
+  , ReFPplusName (copy.ReFPplusName )
+  , ImFPplusName (copy.ImFPplusName )
   , ReFDminusName(copy.ReFDminusName)
   , ImFDminusName(copy.ImFDminusName)
-  , ReFDzeroName(copy.ReFDzeroName)
-  , ReFDplusName(copy.ReFDplusName)
-  , ImFDplusName(copy.ImFDplusName)
+  , ReFDzeroName (copy.ReFDzeroName )
+  , ReFDplusName (copy.ReFDplusName )
+  , ImFDplusName (copy.ImFDplusName )
   // mKK boundaries
   , mKKmin(copy.mKKmin)
   , mKKmax(copy.mKKmax)
@@ -193,10 +193,21 @@ void Bs2PhiKKTotal::MakePrototypes()
 {
   // Make the DataPoint prototype
   // The ordering here matters. It has to be the same as the XML file, apparently.
-  allObservables.push_back(mKKName     );
-  allObservables.push_back(phiName     );
-  allObservables.push_back(ctheta_1Name);
-  allObservables.push_back(ctheta_2Name);
+  allObservables.push_back(mKKName      );
+  allObservables.push_back(phiName      );
+  allObservables.push_back(ctheta_1Name );
+  allObservables.push_back(ctheta_2Name );
+  allObservables.push_back(ReFSzeroName );
+  allObservables.push_back(ReFPminusName);
+  allObservables.push_back(ImFPminusName);
+  allObservables.push_back(ReFPzeroName );
+  allObservables.push_back(ReFPplusName );
+  allObservables.push_back(ImFPplusName );
+  allObservables.push_back(ReFDminusName);
+  allObservables.push_back(ImFDminusName);
+  allObservables.push_back(ReFDzeroName );
+  allObservables.push_back(ReFDplusName );
+  allObservables.push_back(ImFDplusName );
   // Make the parameter set
   vector<string> parameterNames;
   parameterNames.push_back(ANonResName);
