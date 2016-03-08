@@ -19,6 +19,9 @@
 #include "DPBarrierL1.hh"
 #include "DPBarrierL2.hh"
 #include "DPHelpers.hh"
+#include "DPWignerFunctionJ0.hh"
+#include "DPWignerFunctionJ1.hh"
+#include "DPWignerFunctionJ2.hh"
 // Custom Libraries
 #include "SphericalHarmonic.h"
 using std::cout;
@@ -74,15 +77,35 @@ void Bs2PhiKKComponent::Initialise()
   Bsbarrier = new DPBarrierL0(_RBs);
   switch (_J2)
   {
-    case 0: KKbarrier = new DPBarrierL0(_RKK);
-            break;
-    case 1: KKbarrier = new DPBarrierL1(_RKK);
-            break;
-    case 2: KKbarrier = new DPBarrierL2(_RKK);
-            break;
-    default: cout << "WARNING: Do not know which barrier factor to use." << endl;
-             KKbarrier = new DPBarrierL0(_RKK);
-             break;
+    case 0: 
+      KKbarrier = new DPBarrierL0(_RKK);
+      break;
+    case 1: 
+      KKbarrier = new DPBarrierL1(_RKK);
+      break;
+    case 2: 
+      KKbarrier = new DPBarrierL2(_RKK);
+      break;
+    default:
+      cout << "WARNING: Do not know which barrier factor to use." << endl;
+      KKbarrier = new DPBarrierL0(_RKK);
+      break;
+  }
+  wignerPhi = new DPWignerFunctionJ1();
+  switch(_J2)
+  {
+    case 0:
+      wigner = new DPWignerFunctionJ0();
+      break;
+    case 1:
+      wigner = new DPWignerFunctionJ1();
+      break;
+    case 2:
+      wigner = new DPWignerFunctionJ2();
+      break;
+    default:
+      wigner = new DPWignerFunctionGeneral(_J2); // This shouldn't happen 
+      break;
   }
 }
 Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& copy) : 
@@ -108,6 +131,8 @@ Bs2PhiKKComponent::~Bs2PhiKKComponent()
   delete _M;
   delete Bsbarrier;
   delete KKbarrier;
+  delete wignerPhi;
+  delete wigner;
 }
 // Get the corresponding helicity amplitude for a given value of helicity, instead of using array indices
 TComplex Bs2PhiKKComponent::A(int lambda)
@@ -127,7 +152,8 @@ TComplex Bs2PhiKKComponent::F(double Phi, double ctheta_1, double ctheta_2)
   TComplex result(0, 0);
   for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
   {
-    result += A(lambda) * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
+//    result += A(lambda) * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
+    result += A(lambda) * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(-lambda*TComplex::I()*Phi);
   }
   return result;
 }

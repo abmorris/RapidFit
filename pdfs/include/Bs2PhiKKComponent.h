@@ -15,6 +15,7 @@
 // RapidFit
 #include "DPMassShape.hh"
 #include "DPBarrierFactor.hh"
+#include "DPWignerFunctionGeneral.hh"
 using std::string;
 using std::vector;
 class Bs2PhiKKComponent
@@ -42,6 +43,8 @@ class Bs2PhiKKComponent
     double            _RBs; // Bs barrier factor radius
     double            _RKK; // KK barrier factor radius
     string            _shape; // Choose the resonance shape
+    DPWignerFunction* wigner;
+    DPWignerFunction* wignerPhi;
   private:
     void              Initialise();
     TComplex          A(int);                    // Polarisation amplitude coefficients
