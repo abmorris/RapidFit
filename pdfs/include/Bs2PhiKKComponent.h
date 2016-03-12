@@ -26,6 +26,7 @@ class Bs2PhiKKComponent
     ~Bs2PhiKKComponent();
     void SetHelicityAmplitudes(int, double, double); 
     TComplex Amplitude(double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
+    TComplex Amplitude(double, double, double, double, string);
     void Print();
     static double mBs ;
     static double mphi;
@@ -48,7 +49,7 @@ class Bs2PhiKKComponent
   private:
     void              Initialise();
     TComplex          A(int);                    // Polarisation amplitude coefficients
-    TComplex          F(double, double, double); // Angular part
+    TComplex          F(int, double, double, double); // Angular part
     TComplex          M(double);                 // Mass-dependent part (KK resonance shape)
     double            OFBF(double);
     DPBarrierFactor*  Bsbarrier; // Blatt-Weisskopf barrier penetration factor for the Bs

@@ -136,8 +136,10 @@ void Bs2PhiKKTotal::Initialise()
   this->SetNumericalNormalisation( true );
   this->TurnCachingOff();
   componentlist.push_back("Swave");
-  componentlist.push_back("Pwave");
-  componentlist.push_back("Dwave");
+  componentlist.push_back("Pwave-odd");
+  componentlist.push_back("Pwave-even");
+  componentlist.push_back("Dwave-odd");
+  componentlist.push_back("Dwave-even");
   componentlist.push_back("nonresonant");
   componentlist.push_back("interference");
   SetComponentAmplitudes();
@@ -197,6 +199,10 @@ void Bs2PhiKKTotal::SetComponentAmplitudes()
     Dwave->SetHelicityAmplitudes(i, sqrt(ADsq[i]), deltaD[i]);
   }
   NonRes->SetHelicityAmplitudes(0, sqrt(ANonRes), 0);
+//  Swave->Print();
+//  Pwave->Print();
+//  Dwave->Print();
+//  NonRes->Print();
 }
 /*****************************************************************************/
 // List of components
@@ -212,41 +218,15 @@ double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* co
   compIndex = component->getComponentNumber();
   if( compIndex == -1)
   {
-    if(componentlist[0] == compName)
+    component->setComponentNumber(0);
+    compIndex = 0;
+    for(int i = 0; i < componentlist.size(); i++)
     {
-      // f0(980)
-      component->setComponentNumber(1);
-      compIndex = 1;
-    }
-    else if(componentlist[1] == compName)
-    {
-      // phi(1020)
-      component->setComponentNumber(2);
-      compIndex = 2;
-    }
-    else if(componentlist[2] == compName)
-    {
-      // f2'(1525)
-      component->setComponentNumber(3);
-      compIndex = 3;
-    }
-    else if(componentlist[3] == compName)
-    {
-      // non-resonant
-      component->setComponentNumber(4);
-      compIndex = 4;
-    }  
-    else if(componentlist[4] == compName)
-    {
-      // interference
-      component->setComponentNumber(5);
-      compIndex = 5;
-    }
-    else
-    {
-      // total
-      component->setComponentNumber(0);
-      compIndex = 0;
+      if(componentlist[i] == compName)
+      {
+        component->setComponentNumber(i+1);
+        compIndex = i+1;
+      }
     }
   }
   return Evaluate(measurement);
@@ -279,18 +259,26 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
       Gamma =  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
       break;
     case 2:
-      // phi(1020)
-      Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      // CP-odd phi(1020)
+      Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
       break;
     case 3:
-      // f2'(1525)
-      Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+      // CP-even phi(1020)
+      Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
       break;
     case 4:
+      // CP-odd f2'(1525)
+      Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+      break;
+    case 5:
+      // CP-even f2'(1525)
+      Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+      break;
+    case 6:
       // non-resonant
       Gamma = NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
       break;
-    case 5:
+    case 7:
       // interference
       Gamma =    TotalAmplitude().Rho2()
             -  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()

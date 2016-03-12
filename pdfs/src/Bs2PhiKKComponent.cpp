@@ -147,15 +147,10 @@ TComplex Bs2PhiKKComponent::M(double m)
   return _M->massShape(m);
 }
 // Angular part of the amplitude
-TComplex Bs2PhiKKComponent::F(double Phi, double ctheta_1, double ctheta_2)
+TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
-  TComplex result(0, 0);
-  for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
-  {
-//    result += A(lambda) * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
-    result += A(lambda) * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(-lambda*TComplex::I()*Phi);
-  }
-  return result;
+//  return A(lambda) * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
+  return A(lambda) * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(-lambda*TComplex::I()*Phi);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -186,11 +181,33 @@ double Bs2PhiKKComponent::OFBF(double mKK)
 // The full amplitude
 TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
 {
+  return Amplitude(mKK, phi, ctheta_1, ctheta_2, "full");
+}
+// The full amplitude
+TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2, string option)
+{
   // Mass-dependent part
   TComplex massPart    = M(mKK);
   // Angular part
-  TComplex angularPart = F(phi, ctheta_1, ctheta_2);
+  TComplex angularPart(0,0);
+  if(option.find("odd") != string::npos)
+  {
+    angularPart = (F(+1, phi, ctheta_1, ctheta_2) - F(-1, phi, ctheta_1, ctheta_2))/sqrt(2);
+  }
+  else if(option.find("even") != string::npos)
+  {
+    angularPart = (F(+1, phi, ctheta_1, ctheta_2) + F(-1, phi, ctheta_1, ctheta_2))/sqrt(2) + F(0, phi, ctheta_1, ctheta_2);
+  }
+  else // assume full amplitude, don't thow an error
+  {
+    for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
+    {
+      angularPart += F(lambda, phi, ctheta_1, ctheta_2);
+    }
+  }
   // Result
+  return massPart;
+  return angularPart * OFBF(mKK);
   return massPart * angularPart * OFBF(mKK);
 }
 // Set helicity amplitude parameters
@@ -202,12 +219,39 @@ void Bs2PhiKKComponent::SetHelicityAmplitudes(int i, double mag, double phase)
 void Bs2PhiKKComponent::Print()
 {
   cout << "| Spin-" << _J2 << " KK resonance" << endl;
-  cout << "| Mass:    \t" << _M2 << " MeV" << endl;
-  cout << "| Width:   \t" << _W2 << " MeV" << endl;
-  cout << "| Helicity:\t";
+  cout << "| Mass        :\t" << _M2 << " MeV" << endl;
+  cout << "| Width       :\t" << _W2 << " MeV" << endl;
+  cout << "| Helicity    :\t";
   for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
   {
-    cout << lambda << " ";
+    cout << lambda << "\t";
   }
   cout << endl;
+  cout << "| |A|         :\t";
+  for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
+  {
+    cout << A(lambda).Rho() << "\t";
+  }
+  cout << endl;
+  cout << "| δ           :\t";
+  for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
+  {
+    cout << A(lambda).Theta() << "\t";
+  }
+  cout << endl;
+  if(_J2 == 1 || _J2 == 2)
+  {
+    cout << "| Transversity:\t‖\t0\t⊥";
+    cout << endl;
+    cout << "| |A|         :\t";
+    cout << ((A(+1)+A(-1))/sqrt(2)).Rho() << "\t";
+    cout << A(0).Rho() << "\t";
+    cout << ((A(+1)-A(-1))/sqrt(2)).Rho() << "\t";
+    cout << endl;
+    cout << "| δ           :\t";
+    cout << ((A(+1)+A(-1))/sqrt(2)).Theta() << "\t";
+    cout << A(0).Theta() << "\t";
+    cout << ((A(+1)-A(-1))/sqrt(2)).Theta() << "\t";
+    cout << endl;
+  }
 }
