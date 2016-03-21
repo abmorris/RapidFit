@@ -3,7 +3,7 @@
  *  RapidFit PDF for Bs2PhiKKComponent
  *
  *  @author Adam Morris
- *  @date Nov-Dec 2015
+ *  @date Mar 2016
  */
 // Self 
 #include "Bs2PhiKKComponent.h"
@@ -171,7 +171,7 @@ double Bs2PhiKKComponent::OFBF(double mKK)
   {
     return pBs/mBs;
   }
-  double orbitalFactor = //TMath::Power(pBs/mBs,   0)*
+  double orbitalFactor = //TMath::Power(pBs/mBs,   0)* // == 1 so don't bother
                          TMath::Power(pKK/mKK, _J2);
   // Barrier factors
   double barrierFactor = Bsbarrier->barrier(pBs0, pBs)*

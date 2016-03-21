@@ -3,7 +3,7 @@
  *  RapidFit PDF for Bs2PhiKKTotal
  *
  *  @author Adam Morris
- *  @date Feb 2016
+ *  @date Mar 2016
  */
 // Self
 #include "Bs2PhiKKTotal.h"
@@ -161,6 +161,7 @@ void Bs2PhiKKTotal::MakePrototypes()
   // Separate loops for P-wave and D-wave for readability in fit output
   for(unsigned short i = 0; i < 3; i++) parameterNames.push_back(APsqName[i]  );
   for(unsigned short i = 0; i < 3; i++) parameterNames.push_back(ADsqName[i]  );
+  // Phases
   parameterNames.push_back(deltaSName );
   for(unsigned short i = 0; i < 3; i++) parameterNames.push_back(deltaPName[i]);
   for(unsigned short i = 0; i < 3; i++) parameterNames.push_back(deltaDName[i]);
