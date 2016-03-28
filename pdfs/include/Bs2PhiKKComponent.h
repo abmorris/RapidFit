@@ -33,8 +33,7 @@ class Bs2PhiKKComponent
     static double mK  ;
     static double mpi ;
   protected:
-    double*           _Amag;  // Arrays to contain the amplitudes.
-    double*           _Aphase;
+    TComplex*         _A;  // Helicity amplitude(s)
     int               _J1; // Spin of the phi (P-wave, 1)
     int               _J2; // Spin of the KK resonance (0, 1 or 2)
     double            _M1; // Mass of the phi

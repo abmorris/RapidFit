@@ -52,13 +52,11 @@ void Bs2PhiKKComponent::Initialise()
 {
   _lambda_max = TMath::Min(_J1, _J2); // Maximum helicity
   int n = 1 + 2 * _lambda_max;
-  _Amag   = new double[n];
-  _Aphase = new double[n];
+  _A = new TComplex[n];
   for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
   {
     int i = lambda + _lambda_max;
-    _Amag[i] = sqrt(1.0 / n);
-    _Aphase[i] = 0;
+    _A[i] = TComplex(sqrt(1.0 / n), 0, true);
   }
   // Breit Wigner
   if(_shape=="BW")
@@ -120,14 +118,12 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& copy) :
   for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
   {
     int i = lambda + _lambda_max;
-    _Amag[i] = copy._Amag[i];
-    _Aphase[i] = copy._Aphase[i];
+    _A[i] = copy._A[i];
   }
 }
 Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
-  delete[] _Amag;
-  delete[] _Aphase;
+  delete[] _A;
   delete _M;
   delete Bsbarrier;
   delete KKbarrier;
@@ -139,7 +135,7 @@ TComplex Bs2PhiKKComponent::A(int lambda)
 {
   if(abs(lambda) > _lambda_max) return TComplex(0,0); //safety
   int i = lambda + _lambda_max;
-  return TComplex(_Amag[i], _Aphase[i], true);
+  return _A[i];
 }
 // Mass-dependent part of the amplitude
 TComplex Bs2PhiKKComponent::M(double m)
@@ -150,7 +146,7 @@ TComplex Bs2PhiKKComponent::M(double m)
 TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
 //  return A(lambda) * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
-  return A(lambda) * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(-lambda*TComplex::I()*Phi);
+  return A(lambda) * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -206,15 +202,12 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
     }
   }
   // Result
-  return massPart;
-  return angularPart * OFBF(mKK);
   return massPart * angularPart * OFBF(mKK);
 }
 // Set helicity amplitude parameters
 void Bs2PhiKKComponent::SetHelicityAmplitudes(int i, double mag, double phase)
 {
-  _Amag[i] = mag;
-  _Aphase[i] = phase;
+  _A[i] = TComplex(mag, phase, true);
 }
 void Bs2PhiKKComponent::Print()
 {
