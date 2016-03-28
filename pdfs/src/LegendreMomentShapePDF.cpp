@@ -43,7 +43,10 @@ LegendreMomentShapePDF::~LegendreMomentShapePDF()
 }
 void LegendreMomentShapePDF::Initialise()
 {
-
+  // Enable numerical normalisation and disable caching
+  // There should be an analytical integral, but it apparently somehow involves gamma functions of non-positive integers???
+  this->SetNumericalNormalisation( true );
+  this->TurnCachingOff();
 }
 void LegendreMomentShapePDF::MakePrototypes()
 {
@@ -67,6 +70,8 @@ double LegendreMomentShapePDF::Evaluate(DataPoint* measurement)
 }
 double LegendreMomentShapePDF::Normalisation(PhaseSpaceBoundary* boundary)
 {
+  /*
+  // Unfortunately this doesn't work. Of course it wouldn't work. Why would it?
   double result(0);
   double mKKhi      = boundary->GetConstraint(mKKName)->GetMaximum(); 
   double mKKlo      = boundary->GetConstraint(mKKName)->GetMinimum();
@@ -78,6 +83,9 @@ double LegendreMomentShapePDF::Normalisation(PhaseSpaceBoundary* boundary)
   double ctheta_2lo = boundary->GetConstraint(ctheta_2Name)->GetMinimum();
   result = shape->Integral(mKKhi, mKKlo, phihi, philo, ctheta_1hi, ctheta_1lo, ctheta_2hi, ctheta_2lo);
   return result;
+  */
+  (void)boundary;
+  return -1;
 }
 bool LegendreMomentShapePDF::SetPhysicsParameters(ParameterSet* parameters)
 {

@@ -86,13 +86,17 @@ double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, do
   {
     Q_l  = gsl_sf_legendre_Pl   (coeff.l,  mKK_mapped);
     P_i  = gsl_sf_legendre_Pl   (coeff.i,  ctheta_2);
-    // only consider case where k >= 0
-    // these are the real valued spherical harmonics
-    if ( coeff.k == 0 ) Y_jk =       gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1);
-    else      Y_jk = sqrt(2) * gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1) * cos(coeff.k*phi);
+    if ( coeff.k == 0 ) Y_jk =           gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1);
+    else                Y_jk = sqrt(2) * gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1) * cos(coeff.k*phi);
     result += coeff.val*(Q_l * P_i * Y_jk);
   }
   return result;
+}
+/*
+// This doesn't work
+double LegendreMomentShape::Integral(double mKKhi, double mKKlo)
+{
+  return Integral(mKKhi, mKKlo, M_PI, -M_PI, 1, -1, 1, -1);
 }
 double LegendreMomentShape::Integral(double mKKhi, double mKKlo, double phihi, double philo, double ctheta_1hi, double ctheta_1lo, double ctheta_2hi, double ctheta_2lo)
 {
@@ -113,8 +117,6 @@ double LegendreMomentShape::Integral(double mKKhi, double mKKlo, double phihi, d
     Q_llo  = coeff.l>0 ? (gsl_sf_legendre_Pl(coeff.l+1, mKK_mappedlo) - gsl_sf_legendre_Pl(coeff.l-1, mKK_mappedlo)) / (2*coeff.l+1) : mKK_mappedlo;
     P_ihi  = coeff.i>0 ? (gsl_sf_legendre_Pl(coeff.i+1,   ctheta_2hi) - gsl_sf_legendre_Pl(coeff.i-1,   ctheta_2hi)) / (2*coeff.i+1) : ctheta_2hi;
     P_ilo  = coeff.i>0 ? (gsl_sf_legendre_Pl(coeff.i+1,   ctheta_2lo) - gsl_sf_legendre_Pl(coeff.i-1,   ctheta_2lo)) / (2*coeff.i+1) : ctheta_2lo;
-    // only consider case where k >= 0
-    // these are the real valued spherical harmonics
     if ( coeff.k == 0 )
     {
       Y_jkhi = int_legendre_sphPlm(coeff.j, coeff.k, ctheta_1hi);
@@ -132,12 +134,16 @@ double LegendreMomentShape::Integral(double mKKhi, double mKKlo, double phihi, d
 double LegendreMomentShape::int_legendre_sphPlm(int n, int mu, double z)
 {
   double sum = 0;
+  double numerator = 0;
   for(int k = 0; k <= n; k++)
   {
-    sum+=((gsl_sf_poch(-n,k)*gsl_sf_poch(n+1,k))/(gsl_sf_gamma(1-mu+k)*factorial(k)))*gsl_sf_beta_inc((2+mu)/2,1+k-mu/2,(1+z)/2);
+    numerator = ((gsl_sf_poch(-n,k)*gsl_sf_poch(n+1,k)))*gsl_sf_beta_inc((2+mu)/2,1+k-mu/2,(1+z)/2);
+    if(numerator == 0) continue;
+    else sum+=numerator/(gsl_sf_gamma(1-mu+k)*factorial(k)); // Gamma((int)z<1) keeps happening. Why? This is clearly the wrong function.
   }
   return 2*sum;
 }
+*/
 void LegendreMomentShape::createcoefficients()
 {
   char branchtitle[10];

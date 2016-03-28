@@ -13,7 +13,8 @@ class LegendreMomentShape
     LegendreMomentShape(const LegendreMomentShape&);
     ~LegendreMomentShape();
     double Evaluate(double,double,double,double);
-    double Integral(double,double,double,double,double,double,double,double);
+//    double Integral(double,double); // Mass only
+//    double Integral(double,double,double,double,double,double,double,double);
     double mKK_min;
     double mKK_max;
   protected:
@@ -36,7 +37,7 @@ class LegendreMomentShape
     TTree* tree;
     TFile* file;
     bool copied;
-    inline double int_legendre_sphPlm(int,int,double);
-    inline int factorial(int n){ return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n; }
+//    inline double int_legendre_sphPlm(int,int,double);
+//    inline int factorial(int n){ return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n; }
 };
 #endif
