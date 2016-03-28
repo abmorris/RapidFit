@@ -35,7 +35,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   , mKKmax( config->GetPhaseSpaceBoundary()->GetConstraint("mKK")->GetMaximum() )
   // Options
   , init(true)
-  , compIndex(0)
+  , compName("0")
 {
   // Set physics parameters to zero for now
   ANonRes   = 0;
@@ -87,7 +87,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
   , mKKmin(copy.mKKmin)
   , mKKmax(copy.mKKmax)
   // Options
-  , compIndex(0)
+  , compName("0")
 {
   ANonRes     = copy.ANonRes    ;
   ASsq        = copy.ASsq       ;
@@ -215,21 +215,7 @@ vector<string> Bs2PhiKKTotal::PDFComponents()
 // Evaluate a single component
 double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
-  string compName = component->getComponentName();
-  compIndex = component->getComponentNumber();
-  if( compIndex == -1)
-  {
-    component->setComponentNumber(0);
-    compIndex = 0;
-    for(int i = 0; i < componentlist.size(); i++)
-    {
-      if(componentlist[i] == compName)
-      {
-        component->setComponentNumber(i+1);
-        compIndex = i+1;
-      }
-    }
-  }
+  compName = component->getComponentName();
   return Evaluate(measurement);
 }
 /*****************************************************************************/
@@ -253,44 +239,32 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   // Evaluate the PDF at this point
   double evalres = 0;
   double Gamma = 0;
-  switch(compIndex)
-  {
-    case 1:
-      // f0(980)
-      Gamma =  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
-      break;
-    case 2:
-      // CP-odd phi(1020)
-      Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
-      break;
-    case 3:
-      // CP-even phi(1020)
-      Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
-      break;
-    case 4:
-      // CP-odd f2'(1525)
-      Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
-      break;
-    case 5:
-      // CP-even f2'(1525)
-      Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
-      break;
-    case 6:
-      // non-resonant
-      Gamma = NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
-      break;
-    case 7:
-      // interference
-      Gamma =    TotalAmplitude().Rho2()
-            -  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-            -  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-            -  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-            - NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
-      break;
-    default:
-      Gamma = TotalAmplitude().Rho2();
-      break;
-  }
+  if(compName=="Swave")
+    Gamma =  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+  else if(compName=="Pwave-odd")
+    // CP-odd phi(1020)
+    Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+  else if(compName=="Pwave-even")
+    // CP-even phi(1020)
+    Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+  else if(compName=="Dwave-odd")
+    // CP-odd f2'(1525)
+    Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+  else if(compName=="Dwave-even")
+    // CP-even f2'(1525)
+    Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+  else if(compName=="nonresonant")
+    // non-resonant
+    Gamma = NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+  else if(compName=="interference")
+    // interference
+    Gamma =    TotalAmplitude().Rho2()
+          -  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          -  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          -  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+  else
+    Gamma = TotalAmplitude().Rho2();
   // Phase space part
   const double mK   = Bs2PhiKKComponent::mK;
   const double mBs  = Bs2PhiKKComponent::mBs;
@@ -300,7 +274,7 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   double pRpB = pR*pB;
   double phasespace = TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
   evalres = Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * phasespace;
-  return evalres>0 && compIndex!=4 ? evalres : 1e-37;
+  return (evalres>0 && compName!="interference") ? evalres : 1e-37;
 }
 /*****************************************************************************/
 TComplex Bs2PhiKKTotal::TotalAmplitude()

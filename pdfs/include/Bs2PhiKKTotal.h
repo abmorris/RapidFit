@@ -64,7 +64,7 @@ class Bs2PhiKKTotal : public BasePDF
       TComplex TotalAmplitude();
       double Acceptance(double, double, double, double);
       void SetComponentAmplitudes();
-      int compIndex;
+      string compName;
       bool debug = false;
 };
 #endif
