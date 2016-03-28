@@ -30,10 +30,10 @@ Bs2PhiKKPeakingBackground::Bs2PhiKKPeakingBackground(PDFConfigurator* config) :
   // This allows for the sum of multiple instances of the same PDF with different parameters
   mode = config->getConfigurationValue("DecayMode");
   // Physics parameter names
-  meanName  = config->getName(mode+"mean" )
-  sigmaName = config->getName(mode+"sigma")
-  alphaName = config->getName(mode+"alpha")
-  nName     = config->getName(mode+"n"    )
+  meanName  = config->getName(mode+"mean" );
+  sigmaName = config->getName(mode+"sigma");
+  alphaName = config->getName(mode+"alpha");
+  nName     = config->getName(mode+"n"    );
   // Create the angular function
   shape = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
   this->SetNumericalNormalisation( true );
