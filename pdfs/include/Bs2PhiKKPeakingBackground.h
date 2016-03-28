@@ -34,7 +34,7 @@ class Bs2PhiKKPeakingBackground : public BasePDF
       vector<string> PDFComponents();
     protected:
       // Shape parameters
-      double        mean,     sigma,     alpha,     n;
+      double        mean,     sigma,     alpha,     n;
       ObservableRef meanName, sigmaName, alphaName, nName;
       // K+K− mass and helicity angles
       double        mKK,     ctheta_1,     ctheta_2,     phi;
