@@ -142,6 +142,7 @@ void Bs2PhiKKTotal::Initialise()
   componentlist.push_back("Dwave-even");
   componentlist.push_back("nonresonant");
   componentlist.push_back("interference");
+//  componentlist.push_back("acceptance"); // Don't expect to use this very much 
   SetComponentAmplitudes();
 }
 /*****************************************************************************/
@@ -239,6 +240,7 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   // Evaluate the PDF at this point
   double evalres = 0;
   double Gamma = 0;
+  // Get the square of the amplitude for the chosen component
   if(compName=="Swave")
     Gamma =  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
   else if(compName=="Pwave-odd")
@@ -263,17 +265,11 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
           -  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
           -  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
           - NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+  else if(compName=="acceptance")
+    Gamma = 0.5*Pwave->Amplitude(1020, 0, 0, 0).Rho2()*PhaseSpace(1015)/PhaseSpace(mKK); // Just a visual check
   else
     Gamma = TotalAmplitude().Rho2();
-  // Phase space part
-  const double mK   = Bs2PhiKKComponent::mK;
-  const double mBs  = Bs2PhiKKComponent::mBs;
-  const double mPhi = Bs2PhiKKComponent::mphi;
-  double pR = DPHelpers::daughterMomentum(mKK, mK, mK);
-  double pB = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
-  double pRpB = pR*pB;
-  double phasespace = TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
-  evalres = Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * phasespace;
+  evalres = Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * PhaseSpace(mKK);
   return (evalres>0 && compName!="interference") ? evalres : 1e-37;
 }
 /*****************************************************************************/
@@ -290,6 +286,18 @@ TComplex Bs2PhiKKTotal::TotalAmplitude()
 double Bs2PhiKKTotal::Acceptance(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
  return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
+}
+/*****************************************************************************/
+// Two-body phase space probability function
+double Bs2PhiKKTotal::PhaseSpace(double _mKK)
+{
+  const double mK   = Bs2PhiKKComponent::mK;
+  const double mBs  = Bs2PhiKKComponent::mBs;
+  const double mPhi = Bs2PhiKKComponent::mphi;
+  double pR = DPHelpers::daughterMomentum(_mKK, mK, mK);
+  double pB = DPHelpers::daughterMomentum(mBs,_mKK,mPhi);
+  double pRpB = pR*pB;
+  return TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
 }
 /*****************************************************************************/
 // Insert analitical integral here, if one exists
