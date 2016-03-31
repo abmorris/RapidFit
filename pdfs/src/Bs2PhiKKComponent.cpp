@@ -143,10 +143,11 @@ TComplex Bs2PhiKKComponent::M(double m)
   return _M->massShape(m);
 }
 // Angular part of the amplitude
-TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
+TComplex Bs2PhiKKComponent::F(bool conjHelAmp, int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
-//  return A(lambda) * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
-  return A(lambda) * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
+  TComplex HelAmp = conjHelAmp ? TComplex::Conjugate(A(lambda)) : A(lambda);
+//  return HelAmp * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
+  return HelAmp * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -175,12 +176,12 @@ double Bs2PhiKKComponent::OFBF(double mKK)
   return orbitalFactor * barrierFactor;
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
+TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, double ctheta_1, double ctheta_2)
 {
-  return Amplitude(mKK, phi, ctheta_1, ctheta_2, "full");
+  return Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2, "full");
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2, string option)
+TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, double ctheta_1, double ctheta_2, string option)
 {
   // Mass-dependent part
   TComplex massPart    = M(mKK);
@@ -188,17 +189,17 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
   TComplex angularPart(0,0);
   if(option.find("odd") != string::npos)
   {
-    angularPart = (F(+1, phi, ctheta_1, ctheta_2) - F(-1, phi, ctheta_1, ctheta_2))/sqrt(2);
+    angularPart = (F(conjHelAmp, +1, phi, ctheta_1, ctheta_2) - F(conjHelAmp, -1, phi, ctheta_1, ctheta_2))/sqrt(2);
   }
   else if(option.find("even") != string::npos)
   {
-    angularPart = (F(+1, phi, ctheta_1, ctheta_2) + F(-1, phi, ctheta_1, ctheta_2))/sqrt(2) + F(0, phi, ctheta_1, ctheta_2);
+    angularPart = (F(conjHelAmp, +1, phi, ctheta_1, ctheta_2) + F(conjHelAmp, -1, phi, ctheta_1, ctheta_2))/sqrt(2) + F(conjHelAmp, 0, phi, ctheta_1, ctheta_2);
   }
   else // assume full amplitude, don't thow an error
   {
     for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
     {
-      angularPart += F(lambda, phi, ctheta_1, ctheta_2);
+      angularPart += F(conjHelAmp, lambda, phi, ctheta_1, ctheta_2);
     }
   }
   // Result

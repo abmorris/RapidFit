@@ -117,7 +117,7 @@ Bs2PhiKKTotal::~Bs2PhiKKTotal()
   delete Pwave;
   delete Dwave;
   delete NonRes;
-//  delete acc;
+  delete acc;
 }
 /*****************************************************************************/
 // Code common to the constructors
@@ -194,11 +194,11 @@ bool Bs2PhiKKTotal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 /*****************************************************************************/
 void Bs2PhiKKTotal::SetComponentAmplitudes()
 {
-  Swave->SetHelicityAmplitudes(0, sqrt(ASsq), deltaS);
+  Swave->SetHelicityAmplitudes(0, sqrt(ASsq), -deltaS);
   for(unsigned short i = 0; i < 3; i++)
   {
-    Pwave->SetHelicityAmplitudes(i, sqrt(APsq[i]), deltaP[i]);
-    Dwave->SetHelicityAmplitudes(i, sqrt(ADsq[i]), deltaD[i]);
+    Pwave->SetHelicityAmplitudes(i, sqrt(APsq[i]), -deltaP[i]);
+    Dwave->SetHelicityAmplitudes(i, sqrt(ADsq[i]), -deltaD[i]);
   }
   NonRes->SetHelicityAmplitudes(0, sqrt(ANonRes), 0);
 //  Swave->Print();
@@ -238,47 +238,76 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
     measurement->Print();
   }
   // Evaluate the PDF at this point
-  double evalres = 0;
   double Gamma = 0;
   // Get the square of the amplitude for the chosen component
   if(compName=="Swave")
-    Gamma =  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+  {
+    // f0(980)
+    Gamma =  Swave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          +  Swave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2).Rho2();
+  }
   else if(compName=="Pwave-odd")
+  {
     // CP-odd phi(1020)
-    Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+    Gamma =  Pwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2()
+          +  Pwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+  }
   else if(compName=="Pwave-even")
+  {
     // CP-even phi(1020)
-    Gamma =  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+    Gamma =  Pwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2, "even").Rho2()
+          +  Pwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+  }
   else if(compName=="Dwave-odd")
+  {
     // CP-odd f2'(1525)
-    Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+    Gamma =  Dwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2()
+          +  Dwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2();
+  }
   else if(compName=="Dwave-even")
+  {
     // CP-even f2'(1525)
-    Gamma =  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+    Gamma =  Dwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2, "even").Rho2()
+          +  Dwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2, "even").Rho2();
+  }
   else if(compName=="nonresonant")
+  {
     // non-resonant
-    Gamma = NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+    Gamma = NonRes->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          + NonRes->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2).Rho2();
+  }
   else if(compName=="interference")
+  {
     // interference
-    Gamma =    TotalAmplitude().Rho2()
-          -  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          -  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          -  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2()
-          - NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2).Rho2();
+    Gamma =    TotalAmplitude(false).Rho2()
+          -  Swave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          -  Pwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          -  Dwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - NonRes->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          // and then the conjugate terms
+          +    TotalAmplitude(true).Rho2()
+          -  Swave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          -  Pwave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          -  Dwave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
+          - NonRes->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2();
+  }
   else if(compName=="acceptance")
-    Gamma = 0.5*Pwave->Amplitude(1020, 0, 0, 0).Rho2()*PhaseSpace(1015)/PhaseSpace(mKK); // Just a visual check
+    Gamma = 2*Pwave->Amplitude(false, 1030, 0, 0, 0).Rho2()*PhaseSpace(1015)/PhaseSpace(mKK); // Just a visual check
   else
-    Gamma = TotalAmplitude().Rho2();
-  evalres = Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * PhaseSpace(mKK);
-  return (evalres>0 && compName!="interference") ? evalres : 1e-37;
+  {
+    Gamma = TotalAmplitude(true).Rho2() + TotalAmplitude(false).Rho2();
+  }
+  Gamma/=2.0;
+  return Gamma * PhaseSpace(mKK);
+  return Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * PhaseSpace(mKK);
 }
 /*****************************************************************************/
-TComplex Bs2PhiKKTotal::TotalAmplitude()
+TComplex Bs2PhiKKTotal::TotalAmplitude(bool conjHelAmp)
 {
-  TComplex amplitude =  Swave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
-                     +  Pwave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
-                     +  Dwave->Amplitude(mKK, phi, ctheta_1, ctheta_2)
-                     + NonRes->Amplitude(mKK, phi, ctheta_1, ctheta_2);
+  TComplex amplitude =  Swave->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2)
+                     +  Pwave->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2)
+                     +  Dwave->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2)
+                     + NonRes->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2);
   return amplitude;
 }
 /*****************************************************************************/
