@@ -51,6 +51,7 @@ class Bs2PhiKKTotal : public BasePDF
       LegendreMomentShape* acc;
       // Options
       bool useTimeIntPwavePDF;
+      bool useTimeIntDwavePDF;
     private:
       // The m(KK) components
       Bs2PhiKKComponent* Swave;

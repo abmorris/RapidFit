@@ -76,6 +76,19 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   {
     useTimeIntPwavePDF = false;
   }
+  string TIDWopt = config->getConfigurationValue("UseTimeIntegratedDwavePDF");
+  if( TIDWopt == "True" || TIDWopt == "true" )
+  {
+    useTimeIntDwavePDF = true;
+  }
+  else
+  {
+    useTimeIntDwavePDF = false;
+  }
+  if(useTimeIntPwavePDF && useTimeIntDwavePDF)
+  {
+    cout << "WARNING: Cannot currently plot P-wave and D-wave. Will only plot P-wave PDF." << endl;
+  }
   Initialise();
 }
 /*****************************************************************************/
@@ -97,6 +110,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
   , mKKmax(copy.mKKmax)
   // Options
   , useTimeIntPwavePDF(copy.useTimeIntPwavePDF)
+  , useTimeIntDwavePDF(copy.useTimeIntDwavePDF)
   , compName("0")
 {
   ANonRes     = copy.ANonRes    ;
@@ -249,11 +263,28 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
   }
   // Evaluate the PDF at this point
   double Gamma = 0;
-  if(useTimeIntPwavePDF)
+  if(useTimeIntPwavePDF || useTimeIntDwavePDF)
   {
-    TComplex Aminus(sqrt(APsq[0]),deltaP[0],true);
-    TComplex Azero (sqrt(APsq[1]),deltaP[1],true);
-    TComplex Aplus (sqrt(APsq[2]),deltaP[2],true);
+    // Trig identities
+    double ctheta_1_sq = ctheta_1*ctheta_1;          // cos²(θ1)
+    double stheta_1_sq = 1 - ctheta_1_sq;            // sin²(θ1)
+    double s2theta_1 = 2*ctheta_1*sqrt(stheta_1_sq); // sin(2θ1)
+    double ctheta_2_sq = ctheta_2*ctheta_2;          // cos²(θ2)
+    double stheta_2_sq = 1 - ctheta_2_sq;            // sin²(θ2)
+    double s2theta_2 = 2*ctheta_2*sqrt(stheta_2_sq); // sin(2θ2)
+    TComplex Aminus, Azero, Aplus;
+    if(useTimeIntPwavePDF)
+    {
+      Aminus = TComplex(sqrt(APsq[0]),deltaP[0],true);
+      Azero  = TComplex(sqrt(APsq[1]),deltaP[1],true);
+      Aplus  = TComplex(sqrt(APsq[2]),deltaP[2],true);
+    }
+    else
+    {
+      Aminus = TComplex(sqrt(ADsq[0]),deltaD[0],true);
+      Azero  = TComplex(sqrt(ADsq[1]),deltaD[1],true);
+      Aplus  = TComplex(sqrt(ADsq[2]),deltaD[2],true);
+    }
     TComplex Apara = (Aplus + Aminus)/sqrt(2.); // A‖ = (A+ + A−)/sqrt(2)
     TComplex Aperp = (Aplus - Aminus)/sqrt(2.); // A⊥ = (A+ − A−)/sqrt(2)
     // Coefficients 
@@ -264,28 +295,33 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
     // K[3] is zero
     K[4] = Azero.Rho() * Apara.Rho() * cos((Apara/Azero).Theta()); // |A0||A‖|cos(arg(A‖/A0)) or Re(A‖A0*)
     // K[5] is zero
-    double F[6] = {0};
-    // Trig identities
-    double ctheta_1_sq = ctheta_1*ctheta_1;          // cos²(θ1)
-    double stheta_1_sq = 1 - ctheta_1_sq;            // sin²(θ1)
-    double s2theta_1 = 2*ctheta_1*sqrt(stheta_1_sq); // sin(2θ1)
-    double ctheta_2_sq = ctheta_2*ctheta_2;          // cos²(θ2)
-    double stheta_2_sq = 1 - ctheta_2_sq;            // sin²(θ2)
-    double s2theta_2 = 2*ctheta_2*sqrt(stheta_2_sq); // sin(2θ2)
     // Angular functions
-    F[0] = 4*ctheta_1_sq*ctheta_2_sq;                // 4cos²(θ1)cos²(θ2)
-    F[1] = stheta_1_sq*stheta_2_sq*(1+cos(2*phi));   // sin²(θ1)sin²(θ2)(1+cos(2Φ))
-    F[2] = stheta_1_sq*stheta_2_sq*(1-cos(2*phi));   // sin²(θ1)sin²(θ2)(1−cos(2Φ))
-    // K[3] is zero so don't calculate F[3]
-    K[4] = sqrt(2)*s2theta_1*s2theta_2*cos(phi);     // √2sin(2θ1)sin(2θ2)cos(Φ)
-    // K[5] is zero so don't calculate F[5]
-    if(compName == "Pwave-odd")
+    double F[6] = {0};
+    if(useTimeIntPwavePDF)
     {
-      Gamma = K[2] * F[2];
+      F[0] = 4*ctheta_1_sq*ctheta_2_sq;                // 4cos²(θ1)cos²(θ2)
+      F[1] = stheta_1_sq*stheta_2_sq*(1+cos(2*phi));   // sin²(θ1)sin²(θ2)(1+cos(2Φ))
+      F[2] = stheta_1_sq*stheta_2_sq*(1-cos(2*phi));   // sin²(θ1)sin²(θ2)(1−cos(2Φ))
+      // K[3] is zero so don't calculate F[3]
+      F[4] = sqrt(2)*s2theta_1*s2theta_2*cos(phi);     // √2sin(2θ1)sin(2θ2)cos(Φ)
+      // K[5] is zero so don't calculate F[5]
     }
-    else if (compName == "Pwave-even")
+    else
     {
-      Gamma = K[0]*F[0] + K[1]*F[1] + K[4]*F[4];
+      F[0] = 4*ctheta_1_sq*pow(3*ctheta_2_sq-1,2);                    // 4cos²(θ1)(3cos²(θ2)-1)²
+      F[1] = 3*stheta_1_sq*stheta_2_sq*(1+cos(2*phi));                // 3sin²(θ1)sin²(θ2)(1+cos(2Φ))
+      F[2] = 3*stheta_1_sq*stheta_2_sq*(1-cos(2*phi));                // 3sin²(θ1)sin²(θ2)(1−cos(2Φ))
+      // K[3] is zero so don't calculate F[3]
+      F[4] = 2*sqrt(6)*s2theta_1*s2theta_2*(3*ctheta_2_sq-1)*cos(phi); // 2√6sin(2θ1)sin(2θ2)(3*ctheta_2_sq-1)cos(Φ)
+      // K[5] is zero so don't calculate F[5]
+    }
+    if(compName == "Pwave-odd" || compName == "Dwave-odd")
+    {
+      Gamma += K[2]*F[2];
+    }
+    else if (compName == "Pwave-even" || compName == "Dwave-even")
+    {
+      Gamma += K[0]*F[0] + K[1]*F[1] + K[4]*F[4];
     }
     else
     {
