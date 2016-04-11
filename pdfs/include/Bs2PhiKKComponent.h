@@ -48,7 +48,7 @@ class Bs2PhiKKComponent
   private:
     void              Initialise();
     TComplex          A(int);                    // Polarisation amplitude coefficients
-    TComplex          F(bool, int, double, double, double); // Angular part
+    TComplex          F(int, double, double, double); // Angular part
     TComplex          M(double);                 // Mass-dependent part (KK resonance shape)
     double            OFBF(double);
     DPBarrierFactor*  Bsbarrier; // Blatt-Weisskopf barrier penetration factor for the Bs

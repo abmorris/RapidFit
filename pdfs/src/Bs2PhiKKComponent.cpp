@@ -24,6 +24,8 @@
 #include "DPWignerFunctionJ2.hh"
 // Custom Libraries
 #include "SphericalHarmonic.h"
+// BOOST
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 using std::cout;
 using std::endl;
 using std::flush;
@@ -143,11 +145,16 @@ TComplex Bs2PhiKKComponent::M(double m)
   return _M->massShape(m);
 }
 // Angular part of the amplitude
-TComplex Bs2PhiKKComponent::F(bool conjHelAmp, int lambda, double Phi, double ctheta_1, double ctheta_2)
+TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
-  TComplex HelAmp = conjHelAmp ? TComplex::Conjugate(A(lambda)) : A(lambda);
-//  return HelAmp * SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
-  return HelAmp * wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
+  
+  TComplex Y1(boost::math::spherical_harmonic_r(_J1,-lambda,acos(-ctheta_1),-Phi)
+             ,boost::math::spherical_harmonic_i(_J1,-lambda,acos(-ctheta_1),-Phi));
+  TComplex Y2(boost::math::spherical_harmonic_r(_J2, lambda,acos( ctheta_2),   0)
+             ,boost::math::spherical_harmonic_i(_J2, lambda,acos( ctheta_2),   0));
+  return Y1 * Y2;
+//  return SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
+//  return wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -187,22 +194,47 @@ TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, d
   TComplex massPart    = M(mKK);
   // Angular part
   TComplex angularPart(0,0);
+  TComplex TraAmp[3]; // Transversity amplitudes
+  TComplex ConjTA[3]; // Conjugate transversity amplitudes
+  if(option.find("odd") != string::npos || option.find("even") != string::npos)
+  {
+    TraAmp[0] = A(0); // zero
+    TraAmp[1] = (A(+1)-A(-1))/sqrt(2.); // perp (1 is odd)
+    TraAmp[2] = (A(+1)+A(-1))/sqrt(2.); // para (2 is even)
+    ConjTA[0] = A(0); // zero
+    ConjTA[1] = (A(+1)-A(-1))/sqrt(2.); // perp (1 is odd)
+    ConjTA[2] = (A(+1)+A(-1))/sqrt(2.); // para (2 is even)
+  }
   if(option.find("odd") != string::npos)
   {
-    angularPart = (F(conjHelAmp, +1, phi, ctheta_1, ctheta_2) - F(conjHelAmp, -1, phi, ctheta_1, ctheta_2))/sqrt(2);
+    TComplex* HelAmp = conjHelAmp ? new TComplex[3] {-ConjTA[1]/sqrt(2), TComplex(0,0), ConjTA[1]/sqrt(2)}
+                                  : new TComplex[3] {-TraAmp[1]/sqrt(2), TComplex(0,0), TraAmp[1]/sqrt(2)}; // C++11 is literally magic
+    for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
+    {
+      angularPart += HelAmp[lambda+_lambda_max] * F(lambda, phi, ctheta_1, ctheta_2);
+    }
   }
   else if(option.find("even") != string::npos)
   {
-    angularPart = (F(conjHelAmp, +1, phi, ctheta_1, ctheta_2) + F(conjHelAmp, -1, phi, ctheta_1, ctheta_2))/sqrt(2) + F(conjHelAmp, 0, phi, ctheta_1, ctheta_2);
+    TComplex* HelAmp = conjHelAmp ? new TComplex[3] { ConjTA[2]/sqrt(2), ConjTA[0], ConjTA[2]/sqrt(2)}
+                                  : new TComplex[3] { TraAmp[2]/sqrt(2), TraAmp[0], TraAmp[2]/sqrt(2)};
+    for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
+    {
+      angularPart += HelAmp[lambda+_lambda_max] * F(lambda, phi, ctheta_1, ctheta_2);
+    }
   }
   else // assume full amplitude, don't thow an error
   {
     for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
     {
-      angularPart += F(conjHelAmp, lambda, phi, ctheta_1, ctheta_2);
+      TComplex HelAmp = conjHelAmp ? TComplex::Conjugate(A(lambda)) : A(lambda);
+      angularPart += HelAmp * F(lambda, phi, ctheta_1, ctheta_2);
     }
   }
   // Result
+//  return angularPart;
+  return angularPart * OFBF(mKK);
+  return massPart * angularPart;
   return massPart * angularPart * OFBF(mKK);
 }
 // Set helicity amplitude parameters
