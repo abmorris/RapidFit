@@ -175,13 +175,12 @@ void Bs2PhiPhi_v4::MakePrototypes()
     	parameterNames.push_back( deltaGammaName );
     	parameterNames.push_back( Aperp_sqName );
     	parameterNames.push_back( Azero_sqName );
-    	if( useSWAVE() ) {
 		parameterNames.push_back( Ass_sqName );
 		parameterNames.push_back( As_sqName );
 		parameterNames.push_back( deltaSSName );
 		parameterNames.push_back( deltaSName );
     		parameterNames.push_back( CspName );
-	}
+	
     	parameterNames.push_back( delta_1Name );
     	parameterNames.push_back( delta_2Name );
     	parameterNames.push_back( deltaMName );
