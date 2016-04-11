@@ -233,8 +233,8 @@ TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, d
   }
   // Result
 //  return angularPart;
-  return angularPart * OFBF(mKK);
-  return massPart * angularPart;
+//  return angularPart * OFBF(mKK);
+//  return massPart * angularPart;
   return massPart * angularPart * OFBF(mKK);
 }
 // Set helicity amplitude parameters
