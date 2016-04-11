@@ -49,6 +49,8 @@ class Bs2PhiKKTotal : public BasePDF
       double mKKmin, mKKmax;
       // Acceptance object
       LegendreMomentShape* acc;
+      // Options
+      bool useTimeIntPwavePDF;
     private:
       // The m(KK) components
       Bs2PhiKKComponent* Swave;
@@ -65,6 +67,7 @@ class Bs2PhiKKTotal : public BasePDF
       double Acceptance(double, double, double, double);
       double PhaseSpace(double);
       void SetComponentAmplitudes();
+      // Options
       string compName;
       bool debug = false;
 };
