@@ -36,6 +36,8 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   // Options
   , init(true)
   , compName("0")
+  , useTimeIntPwavePDF(config->isTrue("UseTimeIntegratedPwavePDF"))
+  , useTimeIntDwavePDF(config->isTrue("UseTimeIntegratedDwavePDF"))
 {
   // Set physics parameters to zero for now
   ANonRes   = 0;
@@ -67,24 +69,6 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   deltaDName[2] = config->getName("deltaDplus" );
   MakePrototypes(); // Should only ever go in the constructor. Never put this in the copy constructor!!
   acc = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
-  string TIPWopt = config->getConfigurationValue("UseTimeIntegratedPwavePDF");
-  if( TIPWopt == "True" || TIPWopt == "true" )
-  {
-    useTimeIntPwavePDF = true;
-  }
-  else
-  {
-    useTimeIntPwavePDF = false;
-  }
-  string TIDWopt = config->getConfigurationValue("UseTimeIntegratedDwavePDF");
-  if( TIDWopt == "True" || TIDWopt == "true" )
-  {
-    useTimeIntDwavePDF = true;
-  }
-  else
-  {
-    useTimeIntDwavePDF = false;
-  }
   if(useTimeIntPwavePDF && useTimeIntDwavePDF)
   {
     cout << "WARNING: Cannot currently plot P-wave and D-wave. Will only plot P-wave PDF." << endl;
