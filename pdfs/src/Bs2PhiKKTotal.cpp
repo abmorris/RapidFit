@@ -38,6 +38,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   , compName("0")
   , useTimeIntPwavePDF(config->isTrue("UseTimeIntegratedPwavePDF"))
   , useTimeIntDwavePDF(config->isTrue("UseTimeIntegratedDwavePDF"))
+  , useAcceptance(config->isTrue("UseAcceptance"))
 {
   // Set physics parameters to zero for now
   ANonRes   = 0;
@@ -68,10 +69,40 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   deltaDName[1] = config->getName("deltaDzero" );
   deltaDName[2] = config->getName("deltaDplus" );
   MakePrototypes(); // Should only ever go in the constructor. Never put this in the copy constructor!!
-  acc = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
+  if(useAcceptance) acc = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
   if(useTimeIntPwavePDF && useTimeIntDwavePDF)
   {
     cout << "WARNING: Cannot currently plot P-wave and D-wave. Will only plot P-wave PDF." << endl;
+  }
+  bool drawAll = config->isTrue("DrawAll");
+  if(config->isTrue("DrawComponents"))
+  {
+    if(drawAll || config->isTrue("DrawSwave"))
+    {
+      componentlist.push_back("Swave");
+    }
+    if(drawAll || config->isTrue("DrawPwave"))
+    {
+      componentlist.push_back("Pwave-even");
+      componentlist.push_back("Pwave-odd");
+    }
+    if(drawAll || config->isTrue("DrawDwave")) 
+    {
+      componentlist.push_back("Dwave-even");
+      componentlist.push_back("Dwave-odd");
+    }
+    if(drawAll || config->isTrue("DrawNonRes"))
+    {
+      componentlist.push_back("nonresonant");
+    }
+    if(drawAll || config->isTrue("DrawInterference"))
+    {
+      componentlist.push_back("interference");
+    }
+    if(drawAll || config->isTrue("DrawAcceptance"))
+    {
+      componentlist.push_back("acceptance");
+    }
   }
   Initialise();
 }
@@ -96,6 +127,8 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
   , useTimeIntPwavePDF(copy.useTimeIntPwavePDF)
   , useTimeIntDwavePDF(copy.useTimeIntDwavePDF)
   , compName("0")
+  , componentlist(copy.componentlist)
+  , useAcceptance(copy.useAcceptance)
 {
   ANonRes     = copy.ANonRes    ;
   ASsq        = copy.ASsq       ;
@@ -114,7 +147,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
     deltaPName[i] = copy.deltaPName[i];
     deltaDName[i] = copy.deltaDName[i];
   }
-  acc = new LegendreMomentShape(*copy.acc);
+  if(useAcceptance) acc = new LegendreMomentShape(*copy.acc);
   Initialise();
 }
 /*****************************************************************************/
@@ -125,7 +158,7 @@ Bs2PhiKKTotal::~Bs2PhiKKTotal()
   delete Pwave;
   delete Dwave;
   delete NonRes;
-  delete acc;
+  if(useAcceptance) delete acc;
 }
 /*****************************************************************************/
 // Code common to the constructors
@@ -143,14 +176,6 @@ void Bs2PhiKKTotal::Initialise()
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( true );
   this->TurnCachingOff();
-  componentlist.push_back("Swave");
-  componentlist.push_back("Pwave-even");
-  componentlist.push_back("Pwave-odd");
-  componentlist.push_back("Dwave-even");
-  componentlist.push_back("Dwave-odd");
-  componentlist.push_back("nonresonant");
-  componentlist.push_back("interference");
-//  componentlist.push_back("acceptance"); // Don't expect to use this very much 
   SetComponentAmplitudes();
 }
 /*****************************************************************************/
@@ -369,7 +394,7 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
             -  Dwave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
             - NonRes->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2();
     }
-    else if(compName=="acceptance")
+    else if(compName=="acceptance" && useAcceptance)
       Gamma = 2*Pwave->Amplitude(false, 1030, 0, 0, 0).Rho2()*PhaseSpace(1015)/PhaseSpace(mKK); // Just a visual check
     else
     {
@@ -377,8 +402,7 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
     }
   }
   Gamma/=2.0;
-//  return Gamma * PhaseSpace(mKK);
-  return Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * PhaseSpace(mKK);
+  return useAcceptance ? Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * PhaseSpace(mKK) : Gamma * PhaseSpace(mKK);
 }
 /*****************************************************************************/
 TComplex Bs2PhiKKTotal::TotalAmplitude(bool conjHelAmp)
@@ -393,6 +417,7 @@ TComplex Bs2PhiKKTotal::TotalAmplitude(bool conjHelAmp)
 // Get the angular acceptance
 double Bs2PhiKKTotal::Acceptance(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
+ if(!useAcceptance) return 1; // safety
  return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
 }
 /*****************************************************************************/

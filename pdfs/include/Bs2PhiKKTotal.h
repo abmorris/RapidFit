@@ -52,13 +52,14 @@ class Bs2PhiKKTotal : public BasePDF
       // Options
       bool useTimeIntPwavePDF;
       bool useTimeIntDwavePDF;
+      vector<string> componentlist;
+      bool useAcceptance;
     private:
       // The m(KK) components
       Bs2PhiKKComponent* Swave;
       Bs2PhiKKComponent* Pwave;
       Bs2PhiKKComponent* Dwave;
       Bs2PhiKKComponent* NonRes;
-      vector<string> componentlist;
       // Stuff to do on creation
       void Initialise();
       bool init;
