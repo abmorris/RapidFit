@@ -92,7 +92,7 @@ OBJS    := $(patsubst $(SRCDIR)/%.$(SRCEXT),$(OBJDIR)/%.o,$(SRCS))
 PDFOBJS := $(patsubst $(SRCPDFDIR)/%.$(SRCEXT),$(OBJPDFDIR)/%.o,$(PDFSRCS))
 DALITZOBJS := $(patsubst $(SRCDALITZDIR)/%.$(SRCDALITZEXT),$(OBJDALITZDIR)/%.o,$(DALITZSRCS))
 
-UTIL_HEADERS = $(shell find $(PWD)/$(INCUITLDIR) -name '*.$(HDREXT)' )
+UTIL_HEADERS = $(shell find $(INCUITLDIR) -name '*.$(HDREXT)' )
 
 #	BUILD OUTPUT
 OUTPUT  = $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(EXEDIR)/fitting $(LIBDIR)/*.so $(OBJDIR)/rapidfit_dict.* $(EXEDIR)/RapidPlot $(EXEDIR)/print
@@ -275,8 +275,8 @@ lib:    $(LIBDIR)/libRapidRun.so $(LIBDIR)/libUtils.so
 #	We want to place the output dictionary in the Build directory as this is CODE that is NOT to be editted by the $USER!
 $(OBJDIR)/rapidfit_dict.cpp: framework/include/RapidRun.h framework/include/LinkDef.h
 	@echo "Building RapidFit Root Dictionary:"
-	@echo "rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I\"$(PWD)/framework/include\" $^"
-	@rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I"$(PWD)/framework/include" $^
+	@echo "rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I\"framework/include\" $^"
+	@rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I"framework/include" $^
 
 #	Compile the class that root has generated for us which is the linker interface to root	(i.e. dictionaries & such)
 $(OBJDIR)/rapidfit_dict.o: $(OBJDIR)/rapidfit_dict.cpp
