@@ -54,6 +54,7 @@ class Bs2PhiKKTotal : public BasePDF
       bool useTimeIntDwavePDF;
       vector<string> componentlist;
       bool useAcceptance;
+      bool massIndependent;
     private:
       // The m(KK) components
       Bs2PhiKKComponent* Swave;

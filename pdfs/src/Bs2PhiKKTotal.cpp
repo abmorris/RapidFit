@@ -39,6 +39,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   , useTimeIntPwavePDF(config->isTrue("UseTimeIntegratedPwavePDF"))
   , useTimeIntDwavePDF(config->isTrue("UseTimeIntegratedDwavePDF"))
   , useAcceptance(config->isTrue("UseAcceptance"))
+  , massIndependent(config->isTrue("MassIndependent"))
 {
   // Set physics parameters to zero for now
   ANonRes   = 0;
@@ -129,6 +130,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
   , compName("0")
   , componentlist(copy.componentlist)
   , useAcceptance(copy.useAcceptance)
+  , massIndependent(copy.massIndependent)
 {
   ANonRes     = copy.ANonRes    ;
   ASsq        = copy.ASsq       ;
@@ -169,9 +171,9 @@ void Bs2PhiKKTotal::Initialise()
   double RKK = 1.7; // TODO: Get these from the config
   double mphi = Bs2PhiKKComponent::mphi;
   // Initialise the signal components
-  Swave  = new Bs2PhiKKComponent(0, 980,100    ,"FT",RBs,RKK);
-  Pwave  = new Bs2PhiKKComponent(1,mphi,  4.266,"BW",RBs,RKK);
-  Dwave  = new Bs2PhiKKComponent(2,1525, 73    ,"BW",RBs,RKK);
+  Swave  = new Bs2PhiKKComponent(0, 980,100    ,massIndependent?"NR":"FT",RBs,RKK);
+  Pwave  = new Bs2PhiKKComponent(1,mphi,  4.266,massIndependent?"NR":"BW",RBs,RKK);
+  Dwave  = new Bs2PhiKKComponent(2,1525, 73    ,massIndependent?"NR":"BW",RBs,RKK);
   NonRes = new Bs2PhiKKComponent(0,0   ,  0    ,"NR",RBs,RKK);
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( true );
@@ -324,15 +326,18 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
       F[4] = 2*sqrt(6)*s2theta_1*s2theta_2*(3*ctheta_2_sq-1)*cos(phi); // 2√6sin(2θ1)sin(2θ2)(3*ctheta_2_sq-1)cos(Φ)
       // K[5] is zero so don't calculate F[5]
     }
-    if(compName == "Pwave-odd" || compName == "Dwave-odd")
+    if((compName == "Pwave-odd" && useTimeIntPwavePDF)
+    || (compName == "Dwave-odd" && useTimeIntDwavePDF))
     {
       Gamma += K[2]*F[2];
     }
-    else if (compName == "Pwave-even" || compName == "Dwave-even")
+    else if((compName == "Pwave-even" && useTimeIntPwavePDF)
+         || (compName == "Dwave-even" && useTimeIntDwavePDF))
     {
       Gamma += K[0]*F[0] + K[1]*F[1] + K[4]*F[4];
     }
-    else
+    else // Unfortunately this will draw the S-wave, interference and acceptance as well as the total PDF
+    // I am assuming that the time-integrated PDFs will only be used as a cross-check with one resonant component only
     {
       for(int i = 0; i < 6; i++)
       {
@@ -402,7 +407,7 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
     }
   }
   Gamma/=2.0;
-  return useAcceptance ? Gamma * Acceptance(mKK, phi, ctheta_1, ctheta_2) * PhaseSpace(mKK) : Gamma * PhaseSpace(mKK);
+  return useAcceptance ? Gamma * PhaseSpace(mKK) * Acceptance(mKK, phi, ctheta_1, ctheta_2) : Gamma * PhaseSpace(mKK);
 }
 /*****************************************************************************/
 TComplex Bs2PhiKKTotal::TotalAmplitude(bool conjHelAmp)
