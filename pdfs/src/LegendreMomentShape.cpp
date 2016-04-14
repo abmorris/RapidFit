@@ -92,58 +92,6 @@ double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, do
   }
   return result;
 }
-/*
-// This doesn't work
-double LegendreMomentShape::Integral(double mKKhi, double mKKlo)
-{
-  return Integral(mKKhi, mKKlo, M_PI, -M_PI, 1, -1, 1, -1);
-}
-double LegendreMomentShape::Integral(double mKKhi, double mKKlo, double phihi, double philo, double ctheta_1hi, double ctheta_1lo, double ctheta_2hi, double ctheta_2lo)
-{
-  if(init) return 1;
-  double result = 0;
-  double mKK_mappedhi = (mKKhi - mKK_min) / (mKK_max - mKK_min)*2 - 1;;
-  double mKK_mappedlo = (mKKlo - mKK_min) / (mKK_max - mKK_min)*2 - 1;;
-  if(abs(mKK_mappedhi)>1 || abs(mKK_mappedlo)>1) return 0;
-  double Q_lhi = 0;
-  double Q_llo = 0;
-  double P_ihi = 0;
-  double P_ilo = 0;
-  double Y_jkhi = 0;
-  double Y_jklo = 0;
-  for(auto coeff : coeffs)
-  {
-    Q_lhi  = coeff.l>0 ? (gsl_sf_legendre_Pl(coeff.l+1, mKK_mappedhi) - gsl_sf_legendre_Pl(coeff.l-1, mKK_mappedhi)) / (2*coeff.l+1) : mKK_mappedhi;
-    Q_llo  = coeff.l>0 ? (gsl_sf_legendre_Pl(coeff.l+1, mKK_mappedlo) - gsl_sf_legendre_Pl(coeff.l-1, mKK_mappedlo)) / (2*coeff.l+1) : mKK_mappedlo;
-    P_ihi  = coeff.i>0 ? (gsl_sf_legendre_Pl(coeff.i+1,   ctheta_2hi) - gsl_sf_legendre_Pl(coeff.i-1,   ctheta_2hi)) / (2*coeff.i+1) : ctheta_2hi;
-    P_ilo  = coeff.i>0 ? (gsl_sf_legendre_Pl(coeff.i+1,   ctheta_2lo) - gsl_sf_legendre_Pl(coeff.i-1,   ctheta_2lo)) / (2*coeff.i+1) : ctheta_2lo;
-    if ( coeff.k == 0 )
-    {
-      Y_jkhi = int_legendre_sphPlm(coeff.j, coeff.k, ctheta_1hi);
-      Y_jklo = int_legendre_sphPlm(coeff.j, coeff.k, ctheta_1lo);
-    }
-    else 
-    {
-      Y_jkhi = sqrt(2) * int_legendre_sphPlm (coeff.j, coeff.k, ctheta_1hi) * sin(coeff.k*phihi)/(double)coeff.k;
-      Y_jklo = sqrt(2) * int_legendre_sphPlm (coeff.j, coeff.k, ctheta_1lo) * sin(coeff.k*philo)/(double)coeff.k;
-    }
-    result += coeff.val*((Q_lhi - Q_llo) * (P_ihi - P_ilo) * (Y_jkhi - Y_jklo));
-  }
-  return result;
-}
-double LegendreMomentShape::int_legendre_sphPlm(int n, int mu, double z)
-{
-  double sum = 0;
-  double numerator = 0;
-  for(int k = 0; k <= n; k++)
-  {
-    numerator = ((gsl_sf_poch(-n,k)*gsl_sf_poch(n+1,k)))*gsl_sf_beta_inc((2+mu)/2,1+k-mu/2,(1+z)/2);
-    if(numerator == 0) continue;
-    else sum+=numerator/(gsl_sf_gamma(1-mu+k)*factorial(k)); // Gamma((int)z<1) keeps happening. Why? This is clearly the wrong function.
-  }
-  return 2*sum;
-}
-*/
 void LegendreMomentShape::createcoefficients()
 {
   char branchtitle[10];
@@ -189,6 +137,7 @@ void LegendreMomentShape::storecoefficients()
           coeff.j = j;
           coeff.val = c[l][i][k][j];
           coeffs.push_back(coeff);
+          printf("c[%d][%d][%d][%d] = %f\n",l,i,k,j,c[l][i][k][j]);
         }
       }
     }
