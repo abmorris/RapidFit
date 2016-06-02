@@ -40,6 +40,7 @@ LegendreMomentShape::LegendreMomentShape(string _filename) : filename(_filename)
   createcoefficients();
   tree->GetEntry(0);
   storecoefficients();
+  printcoefficients();
   for ( int l = 0; l < l_max; l++ )
   {
     for ( int i = 0; i < i_max; i++ )
@@ -65,6 +66,7 @@ LegendreMomentShape::LegendreMomentShape(const LegendreMomentShape& copy) :
   , init(copy.init)
   , copied(true)
 {
+  printcoefficients();
 }
 LegendreMomentShape::~LegendreMomentShape()
 {
@@ -84,10 +86,11 @@ double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, do
   double Y_jk = 0;
   for(auto coeff : coeffs)
   {
-    Q_l  = gsl_sf_legendre_Pl   (coeff.l,  mKK_mapped);
-    P_i  = gsl_sf_legendre_Pl   (coeff.i,  ctheta_2);
-    if ( coeff.k == 0 ) Y_jk =           gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1);
-    else                Y_jk = sqrt(2) * gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1) * cos(coeff.k*phi);
+    Q_l  = gsl_sf_legendre_Pl     (coeff.l, mKK_mapped       );
+    P_i  = gsl_sf_legendre_Pl     (coeff.i, ctheta_2         );
+    Y_jk = gsl_sf_legendre_sphPlm (coeff.j, coeff.k, ctheta_1);
+    if(coeff.k != 0)
+      Y_jk *= sqrt(2) * cos(coeff.k * phi);
     result += coeff.val*(Q_l * P_i * Y_jk);
   }
   return result;
@@ -137,10 +140,16 @@ void LegendreMomentShape::storecoefficients()
           coeff.j = j;
           coeff.val = c[l][i][k][j];
           coeffs.push_back(coeff);
-          printf("c[%d][%d][%d][%d] = %f\n",l,i,k,j,c[l][i][k][j]);
         }
       }
     }
   }
   cout << coeffs.size() << " coefficients stored" << endl;
+}
+void LegendreMomentShape::printcoefficients()
+{
+  for(auto coeff : coeffs)
+  {
+    coeff.print();
+  }
 }

@@ -22,6 +22,10 @@ class LegendreMomentShape
     {
       int l,i,j,k;
       double val;
+      void print()
+      {
+        printf("c[%d][%d][%d][%d] = %f\n", l, i, k, j, val);
+      }
     };
     vector<coefficient> coeffs;
     bool init;
@@ -30,6 +34,7 @@ class LegendreMomentShape
     double**** c;
     void createcoefficients();
     void storecoefficients();
+    void printcoefficients();
     int l_max;
     int i_max;
     int k_max;
