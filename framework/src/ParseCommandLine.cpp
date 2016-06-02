@@ -118,8 +118,11 @@ void ParseCommandLine::RapidFitHelp()
 
 	cout << endl;
 	cout << "--calculateAcceptanceCoefficients" << endl;
+	cout << "       Calculate the Mass and Angular Acceptance Coefficients for Helicity Basis" << endl;
+	cout << endl;
+	cout << "--calculateAngularAcceptanceCoeff" << endl;
 	cout << "       Calculate the Angular Acceptance Coefficients for Helicity Basis" << endl;
-	
+
 	cout << endl;
 	cout << "--calculateBackgroundCoefficients" << endl;
 	cout << "       Calculate the Sideband Background Coefficients for Helicity Basis" << endl;

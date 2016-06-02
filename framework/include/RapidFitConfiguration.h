@@ -80,6 +80,7 @@ class RapidFitConfiguration
 		bool calculateFitFractionsFlag;
 		bool calculateAcceptanceWeights;
 		bool calculateAcceptanceCoefficients;
+		bool calculateAngularAcceptanceCoeff;
 		bool calculateBackgroundCoefficients;
 		bool calculateAcceptanceWeightsWithSwave;
 		bool calculatePerEventAcceptance;

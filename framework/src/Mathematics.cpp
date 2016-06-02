@@ -1012,7 +1012,7 @@ namespace Mathematics
   };
 
 
-  int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool mass_dependent = true)
+  int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool mass_dependent = true, bool weight_with_PDF = true)
   {
     // This tries to implement the NIKHEF method for calculating the
     // acceptance corefficients using Legendre polynomials and real
@@ -1022,32 +1022,22 @@ namespace Mathematics
     rapidInt->SetFixedIntegralPoints(10000);
     ComponentRef * thisRef = new ComponentRef( "0", "dummyObservable" );
     PhaseSpaceBoundary * boundary = dataSet->GetBoundary();
-
-    const int l_max = mass_dependent ? 3 : 0;
-    const int i_max(3);
-    const int k_max(2);
-    const int j_max(2);
-    //const int l_max(6); //mKK
-    //const int i_max(4); //cosPsi
-    //const int k_max(2); //phi
-    //const int j_max(2); //cosTheta
+    
+    const int l_max = mass_dependent ? 2 : 0; // mKK
+    const int i_max(2); // cos(theta_1)
+    const int k_max(2); // phi
+    const int j_max(2); // cos(theta_2)
+    
     double c[l_max+1][i_max+1][k_max+1][j_max+1];
     double c_sq[l_max+1][i_max+1][k_max+1][j_max+1];
     for ( int l = 0; l < l_max + 1; l++ )
-    {
       for ( int i = 0; i < i_max + 1; i++ )
-      {
         for ( int k = 0; k < k_max + 1; k++ )
-        {
           for ( int j = 0; j < j_max + 1; j++ )
           {
             c[l][i][k][j] = 0.;
             c_sq[l][i][k][j] = 0.;
           }
-        }
-      }
-    }
-
     double Q_l(0.);
     double P_i(0.);
     double Y_jk(0.);
@@ -1074,44 +1064,29 @@ namespace Mathematics
     phiAcc->Sumw2();
     cosPsiAcc->Sumw2();
     mKKAcc->Sumw2();
-    cosThetaAcc->SetMarkerColor(kBlack);
-    phiAcc->SetMarkerColor(kBlack);
-    cosPsiAcc->SetMarkerColor(kBlack);
-    mKKAcc->SetMarkerColor(kBlack);
-    cosThetaAcc->SetMarkerStyle(20);
-    phiAcc->SetMarkerStyle(20);
-    cosPsiAcc->SetMarkerStyle(20);
-    mKKAcc->SetMarkerStyle(20);
-    cosThetaAcc->SetMarkerSize(0.5);
-    phiAcc->SetMarkerSize(0.5);
-    cosPsiAcc->SetMarkerSize(0.5);
-    mKKAcc->SetMarkerSize(0.5);
-    cosThetaAcc->SetLineColor(kBlack);
-    phiAcc->SetLineColor(kBlack);
-    cosPsiAcc->SetLineColor(kBlack);
-    mKKAcc->SetLineColor(kBlack);
     TH1D * cosThetaAccProj = new TH1D("cosThetaAccProj", "ctheta_1", 20, minima[0], maxima[0]);
     TH1D * phiAccProj      = new TH1D("phiAccProj", "phi", 20, minima[1], maxima[1]);
     TH1D * cosPsiAccProj   = new TH1D("cosPsiAccProj", "ctheta_2", 20, minima[2], maxima[2]);
     TH1D * mKKAccProj      = new TH1D("mKKAccProj", "mKKAcc", 35, minima[3], maxima[3]);
-    cosThetaAccProj->SetLineWidth(2);
-    phiAccProj->SetLineWidth(2);
-    cosPsiAccProj->SetLineWidth(2);
-    mKKAccProj->SetLineWidth(2);
 
     double mKK(0.);
     double mKK_mapped(0.);
     double cosTheta(0.);
     double phi(0.);
     double cosPsi(0.);
-    double val(0.);
+    double val(1.);
     double coeff(0.);
     vector<string> dontIntegrate = PDF->GetDoNotIntegrateList();
-//    evalPDFnorm = rapidInt->NumericallyIntegratePhaseSpace( boundary, dontIntegrate, thisRef );
-    //evalPDFnorm = 1.;
+    double evalPDFnorm (1.);
+    if(weight_with_PDF)
+    {
+      evalPDFnorm = rapidInt->NumericallyIntegratePhaseSpace( boundary, dontIntegrate, thisRef );
+      cout << "PDF numerically integrates to " << evalPDFnorm << endl;
+    }
     for (int e = 0; e < numEvents; e++)
     {
-      if (e % 1000 == 0) cout << "Event # " << e << "\t\t" << setprecision(4) << 100.*(double)e/(double)numEvents << "\% Complete\b\b\b\b\b\b\b\r\r\r\r\r\r\r\r\r\r\r";
+      if (e % 1000 == 0)
+        cout << "Event # " << e << "\t\t" << setprecision(4) << 100.*(double)e/(double)numEvents << "\% Complete\b\b\b\b\b\b\b\r\r\r\r\r\r\r\r\r\r\r";
       DataPoint * event = dataSet->GetDataPoint(e);
 
       // for the Bd2JpsiK* mass-angular analysis in helicity basis
@@ -1123,21 +1098,22 @@ namespace Mathematics
         mKK      = event->GetObservable("mKK")->GetValue();
         mKK_mapped = (mKK - minima[3])/(maxima[3]-minima[3])*2.+ (-1);
       }
-      
       const double mK  = 493.677;
       const double mBs  = 5366.77;
       const double mPhi= 1019.461;
-      if(mass_dependent)
+      if(weight_with_PDF)
       {
         double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
         double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
         val = p1_st*p3/1e6; // GeV
       }
       else
-      {
         val = 1.0;
-      }
-      if (val < 1e-08) cout << cosTheta << " " << phi <<  " " << cosPsi << " " << mKK << " " << val << " " << endl;
+//      if(weight_with_PDF)
+//      {
+//        val = PDF->Evaluate( event ) / evalPDFnorm;
+//      }
+      if (val < 1e-9) continue;
       cosThetaAcc->Fill(cosTheta,1/val);
       phiAcc->Fill(phi,1/val);
       cosPsiAcc->Fill(cosPsi,1/val);
@@ -1145,28 +1121,20 @@ namespace Mathematics
 //      val = 1;
 #ifdef __RAPIDFIT_USE_GSL
       for ( int l = 0; l < l_max + 1; l++ )
-      {
         for ( int i = 0; i < i_max + 1; i++ )
-        {
           for ( int k = 0; k < k_max + 1; k++ )
-          {
             for ( int j = 0; j < j_max + 1; j++ ) // must have j >= k
             {
               if (j < k) continue;
               Q_l  = gsl_sf_legendre_Pl     (l,    mKK_mapped);
               P_i  = gsl_sf_legendre_Pl     (i,    cosPsi);
-              // only consider case where k >= 0
-              // these are the read valued spherical harmonics
-              if ( k == 0 ) Y_jk =           gsl_sf_legendre_sphPlm (j, k, cosTheta);
-              else          Y_jk = sqrt(2) * gsl_sf_legendre_sphPlm (j, k, cosTheta) * cos(k*phi);
-              //cout << i << j << k << " " << P_i << " " << Y_jk <<  "  " << c[i][j][k] <<  " " << (2*i + 1)/2.*(P_i * Y_jk)/val << endl;
-              coeff = (2*l + 1)/2.*(2*i + 1)/2.*(P_i * Y_jk * Q_l)/val;
+              Y_jk = gsl_sf_legendre_sphPlm (j, k, cosTheta);
+              if( k != 0)
+                Y_jk *= sqrt(2) * cos(k*phi);
+              coeff = ((2*l + 1)/2.)*((2*i + 1)/2.)*(P_i * Y_jk * Q_l)/val;
               c[l][i][k][j] += coeff;
               c_sq[l][i][k][j] += coeff*coeff;
             }
-          }
-        }
-      }
 #endif
     }
     cout << endl;
@@ -1180,6 +1148,8 @@ namespace Mathematics
     double error(0.);
     double signif(0.);
     char branchname[5];
+    double threshold = 5;
+    if(threshold<1) threshold=1;
     for ( int l = 0; l < l_max + 1; l++ )
     {
       for ( int i = 0; i < i_max + 1; i++ )
@@ -1192,13 +1162,14 @@ namespace Mathematics
             error = sqrt(1./numEvents/numEvents * ( c_sq[l][i][k][j] - c[l][i][k][j]*c[l][i][k][j]/numEvents) );
             if (std::isnan(error)) error = 0.;
             signif = error != 0 ? fabs(c[l][i][k][j]/numEvents)/error : 1000;
-            if ( signif <= 5 && signif > 2)
+            if ( signif <= threshold && signif > 1)
             {
               printf("// rejected: c[%d][%d][%d][%d] = %f ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
             }
-            if ( signif > 5 )
+            if ( signif > threshold )
             {
               printf("c[%d][%d][%d][%d] = %f;// ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
+              c[l][i][k][j]/=numEvents;
             }
             else
             {
@@ -1274,19 +1245,19 @@ namespace Mathematics
     canvas->Divide( 2, 2, (Float_t)0.01, (Float_t)0.01, 0 );
     canvas->cd(1);
     mKKAcc->Draw();
-    mKKAcc->SetMinimum(0);
+//    mKKAcc->SetMinimum(0);
     mKKAccProj->Draw("same");
     canvas->cd(2);
     phiAcc->Draw();
-    phiAcc->SetMinimum(0);
+//    phiAcc->SetMinimum(0);
     phiAccProj->Draw("same");
     canvas->cd(3);
     cosThetaAcc->Draw();
-    cosThetaAcc->SetMinimum(0);
+//    cosThetaAcc->SetMinimum(0);
     cosThetaAccProj->Draw("same");
     canvas->cd(4);
     cosPsiAcc->Draw();
-    cosPsiAcc->SetMinimum(0);
+//    cosPsiAcc->SetMinimum(0);
     cosPsiAccProj->Draw("same");
     canvas->SaveAs((filename+".root").c_str());
     canvas->SaveAs((filename+".pdf").c_str());

@@ -197,6 +197,7 @@ int RapidFit( vector<string> input )
 	//	3)
 	else if( thisConfig->calculateAcceptanceWeights && thisConfig->configFileNameFlag ) calculateAcceptanceWeights( thisConfig );
 	else if( thisConfig->calculateAcceptanceCoefficients && thisConfig->configFileNameFlag ) calculateAcceptanceCoefficients( thisConfig );
+	else if( thisConfig->calculateAngularAcceptanceCoeff && thisConfig->configFileNameFlag ) calculateAngularAcceptanceCoeff( thisConfig );
 	else if( thisConfig->calculateBackgroundCoefficients && thisConfig->configFileNameFlag ) calculateBackgroundCoefficients( thisConfig );
 
 	//	4)
@@ -1101,7 +1102,17 @@ int calculateAcceptanceCoefficients( RapidFitConfiguration* config )
 	int nMCEvents = dataSet->GetDataNumber();
 	IPDF * pdf = pdfAndData->GetPDF();
 
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, true);
+	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, true, true);
+}
+int calculateAngularAcceptanceCoeff( RapidFitConfiguration* config )
+{
+	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
+	pdfAndData->SetPhysicsParameters( config->xmlFile->GetFitParameters() );
+	IDataSet * dataSet = pdfAndData->GetDataSet();
+	int nMCEvents = dataSet->GetDataNumber();
+	IPDF * pdf = pdfAndData->GetPDF();
+
+	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, false, true);
 }
 int calculateBackgroundCoefficients( RapidFitConfiguration* config )
 {
@@ -1111,7 +1122,7 @@ int calculateBackgroundCoefficients( RapidFitConfiguration* config )
 	int nMCEvents = dataSet->GetDataNumber();
 	IPDF * pdf = pdfAndData->GetPDF();
 
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, false);
+	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, false, false);
 }
 
 int calculateAcceptanceWeights( RapidFitConfiguration* config )
