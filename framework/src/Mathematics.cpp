@@ -1223,7 +1223,7 @@ namespace Mathematics
     tree->Draw("phi>>phiAccProj","weight");
     tree->Draw("ctheta_2>>cosPsiAccProj","weight");
     tree->Draw("mKK>>mKKAccProj","weight");
-    string filename = mass_dependent ? "acceptance" : "background";
+    string filename = weight_with_PDF ? "acceptance" : "background";
     TFile * acceptance_file = TFile::Open(("sampled_"+filename+".root").c_str(),"RECREATE");
     tree->Write();
     acceptance_file->Close();
@@ -1238,7 +1238,7 @@ namespace Mathematics
     cosThetaAccProj->Scale(cosThetaAcc->Integral()/cosThetaAccProj->Integral());
     phiAccProj     ->Scale(phiAcc->Integral()/phiAccProj->Integral());
     cosPsiAccProj  ->Scale(cosPsiAcc->Integral()/cosPsiAccProj->Integral());
-    mKKAccProj    ->Scale(mKKAcc->Integral()/mKKAccProj->Integral());
+    mKKAccProj     ->Scale(mKKAcc->Integral()/mKKAccProj->Integral());
     // Make some plots
     gStyle->SetOptStat(0);
     TCanvas * canvas = new TCanvas("acc_can");
