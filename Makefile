@@ -123,6 +123,13 @@ else
 	LINKFLAGS+= -pie -m64 -Wl,-rpath,$(LD_LIBRARY_PATH)
 endif
 
+CHECKGCCABI := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 4)
+ifeq ("CHECKGCCABI","1")
+	CXXFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
+	CXXFLAGSUTIL+= -D_GLIBCXX_USE_CXX11_ABI=0
+	LINKFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
+endif
+
 
 
 
