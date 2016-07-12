@@ -111,6 +111,13 @@ CXXFLAGS_LIB = $(CXXFLAGS_BASE) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$
 
 LIBLINKFLAGS = -pie -m64
 
+CHECKGCCABI := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
+ifeq ("$(CHECKGCCABI)","1")
+	CXXFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
+	CXXFLAGSUTIL+= -D_GLIBCXX_USE_CXX11_ABI=0
+	LINKFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
+endif
+
 # OS X
 DARWIN=Darwin
 ifeq ($(UNAME),$(Darwin))
