@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <vector>
 #include "TBranch.h"
-#include "itoa.h"
 using namespace std;
 LegendreMomentShape::LegendreMomentShape(string _filename) : filename(_filename), init(true), copied(false)
 {
