@@ -1111,14 +1111,12 @@ namespace Mathematics
         val = 1.0;
 //      if(weight_with_PDF)
 //      {
-//        val = PDF->Evaluate( event ) / evalPDFnorm;
+//        val = PDF->Evaluate( event );
 //      }
-      if (val < 1e-9) continue;
       cosThetaAcc->Fill(cosTheta,1/val);
       phiAcc->Fill(phi,1/val);
       cosPsiAcc->Fill(cosPsi,1/val);
       mKKAcc->Fill(mKK,1/val);
-//      val = 1;
 #ifdef __RAPIDFIT_USE_GSL
       for ( int l = 0; l < l_max + 1; l++ )
         for ( int i = 0; i < i_max + 1; i++ )
