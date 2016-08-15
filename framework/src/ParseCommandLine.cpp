@@ -661,6 +661,7 @@ int ParseCommandLine::ParseThisCommandLine( RapidFitConfiguration& config, vecto
 		else if( currentArgument == "--calculateFitFractions" )			{	config.calculateFitFractionsFlag = true;		}
 		else if( currentArgument == "--calculateAcceptanceWeights" )		{	config.calculateAcceptanceWeights = true;		}
 		else if( currentArgument == "--calculateAcceptanceCoefficients" )       {	config.calculateAcceptanceCoefficients = true;		}
+		else if( currentArgument == "--calculateAngularAcceptanceCoeff" )       {	config.calculateAngularAcceptanceCoeff = true;		}
 		else if( currentArgument == "--calculateBackgroundCoefficients" )       {	config.calculateBackgroundCoefficients = true;		}
 		else if( currentArgument == "--calculateAcceptanceWeightsWithSwave" )	{	config.calculateAcceptanceWeightsWithSwave = true;	}
 		else if( currentArgument == "--calculatePerEventAcceptance" )		{	config.calculatePerEventAcceptance = true;		}

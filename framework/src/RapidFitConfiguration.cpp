@@ -147,6 +147,7 @@ numberRepeats(),
 		calculateFitFractionsFlag = false;
 		calculateAcceptanceWeights = false;
 		calculateAcceptanceCoefficients = false;
+		calculateAngularAcceptanceCoeff = false;
 		calculateBackgroundCoefficients = false;
 		calculateAcceptanceWeightsWithSwave = false;
 		calculatePerEventAcceptance = false;
