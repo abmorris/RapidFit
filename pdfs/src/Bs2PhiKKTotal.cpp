@@ -12,6 +12,9 @@
 #include <stdexcept>
 // ROOT Libraries
 #include "TComplex.h"
+#include "TKey.h"
+#include "TFile.h"
+#include "TTree.h"
 // RapidFit
 #include "PDFConfigurator.h"
 #include "DPHelpers.hh"
@@ -70,7 +73,40 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   deltaDName[1] = config->getName("deltaDzero" );
   deltaDName[2] = config->getName("deltaDplus" );
   MakePrototypes(); // Should only ever go in the constructor. Never put this in the copy constructor!!
-  if(useAcceptance) acc = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
+//  if(useAcceptance) acc = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
+  if(useAcceptance)
+  {
+    // The goal here is to get a TKDTreeID object to define the binning scheme, and to fill the bin content array from a tree that's sitting in the same file.
+    // Much of this is re-implement from my FourDHist_Adaptive class in the BsPhiKK project
+    TFile* accfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
+    TIter next = accfile->GetListOfKeys();
+    TKey* key;
+    TTree* acctree;
+    // Look for any TTree and TKDTree object in the file
+    cout << "Looking for TTree and TKDTree objects in the file " << accfile->GetName() << endl;
+    while((key = (TKey*)next()))
+    {
+      if(strcmp(key->GetClassName(),"TKDTree<int,double>")==0)
+        accbinner = (TKDTreeID*)key->ReadObj();
+      if(strcmp(key->GetClassName(),"TTree")==0)
+        acctree = (TTree*)key->ReadObj();
+    }
+    // Throw a wobbly if you can't find either
+    if(accbinner == NULL)
+      throw runtime_error("Couldn't find a TKDTree object in the file");
+    if(acctree == NULL)
+      throw runtime_error("Couldn't find a TTree object in the file");
+    // Load the binned values of acceptance
+    cout << "Loading the binned acceptance values from the tree" << endl;
+    int nbins = accbinner->GetNNodes()+1;
+    double content;
+    acctree->SetBranchAddress("content",&content);
+    for(int ibin = 0; ibin < nbins; ibin++)
+    {
+      acctree->GetEntry(ibin);
+      accbincontent.push_back(content);
+    }
+  }
   if(useTimeIntPwavePDF && useTimeIntDwavePDF)
   {
     cout << "WARNING: Cannot currently plot P-wave and D-wave. Will only plot P-wave PDF." << endl;
@@ -78,6 +114,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
   bool drawAll = config->isTrue("DrawAll");
   if(config->isTrue("DrawComponents"))
   {
+    componentlist.push_back("0");
     if(drawAll || config->isTrue("DrawSwave"))
     {
       componentlist.push_back("Swave");
@@ -104,6 +141,7 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(PDFConfigurator* config) :
     {
       componentlist.push_back("acceptance");
     }
+    componentlist.push_back("0");
   }
   Initialise();
 }
@@ -149,7 +187,11 @@ Bs2PhiKKTotal::Bs2PhiKKTotal(const Bs2PhiKKTotal& copy) :
     deltaPName[i] = copy.deltaPName[i];
     deltaDName[i] = copy.deltaDName[i];
   }
-  if(useAcceptance) acc = new LegendreMomentShape(*copy.acc);
+  if(useAcceptance)
+  {
+    accbinner = copy.accbinner;
+    accbincontent = copy.accbincontent;
+  }
   Initialise();
 }
 /*****************************************************************************/
@@ -160,7 +202,7 @@ Bs2PhiKKTotal::~Bs2PhiKKTotal()
   delete Pwave;
   delete Dwave;
   delete NonRes;
-  if(useAcceptance) delete acc;
+//  if(useAcceptance) delete accbinner;
 }
 /*****************************************************************************/
 // Code common to the constructors
@@ -177,7 +219,7 @@ void Bs2PhiKKTotal::Initialise()
   NonRes = new Bs2PhiKKComponent(0,0   ,  0    ,"NR",RBs,RKK);
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( true );
-  this->TurnCachingOff();
+//  this->TurnCachingOff();
   SetComponentAmplitudes();
 }
 /*****************************************************************************/
@@ -252,6 +294,17 @@ vector<string> Bs2PhiKKTotal::PDFComponents()
 double Bs2PhiKKTotal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
   compName = component->getComponentName();
+  if( component->getComponentNumber() == -1 )
+  {
+    // Make the index the same as in the array, for the sake of draw order, or something.
+    for(unsigned int i = 0; i < componentlist.size(); i++)
+    {
+      if(compName == componentlist[i])
+      {
+        component->setComponentNumber(i);
+      }
+    }
+  }
   return Evaluate(measurement);
 }
 /*****************************************************************************/
@@ -329,12 +382,12 @@ double Bs2PhiKKTotal::Evaluate(DataPoint* measurement)
     if((compName == "Pwave-odd" && useTimeIntPwavePDF)
     || (compName == "Dwave-odd" && useTimeIntDwavePDF))
     {
-      Gamma += K[2]*F[2];
+      Gamma = K[2]*F[2];
     }
     else if((compName == "Pwave-even" && useTimeIntPwavePDF)
          || (compName == "Dwave-even" && useTimeIntDwavePDF))
     {
-      Gamma += K[0]*F[0] + K[1]*F[1] + K[4]*F[4];
+      Gamma = K[0]*F[0] + K[1]*F[1] + K[4]*F[4];
     }
     else // Unfortunately this will draw the S-wave, interference and acceptance as well as the total PDF
     // I am assuming that the time-integrated PDFs will only be used as a cross-check with one resonant component only
@@ -422,8 +475,13 @@ TComplex Bs2PhiKKTotal::TotalAmplitude(bool conjHelAmp)
 // Get the angular acceptance
 double Bs2PhiKKTotal::Acceptance(double _mKK, double _phi, double _ctheta_1, double _ctheta_2)
 {
- if(!useAcceptance) return 1; // safety
- return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
+  if(!useAcceptance) return 1; // safety
+// return acc->Evaluate(_mKK, _phi, _ctheta_1, _ctheta_2);
+  // Find the bin
+  double point[] = {_mKK,_phi,_ctheta_1,_ctheta_2};
+  int bin = accbinner->FindNode(point) - accbinner->GetNNodes();
+  // Return the appropriate value for this bin
+  return accbincontent[bin];
 }
 /*****************************************************************************/
 // Two-body phase space probability function

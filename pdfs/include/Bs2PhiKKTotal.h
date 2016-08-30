@@ -16,7 +16,9 @@
 #endif
 // Self
 #include "Bs2PhiKKComponent.h"
-#include "LegendreMomentShape.h"
+//#include "LegendreMomentShape.h"
+// ROOT
+#include "TKDTree.h"
 
 class Bs2PhiKKTotal : public BasePDF
 {
@@ -48,7 +50,8 @@ class Bs2PhiKKTotal : public BasePDF
       // m(KK) boundaries
       double mKKmin, mKKmax;
       // Acceptance object
-      LegendreMomentShape* acc;
+      TKDTreeID* accbinner;
+      vector <double> accbincontent;
       // Options
       bool useTimeIntPwavePDF;
       bool useTimeIntDwavePDF;
