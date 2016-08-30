@@ -229,9 +229,10 @@ void Bs2PhiKKPwave::SetComponentAmplitudes()
 /*****************************************************************************/
 double Bs2PhiKKPwave::PhaseSpace(double _mKK)
 {
-  const double mK   = Bs2PhiKKComponent::mK;
-  const double mBs  = Bs2PhiKKComponent::mBs;
-  const double mPhi = Bs2PhiKKComponent::mphi;
+  _mKK/=1000;
+  const double mK   = Bs2PhiKKComponent::mK/1000;
+  const double mBs  = Bs2PhiKKComponent::mBs/1000;
+  const double mPhi = Bs2PhiKKComponent::mphi/1000;
   double pR = DPHelpers::daughterMomentum(_mKK, mK, mK);
   double pB = DPHelpers::daughterMomentum(mBs,_mKK,mPhi);
   double pRpB = pR*pB;
