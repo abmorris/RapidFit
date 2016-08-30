@@ -102,7 +102,7 @@ void Bs2PhiPhi_Adam::Initialise()
 {
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( numerical );
-//  this->TurnCachingOff();
+  this->TurnCachingOff();
 }
 /*****************************************************************************/
 // Make the data point and parameter set
