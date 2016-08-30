@@ -147,14 +147,7 @@ TComplex Bs2PhiKKComponent::M(double m)
 // Angular part of the amplitude
 TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
-  
-  TComplex Y1(boost::math::spherical_harmonic_r(_J1,-lambda,acos(-ctheta_1),-Phi)
-             ,boost::math::spherical_harmonic_i(_J1,-lambda,acos(-ctheta_1),-Phi));
-  TComplex Y2(boost::math::spherical_harmonic_r(_J2, lambda,acos( ctheta_2),   0)
-             ,boost::math::spherical_harmonic_i(_J2, lambda,acos( ctheta_2),   0));
-  return Y1 * Y2;
-//  return SphericalHarmonic::Y(_J1, -lambda, -ctheta_1, -Phi) * SphericalHarmonic::Y(_J2, lambda, ctheta_2, 0);
-//  return wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
+  return wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -232,9 +225,6 @@ TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, d
     }
   }
   // Result
-//  return angularPart;
-//  return angularPart * OFBF(mKK);
-//  return massPart * angularPart;
   return massPart * angularPart * OFBF(mKK);
 }
 // Set helicity amplitude parameters
