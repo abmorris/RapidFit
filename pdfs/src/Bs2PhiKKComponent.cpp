@@ -22,14 +22,11 @@
 #include "DPWignerFunctionJ0.hh"
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
-// Custom Libraries
+
 #include "SphericalHarmonic.h"
-// BOOST
-#include <boost/math/special_functions/spherical_harmonic.hpp>
+
 using std::cout;
 using std::endl;
-using std::flush;
-
 
 double Bs2PhiKKComponent::mBs  = 5366.77;
 double Bs2PhiKKComponent::mphi = 1019.461;
@@ -147,12 +144,13 @@ TComplex Bs2PhiKKComponent::M(double m)
 // Angular part of the amplitude
 TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
-  return wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(lambda*TComplex::I()*Phi);
+  TComplex exparg = TComplex::I()*Phi;
+  exparg*=lambda;
+  return wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(exparg);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
 {
-
   // Orbital factor
   // Masses
   double m_min  = mK + mK;
