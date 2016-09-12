@@ -1,12 +1,12 @@
-/** @class Bs2PhiKKTotal Bs2PhiKKTotal.h
+/** @class Bs2PhiKKSignal Bs2PhiKKSignal.h
  *
- *  RapidFit PDF for Bs2PhiKKTotal
+ *  RapidFit PDF for Bs2PhiKKSignal
  *
  *  @author Adam Morris
- *  @date Feb 2016
+ *  @date Aug 2016
  */
-#ifndef Bs2PhiKKTotal_H
-#define Bs2PhiKKTotal_H
+#ifndef Bs2PhiKKSignal_H
+#define Bs2PhiKKSignal_H
 
 #ifndef __CINT__
 #include "BasePDF.h"
@@ -14,19 +14,15 @@
 #ifdef __CINT__
 #include "framework/include/BasePDF.h"
 #endif
-// Self
 #include "Bs2PhiKKComponent.h"
-//#include "LegendreMomentShape.h"
-// ROOT
-#include "TKDTree.h"
 
-class Bs2PhiKKTotal : public BasePDF
+class Bs2PhiKKSignal : public BasePDF
 {
     public:
       // *structors
-      Bs2PhiKKTotal(PDFConfigurator*);
-      Bs2PhiKKTotal(const Bs2PhiKKTotal&);
-      ~Bs2PhiKKTotal();
+      Bs2PhiKKSignal(PDFConfigurator*);
+      Bs2PhiKKSignal(const Bs2PhiKKSignal&);
+      ~Bs2PhiKKSignal();
       // Required methods
       double Evaluate(DataPoint*);
       double Normalisation(PhaseSpaceBoundary*);
@@ -36,46 +32,31 @@ class Bs2PhiKKTotal : public BasePDF
       vector<string> PDFComponents();
     protected:
       // K+K− mass and helicity angles
-      double        mKK,     ctheta_1,     ctheta_2,     phi;
+      double        mKK    , ctheta_1    , ctheta_2    , phi    ;
       ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
-      // Non-resonant component
-      double        ANonRes;
-      ObservableRef ANonResName;
-      // Magnitude-squared of helicity amplitudes
-      double        ASsq,     APsq[3],     ADsq[3];
-      ObservableRef ASsqName, APsqName[3], ADsqName[3];
-      // Phase of helicity amplitudes
-      double        deltaS,     deltaP[3],     deltaD[3];
-      ObservableRef deltaSName, deltaPName[3], deltaDName[3];
-      // m(KK) boundaries
-      double mKKmin, mKKmax;
-      // Acceptance object
-      TKDTreeID* accbinner;
-      vector <double> accbincontent;
+      // Amplitude Parameters
+      double        ASzerosq      , APperpsq      , APzerosq      , APparasq      , ADperpsq      , ADzerosq      , ADparasq      ;
+      ObservableRef                 APperpsqName  , APzerosqName                  , ADperpsqName  , ADzerosqName                  ;
+      double        deltaSzero    , deltaPperp    , deltaPzero    , deltaPpara    , deltaDperp    , deltaDzero    , deltaDpara    ;
+      ObservableRef deltaSzeroName, deltaPperpName, deltaPzeroName, deltaPparaName, deltaDperpName, deltaDzeroName, deltaDparaName;
+      // Other model parameters
+      double        SwaveFrac    , PwaveFrac    , DwaveFrac    ;
+      ObservableRef SwaveFracName, PwaveFracName, DwaveFracName;
       // Options
-      bool useTimeIntPwavePDF;
-      bool useTimeIntDwavePDF;
       vector<string> componentlist;
-      bool useAcceptance;
-      bool massIndependent;
     private:
-      // The m(KK) components
+      // Calculation
+      TComplex TotalAmplitude(bool);
       Bs2PhiKKComponent* Swave;
       Bs2PhiKKComponent* Pwave;
       Bs2PhiKKComponent* Dwave;
-      Bs2PhiKKComponent* NonRes;
+      void SetComponentAmplitudes();
+      double PhaseSpace(double);
       // Stuff to do on creation
       void Initialise();
-      bool init;
       void MakePrototypes();
-      // Calculation
-      TComplex TotalAmplitude(bool);
-      double Acceptance(double, double, double, double);
-      double PhaseSpace(double);
-      void SetComponentAmplitudes();
       // Options
       string compName;
-      bool debug = false;
 };
 #endif
 
