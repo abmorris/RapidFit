@@ -253,7 +253,10 @@ void NormalisedSumPDF::MakePrototypes( PhaseSpaceBoundary * InputBoundary )
 //Destructor
 NormalisedSumPDF::~NormalisedSumPDF()
 {
-	//cout << "Hello from Normalised destructor" << endl;
+	if(inEvaluate)
+	{
+		cout << "NormalisedSumPDF: Help! My destructor is being called while I'm in the middle of Evaluate()!" << endl;
+	}
 	if( firstPDF != NULL ) delete firstPDF;
 	if( secondPDF != NULL ) delete secondPDF;
 	if( integrationBoundary != NULL ) delete integrationBoundary;
@@ -302,6 +305,7 @@ double NormalisedSumPDF::Normalisation( DataPoint* NewDataPoint, PhaseSpaceBound
 //Return the function value at the given point
 double NormalisedSumPDF::Evaluate( DataPoint* NewDataPoint )
 {
+	inEvaluate = true;
 	if( firstFraction > 1.0 || firstFraction < 0.0 )
 	{
 		cerr << "Requested impossible fraction: " << firstFraction << endl;
@@ -350,6 +354,7 @@ double NormalisedSumPDF::Evaluate( DataPoint* NewDataPoint )
 	 */
 
 	//Return the sum
+	inEvaluate = false;
 	return sum;
 }
 

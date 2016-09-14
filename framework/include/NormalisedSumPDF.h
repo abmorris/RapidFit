@@ -102,6 +102,7 @@ class NormalisedSumPDF : public BasePDF
 		PhaseSpaceBoundary * integrationBoundary;
 
 		bool _plotComponents;
+		bool inEvaluate = false;
 };
 
 #endif
