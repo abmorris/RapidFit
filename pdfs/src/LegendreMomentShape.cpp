@@ -27,7 +27,7 @@ LegendreMomentShape::LegendreMomentShape(string _filename) : filename(_filename)
   tree->SetBranchAddress("mKK_min",&mKK_min);
   tree->SetBranchAddress("mKK_max",&mKK_max);
   string branchtitle = tree->GetBranch("c")->GetTitle();
-  cout << branchtitle << endl;
+//  cout << branchtitle << endl;
   vector<int*> maxima = {&l_max,&i_max,&k_max,&j_max};
   size_t found(0);
   for(auto maximum: maxima)
@@ -65,7 +65,7 @@ LegendreMomentShape::LegendreMomentShape(const LegendreMomentShape& copy) :
   , init(copy.init)
   , copied(true)
 {
-  printcoefficients();
+//  printcoefficients();
 }
 LegendreMomentShape::~LegendreMomentShape()
 {
@@ -143,7 +143,7 @@ void LegendreMomentShape::storecoefficients()
       }
     }
   }
-  cout << coeffs.size() << " coefficients stored" << endl;
+//  cout << coeffs.size() << " coefficients stored" << endl;
 }
 void LegendreMomentShape::printcoefficients()
 {
