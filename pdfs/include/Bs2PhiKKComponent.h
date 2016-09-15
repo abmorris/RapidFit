@@ -24,7 +24,8 @@ class Bs2PhiKKComponent
     Bs2PhiKKComponent(int, double, double, string, double, double); // J2, M2, W2, shape, RBs, RKK
     Bs2PhiKKComponent(const Bs2PhiKKComponent&);
     ~Bs2PhiKKComponent();
-    void SetHelicityAmplitudes(int, double, double); 
+    void SetHelicityAmplitudes(int, double, double);
+    void SetMassWidth(double mass, double width) {_M2 = mass; _W2 = width;}
     TComplex Amplitude(bool, double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
     TComplex Amplitude(bool, double, double, double, double, string);
     void Print();
