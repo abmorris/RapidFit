@@ -174,11 +174,11 @@ void Bs2PhiKKSignal::Initialise()
   double RKK = 1.7; // TODO: Get these from the config
   double mphi = Bs2PhiKKComponent::mphi;
   // Initialise the signal components
-  Swave  = new Bs2PhiKKComponent(0, 980,100    ,"FT",RBs,RKK);
+  Swave  = new Bs2PhiKKComponent(0, 939.9,0    ,"FT",RBs,RKK);
   Pwave  = new Bs2PhiKKComponent(1,mphi,  4.266,"BW",RBs,RKK);
   Dwave  = new Bs2PhiKKComponent(2,1525, 73    ,"BW",RBs,RKK);
   // Enable numerical normalisation and disable caching
-  this->SetNumericalNormalisation( false );
+  this->SetNumericalNormalisation( true );
   this->TurnCachingOff();
   SetComponentAmplitudes();
 }
@@ -279,7 +279,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
   if(phi < -TMath::Pi() || phi > TMath::Pi()
        || ctheta_1 < -1 || ctheta_1 > 1
        || ctheta_2 < -1 || ctheta_2 > 1
-       || mKK < 2*Bs2PhiKKComponent::mK
+//       || mKK < 2*Bs2PhiKKComponent::mK
   )
   {
     cout << "Received unphysical datapoint" << endl;
@@ -344,7 +344,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
           + TotalAmplitude(true ).Rho2()
           ;
   }
-  return Gamma * PhaseSpace(mKK);
+  return Gamma * PhaseSpace(mKK)/0.0105327;
 }
 /*****************************************************************************/
 TComplex Bs2PhiKKSignal::TotalAmplitude(bool conjHelAmp)
@@ -402,6 +402,6 @@ double Bs2PhiKKSignal::PhaseSpace(double _mKK)
 double Bs2PhiKKSignal::Normalisation(PhaseSpaceBoundary* boundary)
 {
   (void)boundary;
-  return 1;
+  return -1;
 }
 
