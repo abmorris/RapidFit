@@ -32,8 +32,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) :
 {
   MakePrototypes();
   shape = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
-  this->SetNumericalNormalisation( true );
-	this->TurnCachingOff();
+  Initialise();
 }
 Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy) :
     BasePDF( (BasePDF) copy)
@@ -59,8 +58,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy) :
   , MName(copy.MName)
 {
   shape = new LegendreMomentShape(*copy.shape);
-  this->SetNumericalNormalisation( true );
-	this->TurnCachingOff();
+  Initialise();
 }
 Bs2PhiKKBackground::~Bs2PhiKKBackground()
 {
@@ -68,7 +66,8 @@ Bs2PhiKKBackground::~Bs2PhiKKBackground()
 }
 void Bs2PhiKKBackground::Initialise()
 {
-
+  this->SetNumericalNormalisation( true );
+  this->TurnCachingOff();
 }
 void Bs2PhiKKBackground::MakePrototypes()
 {
@@ -110,7 +109,7 @@ double Bs2PhiKKBackground::Evaluate(DataPoint* measurement)
   double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
   result = val > 0 ? val : 0;
   result *= shape->Evaluate(mKK, phi, ctheta_1, ctheta_2);
-  return result;
+  return result/231.634;
 }
 bool Bs2PhiKKBackground::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
@@ -125,4 +124,9 @@ vector<string> Bs2PhiKKBackground::GetDoNotIntegrateList()
 {
   vector<string> list;
   return list;
+}
+double Bs2PhiKKBackground::Normalisation(PhaseSpaceBoundary* boundary)
+{
+  (void)boundary;
+  return -1;
 }

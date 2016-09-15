@@ -29,6 +29,7 @@ class Bs2PhiKKBackground : public BasePDF
       // Required methods
       double Evaluate(DataPoint*);
       double EvaluateComponent(DataPoint*,ComponentRef*);
+      double Normalisation(PhaseSpaceBoundary*);
       bool SetPhysicsParameters(ParameterSet*);
       vector<string> GetDoNotIntegrateList();
       vector<string> PDFComponents();
