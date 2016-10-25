@@ -15,6 +15,7 @@
 #include "framework/include/BasePDF.h"
 #endif
 #include "Bs2PhiKKComponent.h"
+#include "LegendreMomentShape.h"
 
 class Bs2PhiKKSignal : public BasePDF
 {
@@ -39,24 +40,38 @@ class Bs2PhiKKSignal : public BasePDF
       ObservableRef                 APperpsqName  , APzerosqName                  , ADperpsqName  , ADzerosqName                  ;
       double        deltaSzero    , deltaPperp    , deltaPzero    , deltaPpara    , deltaDperp    , deltaDzero    , deltaDpara    ;
       ObservableRef deltaSzeroName, deltaPperpName, deltaPzeroName, deltaPparaName, deltaDperpName, deltaDzeroName, deltaDparaName;
-      // Other model parameters
-      double        SwaveFrac    , PwaveFrac    , DwaveFrac    ;
-      ObservableRef SwaveFracName, PwaveFracName, DwaveFracName;
+      // Control the size of the components
+      double        NonResFrac    , SwaveFrac    , PwaveFrac    , DwaveFrac    ;
+      ObservableRef NonResFracName, SwaveFracName, PwaveFracName, DwaveFracName;
+      // Resonance parameters
+      double        fzeroMass    , fzerogpipi    , fzeroRg    , phiMass    , phiWidth    , ftwoMass    , ftwoWidth    ;
+      ObservableRef fzeroMassName, fzerogpipiName, fzeroRgName, phiMassName, phiWidthName, ftwoMassName, ftwoWidthName;
+      // Pull these from the options
+      double RBs, RKK;
       // Options
       vector<string> componentlist;
+      bool floatResPars;
+      bool acceptance_moments;
+      // Acceptance
+      LegendreMomentShape* acc_m;
     private:
       // Calculation
-      TComplex TotalAmplitude(bool);
+      double TotalDecayRate();
+      double ComponentDecayRate(Bs2PhiKKComponent*);
+      double ComponentDecayRate(Bs2PhiKKComponent*, string);
+      void ReadDataPoint(DataPoint*);
       Bs2PhiKKComponent* Swave;
       Bs2PhiKKComponent* Pwave;
       Bs2PhiKKComponent* Dwave;
+      Bs2PhiKKComponent* NonRes;
+      vector<Bs2PhiKKComponent*> components;
       void SetComponentAmplitudes();
+      void SetResonanceParameters();
       double PhaseSpace(double);
+      double Acceptance();
       // Stuff to do on creation
       void Initialise();
       void MakePrototypes();
-      // Options
-      string compName;
 };
 #endif
 

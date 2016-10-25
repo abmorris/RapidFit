@@ -21,38 +21,56 @@ PDF_CREATOR( Bs2PhiKKSignal )
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   // Dependent variables
-    mKK     (0.0)
-  , phi     (0.0)
-  , ctheta_1(0.0)
-  , ctheta_2(0.0)
+    mKK     (0.)
+  , phi     (0.)
+  , ctheta_1(0.)
+  , ctheta_2(0.)
   // Dependent variable names
   , mKKName     (config->getName("mKK"     ))
   , phiName     (config->getName("phi"     ))
   , ctheta_1Name(config->getName("ctheta_1"))
   , ctheta_2Name(config->getName("ctheta_2"))
+  // Variables for resonance parameters
+  , fzeroMass(Bs2PhiKKComponent::mfzero)
+  , fzerogpipi(Bs2PhiKKComponent::gpipi)
+  , fzeroRg(Bs2PhiKKComponent::Rg)
+  , phiMass(Bs2PhiKKComponent::mphi)
+  , phiWidth(Bs2PhiKKComponent::wphi)
+  , ftwoMass(Bs2PhiKKComponent::mftwo)
+  , ftwoWidth(Bs2PhiKKComponent::wftwo)
+  // Resonance parameter names
+  , fzeroMassName(config->getName("fzeroMass"))
+  , fzerogpipiName(config->getName("fzerogpipi"))
+  , fzeroRgName(config->getName("fzeroRg"))
+  , phiMassName(config->getName("phiMass"))
+  , phiWidthName(config->getName("phiWidth"))
+  , ftwoMassName(config->getName("ftwoMass"))
+  , ftwoWidthName(config->getName("ftwoWidth"))
   // Variables for physics amplitudes
   // Scaling factors for each component
-  , SwaveFrac(0.0)
-  , PwaveFrac(0.0)
-  , DwaveFrac(0.0)
+  , NonResFrac(0.)
+  , SwaveFrac(0.)
+  , PwaveFrac(0.)
+  , DwaveFrac(0.)
   // Magnitude-squared of amplitudes
-  , ASzerosq(0.0)
-  , APperpsq(0.0)
-  , APzerosq(0.0)
-  , APparasq(0.0)
-  , ADperpsq(0.0)
-  , ADzerosq(0.0)
-  , ADparasq(0.0)
+  , ASzerosq(0.)
+  , APperpsq(0.)
+  , APzerosq(0.)
+  , APparasq(0.)
+  , ADperpsq(0.)
+  , ADzerosq(0.)
+  , ADparasq(0.)
   // Phases of amplitudes
-  , deltaSzero(0.0)
-  , deltaPperp(0.0)
-  , deltaPzero(0.0)
-  , deltaPpara(0.0)
-  , deltaDperp(0.0)
-  , deltaDzero(0.0)
-  , deltaDpara(0.0)
+  , deltaSzero(0.)
+  , deltaPperp(0.)
+  , deltaPzero(0.)
+  , deltaPpara(0.)
+  , deltaDperp(0.)
+  , deltaDzero(0.)
+  , deltaDpara(0.)
   // Fit parameter names for physics amplitudes
   // Scaling factors for each component
+  , NonResFracName(config->getName("NonResFrac"))
   , SwaveFracName(config->getName("SwaveFrac"))
   , PwaveFracName(config->getName("PwaveFrac"))
   , DwaveFracName(config->getName("DwaveFrac"))
@@ -70,23 +88,35 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   , deltaDzeroName(config->getName("deltaDzero"))
   , deltaDparaName(config->getName("deltaDpara"))
   // Options
-  , compName("0")
+  , floatResPars(config->isTrue("FloatResPars"))
+  , acceptance_moments((string)config->getConfigurationValue("CoefficientsFile") != "")
 {
   MakePrototypes();
   bool drawAll = config->isTrue("DrawAll");
   if(config->isTrue("DrawComponents"))
   {
-    componentlist.push_back("0");
+    if(drawAll || config->isTrue("DrawNonRes"))
+    {
+      componentlist.push_back("NonRes");
+    }
     if(drawAll || config->isTrue("DrawSwave"))
     {
       componentlist.push_back("Swave");
     }
-    if(drawAll || config->isTrue("DrawPwave"))
+    if(config->isTrue("DrawPwave"))
+    {
+      componentlist.push_back("Pwave");
+    }
+    if(drawAll || config->isTrue("DrawPwaveComponents"))
     {
       componentlist.push_back("Pwave-even");
       componentlist.push_back("Pwave-odd");
     }
-    if(drawAll || config->isTrue("DrawDwave"))
+    if(config->isTrue("DrawDwave"))
+    {
+      componentlist.push_back("Dwave");
+    }
+    if(drawAll || config->isTrue("DrawDwaveComponents"))
     {
       componentlist.push_back("Dwave-even");
       componentlist.push_back("Dwave-odd");
@@ -96,6 +126,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
       componentlist.push_back("interference");
     }
   }
+  if(acceptance_moments) acc_m = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
   Initialise();
 }
 /*****************************************************************************/
@@ -112,8 +143,25 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , phiName     (copy.phiName     )
   , ctheta_1Name(copy.ctheta_1Name)
   , ctheta_2Name(copy.ctheta_2Name)
+  // Variables for resonance parameters
+  , fzeroMass(copy.fzeroMass)
+  , fzerogpipi(copy.fzerogpipi)
+  , fzeroRg(copy.fzeroRg)
+  , phiMass(copy.phiMass)
+  , phiWidth(copy.phiWidth)
+  , ftwoMass(copy.ftwoMass)
+  , ftwoWidth(copy.ftwoWidth)
+  // Resonance parameter names
+  , fzeroMassName(copy.fzeroMassName)
+  , fzerogpipiName(copy.fzerogpipiName)
+  , fzeroRgName(copy.fzeroRgName)
+  , phiMassName(copy.phiMassName)
+  , phiWidthName(copy.phiWidthName)
+  , ftwoMassName(copy.ftwoMassName)
+  , ftwoWidthName(copy.ftwoWidthName)
   // Variables for physics amplitudes
   // Scaling factors for each component
+  , NonResFrac(copy.NonResFrac)
   , SwaveFrac(copy.SwaveFrac)
   , PwaveFrac(copy.PwaveFrac)
   , DwaveFrac(copy.DwaveFrac)
@@ -135,6 +183,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , deltaDpara(copy.deltaDpara)
   // Fit parameter names for physics amplitudes
   // Scaling factors for each component
+  , NonResFracName(copy.NonResFracName)
   , SwaveFracName(copy.SwaveFracName)
   , PwaveFracName(copy.PwaveFracName)
   , DwaveFracName(copy.DwaveFracName)
@@ -152,35 +201,42 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , deltaDzeroName(copy.deltaDzeroName)
   , deltaDparaName(copy.deltaDparaName)
   // Drawing components
-  , compName("0")
   , componentlist(copy.componentlist)
+  // Options
+  , floatResPars(copy.floatResPars)
+  , acceptance_moments(copy.acceptance_moments)
 {
+  if(acceptance_moments) acc_m = new LegendreMomentShape(*copy.acc_m);
   Initialise();
 }
 /*****************************************************************************/
 // Destructor
 Bs2PhiKKSignal::~Bs2PhiKKSignal()
 {
-  delete Swave;
-  delete Pwave;
-  delete Dwave;
+  for(auto comp : components)
+    delete comp;
 }
 /*****************************************************************************/
 // Code common to the constructors
 void Bs2PhiKKSignal::Initialise()
 {
   // Typical values of barrier factor radius are 3 and 1.7 inverse GeV
-  double RBs = 1.7;
-  double RKK = 1.7; // TODO: Get these from the config
-  double mphi = Bs2PhiKKComponent::mphi;
+  RBs = 5.0e3;
+  RKK = 1.5e3;
   // Initialise the signal components
-  Swave  = new Bs2PhiKKComponent(0, 939.9,0    ,"FT",RBs,RKK);
-  Pwave  = new Bs2PhiKKComponent(1,mphi,  4.266,"BW",RBs,RKK);
-  Dwave  = new Bs2PhiKKComponent(2,1525, 73    ,"BW",RBs,RKK);
+  NonRes = new Bs2PhiKKComponent(0, 0, 0, "NR", RBs, RKK);
+  Swave  = new Bs2PhiKKComponent(0, 0, 0, "FT", RBs, RKK);
+  Pwave  = new Bs2PhiKKComponent(1, 0, 0, "BW", RBs, RKK);
+  Dwave  = new Bs2PhiKKComponent(2, 0, 0, "BW", RBs, RKK);
+  components.push_back(NonRes);
+  components.push_back(Swave);
+  components.push_back(Pwave);
+  components.push_back(Dwave);
+  SetResonanceParameters();
+  SetComponentAmplitudes();
   // Enable numerical normalisation and disable caching
   this->SetNumericalNormalisation( true );
   this->TurnCachingOff();
-  SetComponentAmplitudes();
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -194,7 +250,19 @@ void Bs2PhiKKSignal::MakePrototypes()
   allObservables.push_back(ctheta_2Name);
   // Make the parameter set
   vector<string> parameterNames;
+  // Resonance parameters
+  if(floatResPars)
+  {
+    parameterNames.push_back(fzeroMassName);
+    parameterNames.push_back(fzerogpipiName);
+    parameterNames.push_back(fzeroRgName);
+    parameterNames.push_back(phiMassName);
+    parameterNames.push_back(phiWidthName);
+    parameterNames.push_back(ftwoMassName);
+    parameterNames.push_back(ftwoWidthName);
+  }
   // Scaling factors for each component
+  parameterNames.push_back(NonResFracName);
   parameterNames.push_back(SwaveFracName);
   parameterNames.push_back(PwaveFracName);
   parameterNames.push_back(DwaveFracName);
@@ -219,10 +287,23 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
   bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
   // Retrieve the physics parameters
+  // Resonance parameters
+  if(floatResPars)
+  {
+    fzeroMass  = allParameters.GetPhysicsParameter(fzeroMassName )->GetValue();
+    fzerogpipi = allParameters.GetPhysicsParameter(fzerogpipiName)->GetValue();
+    fzeroRg    = allParameters.GetPhysicsParameter(fzeroRgName   )->GetValue();
+    phiMass    = allParameters.GetPhysicsParameter(phiMassName   )->GetValue();
+    phiWidth   = allParameters.GetPhysicsParameter(phiWidthName  )->GetValue();
+    ftwoMass   = allParameters.GetPhysicsParameter(ftwoMassName  )->GetValue();
+    ftwoWidth  = allParameters.GetPhysicsParameter(ftwoWidthName )->GetValue();
+    SetResonanceParameters();
+  }
   // Scaling factors for each component
-  SwaveFrac  = allParameters.GetPhysicsParameter(SwaveFracName)->GetValue();
-  PwaveFrac  = allParameters.GetPhysicsParameter(PwaveFracName)->GetValue();
-  DwaveFrac  = allParameters.GetPhysicsParameter(DwaveFracName)->GetValue();
+  NonResFrac = allParameters.GetPhysicsParameter(NonResFracName)->GetValue();
+  SwaveFrac  = allParameters.GetPhysicsParameter(SwaveFracName )->GetValue();
+  PwaveFrac  = allParameters.GetPhysicsParameter(PwaveFracName )->GetValue();
+  DwaveFrac  = allParameters.GetPhysicsParameter(DwaveFracName )->GetValue();
   // Magnitude-squared of amplitudes
   ASzerosq   = 1.0;
   APperpsq   = allParameters.GetPhysicsParameter(APperpsqName)->GetValue();
@@ -252,23 +333,49 @@ vector<string> Bs2PhiKKSignal::PDFComponents()
 // Evaluate a single component
 double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
-  compName = component->getComponentName();
-  if( component->getComponentNumber() == -1 )
+  string compName = component->getComponentName();
+  if(compName=="0") // should quicken things up slightly?
+    return Evaluate(measurement);
+  ReadDataPoint(measurement);
+  if(mKK < 2 * Bs2PhiKKComponent::mK) return 0;
+  // Evaluate the PDF at this point
+  double Gamma = 0;
+  if(compName=="NonRes")
+    Gamma = ComponentDecayRate(NonRes);
+  else if(compName=="Swave")
+    Gamma = ComponentDecayRate(Swave);
+  else if(compName=="Pwave")
+    Gamma = ComponentDecayRate(Pwave);
+  else if(compName=="Pwave-odd")
+    Gamma = ComponentDecayRate(Pwave, "odd");
+  else if(compName=="Pwave-even")
+    Gamma = ComponentDecayRate(Pwave, "even");
+  else if(compName=="Dwave")
+    Gamma = ComponentDecayRate(Dwave);
+  else if(compName=="Dwave-odd")
+    Gamma = ComponentDecayRate(Dwave, "odd");
+  else if(compName=="Dwave-even")
+    Gamma = ComponentDecayRate(Dwave, "even");
+  else if(compName=="interference")
   {
-    // Make the index the same as in the array, for the sake of draw order, or something.
-    for(unsigned int i = 0; i < componentlist.size(); i++)
-    {
-      if(compName == componentlist[i])
-      {
-        component->setComponentNumber(i);
-      }
-    }
+    Gamma = TotalDecayRate();
+    for(auto comp : components)
+      Gamma -= ComponentDecayRate(comp);
   }
-  return Evaluate(measurement);
+  else
+    return Evaluate(measurement);
+  return Gamma * PhaseSpace(mKK) * Acceptance();
 }
 /*****************************************************************************/
 // Calculate the function value
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
+{
+  ReadDataPoint(measurement);
+  if(mKK < 2 * Bs2PhiKKComponent::mK) return 0;
+  return TotalDecayRate() * PhaseSpace(mKK) * Acceptance();
+}
+/*****************************************************************************/
+void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 {
   // Get values from the datapoint
   mKK       = measurement->GetObservable(mKKName     )->GetValue();
@@ -279,112 +386,84 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
   if(phi < -TMath::Pi() || phi > TMath::Pi()
        || ctheta_1 < -1 || ctheta_1 > 1
        || ctheta_2 < -1 || ctheta_2 > 1
-//       || mKK < 2*Bs2PhiKKComponent::mK
   )
   {
     cout << "Received unphysical datapoint" << endl;
     measurement->Print();
-    Swave->Print();
-    Pwave->Print();
-    Dwave->Print();
+    for(auto comp : components)
+      comp->Print();
   }
-  // Evaluate the PDF at this point
-  double Gamma = 0;
-  if(compName=="Swave")
-  {
-    Gamma =  Swave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          +  Swave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2).Rho2()
-          ;
-  }
-  else if(compName=="Pwave-odd")
-  {
-    // CP-odd phi(1020)
-    Gamma =  Pwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2()
-          +  Pwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2()
-          ;
-  }
-  else if(compName=="Pwave-even")
-  {
-    // CP-even phi(1020)
-    Gamma =  Pwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2, "even").Rho2()
-          +  Pwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2, "even").Rho2()
-          ;
-  }
-  else if(compName=="Dwave-odd")
-  {
-    // CP-odd f2'(1525)
-    Gamma =  Dwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2()
-          +  Dwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2,  "odd").Rho2()
-          ;
-  }
-  else if(compName=="Dwave-even")
-  {
-    // CP-even f2'(1525)
-    Gamma =  Dwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2, "even").Rho2()
-          +  Dwave->Amplitude(true,  mKK, phi, ctheta_1, ctheta_2, "even").Rho2()
-          ;
-  }
-  else if(compName=="interference")
-  {
-    // interference
-    Gamma =    TotalAmplitude(false).Rho2()
-          -  Swave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          -  Pwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          -  Dwave->Amplitude(false, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          // and then the conjugate terms
-          +    TotalAmplitude(true).Rho2()
-          -  Swave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          -  Pwave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          -  Dwave->Amplitude(true, mKK, phi, ctheta_1, ctheta_2).Rho2()
-          ;
-  }
-  else
-  {
-    Gamma = TotalAmplitude(false).Rho2()
-          + TotalAmplitude(true ).Rho2()
-          ;
-  }
-  return Gamma * PhaseSpace(mKK)/0.0105327;
 }
 /*****************************************************************************/
-TComplex Bs2PhiKKSignal::TotalAmplitude(bool conjHelAmp)
+double Bs2PhiKKSignal::TotalDecayRate()
 {
-  TComplex amplitude =  Swave->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2)
-                     +  Pwave->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2)
-                     +  Dwave->Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2)
-                     ;
-  return amplitude;
+  double Gamma(0);
+  for(bool antiB : {false, true})
+  {
+    TComplex TotalAmp(0,0);
+    for(auto comp : components)
+      TotalAmp += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2);
+    Gamma += TotalAmp.Rho2();
+  }
+  return Gamma;
+}
+double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp)
+{
+  return ComponentDecayRate(comp,"");
+}
+double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp, string option)
+{
+  double Gamma(0);
+  for(bool antiB : {false, true})
+    Gamma += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2, option).Rho2();
+  return Gamma;
 }
 /*****************************************************************************/
 void Bs2PhiKKSignal::SetComponentAmplitudes()
 {
-  TComplex              ASzero(0,0),
-           APperp(0,0), APzero(0,0), APpara(0,0),
-           ADperp(0,0), ADzero(0,0), ADpara(0,0);
+  TComplex      ASzero(0, 0),
+  APperp(0, 0), APzero(0, 0), APpara(0, 0),
+  ADperp(0, 0), ADzero(0, 0), ADpara(0, 0);
   // S-wave complex amplitude
-  ASzero = TComplex(sqrt(ASzerosq),deltaSzero,true)*sqrt(SwaveFrac);
+  ASzero = TComplex(sqrt(ASzerosq), deltaSzero, true) * sqrt(SwaveFrac);
   // P-wave complex amplitudes
-  APperp = TComplex(sqrt(APperpsq),deltaPperp,true)*sqrt(PwaveFrac);
-  APzero = TComplex(sqrt(APzerosq),deltaPzero,true)*sqrt(PwaveFrac);
-  APpara = TComplex(sqrt(APparasq),deltaPpara,true)*sqrt(PwaveFrac);
+  APperp = TComplex(sqrt(APperpsq), deltaPperp, true) * sqrt(PwaveFrac);
+  APzero = TComplex(sqrt(APzerosq), deltaPzero, true) * sqrt(PwaveFrac);
+  APpara = TComplex(sqrt(APparasq), deltaPpara, true) * sqrt(PwaveFrac);
   TComplex APplus  = (APpara + APperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex APminus = (APpara - APperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // D-wave complex amplitudes
-  ADperp = TComplex(sqrt(ADperpsq),deltaDperp,true)*sqrt(DwaveFrac);
-  ADzero = TComplex(sqrt(ADzerosq),deltaDzero,true)*sqrt(DwaveFrac);
-  ADpara = TComplex(sqrt(ADparasq),deltaDpara,true)*sqrt(DwaveFrac);
+  ADperp = TComplex(sqrt(ADperpsq), deltaDperp, true) * sqrt(DwaveFrac);
+  ADzero = TComplex(sqrt(ADzerosq), deltaDzero, true) * sqrt(DwaveFrac);
+  ADpara = TComplex(sqrt(ADparasq), deltaDpara, true) * sqrt(DwaveFrac);
   TComplex ADplus  = (ADpara + ADperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex ADminus = (ADpara - ADperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // Set the S-wave helicity amplitude
-  Swave->SetHelicityAmplitudes(0, ASzero .Rho(), ASzero .Theta());
+  NonRes->SetHelicityAmplitudes(0, sqrt(NonResFrac/1e12), 0);
+  // Set the S-wave helicity amplitude
+  Swave->SetHelicityAmplitudes(0, ASzero);
   // Set the P-wave helicity amplitudes
-  Pwave->SetHelicityAmplitudes(0, APminus.Rho(), APminus.Theta());
-  Pwave->SetHelicityAmplitudes(1, APzero .Rho(), APzero .Theta());
-  Pwave->SetHelicityAmplitudes(2, APplus .Rho(), APplus .Theta());
+  Pwave->SetHelicityAmplitudes(0, APminus);
+  Pwave->SetHelicityAmplitudes(1, APzero );
+  Pwave->SetHelicityAmplitudes(2, APplus );
   // Set the D-wave helicity amplitudes
-  Dwave->SetHelicityAmplitudes(0, ADminus.Rho(), ADminus.Theta());
-  Dwave->SetHelicityAmplitudes(1, ADzero .Rho(), ADzero .Theta());
-  Dwave->SetHelicityAmplitudes(2, ADplus .Rho(), ADplus .Theta());
+  Dwave->SetHelicityAmplitudes(0, ADminus);
+  Dwave->SetHelicityAmplitudes(1, ADzero );
+  Dwave->SetHelicityAmplitudes(2, ADplus );
+}
+void Bs2PhiKKSignal::SetResonanceParameters()
+{
+  Swave->SetMassCouplings(fzeroMass, fzerogpipi, fzeroRg * fzerogpipi);
+  Pwave->SetMassWidth(phiMass, phiWidth);
+  Dwave->SetMassWidth(ftwoMass, ftwoWidth);
+}
+/*****************************************************************************/
+double Bs2PhiKKSignal::Acceptance()
+{
+  double acceptance;
+  if(acceptance_moments) acceptance = acc_m->Evaluate(mKK, phi, ctheta_1, ctheta_2);
+  else acceptance = 1.;
+  return acceptance>0 ? acceptance : 1e-12;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::PhaseSpace(double _mKK)
@@ -394,8 +473,8 @@ double Bs2PhiKKSignal::PhaseSpace(double _mKK)
   const double mBs  = Bs2PhiKKComponent::mBs;//1000.;
   const double mPhi = Bs2PhiKKComponent::mphi;//1000.;
   double pR = DPHelpers::daughterMomentum(_mKK, mK, mK);
-  double pB = DPHelpers::daughterMomentum(mBs,_mKK,mPhi);
-  double pRpB = pR*pB;
+  double pB = DPHelpers::daughterMomentum(mBs, _mKK, mPhi);
+  double pRpB = pR * pB;
   return TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
 }
 /*****************************************************************************/

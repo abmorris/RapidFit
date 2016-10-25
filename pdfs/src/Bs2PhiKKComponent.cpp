@@ -29,34 +29,44 @@ using std::cout;
 using std::endl;
 
 double Bs2PhiKKComponent::mBs  = 5366.77;
+
+double Bs2PhiKKComponent::mfzero = 939.9;
+double Bs2PhiKKComponent::gpipi = 199.0;
+double Bs2PhiKKComponent::Rg = 3.0;
+
 double Bs2PhiKKComponent::mphi = 1019.461;
+//double Bs2PhiKKComponent::wphi = 4.266; // PDG
+double Bs2PhiKKComponent::wphi = 4.59; // Jpsi KK
+
+double Bs2PhiKKComponent::mftwo = 1522.2;
+double Bs2PhiKKComponent::wftwo = 84;
+
 double Bs2PhiKKComponent::mK   = 493.677;
 double Bs2PhiKKComponent::mpi  = 139.570;
 
+
 // Constructor
-Bs2PhiKKComponent::Bs2PhiKKComponent(int J2, double M2, double W2, string shape, double RBs, double RKK) : 
+Bs2PhiKKComponent::Bs2PhiKKComponent(int J2, double M2, double W2, string shape, double RBs, double RKK) :
     _J1(1)        // Spin of phi --> fixed
   , _J2(J2)       // Spin of KK resonance
   , _M1(mphi)     // Mass of phi --> fixed
   , _M2(M2)       // Mass of KK resonance
-  , _W1(4.266)    // Width of phi --> fixed
+  , _W1(wphi)    // Width of phi --> fixed
   , _W2(W2)       // Width of KK resonance
   , _shape(shape) // chooses a resonance shape
   , _RBs(RBs)     // RBs and RKK are barrier factor radii for the Bs and the KK resonance
   , _RKK(RKK)
 {
   Initialise();
+  unsigned int n = helicities.size();
+  while(_A.size() < n)
+    _A.push_back(TComplex(sqrt(1. / n), 0, true));
 }
 void Bs2PhiKKComponent::Initialise()
 {
-  _lambda_max = TMath::Min(_J1, _J2); // Maximum helicity
-  int n = 1 + 2 * _lambda_max;
-  _A = new TComplex[n];
-  for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
-  {
-    int i = lambda + _lambda_max;
-    _A[i] = TComplex(sqrt(1.0 / n), 0, true);
-  }
+  int lambda_max = TMath::Min(_J1, _J2); // Maximum helicity
+  for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
+    helicities.push_back(lambda);
   // Breit Wigner
   if(_shape=="BW")
   {
@@ -65,7 +75,7 @@ void Bs2PhiKKComponent::Initialise()
   // Flatte
   if(_shape=="FT")
   {
-    _M = new DPFlatteShape(_M2, 199, mpi, mpi, 199*3, mK, mK); // Values for g0 and g1 are taken from Table 8 in LHCb-PAPER-2012-005
+    _M = new DPFlatteShape(_M2, gpipi, mpi, mpi, gpipi*Rg, mK, mK); // Values for g0 and g1 are taken from Table 8 in LHCb-PAPER-2012-005
   }
   if(_shape=="NR")
   {
@@ -105,24 +115,22 @@ void Bs2PhiKKComponent::Initialise()
       break;
   }
 }
-Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& copy) : 
-    _J2(copy._J2)
+Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& copy) :
+    _J1(copy._J1)
+  , _J2(copy._J2)
+  , _M1(copy._M1)
   , _M2(copy._M2)
+  , _W1(copy._W1)
   , _W2(copy._W2)
   , _shape(copy._shape)
   , _RBs(copy._RBs)
   , _RKK(copy._RKK)
+  , _A(copy._A)
 {
   Initialise();
-  for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
-  {
-    int i = lambda + _lambda_max;
-    _A[i] = copy._A[i];
-  }
 }
 Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
-  delete[] _A;
   delete _M;
   delete Bsbarrier;
   delete KKbarrier;
@@ -132,8 +140,8 @@ Bs2PhiKKComponent::~Bs2PhiKKComponent()
 // Get the corresponding helicity amplitude for a given value of helicity, instead of using array indices
 TComplex Bs2PhiKKComponent::A(int lambda)
 {
-  if(abs(lambda) > _lambda_max) return TComplex(0,0); //safety
-  int i = lambda + _lambda_max;
+  if(abs(lambda) > helicities.back()) return TComplex(0, 0); //safety
+  int i = lambda + helicities.back();
   return _A[i];
 }
 // Mass-dependent part of the amplitude
@@ -144,9 +152,13 @@ TComplex Bs2PhiKKComponent::M(double m)
 // Angular part of the amplitude
 TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
+  if ( _shape == "NR" )
+  {
+    return TComplex(1, 0);
+  }
   TComplex exparg = TComplex::I()*Phi;
   exparg*=lambda;
-  return wignerPhi->function(ctheta_1,lambda,0) * wigner->function(ctheta_2,lambda,0) * TComplex::Exp(exparg);
+  return wignerPhi->function(ctheta_1, lambda, 0) * wigner->function(ctheta_2, lambda, 0) * TComplex::Exp(exparg);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -174,54 +186,39 @@ double Bs2PhiKKComponent::OFBF(double mKK)
   return orbitalFactor * barrierFactor;
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, double ctheta_1, double ctheta_2)
+TComplex Bs2PhiKKComponent::Amplitude(bool antiB, double mKK, double phi, double ctheta_1, double ctheta_2)
 {
-  return Amplitude(conjHelAmp, mKK, phi, ctheta_1, ctheta_2, "full");
+  return Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2, "");
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(bool conjHelAmp, double mKK, double phi, double ctheta_1, double ctheta_2, string option)
+TComplex Bs2PhiKKComponent::Amplitude(bool antiB, double mKK, double phi, double ctheta_1, double ctheta_2, string option)
 {
+  if(antiB) // Add π to the θ angles because they are now defined on the opposite-signed kaon
+  {
+    phi *= -1;
+    ctheta_1 *= -1.;
+    ctheta_2 *= -1.;
+  }
   // Mass-dependent part
-  TComplex massPart    = M(mKK);
+  TComplex massPart = M(mKK);
   // Angular part
-  TComplex angularPart(0,0);
-  TComplex TraAmp[3]; // Transversity amplitudes
-  TComplex ConjTA[3]; // Conjugate transversity amplitudes
+  TComplex angularPart(0, 0);
   if(option.find("odd") != string::npos || option.find("even") != string::npos)
   {
-    TraAmp[0] = A(0); // zero
-    TraAmp[1] = (A(+1)-A(-1))/sqrt(2.); // perp (1 is odd)
-    TraAmp[2] = (A(+1)+A(-1))/sqrt(2.); // para (2 is even)
-    ConjTA[0] = A(0); // zero
-    ConjTA[1] = (A(+1)-A(-1))/sqrt(2.); // perp (1 is odd)
-    ConjTA[2] = (A(+1)+A(-1))/sqrt(2.); // para (2 is even)
-  }
-  if(option.find("odd") != string::npos)
-  {
-    TComplex* HelAmp = conjHelAmp ? new TComplex[3] {-ConjTA[1]/sqrt(2), TComplex(0,0), ConjTA[1]/sqrt(2)}
-                                  : new TComplex[3] {-TraAmp[1]/sqrt(2), TComplex(0,0), TraAmp[1]/sqrt(2)}; // C++11 is literally magic
-    for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
-    {
-      angularPart += HelAmp[lambda+_lambda_max] * F(lambda, phi, ctheta_1, ctheta_2);
-    }
-  }
-  else if(option.find("even") != string::npos)
-  {
-    TComplex* HelAmp = conjHelAmp ? new TComplex[3] { ConjTA[2]/sqrt(2), ConjTA[0], ConjTA[2]/sqrt(2)}
-                                  : new TComplex[3] { TraAmp[2]/sqrt(2), TraAmp[0], TraAmp[2]/sqrt(2)};
-    for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
-    {
-      angularPart += HelAmp[lambda+_lambda_max] * F(lambda, phi, ctheta_1, ctheta_2);
-    }
+    TComplex Aperp = (A(+1) - A(-1))/sqrt(2.);
+    TComplex Apara = (A(+1) + A(-1))/sqrt(2.);
+    TComplex* HelAmp;
+    if(option.find("odd") != string::npos)
+      HelAmp = new TComplex[3]{-Aperp/sqrt(2.), TComplex(0, 0), Aperp/sqrt(2.)};
+    else if(option.find("even") != string::npos)
+      HelAmp = new TComplex[3]{Apara/sqrt(2.), A(0), Apara/sqrt(2.)};
+    for(int lambda : helicities)
+      angularPart += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
+    delete[] HelAmp;
   }
   else // assume full amplitude, don't thow an error
-  {
-    for(int lambda = -_lambda_max; lambda <= _lambda_max; lambda++)
-    {
-      TComplex HelAmp = conjHelAmp ? TComplex::Conjugate(A(lambda)) : A(lambda);
-      angularPart += HelAmp * F(lambda, phi, ctheta_1, ctheta_2);
-    }
-  }
+    for(int lambda : helicities)
+      angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
   // Result
   return massPart * angularPart * OFBF(mKK);
 }
@@ -230,25 +227,44 @@ void Bs2PhiKKComponent::SetHelicityAmplitudes(int i, double mag, double phase)
 {
   _A[i] = TComplex(mag, phase, true);
 }
+void Bs2PhiKKComponent::SetHelicityAmplitudes(int i, TComplex newA)
+{
+  _A[i] = newA;
+}
+void Bs2PhiKKComponent::SetMassWidth(double mass, double width)
+{
+  _M2 = mass;
+  _W2 = width;
+  double pars[] = {mass, width};
+  if(_shape == "BW")
+   _M->setParameters(pars);
+}
+void Bs2PhiKKComponent::SetMassCouplings(double mass, double gpipi, double gKK)
+{
+  _M2 = mass;
+  double pars[] = {mass, gpipi, gKK};
+  if(_shape == "FT")
+    _M->setParameters(pars);
+}
 void Bs2PhiKKComponent::Print()
 {
   cout << "| Spin-" << _J2 << " KK resonance" << endl;
   cout << "| Mass        :\t" << _M2 << " MeV" << endl;
   cout << "| Width       :\t" << _W2 << " MeV" << endl;
   cout << "| Helicity    :\t";
-  for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
+  for(int lambda : helicities)
   {
     cout << lambda << "\t";
   }
   cout << endl;
   cout << "| |A|         :\t";
-  for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
+  for(int lambda : helicities)
   {
     cout << A(lambda).Rho() << "\t";
   }
   cout << endl;
   cout << "| δ           :\t";
-  for(int lambda = -_lambda_max; lambda <= +_lambda_max; lambda++)
+  for(int lambda : helicities)
   {
     cout << A(lambda).Theta() << "\t";
   }

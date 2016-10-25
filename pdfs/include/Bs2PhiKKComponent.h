@@ -25,16 +25,24 @@ class Bs2PhiKKComponent
     Bs2PhiKKComponent(const Bs2PhiKKComponent&);
     ~Bs2PhiKKComponent();
     void SetHelicityAmplitudes(int, double, double);
-    void SetMassWidth(double mass, double width) {_M2 = mass; _W2 = width;}
+    void SetHelicityAmplitudes(int, TComplex);
+    void SetMassWidth(double, double);
+    void SetMassCouplings(double, double, double);
     TComplex Amplitude(bool, double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
     TComplex Amplitude(bool, double, double, double, double, string);
     void Print();
-    static double mBs ;
+    static double mBs;
+    static double mfzero;
+    static double gpipi;
+    static double Rg;
     static double mphi;
-    static double mK  ;
-    static double mpi ;
+    static double wphi;
+    static double mftwo;
+    static double wftwo;
+    static double mK;
+    static double mpi;
   protected:
-    TComplex*         _A;  // Helicity amplitude(s)
+    vector<TComplex>  _A;  // Helicity amplitude(s)
     int               _J1; // Spin of the phi (P-wave, 1)
     int               _J2; // Spin of the KK resonance (0, 1 or 2)
     double            _M1; // Mass of the phi
@@ -55,7 +63,7 @@ class Bs2PhiKKComponent
     DPBarrierFactor*  Bsbarrier; // Blatt-Weisskopf barrier penetration factor for the Bs
     DPBarrierFactor*  KKbarrier; // Barrier factor for the KK resonance
     DPMassShape*      _M; // Pointer to resonance shape function
-    int               _lambda_max; // Keep track of the max. helicity value
+    vector<int>       helicities;
     bool debug = false;
 };
 #endif
