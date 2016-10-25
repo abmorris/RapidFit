@@ -131,7 +131,8 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 
 	boundary_min = full_boundary->GetConstraint( observableName )->GetMinimum();
 	boundary_max = full_boundary->GetConstraint( observableName )->GetMaximum();
-
+	if(config->xmax > -99999) boundary_max = config->xmax;
+	if(config->xmin > -99999) boundary_min = config->xmin;
 	step_size = ( boundary_max - boundary_min ) / (double)( total_points - 1 );
 
 	//Work out what to plot
