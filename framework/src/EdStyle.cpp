@@ -278,7 +278,7 @@ TString EdStyle::GetParamRootUnit( string Param_Name )
 
 	} else if ( Param_Name == "mass" || Param_Name == "mKK" ) {
 
-		returnable_string = "[MeV/#it{c}^{2}]";
+		returnable_string = "[GeV/#it{c}^{2}]";
 
 	} else if ( Param_Name == "tau" ) {
 

@@ -28,21 +28,20 @@
 using std::cout;
 using std::endl;
 
-double Bs2PhiKKComponent::mBs  = 5366.77;
+double Bs2PhiKKComponent::mBs  = 5.36677;
 
-double Bs2PhiKKComponent::mfzero = 939.9;
-double Bs2PhiKKComponent::gpipi = 199.0;
+double Bs2PhiKKComponent::mfzero = 0.9399;
+double Bs2PhiKKComponent::gpipi = 0.1990;
 double Bs2PhiKKComponent::Rg = 3.0;
 
-double Bs2PhiKKComponent::mphi = 1019.461;
-//double Bs2PhiKKComponent::wphi = 4.266; // PDG
-double Bs2PhiKKComponent::wphi = 4.59; // Jpsi KK
+double Bs2PhiKKComponent::mphi = 1.019461;
+double Bs2PhiKKComponent::wphi = 0.004266; // PDG
 
-double Bs2PhiKKComponent::mftwo = 1522.2;
-double Bs2PhiKKComponent::wftwo = 84;
+double Bs2PhiKKComponent::mftwo = 1.5222;
+double Bs2PhiKKComponent::wftwo = 0.084;
 
-double Bs2PhiKKComponent::mK   = 493.677;
-double Bs2PhiKKComponent::mpi  = 139.570;
+double Bs2PhiKKComponent::mK   = 0.493677;
+double Bs2PhiKKComponent::mpi  = 0.139570;
 
 
 // Constructor

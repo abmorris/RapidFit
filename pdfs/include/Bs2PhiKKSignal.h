@@ -46,7 +46,7 @@ class Bs2PhiKKSignal : public BasePDF
       // Resonance parameters
       double        fzeroMass    , fzerogpipi    , fzeroRg    , phiMass    , phiWidth    , ftwoMass    , ftwoWidth    ;
       ObservableRef fzeroMassName, fzerogpipiName, fzeroRgName, phiMassName, phiWidthName, ftwoMassName, ftwoWidthName;
-      // Pull these from the options
+      // Barrier factor radius. Pull these from the options
       double RBs, RKK;
       // Options
       vector<string> componentlist;
@@ -67,7 +67,7 @@ class Bs2PhiKKSignal : public BasePDF
       vector<Bs2PhiKKComponent*> components;
       void SetComponentAmplitudes();
       void SetResonanceParameters();
-      double PhaseSpace(double);
+      double p1stp3(double);
       double Acceptance();
       // Stuff to do on creation
       void Initialise();

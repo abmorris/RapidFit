@@ -90,6 +90,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   // Options
   , floatResPars(config->isTrue("FloatResPars"))
   , acceptance_moments((string)config->getConfigurationValue("CoefficientsFile") != "")
+  , RBs(stod(config->getConfigurationValue("RBs")))
+  , RKK(stod(config->getConfigurationValue("RKK")))
 {
   MakePrototypes();
   bool drawAll = config->isTrue("DrawAll");
@@ -205,6 +207,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   // Options
   , floatResPars(copy.floatResPars)
   , acceptance_moments(copy.acceptance_moments)
+  , RBs(copy.RBs)
+  , RKK(copy.RKK)
 {
   if(acceptance_moments) acc_m = new LegendreMomentShape(*copy.acc_m);
   Initialise();
@@ -220,9 +224,6 @@ Bs2PhiKKSignal::~Bs2PhiKKSignal()
 // Code common to the constructors
 void Bs2PhiKKSignal::Initialise()
 {
-  // Typical values of barrier factor radius are 3 and 1.7 inverse GeV
-  RBs = 5.0e3;
-  RKK = 1.5e3;
   // Initialise the signal components
   NonRes = new Bs2PhiKKComponent(0, 0, 0, "NR", RBs, RKK);
   Swave  = new Bs2PhiKKComponent(0, 0, 0, "FT", RBs, RKK);
@@ -339,32 +340,32 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
   ReadDataPoint(measurement);
   if(mKK < 2 * Bs2PhiKKComponent::mK) return 0;
   // Evaluate the PDF at this point
-  double Gamma = 0;
+  double absMatElSq = 0; // square of matrix element: |M|^2
   if(compName=="NonRes")
-    Gamma = ComponentDecayRate(NonRes);
+    absMatElSq = ComponentDecayRate(NonRes);
   else if(compName=="Swave")
-    Gamma = ComponentDecayRate(Swave);
+    absMatElSq = ComponentDecayRate(Swave);
   else if(compName=="Pwave")
-    Gamma = ComponentDecayRate(Pwave);
+    absMatElSq = ComponentDecayRate(Pwave);
   else if(compName=="Pwave-odd")
-    Gamma = ComponentDecayRate(Pwave, "odd");
+    absMatElSq = ComponentDecayRate(Pwave, "odd");
   else if(compName=="Pwave-even")
-    Gamma = ComponentDecayRate(Pwave, "even");
+    absMatElSq = ComponentDecayRate(Pwave, "even");
   else if(compName=="Dwave")
-    Gamma = ComponentDecayRate(Dwave);
+    absMatElSq = ComponentDecayRate(Dwave);
   else if(compName=="Dwave-odd")
-    Gamma = ComponentDecayRate(Dwave, "odd");
+    absMatElSq = ComponentDecayRate(Dwave, "odd");
   else if(compName=="Dwave-even")
-    Gamma = ComponentDecayRate(Dwave, "even");
+    absMatElSq = ComponentDecayRate(Dwave, "even");
   else if(compName=="interference")
   {
-    Gamma = TotalDecayRate();
+    absMatElSq = TotalDecayRate();
     for(auto comp : components)
-      Gamma -= ComponentDecayRate(comp);
+      absMatElSq -= ComponentDecayRate(comp);
   }
   else
     return Evaluate(measurement);
-  return Gamma * PhaseSpace(mKK) * Acceptance();
+  return absMatElSq * p1stp3(mKK) * Acceptance();
 }
 /*****************************************************************************/
 // Calculate the function value
@@ -372,7 +373,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
   ReadDataPoint(measurement);
   if(mKK < 2 * Bs2PhiKKComponent::mK) return 0;
-  return TotalDecayRate() * PhaseSpace(mKK) * Acceptance();
+  return TotalDecayRate() * p1stp3(mKK) * Acceptance();
 }
 /*****************************************************************************/
 void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
@@ -397,15 +398,15 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 /*****************************************************************************/
 double Bs2PhiKKSignal::TotalDecayRate()
 {
-  double Gamma(0);
+  double absMatElSq(0);
   for(bool antiB : {false, true})
   {
     TComplex TotalAmp(0,0);
     for(auto comp : components)
       TotalAmp += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2);
-    Gamma += TotalAmp.Rho2();
+    absMatElSq += TotalAmp.Rho2();
   }
-  return Gamma;
+  return absMatElSq;
 }
 double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp)
 {
@@ -413,10 +414,10 @@ double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp)
 }
 double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp, string option)
 {
-  double Gamma(0);
+  double absMatElSq(0);
   for(bool antiB : {false, true})
-    Gamma += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2, option).Rho2();
-  return Gamma;
+    absMatElSq += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2, option).Rho2();
+  return absMatElSq;
 }
 /*****************************************************************************/
 void Bs2PhiKKSignal::SetComponentAmplitudes()
@@ -439,7 +440,7 @@ void Bs2PhiKKSignal::SetComponentAmplitudes()
   TComplex ADplus  = (ADpara + ADperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex ADminus = (ADpara - ADperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // Set the S-wave helicity amplitude
-  NonRes->SetHelicityAmplitudes(0, sqrt(NonResFrac/1e12), 0);
+  NonRes->SetHelicityAmplitudes(0, sqrt(NonResFrac), 0);
   // Set the S-wave helicity amplitude
   Swave->SetHelicityAmplitudes(0, ASzero);
   // Set the P-wave helicity amplitudes
@@ -466,7 +467,7 @@ double Bs2PhiKKSignal::Acceptance()
   return acceptance>0 ? acceptance : 1e-12;
 }
 /*****************************************************************************/
-double Bs2PhiKKSignal::PhaseSpace(double _mKK)
+double Bs2PhiKKSignal::p1stp3(double _mKK)
 {
 //  _mKK/=1000.;
   const double mK   = Bs2PhiKKComponent::mK;//1000.;
