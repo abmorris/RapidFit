@@ -47,6 +47,12 @@ TComplex DPFlatteShape::massShape(double x)
   T = T / denom;
   return T;
 }
+
+void DPFlatteShape::setParameters(double* pars)
+{
+  setResonanceParameters(pars[0],pars[1],pars[2]);
+}
+
 void DPFlatteShape::setResonanceParameters(double in_mean, double in_g0, double in_g1)
 {
   mean=in_mean;
@@ -56,6 +62,8 @@ void DPFlatteShape::setResonanceParameters(double in_mean, double in_g0, double 
 
 void DPFlatteShape::setResonanceParameters(double n, double o)
 {
+  (void)n;
+  (void)o;
   return;
 }
 

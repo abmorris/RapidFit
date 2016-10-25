@@ -13,7 +13,7 @@ class DPFlatteShape: public virtual DPMassShape
 
     TComplex massShape(double x);
 
-    void setParameters(double* pars){};
+    void setParameters(double* pars);
   
   protected:
     double mean, g0, m0a, m0b, g1, m1a, m1b;
