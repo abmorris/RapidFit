@@ -767,7 +767,7 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>* >* >* X_values
 			TCanvas* c1 = EdStyle::RapidFitCanvas( CanvasCleanName.c_str(), "" );
 
 			data_plot->Draw();
-			data_graph->Draw("PC9 SAME");
+			data_graph->Draw("PC SAME");
 			c1->Update();
 			double Y_min = -99999.;
 			double Y_max = -99999.;
@@ -1288,7 +1288,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 	}
 
 	input_data->SetTitle( plotTitle );
-	input_data->Draw("AP9");
+	input_data->Draw("AP");
 	if( !input_bin_theory_data.empty() )
 	{
 		pad1->Modified();
@@ -1451,11 +1451,11 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		{
 			if( drawSpline )
 			{
-				(*comp_i)->Draw("C9");
+				(*comp_i)->Draw("C");
 			}
 			else
 			{
-				(*comp_i)->Draw("L9");
+				(*comp_i)->Draw("L");
 			}
 
 			if( !component_names.empty() )
@@ -1550,7 +1550,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		//cout << endl;
 
 		TGraphErrors* pullGraph = new TGraphErrors( (int)pull_value.size(), &(x_values[0]), &(pull_value[0]), &(x_errs[0]), &(pull_error_value[0]) );
-		pullGraph->Draw("AP9");
+		pullGraph->Draw("AP");
 		pad2->Modified();
 		pad2->Update();
 		c1->Update();
@@ -1585,9 +1585,9 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 
 	TString Clean_Description = StringProcessing::Clean( CombinationDescription.c_str() );
 
-	c1->Print( TString("Overlay_"+observableName+"_"+Clean_Description+".C") );
-	c1->Print( TString("Overlay_"+observableName+"_"+Clean_Description+".pdf") );
-	c1->Print( TString("Overlay_"+observableName+"_"+Clean_Description+".png") );
+	c1->SaveAs( TString("Overlay_"+observableName+"_"+Clean_Description+".C") );
+	c1->SaveAs( TString("Overlay_"+observableName+"_"+Clean_Description+".pdf") );
+	c1->SaveAs( TString("Overlay_"+observableName+"_"+Clean_Description+".png") );
 
 }
 
@@ -2005,7 +2005,7 @@ TGraphErrors* ComponentPlotter::PullPlot1D( vector<double> input_bin_theory_data
 	replace( canvas_clean_name.begin(), canvas_clean_name.end(), '.', '_' );
 
 	TCanvas* c1 = EdStyle::RapidFitCanvas( canvas_clean_name.c_str(), canvas_name );
-	pullGraph->Draw("AP9");
+	pullGraph->Draw("AP");
 	c1->Update();
 
 	if( conf != NULL )
