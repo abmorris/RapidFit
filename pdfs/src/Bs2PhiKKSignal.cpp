@@ -134,38 +134,35 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
     }
   }
   bool drawAll = config->isTrue("DrawAll");
-  if(config->isTrue("DrawComponents"))
+  if(drawAll || config->isTrue("DrawNonRes"))
   {
-    if(drawAll || config->isTrue("DrawNonRes"))
-    {
-      componentlist.push_back("NonRes");
-    }
-    if(drawAll || config->isTrue("DrawSwave"))
-    {
-      componentlist.push_back("Swave");
-    }
-    if(config->isTrue("DrawPwave"))
-    {
-      componentlist.push_back("Pwave");
-    }
-    if(drawAll || config->isTrue("DrawPwaveComponents"))
-    {
-      componentlist.push_back("Pwave-even");
-      componentlist.push_back("Pwave-odd");
-    }
-    if(config->isTrue("DrawDwave"))
-    {
-      componentlist.push_back("Dwave");
-    }
-    if(drawAll || config->isTrue("DrawDwaveComponents"))
-    {
-      componentlist.push_back("Dwave-even");
-      componentlist.push_back("Dwave-odd");
-    }
-    if(drawAll || config->isTrue("DrawInterference"))
-    {
-      componentlist.push_back("interference");
-    }
+    componentlist.push_back("NonRes");
+  }
+  if(drawAll || config->isTrue("DrawSwave"))
+  {
+    componentlist.push_back("Swave");
+  }
+  if(config->isTrue("DrawPwave"))
+  {
+    componentlist.push_back("Pwave");
+  }
+  if(drawAll || config->isTrue("DrawPwaveComponents"))
+  {
+    componentlist.push_back("Pwave-even");
+    componentlist.push_back("Pwave-odd");
+  }
+  if(config->isTrue("DrawDwave"))
+  {
+    componentlist.push_back("Dwave");
+  }
+  if(drawAll || config->isTrue("DrawDwaveComponents"))
+  {
+    componentlist.push_back("Dwave-even");
+    componentlist.push_back("Dwave-odd");
+  }
+  if(drawAll || config->isTrue("DrawInterference"))
+  {
+    componentlist.push_back("interference");
   }
   if(acceptance_moments) acc_m = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
   Initialise();
