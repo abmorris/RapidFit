@@ -12,6 +12,9 @@
 #include <stdexcept>
 // ROOT Libraries
 #include "TComplex.h"
+#include "TKey.h"
+#include "TFile.h"
+#include "TTree.h"
 // RapidFit
 #include "PDFConfigurator.h"
 #include "DPHelpers.hh"
@@ -90,10 +93,46 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   // Options
   , floatResPars(config->isTrue("FloatResPars"))
   , acceptance_moments((string)config->getConfigurationValue("CoefficientsFile") != "")
-  , RBs(stod(config->getConfigurationValue("RBs")))
-  , RKK(stod(config->getConfigurationValue("RKK")))
+  , acceptance_histogram((string)config->getConfigurationValue("HistogramFile") != "")
 {
+  string RBs_str = config->getConfigurationValue("RBs");
+  RBs = std::atof(RBs_str.c_str());
+  string RKK_str = config->getConfigurationValue("RKK");
+  RKK = std::atof(RKK_str.c_str());
   MakePrototypes();
+  if(acceptance_histogram)
+  {
+    // The goal here is to get a TKDTreeID object to define the binning scheme, and to fill the bin content array from a tree that's sitting in the same file.
+    // Much of this is re-implement from my FourDHist_Adaptive class in the BsPhiKK project
+    TFile* accfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
+    TIter next = accfile->GetListOfKeys();
+    TKey* key;
+    TTree* acctree;
+    // Look for any TTree and TKDTree object in the file
+    cout << "Looking for TTree and TKDTree objects in the file " << accfile->GetName() << endl;
+    while((key = (TKey*)next()))
+    {
+      if(strcmp(key->GetClassName(),"TKDTree<int,double>")==0)
+        accbinner = (TKDTreeID*)key->ReadObj();
+      if(strcmp(key->GetClassName(),"TTree")==0)
+        acctree = (TTree*)key->ReadObj();
+    }
+    // Throw a wobbly if you can't find either
+    if(accbinner == NULL)
+      throw runtime_error("Couldn't find a TKDTree object in the file");
+    if(acctree == NULL)
+      throw runtime_error("Couldn't find a TTree object in the file");
+    // Load the binned values of acceptance
+    cout << "Loading the binned acceptance values from the tree" << endl;
+    int nbins = accbinner->GetNNodes()+1;
+    double content;
+    acctree->SetBranchAddress("content",&content);
+    for(int ibin = 0; ibin < nbins; ibin++)
+    {
+      acctree->GetEntry(ibin);
+      accbincontent.push_back(content);
+    }
+  }
   bool drawAll = config->isTrue("DrawAll");
   if(config->isTrue("DrawComponents"))
   {
@@ -209,8 +248,14 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , acceptance_moments(copy.acceptance_moments)
   , RBs(copy.RBs)
   , RKK(copy.RKK)
+  , acceptance_histogram(copy.acceptance_histogram)
 {
   if(acceptance_moments) acc_m = new LegendreMomentShape(*copy.acc_m);
+  if(acceptance_histogram)
+  {
+    accbinner = copy.accbinner;
+    accbincontent = copy.accbincontent;
+  }
   Initialise();
 }
 /*****************************************************************************/
@@ -463,6 +508,13 @@ double Bs2PhiKKSignal::Acceptance()
 {
   double acceptance;
   if(acceptance_moments) acceptance = acc_m->Evaluate(mKK, phi, ctheta_1, ctheta_2);
+  else if(acceptance_histogram)
+  {
+    double point[] = {mKK*1e3,phi,ctheta_1,ctheta_2};
+    int bin = accbinner->FindNode(point) - accbinner->GetNNodes();
+    // Return the appropriate value for this bin
+    acceptance = accbincontent[bin];
+  }
   else acceptance = 1.;
   return acceptance>0 ? acceptance : 1e-12;
 }

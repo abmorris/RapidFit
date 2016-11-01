@@ -16,6 +16,7 @@
 #endif
 #include "Bs2PhiKKComponent.h"
 #include "LegendreMomentShape.h"
+#include "TKDTree.h"
 
 class Bs2PhiKKSignal : public BasePDF
 {
@@ -52,8 +53,12 @@ class Bs2PhiKKSignal : public BasePDF
       vector<string> componentlist;
       bool floatResPars;
       bool acceptance_moments;
+      bool acceptance_histogram;
       // Acceptance
       LegendreMomentShape* acc_m;
+      // Acceptance object
+      TKDTreeID* accbinner;
+      vector <double> accbincontent;
     private:
       // Calculation
       double TotalDecayRate();
