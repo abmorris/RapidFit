@@ -580,9 +580,9 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 	int mnpar, nparx, stat;
 	currentMinuitInstance->mnstat( min, edm, errdef, mnpar, nparx, stat );
 
-	cout << "Call: " << left << setw(5) << function->GetCallNum() << " NLL: " << setprecision(18) << setw(20) << fval << " minNLL: " << setprecision(18) << setw(20) << min;
-	cout << " EDM: " << setprecision(10) << setw(15) << edm;
-	cout << " Status: " << setw(1) << stat << setw(5) << " ";
+	cout << "Call: " << left << setw(5) << function->GetCallNum() << " NLL: " << setprecision(6) << setw(8) << fval << " minNLL: " << setprecision(6) << setw(8) << min;
+	cout << " EDM: " << setprecision(6) << setw(8) << edm;
+	cout << " Status: " << setw(1) << stat << setw(3) << " ";
 
 	LastSet->UpdatePhysicsParameters( (double*)xval, npar );
 
@@ -590,10 +590,10 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 	{
 		if( !thisTry.empty() )
 		{
+			cout << " deltaMin: "  << setprecision(4) << setw(12) << fval-min;
 			cout << " Trying: ";
-			cout << " " << thisTry[0] << " = " << setprecision(10) << setw(15) << LastSet->GetPhysicsParameter( thisTry[0] )->GetBlindedValue();
-			cout << " deltaMin: "  << setprecision(18) << setw(20) << fval-min;
-			cout << setw(20) << " ";
+			cout << " " << thisTry[0] << " = " << setprecision(6) << setw(12) << LastSet->GetPhysicsParameter( thisTry[0] )->GetBlindedValue();
+			cout << setw(4) << " ";
 		}
 	}
 
