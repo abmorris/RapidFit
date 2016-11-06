@@ -47,15 +47,10 @@ Bs2PhiPhi::Bs2PhiPhi(PDFConfigurator* config) :
 {
   MakePrototypes();
   bool drawAll = config->isTrue("DrawAll");
-  if(config->isTrue("DrawComponents"))
+  if(drawAll || config->isTrue("DrawPwaveComponents"))
   {
-    componentlist.push_back("0");
-    if(drawAll || config->isTrue("DrawPwave"))
-    {
-      componentlist.push_back("Pwave-even");
-      componentlist.push_back("Pwave-odd");
-    }
-    componentlist.push_back("0");
+    componentlist.push_back("Pwave-even");
+    componentlist.push_back("Pwave-odd");
   }
   Initialise();
 }
