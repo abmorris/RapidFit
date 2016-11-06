@@ -28,12 +28,15 @@ Bs2PhiPhi::Bs2PhiPhi(PDFConfigurator* config) :
   , ctheta_1Name(config->getName("ctheta_1"))
   , ctheta_2Name(config->getName("ctheta_2"))
   // Physics parameters
+  , dGsGs(0.0)
   , Aperpsq(0.0)
   , Azerosq(0.0)
   , Aparasq(0.0)
   , deltaperp(0.0)
   , deltazero(0.0)
   , deltapara(0.0)
+  // Width splitting
+  , dGsGsName(config->getName("dGsGs"))
   // Magnitude-squared of helicity amplitudes
   , AperpsqName(config->getName("APperp2"))
   , AzerosqName(config->getName("APzero2"))
@@ -67,12 +70,15 @@ Bs2PhiPhi::Bs2PhiPhi(const Bs2PhiPhi& copy) :
   , ctheta_1Name(copy.ctheta_1Name)
   , ctheta_2Name(copy.ctheta_2Name)
   // Physics parameters
+  , dGsGs(copy.dGsGs)
   , Aperpsq(copy.Aperpsq)
   , Azerosq(copy.Azerosq)
   , Aparasq(copy.Aparasq)
   , deltaperp(copy.deltaperp)
   , deltazero(copy.deltazero)
   , deltapara(copy.deltapara)
+  // Width splitting
+  , dGsGsName(copy.dGsGsName)
   // Magnitude-squared of helicity amplitudes
   , AperpsqName(copy.AperpsqName)
   , AzerosqName(copy.AzerosqName)
@@ -110,6 +116,7 @@ void Bs2PhiPhi::MakePrototypes()
   allObservables.push_back(ctheta_2Name);
   // Make the parameter set
   vector<string> parameterNames;
+  parameterNames.push_back(dGsGsName);
   parameterNames.push_back(AperpsqName);
   parameterNames.push_back(AzerosqName);
   parameterNames.push_back(deltaperpName);
@@ -124,6 +131,7 @@ bool Bs2PhiPhi::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
   bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
   // Retrieve the physics parameters
+  dGsGs   = allParameters.GetPhysicsParameter(dGsGsName  )->GetValue();
   Aperpsq = allParameters.GetPhysicsParameter(AperpsqName)->GetValue();
   Azerosq = allParameters.GetPhysicsParameter(AzerosqName)->GetValue();
   Aparasq = 1.0 - Aperpsq - Azerosq;
@@ -182,18 +190,15 @@ double Bs2PhiPhi::Evaluate(DataPoint* measurement)
   double ctheta_2_sq = ctheta_2*ctheta_2;           // cos²(θ2)
   double stheta_2_sq = 1 - ctheta_2_sq;             // sin²(θ2)
   double s2theta_2   = 2*ctheta_2*sqrt(stheta_2_sq);// sin(2θ2)
+  // Calculate ΓH/ΓL
+  double Q = (2-dGsGs)/(2+dGsGs);
   // Coefficients
-  TComplex Aperp, Azero, Apara;
-  Aperp = TComplex(sqrt(Aperpsq),deltaperp,true);
-  Azero = TComplex(sqrt(Azerosq),deltazero,true);
-  Apara = TComplex(sqrt(Aparasq),deltapara,true);
   double K[6] = {0};
-  K[0] = Azero.Rho2();// |A0|²
-  K[1] = Apara.Rho2();// |A‖|²
-  K[2] = Aperp.Rho2();// |A⊥|²
+  K[0] = Azerosq;// |A0|²
+  K[1] = Aparasq;// |A‖|²
+  K[2] = Aperpsq/Q;// |A⊥|² ΓL/ΓH
   // K[3] is zero
-  K[4] = Azero.Rho() * Apara.Rho() * cos((Apara/Azero).Theta());// |A0||A‖|cos(arg(A‖/A0)) or Re(A‖A0*)
-  // K[5] is zero
+  K[4] = sqrt(Azerosq) * sqrt(Aparasq) * cos(deltapara);// |A0||A‖|cos(arg(A‖/A0)) or Re(A‖A0*)
   // Angular functions
   double F[6] = {0};
   F[0] = 4*ctheta_1_sq*ctheta_2_sq;             // 4cos²(θ1)cos²(θ2)
@@ -217,13 +222,13 @@ double Bs2PhiPhi::Evaluate(DataPoint* measurement)
       Gamma += K[i] * F[i];
     }
   }
-  Gamma *= 9.0 / (32.0*TMath::Pi());
   return Gamma;
 }
 /*****************************************************************************/
 double Bs2PhiPhi::Normalisation(PhaseSpaceBoundary* boundary)
 {
   (void)boundary;
-  return 1;
+  double Q = (2-dGsGs)/(2+dGsGs);
+  return (32.0*TMath::Pi())/9.0 * (Azerosq*(Q-1)+Aparasq*(Q-1)+1)/Q;
 }
 

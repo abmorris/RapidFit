@@ -33,7 +33,10 @@ class Bs2PhiPhi : public BasePDF
       // K+K− mass and helicity angles
       double        ctheta_1,     ctheta_2,     phi;
       ObservableRef ctheta_1Name, ctheta_2Name, phiName;
-      // Parameters
+      // Bs width splitting
+      double        dGsGs    ;
+      ObservableRef dGsGsName;
+      // Amplitude parameters
       double        Aperpsq      , Azerosq      , Aparasq      ;
       ObservableRef AperpsqName  , AzerosqName                 ;
       double        deltaperp    , deltazero    , deltapara    ;
