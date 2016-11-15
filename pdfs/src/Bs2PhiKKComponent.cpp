@@ -185,19 +185,13 @@ double Bs2PhiKKComponent::OFBF(double mKK)
   return orbitalFactor * barrierFactor;
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(bool antiB, double mKK, double phi, double ctheta_1, double ctheta_2)
+TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
 {
-  return Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2, "");
+  return Amplitude(mKK, phi, ctheta_1, ctheta_2, "");
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(bool antiB, double mKK, double phi, double ctheta_1, double ctheta_2, string option)
+TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2, string option)
 {
-  if(antiB) // Add π to the θ angles because they are now defined on the opposite-signed kaon
-  {
-    phi *= -1;
-    ctheta_1 *= -1.;
-    ctheta_2 *= -1.;
-  }
   // Mass-dependent part
   TComplex massPart = M(mKK);
   // Angular part

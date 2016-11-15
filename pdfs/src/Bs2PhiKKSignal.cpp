@@ -49,6 +49,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   , phiWidthName(config->getName("phiWidth"))
   , ftwoMassName(config->getName("ftwoMass"))
   , ftwoWidthName(config->getName("ftwoWidth"))
+  // Width splitting
+  , dGsGs(0.0)
   // Variables for physics amplitudes
   // Scaling factors for each component
   , NonResFrac(0.)
@@ -71,6 +73,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   , deltaDperp(0.)
   , deltaDzero(0.)
   , deltaDpara(0.)
+  // Width splitting
+  , dGsGsName(config->getName("dGsGs"))
   // Fit parameter names for physics amplitudes
   // Scaling factors for each component
   , NonResFracName(config->getName("NonResFrac"))
@@ -197,6 +201,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , phiWidthName(copy.phiWidthName)
   , ftwoMassName(copy.ftwoMassName)
   , ftwoWidthName(copy.ftwoWidthName)
+  // Width splitting
+  , dGsGs(copy.dGsGs)
   // Variables for physics amplitudes
   // Scaling factors for each component
   , NonResFrac(copy.NonResFrac)
@@ -212,13 +218,15 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , ADzerosq(copy.ADzerosq)
   , ADparasq(copy.ADparasq)
   // Phases of amplitudes
-//  , deltaSzero(copy.deltaSzero)
+  , deltaSzero(copy.deltaSzero)
   , deltaPperp(copy.deltaPperp)
   , deltaPzero(copy.deltaPzero)
   , deltaPpara(copy.deltaPpara)
   , deltaDperp(copy.deltaDperp)
   , deltaDzero(copy.deltaDzero)
   , deltaDpara(copy.deltaDpara)
+  // Width splitting
+  , dGsGsName(copy.dGsGsName)
   // Fit parameter names for physics amplitudes
   // Scaling factors for each component
   , NonResFracName(copy.NonResFracName)
@@ -304,6 +312,7 @@ void Bs2PhiKKSignal::MakePrototypes()
     parameterNames.push_back(ftwoMassName);
     parameterNames.push_back(ftwoWidthName);
   }
+  parameterNames.push_back(dGsGsName);
   // Scaling factors for each component
   parameterNames.push_back(NonResFracName);
   parameterNames.push_back(SwaveFracName);
@@ -342,6 +351,7 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
     ftwoWidth  = allParameters.GetPhysicsParameter(ftwoWidthName )->GetValue();
     SetResonanceParameters();
   }
+  dGsGs   = allParameters.GetPhysicsParameter(dGsGsName  )->GetValue();
   // Scaling factors for each component
   NonResFrac = allParameters.GetPhysicsParameter(NonResFracName)->GetValue();
   SwaveFrac  = allParameters.GetPhysicsParameter(SwaveFracName )->GetValue();
@@ -440,15 +450,14 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 /*****************************************************************************/
 double Bs2PhiKKSignal::TotalDecayRate()
 {
-  double absMatElSq(0);
-  for(bool antiB : {false, true})
+  std::map<bool,TComplex> TotalAmp;
+  for(auto anti : {false,true})
   {
-    TComplex TotalAmp(0,0);
+    TotalAmp[anti];
     for(auto comp : components)
-      TotalAmp += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2);
-    absMatElSq += TotalAmp.Rho2();
+      TotalAmp[anti] += anti ? comp->Amplitude(mKK, -phi, -ctheta_1, -ctheta_2) : comp->Amplitude(mKK, phi, ctheta_1, ctheta_2);
   }
-  return absMatElSq;
+  return TimeIntegratedDecayRate(TotalAmp[false],TotalAmp[true]);
 }
 double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp)
 {
@@ -456,10 +465,14 @@ double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp)
 }
 double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent* comp, string option)
 {
-  double absMatElSq(0);
-  for(bool antiB : {false, true})
-    absMatElSq += comp->Amplitude(antiB, mKK, phi, ctheta_1, ctheta_2, option).Rho2();
-  return absMatElSq;
+  return TimeIntegratedDecayRate(comp->Amplitude(mKK, phi, ctheta_1, ctheta_2, option),comp->Amplitude(mKK, -phi, -ctheta_1, -ctheta_2, option));
+}
+double Bs2PhiKKSignal::TimeIntegratedDecayRate(TComplex A, TComplex Abar)
+{
+  double GH = (2-dGsGs); // Actually Γ/2ΓH but who cares about an overall factor Γ?
+  double GL = (2+dGsGs); // Actually Γ/2ΓL
+//  return (A.Rho2())*(1/GL + 1/GH) + (TComplex::Power(TComplex::Conjugate(A),2)).Re()*(1/GL - 1/GH);
+  return (A.Rho2() + Abar.Rho2())*(1/GL + 1/GH) + 2*(Abar*TComplex::Conjugate(A)).Re()*(1/GL - 1/GH);
 }
 /*****************************************************************************/
 void Bs2PhiKKSignal::SetComponentAmplitudes()
@@ -472,13 +485,13 @@ void Bs2PhiKKSignal::SetComponentAmplitudes()
   // P-wave complex amplitudes
   APperp = TComplex(sqrt(APperpsq), deltaPperp, true) * sqrt(PwaveFrac);
   APzero = TComplex(sqrt(APzerosq), deltaPzero, true) * sqrt(PwaveFrac);
-  APpara = TComplex(sqrt(APparasq), deltaPpara, true) * sqrt(PwaveFrac);
+  APpara = TComplex(sqrt(APparasq), deltaPpara+TMath::Pi(), true) * sqrt(PwaveFrac);
   TComplex APplus  = (APpara + APperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex APminus = (APpara - APperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // D-wave complex amplitudes
   ADperp = TComplex(sqrt(ADperpsq), deltaDperp, true) * sqrt(DwaveFrac);
   ADzero = TComplex(sqrt(ADzerosq), deltaDzero, true) * sqrt(DwaveFrac);
-  ADpara = TComplex(sqrt(ADparasq), deltaDpara, true) * sqrt(DwaveFrac);
+  ADpara = TComplex(sqrt(ADparasq), deltaDpara+TMath::Pi(), true) * sqrt(DwaveFrac);
   TComplex ADplus  = (ADpara + ADperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex ADminus = (ADpara - ADperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // Set the S-wave helicity amplitude

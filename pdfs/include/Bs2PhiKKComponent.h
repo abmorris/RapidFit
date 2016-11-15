@@ -28,8 +28,8 @@ class Bs2PhiKKComponent
     void SetHelicityAmplitudes(int, TComplex);
     void SetMassWidth(double, double);
     void SetMassCouplings(double, double, double);
-    TComplex Amplitude(bool, double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
-    TComplex Amplitude(bool, double, double, double, double, string);
+    TComplex Amplitude(double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
+    TComplex Amplitude(double, double, double, double, string);
     void Print();
     static double mBs;
     static double mfzero;

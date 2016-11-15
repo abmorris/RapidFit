@@ -47,6 +47,9 @@ class Bs2PhiKKSignal : public BasePDF
       // Resonance parameters
       double        fzeroMass    , fzerogpipi    , fzeroRg    , phiMass    , phiWidth    , ftwoMass    , ftwoWidth    ;
       ObservableRef fzeroMassName, fzerogpipiName, fzeroRgName, phiMassName, phiWidthName, ftwoMassName, ftwoWidthName;
+      // Bs width splitting
+      double        dGsGs    ;
+      ObservableRef dGsGsName;
       // Barrier factor radius. Pull these from the options
       double RBs, RKK;
       // Options
@@ -64,6 +67,7 @@ class Bs2PhiKKSignal : public BasePDF
       double TotalDecayRate();
       double ComponentDecayRate(Bs2PhiKKComponent*);
       double ComponentDecayRate(Bs2PhiKKComponent*, string);
+      double TimeIntegratedDecayRate(TComplex,TComplex);
       void ReadDataPoint(DataPoint*);
       Bs2PhiKKComponent* Swave;
       Bs2PhiKKComponent* Pwave;
