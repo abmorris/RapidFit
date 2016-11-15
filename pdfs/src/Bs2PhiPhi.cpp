@@ -198,7 +198,7 @@ double Bs2PhiPhi::Evaluate(DataPoint* measurement)
   K[1] = Aparasq;// |A‖|²
   K[2] = Aperpsq/Q;// |A⊥|² ΓL/ΓH
   // K[3] is zero
-  K[4] = sqrt(Azerosq) * sqrt(Aparasq) * cos(deltapara);// |A0||A‖|cos(arg(A‖/A0)) or Re(A‖A0*)
+  K[4] = -sqrt(Azerosq) * sqrt(Aparasq) * cos(deltapara);// |A0||A‖|cos(arg(A‖/A0)) or Re(A‖A0*)
   // Angular functions
   double F[6] = {0};
   F[0] = 4*ctheta_1_sq*ctheta_2_sq;             // 4cos²(θ1)cos²(θ2)
