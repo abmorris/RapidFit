@@ -453,7 +453,7 @@ double Bs2PhiKKSignal::TotalDecayRate()
   std::map<bool,TComplex> TotalAmp;
   for(auto anti : {false,true})
   {
-    TotalAmp[anti];
+    TotalAmp[anti] = TComplex(0,0);
     for(auto comp : components)
       TotalAmp[anti] += anti ? comp->Amplitude(mKK, -phi, -ctheta_1, -ctheta_2) : comp->Amplitude(mKK, phi, ctheta_1, ctheta_2);
   }
