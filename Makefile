@@ -3,7 +3,12 @@ SHELL=/bin/bash
 UNAME=$(shell uname -s )
 CC=g++
 
-
+# Location of compiled "common" libraries from ssh://git@gitlab.cern.ch:7999/admorris/common.git
+COMMONDIR  = $(PWD)/../common
+COMHDRDIR  = $(COMMONDIR)/include
+COMLIBDIR  = $(COMMONDIR)/lib
+COMLIBS   := $(shell find $(COMLIBDIR) -name '*.so')
+COMLIBFLAGS = -L$(COMLIBDIR) $(patsubst $(COMLIBDIR)/lib%.$(LIBEXT), -l%, $(COMLIBS)) -Wl,-rpath=$(COMLIBDIR)
 
 #		ROOT
 TEMPCFLAGS   = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --cflags)
@@ -15,7 +20,7 @@ ROOTLIBS     = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --libs)
 ROOTGLIBS    = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --glibs)
 
 #               On some Systems with Mathmore compiled, sometimes things need to be resolved against it... I don't know why
-EXTRA_ROOTLIBS=-lTreePlayer -lThread -lMinuit -lMinuit2 -lRooFit -lRooStats -lRooFitCore -lFoam $(shell if [ "$(shell root-config --features | grep mathmore)" == "" ]; then echo "" ; else echo "-lMathMore" ; fi)
+EXTRA_ROOTLIBS=-lTreePlayer -lThread -lMinuit -lMinuit2 -lRooFit -lRooStats -lRooFitCore -lFoam $(shell if [ "$(shell root-config --features | grep mathmore)" == "" ]; then echo "" ; else echo "-lMathMore" ; fi) $(COMLIBFLAGS)
 
 #		Command Line Tools
 CXX          = $(CC) $(shell if [ "$(shell root-config --arch | grep 32)" = "" ]; then echo ""; else echo "--arch=i386"; fi)
@@ -32,7 +37,7 @@ CXXFLAGS_BASE_MINIMAL = -DSVN_REV=$(SVN_REV) -DSVN_PDF_REV=$(SVN_PDF_REV) -DBUIL
 CXXFLAGS_BASE_WARNINGS = -Wconversion -Wextra -Wsign-compare -Wfloat-equal -Wall -Wno-non-virtual-dtor -Wno-reorder -Wshadow -Wmissing-noreturn -Wcast-align
 
 #		Compiler Flags
-CXXFLAGS_BASE_COMMON  = $(CXXFLAGS_BASE_MINIMAL) -D__ROOFIT_NOBANNER  $(CXXFLAGS_BASE_WARNINGS)
+CXXFLAGS_BASE_COMMON  = $(CXXFLAGS_BASE_MINIMAL) -D__ROOFIT_NOBANNER  $(CXXFLAGS_BASE_WARNINGS) -I$(COMHDRDIR)
 
 CXXFLAGS_BASE_OPT = -O3 -msse2 -msse3 -fmerge-all-constants -funroll-all-loops -fno-common -m3dnow
 

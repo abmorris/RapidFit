@@ -104,39 +104,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   string RKK_str = config->getConfigurationValue("RKK");
   RKK = std::atof(RKK_str.c_str());
   MakePrototypes();
-  if(acceptance_histogram)
-  {
-    // The goal here is to get a TKDTreeID object to define the binning scheme, and to fill the bin content array from a tree that's sitting in the same file.
-    // Much of this is re-implement from my FourDHist_Adaptive class in the BsPhiKK project
-    TFile* accfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
-    TIter next = accfile->GetListOfKeys();
-    TKey* key;
-    TTree* acctree;
-    // Look for any TTree and TKDTree object in the file
-    cout << "Looking for TTree and TKDTree objects in the file " << accfile->GetName() << endl;
-    while((key = (TKey*)next()))
-    {
-      if(strcmp(key->GetClassName(),"TKDTree<int,double>")==0)
-        accbinner = (TKDTreeID*)key->ReadObj();
-      if(strcmp(key->GetClassName(),"TTree")==0)
-        acctree = (TTree*)key->ReadObj();
-    }
-    // Throw a wobbly if you can't find either
-    if(accbinner == NULL)
-      throw runtime_error("Couldn't find a TKDTree object in the file");
-    if(acctree == NULL)
-      throw runtime_error("Couldn't find a TTree object in the file");
-    // Load the binned values of acceptance
-    cout << "Loading the binned acceptance values from the tree" << endl;
-    int nbins = accbinner->GetNNodes()+1;
-    double content;
-    acctree->SetBranchAddress("content",&content);
-    for(int ibin = 0; ibin < nbins; ibin++)
-    {
-      acctree->GetEntry(ibin);
-      accbincontent.push_back(content);
-    }
-  }
   bool drawAll = config->isTrue("DrawAll");
   if(drawAll || config->isTrue("DrawNonRes"))
   {
@@ -169,6 +136,12 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
     componentlist.push_back("interference");
   }
   if(acceptance_moments) acc_m = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
+  else if(acceptance_histogram)
+  {
+    TFile* histfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
+    acc_h = new NDHist_Adaptive(histfile);
+    acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
+  }
   Initialise();
 }
 /*****************************************************************************/
@@ -256,11 +229,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , acceptance_histogram(copy.acceptance_histogram)
 {
   if(acceptance_moments) acc_m = new LegendreMomentShape(*copy.acc_m);
-  if(acceptance_histogram)
-  {
-    accbinner = copy.accbinner;
-    accbincontent = copy.accbincontent;
-  }
+  else if(acceptance_histogram) acc_h = copy.acc_h;
   Initialise();
 }
 /*****************************************************************************/
@@ -269,6 +238,7 @@ Bs2PhiKKSignal::~Bs2PhiKKSignal()
 {
   for(auto comp : components)
     delete comp;
+  if(acceptance_moments) delete acc_m;
 }
 /*****************************************************************************/
 // Code common to the constructors
@@ -417,7 +387,7 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
   }
   else
     return Evaluate(measurement);
-  return absMatElSq * p1stp3(mKK) * Acceptance();
+  return absMatElSq * p1stp3(mKK) * acceptance;
 }
 /*****************************************************************************/
 // Calculate the function value
@@ -425,7 +395,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
   ReadDataPoint(measurement);
   if(mKK < 2 * Bs2PhiKKComponent::mK) return 0;
-  return TotalDecayRate() * p1stp3(mKK) * Acceptance();
+  return TotalDecayRate() * p1stp3(mKK) * acceptance;
 }
 /*****************************************************************************/
 void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
@@ -435,10 +405,12 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
   phi       = measurement->GetObservable(phiName     )->GetValue();
   ctheta_1  = measurement->GetObservable(ctheta_1Name)->GetValue();
   ctheta_2  = measurement->GetObservable(ctheta_2Name)->GetValue();
+  CalculateAcceptance();
   // Check if the datapoint makes sense
   if(phi < -TMath::Pi() || phi > TMath::Pi()
        || ctheta_1 < -1 || ctheta_1 > 1
        || ctheta_2 < -1 || ctheta_2 > 1
+       || acceptance < 0
   )
   {
     cout << "Received unphysical datapoint" << endl;
@@ -446,6 +418,7 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
     for(auto comp : components)
       comp->Print();
   }
+  phi+=TMath::Pi();
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::TotalDecayRate()
@@ -485,13 +458,13 @@ void Bs2PhiKKSignal::SetComponentAmplitudes()
   // P-wave complex amplitudes
   APperp = TComplex(sqrt(APperpsq), deltaPperp, true) * sqrt(PwaveFrac);
   APzero = TComplex(sqrt(APzerosq), deltaPzero, true) * sqrt(PwaveFrac);
-  APpara = TComplex(sqrt(APparasq), deltaPpara+TMath::Pi(), true) * sqrt(PwaveFrac);
+  APpara = TComplex(sqrt(APparasq), deltaPpara, true) * sqrt(PwaveFrac);
   TComplex APplus  = (APpara + APperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex APminus = (APpara - APperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // D-wave complex amplitudes
   ADperp = TComplex(sqrt(ADperpsq), deltaDperp, true) * sqrt(DwaveFrac);
   ADzero = TComplex(sqrt(ADzerosq), deltaDzero, true) * sqrt(DwaveFrac);
-  ADpara = TComplex(sqrt(ADparasq), deltaDpara+TMath::Pi(), true) * sqrt(DwaveFrac);
+  ADpara = TComplex(sqrt(ADparasq), deltaDpara, true) * sqrt(DwaveFrac);
   TComplex ADplus  = (ADpara + ADperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
   TComplex ADminus = (ADpara - ADperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
   // Set the S-wave helicity amplitude
@@ -514,19 +487,11 @@ void Bs2PhiKKSignal::SetResonanceParameters()
   Dwave->SetMassWidth(ftwoMass, ftwoWidth);
 }
 /*****************************************************************************/
-double Bs2PhiKKSignal::Acceptance()
+void Bs2PhiKKSignal::CalculateAcceptance()
 {
-  double acceptance;
-  if(acceptance_moments) acceptance = acc_m->Evaluate(mKK, phi, ctheta_1, ctheta_2);
-  else if(acceptance_histogram)
-  {
-    double point[] = {mKK*1e3,phi,ctheta_1,ctheta_2};
-    int bin = accbinner->FindNode(point) - accbinner->GetNNodes();
-    // Return the appropriate value for this bin
-    acceptance = accbincontent[bin];
-  }
-  else acceptance = 1.;
-  return acceptance>0 ? acceptance : 1e-12;
+  if(acceptance_moments) acceptance = acc_m->Evaluate(mKK*1000, phi+TMath::Pi(), ctheta_1, ctheta_2);
+  else if(acceptance_histogram) acceptance = acc_h->Eval({abs(phi), abs(ctheta_1), abs(ctheta_2), mKK});
+  acceptance = acceptance > 0 ? acceptance : 1e-12;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::p1stp3(double _mKK)

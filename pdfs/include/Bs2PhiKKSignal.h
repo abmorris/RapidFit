@@ -16,7 +16,7 @@
 #endif
 #include "Bs2PhiKKComponent.h"
 #include "LegendreMomentShape.h"
-#include "TKDTree.h"
+#include "NDHist_Adaptive.h"
 
 class Bs2PhiKKSignal : public BasePDF
 {
@@ -59,9 +59,8 @@ class Bs2PhiKKSignal : public BasePDF
       bool acceptance_histogram;
       // Acceptance
       LegendreMomentShape* acc_m;
-      // Acceptance object
-      TKDTreeID* accbinner;
-      vector <double> accbincontent;
+      NDHist_Adaptive* acc_h;
+      double acceptance;
     private:
       // Calculation
       double TotalDecayRate();
@@ -77,7 +76,7 @@ class Bs2PhiKKSignal : public BasePDF
       void SetComponentAmplitudes();
       void SetResonanceParameters();
       double p1stp3(double);
-      double Acceptance();
+      void CalculateAcceptance();
       // Stuff to do on creation
       void Initialise();
       void MakePrototypes();
