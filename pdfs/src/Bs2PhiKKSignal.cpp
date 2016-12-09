@@ -141,6 +141,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
     TFile* histfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
     acc_h = new NDHist_Adaptive(histfile);
     acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
+    acc_h->SetDimScales({1e-3,0.1,1.,1.});
   }
   Initialise();
 }
@@ -489,8 +490,8 @@ void Bs2PhiKKSignal::SetResonanceParameters()
 /*****************************************************************************/
 void Bs2PhiKKSignal::CalculateAcceptance()
 {
-  if(acceptance_moments) acceptance = acc_m->Evaluate(mKK*1000, phi+TMath::Pi(), ctheta_1, ctheta_2);
-  else if(acceptance_histogram) acceptance = acc_h->Eval({abs(phi), abs(ctheta_1), abs(ctheta_2), mKK});
+  if(acceptance_moments) acceptance = acc_m->Evaluate(mKK*1000, phi, ctheta_1, ctheta_2);
+  else if(acceptance_histogram) acceptance = acc_h->Eval({mKK*1000, abs(phi), abs(ctheta_1), abs(ctheta_2)});
   acceptance = acceptance > 0 ? acceptance : 1e-12;
 }
 /*****************************************************************************/
