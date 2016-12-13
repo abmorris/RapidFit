@@ -172,11 +172,6 @@ double Bs2PhiKKComponent::OFBF(double mKK)
   double pKK  = DPHelpers::daughterMomentum(mKK, mK , mK    );
   double pBs0 = DPHelpers::daughterMomentum(mBs, _M1, m0_eff);
   double pKK0 = DPHelpers::daughterMomentum(_M2, mK , mK    ); 
-  // Special case for non-resonant KK
-  if ( _shape == "NR" )
-  {
-    return pBs/mBs;
-  }
   double orbitalFactor = //TMath::Power(pBs/mBs,   0)* // == 1 so don't bother
                          TMath::Power(pKK/mKK, _J2);
   // Barrier factors
