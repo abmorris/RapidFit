@@ -1,11 +1,4 @@
-/** @class Bs2PhiKKComponent Bs2PhiKKComponent.cpp
- *
- *  RapidFit PDF for Bs2PhiKKComponent
- *
- *  @author Adam Morris
- *  @date Mar 2016
- */
-// Self 
+// Self
 #include "Bs2PhiKKComponent.h"
 // Std Libraries
 #include <iostream>

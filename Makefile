@@ -128,10 +128,6 @@ else
 	LINKFLAGS+= -pie -m64 -Wl,-rpath,$(LD_LIBRARY_PATH)
 endif
 
-
-
-
-
 #	Default build command when someone asks for 'make'
 all : $(EXEDIR)/fitting utils lib
 

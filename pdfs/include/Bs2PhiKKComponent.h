@@ -1,10 +1,3 @@
-/** @class Bs2PhiKKComponent Bs2PhiKKComponent.cpp
- *
- *  RapidFit PDF for Bs2PhiKKComponent
- *
- *  @author Adam Morris
- *  @date Nov-Dec 2015
- */
 #ifndef __BS2PHIKKCOMPONENT_H__
 #define __BS2PHIKKCOMPONENT_H__
 // ROOT
@@ -28,7 +21,7 @@ struct PhysPar
   PhysPar() {}
   PhysPar(ObservableRef _name) : name(_name), value(0) {}
   PhysPar(ObservableRef _name, double _value) : name(_name), value(_value) {}
-  PhysPar(PDFConfigurator* config, string _name) : name(config->getName(_name)), value(0) { cout << "Will look for parameter " << _name << endl; }
+  PhysPar(PDFConfigurator* config, string _name) : name(config->getName(_name)), value(0) {}
   PhysPar(PDFConfigurator* config, string _name, double _value) : name(config->getName(_name)), value(_value) {}
   PhysPar(const PhysPar& other) : value(other.value), name(other.name) {}
   void Update(ParameterSet& pars) { value = pars.GetPhysicsParameter(name)->GetValue(); }

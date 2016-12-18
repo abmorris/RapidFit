@@ -11,7 +11,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
-#include <regex>
 // ROOT Libraries
 #include "TComplex.h"
 #include "TKey.h"
@@ -41,12 +40,17 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   string phiname = config->getConfigurationValue("phiname");
   phimass = PhysPar(config,phiname+"_mass");
   dGsGs = PhysPar(config,"dGsGs");
-  string resonance;
-  std::stringstream resonance_stream;
-  resonance_stream << config->getConfigurationValue("resonances"); // Example: "resonances:phi1020(1,BW) fzero980(0,FT) ftwop1525(2,BW)"
+  string resonancelist = config->getConfigurationValue("resonances");
+  if(resonancelist.empty())
+  {
+    throw std::runtime_error("The list of resonances is empty. Nothing will happen.");
+  }
+  string resonance = "";
+  std::istringstream resonance_stream(resonancelist); // Example: "resonances:phi1020(1,BW) fzero980(0,FT) ftwop1525(2,BW)"
   while(!resonance_stream.eof())
   {
     std::getline(resonance_stream,resonance,' ');
+    if(resonance=="") continue;
     Bs2PhiKKComponent comp = ParseComponent(config,phiname,resonance);
     components.push_back(comp);
     componentnames.push_back(comp.GetName());
@@ -111,9 +115,6 @@ void Bs2PhiKKSignal::Initialise()
 // Build a component object from a passed option
 Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string phiname, string option)
 {
-  string KKname = "phi1020";
-  int JKK = 1;
-  string lineshape = "BW";
   // Syntax: <resonance name>(<spin>,<lineshape>)
   // - the list is space-delimited: no extra spaces, please!
   // - resonance name must be alphanumeric
@@ -121,18 +122,10 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
   // - lineshape name must be 2 capital letters
   // - see Bs2PhiKKComponent.cpp for implemented lineshapes (BW, FT, NR... but more can be added)
   // Example: "phi1020(1,BW)"
-  regex test_syntax("([a-zA-Z0-9]+)\\(([012])\\,([A-Z][A-Z])\\)");
-  smatch params;
-  if(!regex_match(option, params, test_syntax))
-    std::cerr << "Could not parse the resonance option '" << option << "'. See Bs2PhiKKSignal.cpp for the documentation." << std::endl;
-  else
-  {
-    KKname = params[1];
-    std::cout << params[1] << endl;
-    JKK = std::atoi(params[2].str().c_str());
-    lineshape = params[3];
-  }
-  std::cout << "Bs -> " << phiname << " " << KKname << "\tspin-" << JKK << " " << lineshape << " shape." << std::endl;
+  string KKname = option.substr(0,option.find('('));
+  int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
+  string lineshape = option.substr(option.find(',')+1,2);
+  printf("Bs -> %s %s \t spin-%i %s shape", phiname.c_str(), KKname.c_str(), JKK, lineshape.c_str());
   return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
@@ -222,7 +215,6 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
        || acceptance < 0
   )
   {
-    std::cerr << "Received unphysical datapoint" << std::endl;
     measurement->Print();
   }
   phi+=TMath::Pi();
