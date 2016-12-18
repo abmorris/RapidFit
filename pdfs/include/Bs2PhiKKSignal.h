@@ -33,53 +33,35 @@ class Bs2PhiKKSignal : public BasePDF
       double EvaluateComponent( DataPoint*, ComponentRef* );
       vector<string> PDFComponents();
     protected:
+      vector<Bs2PhiKKComponent> components;
       // K+K− mass and helicity angles
       double        mKK    , ctheta_1    , ctheta_2    , phi    ;
       ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
-      // Amplitude Parameters
-      double        ASzerosq      , APperpsq      , APzerosq      , APparasq      , ADperpsq      , ADzerosq      , ADparasq      ;
-      ObservableRef                 APperpsqName  , APzerosqName                  , ADperpsqName  , ADzerosqName                  ;
-      double        deltaSzero    , deltaPperp    , deltaPzero    , deltaPpara    , deltaDperp    , deltaDzero    , deltaDpara    ;
-      ObservableRef deltaSzeroName, deltaPperpName, deltaPzeroName, deltaPparaName, deltaDperpName, deltaDzeroName, deltaDparaName;
-      // Control the size of the components
-      double        NonResFrac    , SwaveFrac    , PwaveFrac    , DwaveFrac    ;
-      ObservableRef NonResFracName, SwaveFracName, PwaveFracName, DwaveFracName;
-      // Resonance parameters
-      double        fzeroMass    , fzerogpipi    , fzeroRg    , phiMass    , phiWidth    , ftwoMass    , ftwoWidth    ;
-      ObservableRef fzeroMassName, fzerogpipiName, fzeroRgName, phiMassName, phiWidthName, ftwoMassName, ftwoWidthName;
       // Bs width splitting
-      double        dGsGs    ;
-      ObservableRef dGsGsName;
-      // Barrier factor radius. Pull these from the options
-      double RBs, RKK;
+      PhysPar dGsGs;
+      // phi(1020) mass
+      PhysPar phimass;
       // Options
-      vector<string> componentlist;
-      bool floatResPars;
+      vector<string> componentnames;
       bool acceptance_moments;
       bool acceptance_histogram;
       // Acceptance
       LegendreMomentShape* acc_m;
       NDHist_Adaptive* acc_h;
-      double acceptance;
+      double acceptance; // Evaluate during ReadDataPoint()
     private:
       // Calculation
       double TotalDecayRate();
-      double ComponentDecayRate(Bs2PhiKKComponent*);
-      double ComponentDecayRate(Bs2PhiKKComponent*, string);
+      double ComponentDecayRate(Bs2PhiKKComponent&); // For plotting individual components
+      double ComponentDecayRate(Bs2PhiKKComponent&, string); // Pass option "odd" or "even"
       double TimeIntegratedDecayRate(TComplex,TComplex);
       void ReadDataPoint(DataPoint*);
-      Bs2PhiKKComponent* Swave;
-      Bs2PhiKKComponent* Pwave;
-      Bs2PhiKKComponent* Dwave;
-      Bs2PhiKKComponent* NonRes;
-      vector<Bs2PhiKKComponent*> components;
-      void SetComponentAmplitudes();
-      void SetResonanceParameters();
-      double p1stp3(double);
+      double p1stp3();
       void CalculateAcceptance();
       // Stuff to do on creation
       void Initialise();
       void MakePrototypes();
+      Bs2PhiKKComponent ParseComponent(PDFConfigurator*, string, string);
 };
 #endif
 
