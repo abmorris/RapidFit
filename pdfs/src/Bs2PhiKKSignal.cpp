@@ -126,7 +126,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
     JKK = std::atoi(params[2].str().c_str());
     lineshape = params[3];
   }
-  std::cout << "Adding spin-" << JKK << " resonance '" << KKname << "' with a " << lineshape << " lineshape." << std::endl;
+  std::cout << "Bs -> " << phiname << " " << KKname << "\tspin-" << JKK << " " << lineshape << " shape." << std::endl;
   return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
