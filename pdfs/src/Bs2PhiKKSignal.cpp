@@ -46,6 +46,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   {
     std::getline(resonance_stream,resonance,' ');
     Bs2PhiKKComponent comp = ParseComponent(config,phiname,resonance);
+    components.push_back(comp);
     componentnames.push_back(comp.GetName());
   }
   componentnames.push_back("interference");

@@ -40,9 +40,9 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
   , lineshape(_lineshape)
 {
   string RBs_str = config->getConfigurationValue("RBs");
-  double RBs = std::atof(RBs_str.c_str());
+  RBs = std::atof(RBs_str.c_str());
   string RKK_str = config->getConfigurationValue("RKK");
-  double RKK = std::atof(RKK_str.c_str());
+  RKK = std::atof(RKK_str.c_str());
   fraction = PhysPar(config,KKname+"_fraction");
   // Decide and store the possible helicities
   int lambda_max = TMath::Min(1, _JKK); // Maximum helicity
