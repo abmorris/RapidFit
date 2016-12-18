@@ -38,23 +38,19 @@ Bs2PhiPhi::Bs2PhiPhi(PDFConfigurator* config) :
   // Width splitting
   , dGsGsName(config->getName("dGsGs"))
   // Magnitude-squared of helicity amplitudes
-  , AperpsqName(config->getName("APperp2"))
-  , AzerosqName(config->getName("APzero2"))
+  , AperpsqName(config->getName("phi1020_Aperpsq"))
+  , AzerosqName(config->getName("phi1020_Azerosq"))
   // Phases of helicity amplitudes
-  , deltaperpName(config->getName("deltaPperp"))
-  , deltazeroName(config->getName("deltaPzero"))
-  , deltaparaName(config->getName("deltaPpara"))
+  , deltaperpName(config->getName("phi1020_deltaperp"))
+  , deltazeroName(config->getName("phi1020_deltazero"))
+  , deltaparaName(config->getName("phi1020_deltapara"))
   // Options
   , compName("0")
   , numerical(config->isTrue("Numerical"))
 {
   MakePrototypes();
-  bool drawAll = config->isTrue("DrawAll");
-  if(drawAll || config->isTrue("DrawPwaveComponents"))
-  {
-    componentlist.push_back("Pwave-even");
-    componentlist.push_back("Pwave-odd");
-  }
+  componentlist.push_back("Pwave-even");
+  componentlist.push_back("Pwave-odd");
   Initialise();
 }
 /*****************************************************************************/
