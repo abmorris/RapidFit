@@ -36,8 +36,7 @@ class Bs2PhiKKComponent
     Bs2PhiKKComponent(const Bs2PhiKKComponent&);
     ~Bs2PhiKKComponent();
     string GetName() {return KKname;}
-    void SetPhysicsParameters(ParameterSet* pars) { SetPhysicsParameters(*pars); } // Update all the parameters
-    void SetPhysicsParameters(ParameterSet&); // Update all the parameters
+    void SetPhysicsParameters(ParameterSet* pars); // Update all the parameters
     vector<ObservableRef> GetPhysicsParameters();
     TComplex Amplitude(double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
     TComplex Amplitude(double, double, double, double, string);

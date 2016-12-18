@@ -142,6 +142,7 @@ void Bs2PhiKKSignal::MakePrototypes()
   vector<string> parameterNames;
   // Resonance parameters
   parameterNames.push_back(dGsGs.name);
+  parameterNames.push_back(phimass.name);
   for(auto comp: components)
     for(auto par: comp.GetPhysicsParameters())
       parameterNames.push_back(par);
@@ -152,10 +153,10 @@ void Bs2PhiKKSignal::MakePrototypes()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
   bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-  dGsGs.Update(allParameters);
-  phimass.Update(allParameters);
-  for(auto comp: components)
-    comp.SetPhysicsParameters(allParameters);
+  dGsGs.Update(&allParameters);
+  phimass.Update(&allParameters);
+  for(auto& comp: components)
+    comp.SetPhysicsParameters(&allParameters);
   return isOK;
 }
 /*****************************************************************************/
@@ -244,9 +245,12 @@ double Bs2PhiKKSignal::TimeIntegratedDecayRate(TComplex A, TComplex Abar)
   double GH = (2-dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
   double GL = (2+dGsGs.value); // Actually Γ/2ΓL
 //  return (A.Rho2())*(1/GL + 1/GH) + (TComplex::Power(TComplex::Conjugate(A),2)).Re()*(1/GL - 1/GH);
-  double termone = (A.Rho2() + Abar.Rho2())*(1/GL + 1/GH);
-  double termtwo = 2*(Abar*TComplex::Conjugate(A)).Re()*(1/GL - 1/GH);
-  return  (termone + termtwo) * p1stp3() * acceptance;
+  double termone = (A.Rho2() + Abar.Rho2())*(1./GL + 1./GH);
+  double termtwo = 2*(Abar*TComplex::Conjugate(A)).Re()*(1./GL - 1./GH);
+  if(!std::isnan(termone) && !std::isnan(termtwo))
+    return  (termone + termtwo) * p1stp3() * acceptance;
+  else
+    return 0;
 }
 /*****************************************************************************/
 void Bs2PhiKKSignal::CalculateAcceptance()

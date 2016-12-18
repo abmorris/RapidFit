@@ -67,36 +67,39 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
     }
   }
   // Helicity amplitude observables
-  switch(n)
+  if(lineshape!="NR")
   {
-    case 1:
-      magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
-      phases.push_back(PhysPar(config,KKname+"_deltazero"));
-      break;
-    case 3:
-      magsqs.push_back(PhysPar(config,KKname+"_Aperpsq"));
-      magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
-      phases.push_back(PhysPar(config,KKname+"_deltaperp"));
-      phases.push_back(PhysPar(config,KKname+"_deltazero"));
-      phases.push_back(PhysPar(config,KKname+"_deltapara"));
-      break;
-    default:
-      throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
-      break;
+    switch(n)
+    {
+      case 1:
+        magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
+        phases.push_back(PhysPar(config,KKname+"_deltazero"));
+        break;
+      case 3:
+        magsqs.push_back(PhysPar(config,KKname+"_Aperpsq"));
+        magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
+        phases.push_back(PhysPar(config,KKname+"_deltaperp"));
+        phases.push_back(PhysPar(config,KKname+"_deltazero"));
+        phases.push_back(PhysPar(config,KKname+"_deltapara"));
+        break;
+      default:
+        throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
+        break;
+    }
+    // Make the helicity amplitude vector
+    while(Ahel.size() < n)
+      Ahel.push_back(TComplex(sqrt(1. / (double)n), 0, true));
   }
-  // Make the helicity amplitude vector
-  while(Ahel.size() < n)
-    Ahel.push_back(TComplex(sqrt(1. / (double)n), 0, true));
   Initialise();
 }
 void Bs2PhiKKComponent::Initialise()
 {
   // Breit Wigner
   if(lineshape=="BW")
-    KKLineShape = new DPBWResonanceShape(0, 0, JKK, mK, mK, RKK);
+    KKLineShape = new DPBWResonanceShape(KKpars[0].value, KKpars[2].value, JKK, mK, mK, RKK);
   // Flatte
   else if(lineshape=="FT")
-    KKLineShape = new DPFlatteShape(0, 0, mpi, mpi, 0, mK, mK);
+    KKLineShape = new DPFlatteShape(KKpars[0].value, KKpars[1].value, mpi, mpi, KKpars[1].value*KKpars[2].value, mK, mK);
   else
     KKLineShape = new DPNonresonant();
   // Build the barrier factor and Wigner function objects
@@ -167,6 +170,7 @@ TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ct
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
 {
+  if(mKK < 2*mK) return 0;
   if(lineshape=="NR")
     return 1;
   // Orbital factor
@@ -220,14 +224,26 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
     for(int lambda : helicities)
       angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
   // Result
-  return sqrt(fraction.value) * massPart * angularPart * OFBF(mKK);
+  double frac = fraction.value;
+  double ofbf = OFBF(mKK);
+  if(std::isnan(frac))
+    cerr << this->GetName() << " fraction is not a number." << endl;
+  if(std::isnan(massPart.Re()) || std::isnan(massPart.Im()))
+    cerr << this->GetName() << " mass-dependent part evaluates to not a number." << endl;
+  if(std::isnan(angularPart.Re()) || std::isnan(angularPart.Im()))
+    cerr << this->GetName() << " angular part evaluates to not a number." << endl;
+  if(std::isnan(ofbf))
+    cerr << this->GetName() << " orbital & barrier factors evaluate to not a number." << endl;
+  return frac * massPart * angularPart * ofbf;
 }
-void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet& fitpars)
+void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
   // Update everything from the parameter set
-  for(auto set: {{fraction},magsqs,phases,phipars,KKpars})
-    for(auto par: set)
-      par.Update(fitpars);
+  fraction.Update(fitpars);
+  for(auto& par: magsqs) par.Update(fitpars);
+  for(auto& par: phases) par.Update(fitpars);
+  for(auto& par: phipars) par.Update(fitpars);
+  for(auto& par: KKpars) par.Update(fitpars);
   // Update the helicity amplitudes
   switch(helicities.size())
   {
@@ -261,6 +277,8 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet& fitpars)
     respars.push_back(KKpars[1].value); // gpipi
     respars.push_back(KKpars[1].value*KKpars[2].value); // gKK = gpipi*Rg
   }
+  for(auto par: respars)
+    cout << par << endl;
   KKLineShape->setParameters(&respars[0]);
 }
 vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters()
