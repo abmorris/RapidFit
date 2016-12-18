@@ -8,6 +8,7 @@
 #ifndef Bs2PhiKKSignal_H
 #define Bs2PhiKKSignal_H
 
+#include <memory>
 #ifndef __CINT__
 #include "BasePDF.h"
 #endif
@@ -46,8 +47,8 @@ class Bs2PhiKKSignal : public BasePDF
       bool acceptance_moments;
       bool acceptance_histogram;
       // Acceptance
-      LegendreMomentShape* acc_m;
-      NDHist_Adaptive* acc_h;
+      std::unique_ptr<LegendreMomentShape> acc_m;
+      std::shared_ptr<NDHist_Adaptive> acc_h;
       double acceptance; // Evaluate during ReadDataPoint()
     private:
       // Calculation

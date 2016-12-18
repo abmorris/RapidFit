@@ -56,11 +56,11 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
     componentnames.push_back(comp.GetName());
   }
   componentnames.push_back("interference");
-  if(acceptance_moments) acc_m = new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"));
+  if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
   else if(acceptance_histogram)
   {
     TFile* histfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
-    acc_h = new NDHist_Adaptive(histfile);
+    acc_h = std::shared_ptr<NDHist_Adaptive>(new NDHist_Adaptive(histfile));
     acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
     acc_h->SetDimScales({1e-3,0.1,1.,1.}); // TODO: read this from the file
   }
@@ -93,7 +93,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , acceptance_moments(copy.acceptance_moments)
   , acceptance_histogram(copy.acceptance_histogram)
 {
-  if(acceptance_moments) acc_m = new LegendreMomentShape(*copy.acc_m);
+  if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
   else if(acceptance_histogram) acc_h = copy.acc_h;
   Initialise();
 }
@@ -101,7 +101,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
 // Destructor
 Bs2PhiKKSignal::~Bs2PhiKKSignal()
 {
-  if(acceptance_moments) delete acc_m;
 }
 /*****************************************************************************/
 // Code common to the constructors

@@ -5,6 +5,7 @@
 // Std
 #include <string>
 #include <vector>
+#include <memory>
 // RapidFit
 #include "PDFConfigurator.h"
 #include "ParameterSet.h"
@@ -52,8 +53,8 @@ class Bs2PhiKKComponent
     vector<PhysPar> magsqs; // Square of magnitudes: para will be calculated from the other two
     vector<PhysPar> phases; // Phases
     // Resonance parameters
-    vector<PhysPar> phipars; // Mass and width of Breit Wigner
     vector<PhysPar> KKpars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
+    double mphi; // For orbital/barrier factor calculations. Assume the PDF already has this (for p1*p3 calculation)
     // Fixed parameters
     int    Jphi; // Spin of the phi (P-wave, 1)
     int    JKK; // Spin of the KK resonance (0, 1 or 2)
@@ -63,18 +64,18 @@ class Bs2PhiKKComponent
     string phiname; // The name decides which set of PhysicsParameters it will look for in the RapidFit XML
     string KKname;
     // Resonance lineshape function for the mass-dependent part
-    DPMassShape* KKLineShape;
+    std::unique_ptr<DPMassShape> KKLineShape{};
   private:
     void     Initialise();
     TComplex A(int); // Polarisation amplitude coefficients
     TComplex F(int, double, double, double); // Angular distribution: helicity, phi, costheta1, costheta2
     double   OFBF(double); // Product of orbital and barrier factors
     // Wigner d-functions for the angular-dependent part
-    DPWignerFunction* wignerKK;
-    DPWignerFunction* wignerPhi;
+    std::unique_ptr<DPWignerFunction> wignerKK{};
+    std::unique_ptr<DPWignerFunction> wignerPhi{};
     // Blatt-Weisskopf barrier penetration factors
-    DPBarrierFactor*  Bsbarrier;
-    DPBarrierFactor*  KKbarrier;
+    std::unique_ptr<DPBarrierFactor>  Bsbarrier{};
+    std::unique_ptr<DPBarrierFactor>  KKbarrier{};
 };
 #endif
 
