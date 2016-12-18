@@ -50,6 +50,7 @@ NegativeLogLikelihoodThreadedNew::~NegativeLogLikelihoodThreadedNew()
 //Return the negative log likelihood for a PDF/DataSet result
 double NegativeLogLikelihoodThreadedNew::EvaluateDataSet( IPDF * FittingPDF, IDataSet * TotalDataSet, int number )
 {
+	(void)number;// why is this even here?
 	if( TotalDataSet->GetDataNumber() == 0 ) return 0.;
 
 	if( Threads <= 0 )

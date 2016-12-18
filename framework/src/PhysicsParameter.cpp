@@ -14,6 +14,7 @@
 //	System Headers
 #include <iostream>
 #include <sstream>
+#include <cmath>
 
 using namespace::std;
 
@@ -21,7 +22,7 @@ const double default_val = -9999.;
 
 bool PhysicsParameter::DiffParams( PhysicsParameter* first, PhysicsParameter* second )
 {
-	return first->GetValue() == second->GetValue();
+	return std::fabs(first->GetValue() - second->GetValue())<1e20;
 }
 
 //Default constructor

@@ -103,17 +103,11 @@ int testComponentPlot( RapidFitConfiguration* config );
 
 int calculateFitFractions( RapidFitConfiguration* config );
 
-int calculateAcceptanceWeights( RapidFitConfiguration* config );
-
 int calculateAcceptanceCoefficients( RapidFitConfiguration* config );
 
 int calculateAngularAcceptanceCoeff( RapidFitConfiguration* config );
 
 int calculateBackgroundCoefficients( RapidFitConfiguration* config );
-
-int calculateAcceptanceWeightsWithSwave( RapidFitConfiguration* config );
-
-int calculatePerEventAcceptance( RapidFitConfiguration* config );
 
 int PerformToyStudy( RapidFitConfiguration* config );
 
@@ -132,8 +126,6 @@ int PerformJackKnife( RapidFitConfiguration* config );
 void SaveXML( RapidFitConfiguration* config );
 
 string GenerateXML( RapidFitConfiguration* config, bool isForToys );
-
-void WeightThisDataSet( RapidFitConfiguration* config );
 
 void BuildTheseConstraints( RapidFitConfiguration* config );
 

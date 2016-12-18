@@ -147,7 +147,7 @@ bool ParameterSet::operator== ( const ParameterSet& input_rhs )
 		{
 			double lhs_val = this->GetPhysicsParameter( allInternalNames[i] )->GetValue();
 			double rhs_val = input_rhs.GetPhysicsParameter( allForeignNames[i] )->GetValue();
-			if( lhs_val != rhs_val )
+			if( abs(lhs_val - rhs_val) > 1e-20 ) // Adam: changed to remove float-equal warnings
 			{
 				changed = true;
 				break;

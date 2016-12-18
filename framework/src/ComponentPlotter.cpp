@@ -159,12 +159,12 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	if( config->ForceCombinationNumber != -1 )
 	{
 		cout << "Requested ONLY to use Combination Number: " << config->ForceCombinationNumber << endl;
-		if( config->ForceCombinationNumber > allCombinations_input.size() )
+		if( config->ForceCombinationNumber > (int)allCombinations_input.size() )
 		{
 			cout << "CANNOT USE Combination Number: " << config->ForceCombinationNumber << " Ignoring!" << endl;
 		}
 
-		unsigned int i=0;
+		int i=0;
 		for( vector<DataPoint*>::iterator thisCombination = allCombinations_input.begin(); thisCombination != allCombinations_input.end(); ++thisCombination, ++i )
 		{
 			double thisNum = plotData->GetDataNumber( *thisCombination );

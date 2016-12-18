@@ -24,10 +24,6 @@
 #include <vector>
 #include <string>
 
-using namespace::std;
-
-void Function( Int_t&, Double_t*, Double_t&, Double_t*, Int_t);
-
 static TMinuit* currentMinuitInstance;
 
 class MinuitWrapper : public IMinimiser
