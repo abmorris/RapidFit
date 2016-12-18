@@ -43,30 +43,30 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
   double RBs = std::atof(RBs_str.c_str());
   string RKK_str = config->getConfigurationValue("RKK");
   double RKK = std::atof(RKK_str.c_str());
-  fraction = PhysPar(config,KKname+"fraction");
+  fraction = PhysPar(config,KKname+"_fraction");
   // Decide and store the possible helicities
   int lambda_max = TMath::Min(1, _JKK); // Maximum helicity
   for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
     helicities.push_back(lambda);
   long unsigned int n = helicities.size();
   // Phi resonance parameters
-  phipars.push_back(PhysPar(config,phiname+"mass"));
-  phipars.push_back(PhysPar(config,phiname+"width"));
+  phipars.push_back(PhysPar(config,phiname+"_mass"));
+  phipars.push_back(PhysPar(config,phiname+"_width"));
   // KK resonance parameters
   // Breit Wigner
   if(lineshape=="BW")
   {
     KKLineShape = new DPBWResonanceShape(0, 0, JKK, mK, mK, RKK);
-    KKpars.push_back(PhysPar(config,KKname+"mass"));
-    KKpars.push_back(PhysPar(config,KKname+"width"));
+    KKpars.push_back(PhysPar(config,KKname+"_mass"));
+    KKpars.push_back(PhysPar(config,KKname+"_width"));
   }
   // Flatte
   else if(lineshape=="FT")
   {
     KKLineShape = new DPFlatteShape(0, 0, mpi, mpi, 0, mK, mK);
-    KKpars.push_back(PhysPar(config,KKname+"mass"));
-    KKpars.push_back(PhysPar(config,KKname+"gpipi"));
-    KKpars.push_back(PhysPar(config,KKname+"Rg"));
+    KKpars.push_back(PhysPar(config,KKname+"_mass"));
+    KKpars.push_back(PhysPar(config,KKname+"_gpipi"));
+    KKpars.push_back(PhysPar(config,KKname+"_Rg"));
   }
   else
   {
