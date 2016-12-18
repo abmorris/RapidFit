@@ -272,8 +272,6 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
     respars.push_back(KKpars[1].value); // gpipi
     respars.push_back(KKpars[1].value*KKpars[2].value); // gKK = gpipi*Rg
   }
-  for(auto par: respars)
-    std::cout << par << std::endl;
   KKLineShape->setParameters(&respars[0]);
 }
 vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters()

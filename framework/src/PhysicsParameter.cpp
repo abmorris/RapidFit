@@ -22,7 +22,7 @@ const double default_val = -9999.;
 
 bool PhysicsParameter::DiffParams( PhysicsParameter* first, PhysicsParameter* second )
 {
-	return std::fabs(first->GetValue() - second->GetValue())<1e20;
+	return first->GetValue() == second->GetValue();
 }
 
 //Default constructor

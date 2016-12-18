@@ -47,8 +47,8 @@ class Bs2PhiKKSignal : public BasePDF
       bool acceptance_moments;
       bool acceptance_histogram;
       // Acceptance
-      std::unique_ptr<LegendreMomentShape> acc_m;
-      std::shared_ptr<NDHist_Adaptive> acc_h;
+      unique_ptr<LegendreMomentShape> acc_m;
+      shared_ptr<NDHist_Adaptive> acc_h;
       double acceptance; // Evaluate during ReadDataPoint()
     private:
       // Calculation

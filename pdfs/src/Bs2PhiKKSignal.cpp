@@ -8,15 +8,14 @@
 // Self
 #include "Bs2PhiKKSignal.h"
 // Std Libraries
-#include <iostream>
 #include <stdexcept>
-#include <sstream>
 // ROOT Libraries
 #include "TComplex.h"
 #include "TKey.h"
 #include "TFile.h"
 #include "TTree.h"
 // RapidFit
+#include "StringProcessing.h"
 #include "PDFConfigurator.h"
 #include "DPHelpers.hh"
 
@@ -40,31 +39,31 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   string phiname = config->getConfigurationValue("phiname");
   phimass = PhysPar(config,phiname+"_mass");
   dGsGs = PhysPar(config,"dGsGs");
-  string resonancelist = config->getConfigurationValue("resonances");
-  if(resonancelist.empty())
+  vector<string> reslist = StringProcessing::SplitString( config->getConfigurationValue("resonances"), ' ' );
+  printf("========================\n");
+  printf("Building resonance model\n");
+  printf("------------------------\n");
+  for(auto name: reslist)
   {
-    throw std::runtime_error("The list of resonances is empty. Nothing will happen.");
-  }
-  string resonance = "";
-  std::istringstream resonance_stream(resonancelist); // Example: "resonances:phi1020(1,BW) fzero980(0,FT) ftwop1525(2,BW)"
-  while(!resonance_stream.eof())
-  {
-    std::getline(resonance_stream,resonance,' ');
-    if(resonance=="") continue;
-    Bs2PhiKKComponent comp = ParseComponent(config,phiname,resonance);
+    if(name=="") continue;
+    Bs2PhiKKComponent comp = ParseComponent(config,phiname,name);
     components.push_back(comp);
     componentnames.push_back(comp.GetName());
   }
-  componentnames.push_back("interference");
-  if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
+  printf("========================\n");
+  if(componentnames.size() > 1)
+    componentnames.push_back("interference");
+  if(acceptance_moments) acc_m = unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
   else if(acceptance_histogram)
   {
     TFile* histfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
-    acc_h = std::shared_ptr<NDHist_Adaptive>(new NDHist_Adaptive(histfile));
+    acc_h = shared_ptr<NDHist_Adaptive>(new NDHist_Adaptive(histfile));
     acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
     acc_h->SetDimScales({1e-3,0.1,1.,1.}); // TODO: read this from the file
   }
+  printf("Calling Initialiser\n");
   Initialise();
+  printf("Making Prototypes\n");
   MakePrototypes();
 }
 /*****************************************************************************/
@@ -93,7 +92,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , acceptance_moments(copy.acceptance_moments)
   , acceptance_histogram(copy.acceptance_histogram)
 {
-  if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
+  if(acceptance_moments) acc_m = unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
   else if(acceptance_histogram) acc_h = copy.acc_h;
   Initialise();
 }
@@ -124,7 +123,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
   string KKname = option.substr(0,option.find('('));
   int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
   string lineshape = option.substr(option.find(',')+1,2);
-  printf("Bs -> %s %s \t spin-%i %s shape", phiname.c_str(), KKname.c_str(), JKK, lineshape.c_str());
+  printf("Bs -> %s %s \t (spin-%i %s shape)\n", phiname.c_str(), KKname.c_str(), JKK, lineshape.c_str());
   return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
@@ -132,6 +131,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
 void Bs2PhiKKSignal::MakePrototypes()
 {
   // Make the DataPoint prototype
+  printf("Prototype datapoint:\t%s, %s, %s, %s\n",mKKName.Name().c_str(),phiName.Name().c_str(),ctheta_1Name.Name().c_str(),ctheta_2Name.Name().c_str());
   // The ordering here matters. It has to be the same as the XML file, apparently.
   allObservables.push_back(mKKName     );
   allObservables.push_back(phiName     );
@@ -143,8 +143,11 @@ void Bs2PhiKKSignal::MakePrototypes()
   parameterNames.push_back(dGsGs.name);
   parameterNames.push_back(phimass.name);
   for(auto comp: components)
-    for(auto par: comp.GetPhysicsParameters())
-      parameterNames.push_back(par);
+    for(string par: comp.GetPhysicsParameters())
+      if(par!=phimass.name.Name()) parameterNames.push_back(par);
+  printf("Full parameter set\n");
+  for(string par: parameterNames)
+    printf("%s\n",par.c_str());
   allParameters = *( new ParameterSet(parameterNames) );
 }
 /*****************************************************************************/
@@ -222,7 +225,7 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 /*****************************************************************************/
 double Bs2PhiKKSignal::TotalDecayRate()
 {
-  std::map<bool,TComplex> TotalAmp;
+  map<bool,TComplex> TotalAmp;
   for(auto anti : {false,true})
   {
     TotalAmp[anti] = TComplex(0,0);
@@ -246,7 +249,7 @@ double Bs2PhiKKSignal::TimeIntegratedDecayRate(TComplex A, TComplex Abar)
 //  return (A.Rho2())*(1/GL + 1/GH) + (TComplex::Power(TComplex::Conjugate(A),2)).Re()*(1/GL - 1/GH);
   double termone = (A.Rho2() + Abar.Rho2())*(1./GL + 1./GH);
   double termtwo = 2*(Abar*TComplex::Conjugate(A)).Re()*(1./GL - 1./GH);
-  if(!std::isnan(termone) && !std::isnan(termtwo))
+  if(!isnan(termone) && !isnan(termtwo))
     return  (termone + termtwo) * p1stp3() * acceptance;
   else
     return 0;
