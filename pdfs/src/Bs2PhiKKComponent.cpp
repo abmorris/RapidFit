@@ -51,19 +51,16 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
   long unsigned int n = helicities.size();
   // Phi resonance parameters
   phipars.push_back(PhysPar(config,phiname+"_mass"));
-  phipars.push_back(PhysPar(config,phiname+"_width"));
   // KK resonance parameters
   // Breit Wigner
   if(lineshape=="BW")
   {
-    KKLineShape = new DPBWResonanceShape(0, 0, JKK, mK, mK, RKK);
     KKpars.push_back(PhysPar(config,KKname+"_mass"));
     KKpars.push_back(PhysPar(config,KKname+"_width"));
   }
   // Flatte
   else if(lineshape=="FT")
   {
-    KKLineShape = new DPFlatteShape(0, 0, mpi, mpi, 0, mK, mK);
     KKpars.push_back(PhysPar(config,KKname+"_mass"));
     KKpars.push_back(PhysPar(config,KKname+"_gpipi"));
     KKpars.push_back(PhysPar(config,KKname+"_Rg"));
@@ -75,21 +72,20 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
       lineshape = "NR";
       cerr << "Bs2PhiKKComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << endl;
     }
-    KKLineShape = new DPNonresonant();
   }
   // Helicity amplitude observables
   switch(n)
   {
     case 1:
-      magsqs.push_back(PhysPar(config,KKname+"Azerosq"));
-      phases.push_back(PhysPar(config,KKname+"deltazero"));
+      magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
+      phases.push_back(PhysPar(config,KKname+"_deltazero"));
       break;
     case 3:
-      magsqs.push_back(PhysPar(config,KKname+"Aperpsq"));
-      magsqs.push_back(PhysPar(config,KKname+"Azerosq"));
-      phases.push_back(PhysPar(config,KKname+"deltaperp"));
-      phases.push_back(PhysPar(config,KKname+"deltazero"));
-      phases.push_back(PhysPar(config,KKname+"deltapara"));
+      magsqs.push_back(PhysPar(config,KKname+"_Aperpsq"));
+      magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
+      phases.push_back(PhysPar(config,KKname+"_deltaperp"));
+      phases.push_back(PhysPar(config,KKname+"_deltazero"));
+      phases.push_back(PhysPar(config,KKname+"_deltapara"));
       break;
     default:
       throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
@@ -102,6 +98,14 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
 }
 void Bs2PhiKKComponent::Initialise()
 {
+  // Breit Wigner
+  if(lineshape=="BW")
+    KKLineShape = new DPBWResonanceShape(0, 0, JKK, mK, mK, RKK);
+  // Flatte
+  else if(lineshape=="FT")
+    KKLineShape = new DPFlatteShape(0, 0, mpi, mpi, 0, mK, mK);
+  else
+    KKLineShape = new DPNonresonant();
   // Build the barrier factor and Wigner function objects
   Bsbarrier = new DPBarrierL0(RBs);
   wignerPhi = new DPWignerFunctionJ1();
@@ -141,12 +145,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
   , JKK(other.JKK)
   , lineshape(other.lineshape)
 {
-  if(other.KKLineShape == nullptr)
-  {
-    throw std::runtime_error("Somehow the KKLineShape was uninitialised or deleted.");
-    return;
-  }
-  *KKLineShape = *other.KKLineShape;
   Initialise();
 }
 Bs2PhiKKComponent::~Bs2PhiKKComponent()

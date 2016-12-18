@@ -39,6 +39,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   , acceptance_histogram((string)config->getConfigurationValue("HistogramFile") != "")
 {
   string phiname = config->getConfigurationValue("phiname");
+  phimass = PhysPar(config,phiname+"_mass");
+  dGsGs = PhysPar(config,"dGsGs");
   string resonance;
   std::stringstream resonance_stream;
   resonance_stream << config->getConfigurationValue("resonances"); // Example: "resonances:phi1020(1,BW) fzero980(0,FT) ftwop1525(2,BW)"
@@ -77,6 +79,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , ctheta_2Name(copy.ctheta_2Name)
   // Width splitting
   , dGsGs(copy.dGsGs)
+  // Phi mass
+  , phimass(copy.phimass)
   // PDF components
   , components(copy.components)
   // Plotting components
@@ -124,6 +128,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
   else
   {
     KKname = params[1];
+    std::cout << params[1] << endl;
     JKK = std::atoi(params[2].str().c_str());
     lineshape = params[3];
   }
