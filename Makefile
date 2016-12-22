@@ -116,7 +116,7 @@ clean :
 	$(RM) $(EXEDIR)/* $(OBJDIR)/* $(OBJPDFDIR)/* $(OBJDALITZDIR)/* $(OBJUTILDIR)/* $(LIBDIR)/*
 
 #	Binaries sharing LOTS of useful code for processing/outputting results
-SHARED_UTIL_LIBS=$(OBJDIR)/StringProcessing.o $(OBJUTILDIR)/TTree_Processing.o $(OBJUTILDIR)/Mathematics.o  $(OBJUTILDIR)/ROOT_File_Processing.o $(OBJUTILDIR)/Histo_Processing.o $(OBJDIR)/EdStyle.o $(OBJUTILDIR)/StringOperations.o  $(OBJUTILDIR)/Template_Functions.o $(OBJUTILDIR)/RapidFit_Output_File.o $(OBJUTILDIR)/XMLUtilFunctions.o $(OBJUTILDIR)/utilsDict.o $(OBJUTILDIR)/RapidLL.o $(OBJUTILDIR)/Rapid2DLL.o $(OBJUTILDIR)/Toy_Study.o
+SHARED_UTIL_LIBS=$(OBJDIR)/StringProcessing.o $(OBJUTILDIR)/TTree_Processing.o $(OBJUTILDIR)/Mathematics.o  $(OBJUTILDIR)/ROOT_File_Processing.o $(OBJUTILDIR)/Histo_Processing.o $(OBJDIR)/EdStyle.o $(OBJUTILDIR)/StringOperations.o  $(OBJUTILDIR)/Template_Functions.o $(OBJUTILDIR)/RapidFit_Output_File.o $(OBJUTILDIR)/XMLUtilFunctions.o $(OBJUTILDIR)/utilsDict.o $(OBJUTILDIR)/RapidLL.o $(OBJUTILDIR)/Rapid2DLL.o $(OBJUTILDIR)/Toy_Study.o $(OBJUTILDIR)/print.o
 
 #       New mostly automated plotting tool taking the pain out of plotting RapidFit output
 $(EXEDIR)/RapidPlot: $(OBJUTILDIR)/RapidPlot.o $(OBJUTILDIR)/DoFCAnalysis.o $(OBJUTILDIR)/OutputPlots.o $(OBJUTILDIR)/CorrMatrix.o $(SHARED_UTIL_LIBS)
@@ -200,6 +200,6 @@ $(OBJUTILDIR)/utilsDict.o: $(OBJUTILDIR)/utilsDict.cpp
 	$(CXX) $(CXXFLAGSUTIL) -o $@ -I"$(PWD)" -c $<
 
 #	This is the Utils library which exposes a LOT of pre-written useful functions to the user
-$(LIBDIR)/libUtils.so: $(SHARED_UTIL_LIBS) $(OBJUTILDIR)/print.o
-	$(CXX) $(LIBLINKFLAGS) $(LINKFLAGS) -o $@ $^ $(LIBS) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(LINKGSL)
+$(LIBDIR)/libUtils.so: $(SHARED_UTIL_LIBS)
+	$(CXX) -shared -o $@ $^ $(LINKFLAGS)
 
