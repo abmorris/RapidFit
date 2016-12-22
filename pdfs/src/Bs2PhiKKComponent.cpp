@@ -70,7 +70,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
     case 0:
       break;
     case 1:
-      magsqs.push_back(PhysPar(config,KKname+"_Azerosq"));
       phases.push_back(PhysPar(config,KKname+"_deltazero"));
       break;
     case 3:
@@ -243,7 +242,7 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
     case 0:
       break;
     case 1:
-      Ahel[0] = TComplex(sqrt(magsqs[0].value),phases[0].value,true);
+      Ahel[0] = TComplex(1.0,phases[0].value,true);
       break;
     case 3:
       { // new scope here because we need to declare temporary variables

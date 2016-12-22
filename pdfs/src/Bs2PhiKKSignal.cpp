@@ -249,7 +249,7 @@ double Bs2PhiKKSignal::TimeIntegratedDecayRate(TComplex A, TComplex Abar)
 //  return (A.Rho2())*(1/GL + 1/GH) + (TComplex::Power(TComplex::Conjugate(A),2)).Re()*(1/GL - 1/GH);
   double termone = (A.Rho2() + Abar.Rho2())*(1./GL + 1./GH);
   double termtwo = 2*(Abar*TComplex::Conjugate(A)).Re()*(1./GL - 1./GH);
-  if(!isnan(termone) && !isnan(termtwo))
+  if(!std::isnan(termone) && !std::isnan(termtwo))
     return  (termone + termtwo) * p1stp3() * acceptance;
   else
     return 0;
