@@ -11,13 +11,13 @@ COMLIBS   := $(shell find $(COMLIBDIR) -name '*.so')
 COMLIBFLAGS = -L$(COMLIBDIR) $(patsubst $(COMLIBDIR)/lib%.$(LIBEXT), -l%, $(COMLIBS)) -Wl,-rpath=$(COMLIBDIR)
 
 #		ROOT
-TEMPCFLAGS   = $(shell root-config --cflags)
+TEMPCFLAGS   = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --cflags)
 
 #		Include Root files as system headers as they're NOT standards complient and we do not want to waste time fixing them!
 #		ROOT has some broken backwards compatability for OSX so won't claim to be a set of system headers
-ROOTCFLAGS   = $(shell root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
-ROOTLIBS     = $(shell root-config --libs)
-ROOTGLIBS    = $(shell root-config --glibs)
+ROOTCFLAGS   = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
+ROOTLIBS     = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --libs)
+ROOTGLIBS    = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --glibs)
 
 #               On some Systems with Mathmore compiled, sometimes things need to be resolved against it... I don't know why
 EXTRA_ROOTLIBS=-lTreePlayer -lThread -lMinuit -lMinuit2 -lRooFit -lRooStats -lRooFitCore -lFoam $(shell if [ "$(shell root-config --features | grep mathmore)" == "" ]; then echo "" ; else echo "-lMathMore" ; fi) $(COMLIBFLAGS)
@@ -26,15 +26,26 @@ EXTRA_ROOTLIBS=-lTreePlayer -lThread -lMinuit -lMinuit2 -lRooFit -lRooStats -lRo
 CXX          = $(CC) $(shell if [ "$(shell root-config --arch | grep 32)" = "" ]; then echo ""; else echo "--arch=i386"; fi)
 RM           = rm -f
 
+#	We can ignore 99% of Makefile modifications it builds and links or it doesn't normally
+#	We can ignore pdf modifications, 95% of all work is exploring the effect of changing a pdf so you don't care about benchmarking the version I claim
+SVN_REV ="$(shell svnversion -n ./framework)"
+SVN_PDF_REV ="$(shell svnversion -n ./pdfs)"
+BUILD_DATE ="$(shell date +%H:%M_%F)"
 
-CXXFLAGS_BASE_MINIMAL = -rdynamic -D_GNU_SOURCE -D__USE_GNU -fPIC -pthread
+CXXFLAGS_BASE_MINIMAL = -DSVN_REV=$(SVN_REV) -DSVN_PDF_REV=$(SVN_PDF_REV) -DBUILD_DATE=$(BUILD_DATE) -rdynamic -D_GNU_SOURCE -D__USE_GNU -fPIC -pthread
 
 CXXFLAGS_BASE_WARNINGS = -Wconversion -Wextra -Wsign-compare -Wfloat-equal -Wall -Wno-non-virtual-dtor -Wno-reorder -Wshadow -Wmissing-noreturn -Wcast-align
 
 #		Compiler Flags
 CXXFLAGS_BASE_COMMON  = $(CXXFLAGS_BASE_MINIMAL) -D__ROOFIT_NOBANNER  $(CXXFLAGS_BASE_WARNINGS) -I$(COMHDRDIR)
 
-CXXFLAGS_BASE = $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectorize -finline-limit=2000 -fprefetch-loop-arrays -fmerge-all-constants $(CXXFLAGS_BASE_WARNINGS)
+CXXFLAGS_BASE_OPT = -O3 -msse2 -msse3 -fmerge-all-constants -funroll-all-loops -fno-common -m3dnow
+
+#CXXFLAGS_BASE = $(CXXFLAGS_BASE_COMMON) -Wmissing-noreturn -Wcast-align -msse -m3dnow
+
+CXXFLAGS_BASE = -std=c++11 $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectorize -finline-limit=2000 -fprefetch-loop-arrays -fmerge-all-constants $(CXXFLAGS_BASE_WARNINGS)
+
+CXX_FLAGS_LITE = -DSVN_REV=$(SVN_REV) -DSVN_PDF_REV=$(SVN_PDF_REV) -DBUILD_DATE=$(BUILD_DATE) -rdynamic -D_GNU_SOURCE -D__USE_GNU -fPIC -O3 -msse -msse2 -msse3 -m3dnow -ansi -fmerge-all-constants -funroll-all-loops -fno-common -D__ROOFIT_NOBANNER -Wconversion -Wextra -Wsign-compare -Wfloat-equal -Wmissing-noreturn -Wall -Wno-non-virtual-dtor -Wno-reorder -pthread -Wshadow -Wcast-align
 
 #		Some Useful global variables, makes this file MUCH easier to maintain
 SRCEXT    = cpp
@@ -86,7 +97,7 @@ OBJS    := $(patsubst $(SRCDIR)/%.$(SRCEXT),$(OBJDIR)/%.o,$(SRCS))
 PDFOBJS := $(patsubst $(SRCPDFDIR)/%.$(SRCEXT),$(OBJPDFDIR)/%.o,$(PDFSRCS))
 DALITZOBJS := $(patsubst $(SRCDALITZDIR)/%.$(SRCDALITZEXT),$(OBJDALITZDIR)/%.o,$(DALITZSRCS))
 
-UTIL_HEADERS = $(shell find $(PWD)/$(INCUITLDIR) -name '*.$(HDREXT)' )
+UTIL_HEADERS = $(shell find $(INCUITLDIR) -name '*.$(HDREXT)' )
 
 #	BUILD OUTPUT
 OUTPUT  = $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(EXEDIR)/fitting $(LIBDIR)/*.so $(OBJDIR)/rapidfit_dict.* $(EXEDIR)/RapidPlot $(EXEDIR)/print
@@ -105,6 +116,13 @@ CXXFLAGS_LIB = $(CXXFLAGS_BASE) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$
 
 LIBLINKFLAGS = -pie -m64
 
+CHECKGCCABI := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
+ifeq ("$(CHECKGCCABI)","1")
+	CXXFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
+	CXXFLAGSUTIL+= -D_GLIBCXX_USE_CXX11_ABI=0
+	LINKFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
+endif
+
 # OS X
 DARWIN=Darwin
 ifeq ($(UNAME),$(Darwin))
@@ -117,8 +135,12 @@ else
 	LINKFLAGS+= -pie -m64 -Wl,-rpath,$(LD_LIBRARY_PATH)
 endif
 
+
+
+
+
 #	Default build command when someone asks for 'make'
-all : $(EXEDIR)/fitting lib
+all : $(EXEDIR)/fitting utils lib
 
 $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRDALITZEXT)
 	$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
@@ -162,7 +184,7 @@ cleanP  :
 
 #	Allow chosing of which compiler to use on systems with mutliple compilers
 clang: override CC=clang++
-clang: override CXXFLAGS_BASE= $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectorize -fprefetch-loop-arrays -fmerge-all-constants -Wall -Wextra -Wno-reorder
+clang: override CXXFLAGS_BASE=-std=c++11 $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectorize -fprefetch-loop-arrays -fmerge-all-constants -Wall -Wextra -Wno-reorder
 clang: all
 clang-utils: override CC=clang++
 clang-utils: utils
@@ -257,16 +279,16 @@ extra:	$(EXEDIR)/Per-Event $(EXEDIR)/lifetime_tool $(EXEDIR)/weighted $(EXEDIR)/
 #	For building RapidFit as a library to use within CINT which makes life easier on the grid... (supposedly)
 #	make lib
 
-#lib:    $(LIBDIR)/libRapidRun.so $(LIBDIR)/libUtils.so
-lib:    $(LIBDIR)/libRapidRun.so
+lib:    $(LIBDIR)/libRapidRun.so $(LIBDIR)/libUtils.so
+
 
 #	This command will generate a C++ file which interfaces the rest of humanity with root...
 #	It requires the explicit paths of all files, or that you remain in the same working directory at all times during the build process
 #	We want to place the output dictionary in the Build directory as this is CODE that is NOT to be editted by the $USER!
 $(OBJDIR)/rapidfit_dict.cpp: framework/include/RapidRun.h framework/include/LinkDef.h
 	@echo "Building RapidFit Root Dictionary:"
-	@echo "rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I\"$(PWD)/framework/include\" $^"
-	@rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I"$(PWD)/framework/include" $^
+	@echo "rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I\"framework/include\" $^"
+	@rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c -I"framework/include" $^
 
 #	Compile the class that root has generated for us which is the linker interface to root	(i.e. dictionaries & such)
 $(OBJDIR)/rapidfit_dict.o: $(OBJDIR)/rapidfit_dict.cpp
