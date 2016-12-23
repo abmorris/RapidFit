@@ -90,7 +90,7 @@ CXXFLAGSUTIL = $(CXXFLAGS_BASE) -I$(INCUTILS) $(ROOTCFLAGS) -Iframework/include
 LINKFLAGS += $(USE_GSL) $(LINKGSL) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(COMLIBFLAGS) -Wl,-rpath,$(COMLIBDIR):$(ROOTLIBDIR)
 
 #	Default build command when someone asks for 'make'
-all : $(EXEDIR)/fitting lib
+all : $(EXEDIR)/fitting
 
 objs : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 
@@ -162,14 +162,14 @@ $(EXEDIR)/Per-Event: $(OBJUTILDIR)/Per-Event.o $(SHARED_UTIL_LIBS)
 $(EXEDIR)/plotDists: $(OBJUTILDIR)/plotDists.o $(SHARED_UTIL_LIBS)
 	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
-utils:	$(EXEDIR)/print $(EXEDIR)/RapidPlot $(EXEDIR)/RapidDiff $(EXEDIR)/RapidToyDiff
+utils:	$(LIBDIR)/libUtils.so $(EXEDIR)/print $(EXEDIR)/RapidPlot $(EXEDIR)/RapidDiff $(EXEDIR)/RapidToyDiff
 
 extra:	$(EXEDIR)/Per-Event $(EXEDIR)/lifetime_tool $(EXEDIR)/weighted $(EXEDIR)/ApplyWeights $(EXEDIR)/Compare $(EXEDIR)/tupleDiff $(EXEDIR)/AngularDist $(EXEDIR)/plotDists
 
 #	For building RapidFit as a library to use within CINT which makes life easier on the grid... (supposedly)
 #	make lib
 
-lib: $(LIBDIR)/libRapidRun.so $(LIBDIR)/libUtils.so
+lib: $(LIBDIR)/libRapidRun.so
 
 #	This command will generate a C++ file which interfaces the rest of humanity with root...
 #	It requires the explicit paths of all files, or that you remain in the same working directory at all times during the build process
