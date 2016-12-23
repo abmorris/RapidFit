@@ -90,7 +90,7 @@ CXXFLAGSUTIL = $(CXXFLAGS_BASE) -I$(INCUTILS) $(ROOTCFLAGS) -Iframework/include
 LINKFLAGS += $(USE_GSL) $(LINKGSL) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(COMLIBFLAGS) -Wl,-rpath,$(COMLIBDIR):$(ROOTLIBDIR)
 
 #	Default build command when someone asks for 'make'
-all : $(EXEDIR)/fitting lib utils
+all : $(EXEDIR)/fitting lib
 
 objs : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 
