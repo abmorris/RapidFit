@@ -67,6 +67,7 @@ class Bs2PhiKKComponent
     std::unique_ptr<DPMassShape> KKLineShape{};
   private:
     void     Initialise();
+    void     UpdateParameters();
     TComplex A(int); // Polarisation amplitude coefficients
     TComplex F(int, double, double, double); // Angular distribution: helicity, phi, costheta1, costheta2
     double   OFBF(double); // Product of orbital and barrier factors

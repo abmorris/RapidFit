@@ -8,6 +8,7 @@
 // Self
 #include "Bs2PhiKKSignal.h"
 // Std Libraries
+#include <iostream>
 #include <stdexcept>
 // ROOT Libraries
 #include "TComplex.h"
@@ -36,13 +37,14 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   , acceptance_moments((string)config->getConfigurationValue("CoefficientsFile") != "")
   , acceptance_histogram((string)config->getConfigurationValue("HistogramFile") != "")
 {
+  std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
   string phiname = config->getConfigurationValue("phiname");
   phimass = PhysPar(config,phiname+"_mass");
   dGsGs = PhysPar(config,"dGsGs");
   vector<string> reslist = StringProcessing::SplitString( config->getConfigurationValue("resonances"), ' ' );
-  printf("========================\n");
-  printf("Building resonance model\n");
-  printf("------------------------\n");
+  std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
+  std::cout << "┃ Component\t│ Spin\t│ Lineshape\t┃\n";
+  std::cout << "┠───────────────┼───────┼───────────────┨\n";
   for(auto name: reslist)
   {
     if(name=="") continue;
@@ -50,7 +52,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
     components.push_back(comp);
     componentnames.push_back(comp.GetName());
   }
-  printf("========================\n");
+  std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
   if(componentnames.size() > 1)
     componentnames.push_back("interference");
   if(acceptance_moments) acc_m = unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
@@ -61,9 +63,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
     acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
     acc_h->SetDimScales({1e-3,0.1,1.,1.}); // TODO: read this from the file
   }
-  printf("Calling Initialiser\n");
   Initialise();
-  printf("Making Prototypes\n");
   MakePrototypes();
 }
 /*****************************************************************************/
@@ -123,7 +123,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
   string KKname = option.substr(0,option.find('('));
   int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
   string lineshape = option.substr(option.find(',')+1,2);
-  printf("Bs -> %s %s \t (spin-%i %s shape)\n", phiname.c_str(), KKname.c_str(), JKK, lineshape.c_str());
+  std::cout << "┃ " << KKname << "\t│    " << JKK << "\t│ " << lineshape << " shape \t┃\n";
   return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
@@ -131,7 +131,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
 void Bs2PhiKKSignal::MakePrototypes()
 {
   // Make the DataPoint prototype
-  printf("Prototype datapoint:\t%s, %s, %s, %s\n",mKKName.Name().c_str(),phiName.Name().c_str(),ctheta_1Name.Name().c_str(),ctheta_2Name.Name().c_str());
+  std::cout << "\nPrototype datapoint:\t " << mKKName.Name() << "," << phiName.Name() << "," << ctheta_1Name.Name() << "," << ctheta_2Name.Name().c_str() << "\n";
   // The ordering here matters. It has to be the same as the XML file, apparently.
   allObservables.push_back(mKKName     );
   allObservables.push_back(phiName     );
@@ -145,9 +145,10 @@ void Bs2PhiKKSignal::MakePrototypes()
   for(auto comp: components)
     for(string par: comp.GetPhysicsParameters())
       if(par!=phimass.name.Name()) parameterNames.push_back(par);
-  printf("Full parameter set\n");
+  std::cout << "\nFull parameter set\n";
   for(string par: parameterNames)
-    printf("%s\n",par.c_str());
+    std::cout << " " << par << "\n";
+  std::cout << std::endl;
   allParameters = *( new ParameterSet(parameterNames) );
 }
 /*****************************************************************************/

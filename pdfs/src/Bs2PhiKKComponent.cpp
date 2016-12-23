@@ -121,6 +121,7 @@ void Bs2PhiKKComponent::Initialise()
       wignerKK = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This shouldn't happen
       break;
   }
+  UpdateParameters();
 }
 Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
   // Floatable parameters
@@ -236,6 +237,10 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
   for(auto& par: magsqs) par.Update(fitpars);
   for(auto& par: phases) par.Update(fitpars);
   for(auto& par: KKpars) par.Update(fitpars);
+  UpdateParameters();
+}
+void Bs2PhiKKComponent::UpdateParameters()
+{
   // Update the helicity amplitudes
   switch(helicities.size())
   {
