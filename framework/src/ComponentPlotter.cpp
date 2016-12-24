@@ -1551,7 +1551,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		//cout << endl;
 
 		TGraphErrors* pullGraph = new TGraphErrors( (int)pull_value.size(), &(x_values[0]), &(pull_value[0]), &(x_errs[0]), &(pull_error_value[0]) );
-		pullGraph->Draw("AP");
+		pullGraph->Draw("AB");
 		pad2->Modified();
 		pad2->Update();
 		c1->Update();

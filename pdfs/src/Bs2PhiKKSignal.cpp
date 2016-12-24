@@ -131,7 +131,6 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
 void Bs2PhiKKSignal::MakePrototypes()
 {
   // Make the DataPoint prototype
-  std::cout << "\nPrototype datapoint:\t " << mKKName.Name() << "," << phiName.Name() << "," << ctheta_1Name.Name() << "," << ctheta_2Name.Name().c_str() << "\n";
   // The ordering here matters. It has to be the same as the XML file, apparently.
   allObservables.push_back(mKKName     );
   allObservables.push_back(phiName     );
@@ -145,10 +144,6 @@ void Bs2PhiKKSignal::MakePrototypes()
   for(auto comp: components)
     for(string par: comp.GetPhysicsParameters())
       if(par!=phimass.name.Name()) parameterNames.push_back(par);
-  std::cout << "\nFull parameter set\n";
-  for(string par: parameterNames)
-    std::cout << " " << par << "\n";
-  std::cout << std::endl;
   allParameters = *( new ParameterSet(parameterNames) );
 }
 /*****************************************************************************/
@@ -166,7 +161,11 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 // List of components
 vector<string> Bs2PhiKKSignal::PDFComponents()
 {
-  return componentnames;
+  // Avoid redundant plotting for single-component PDFs
+  if(componentnames.size()>1)
+    return componentnames;
+  else
+    return {};
 }
 /*****************************************************************************/
 // Evaluate a single component
