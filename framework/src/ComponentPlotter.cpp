@@ -159,12 +159,12 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	if( config->ForceCombinationNumber != -1 )
 	{
 		cout << "Requested ONLY to use Combination Number: " << config->ForceCombinationNumber << endl;
-		if( config->ForceCombinationNumber > allCombinations_input.size() )
+		if( config->ForceCombinationNumber > (int)allCombinations_input.size() )
 		{
 			cout << "CANNOT USE Combination Number: " << config->ForceCombinationNumber << " Ignoring!" << endl;
 		}
 
-		unsigned int i=0;
+		int i=0;
 		for( vector<DataPoint*>::iterator thisCombination = allCombinations_input.begin(); thisCombination != allCombinations_input.end(); ++thisCombination, ++i )
 		{
 			double thisNum = plotData->GetDataNumber( *thisCombination );
@@ -1551,7 +1551,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		//cout << endl;
 
 		TGraphErrors* pullGraph = new TGraphErrors( (int)pull_value.size(), &(x_values[0]), &(pull_value[0]), &(x_errs[0]), &(pull_error_value[0]) );
-		pullGraph->Draw("AP");
+		pullGraph->Draw("AB");
 		pad2->Modified();
 		pad2->Update();
 		c1->Update();

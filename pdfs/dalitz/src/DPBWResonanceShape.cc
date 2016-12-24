@@ -31,7 +31,7 @@ DPBWResonanceShape::DPBWResonanceShape(double mRR, double gammaRR, int L,
             break;
     case 5: barrier=new DPBarrierL5(R);
             break;
-    default: std::cout<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
+    default: std::cerr<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
              barrier=new DPBarrierL0(R);
              break;
   }
@@ -59,7 +59,7 @@ DPBWResonanceShape::DPBWResonanceShape( const DPBWResonanceShape& other ) : DPMa
             			break;
     			case 5: barrier=new DPBarrierL5(R);
             			break;
-    			default: std::cout<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
+    			default: std::cerr<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
              			barrier=new DPBarrierL0(R);
              			break;
   		}
@@ -83,6 +83,7 @@ TComplex DPBWResonanceShape::massShape(double m)
   TComplex denominator(mR*mR-m*m,-mR*gamma(m));
 
   result/=denominator;
+
   return result;
 }
 
@@ -91,8 +92,6 @@ double DPBWResonanceShape::gamma(double m)
   double pp=daughterMomentum(m);  // momentum of daughter at the actual mass
   double bb=barrier->barrier(pR0,pp);  // Barrier factor
   double gg=gammaR*mR/m*bb*bb*TMath::Power(pp/pR0,2*LR+1);
-  //std::cout << "DPBWResonanceShape g " << R << " " << m << " " << mR << " " << gammaR << " " << pp << " " << pR0 << " " << bb <<  " " << m1 << " " << m2 <<std::endl;
-
   return gg;
 }
 
@@ -114,10 +113,8 @@ void DPBWResonanceShape::setParameters(double* pars)
 
 void DPBWResonanceShape::setResonanceParameters( double mass, double sigma )
 {
-	//std::cout << "DPBWResonanceShape setting " << mass << std::endl;
 	mR = mass;
 	gammaR = sigma;
 	pR0 = daughterMomentum(mR);
-    //std::cout << "DPBWResonanceShape set" << std::endl;
 }
 

@@ -587,7 +587,6 @@ unsigned int PhaseSpaceBoundary::GetDiscreteIndex( DataPoint* Input, const bool 
 		cerr << "This is a SERIOUS MISCONFIGURATION!!! Exiting :(" << endl;
 		Input->Print();
 		this->Print();
-		DebugClass::SegFault();
 	}
 
 	//	Store and return the lookup of the DataPoint's index
