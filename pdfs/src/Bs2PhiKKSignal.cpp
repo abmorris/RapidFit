@@ -20,6 +20,8 @@
 #include "PDFConfigurator.h"
 #include "DPHelpers.hh"
 
+using std::abs;
+
 PDF_CREATOR( Bs2PhiKKSignal )
 /*****************************************************************************/
 // Constructor
