@@ -36,8 +36,6 @@ struct pthread_mutex_t;
 #define __GNUC__
 #endif
 
-using namespace::std;
-
 class IPDF;
 class PDFConfigurator;
 class RapidFitIntegrator;

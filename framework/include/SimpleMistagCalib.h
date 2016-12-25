@@ -7,7 +7,8 @@
 #include "ParameterSet.h"
 #include "DataPoint.h"
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class SimpleMistagCalib : public IMistagCalib
 {

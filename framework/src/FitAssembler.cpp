@@ -30,7 +30,14 @@
 #include <valgrind/callgrind.h>
 #endif
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::clog;
+using std::endl;
+using std::setprecision;
+using std::setw;
+using std::left;
+using std::streambuf;
 
 //	We will catch any throw statments internal to the minimisation process
 void FitAssembler::SafeMinimise( IMinimiser* Minimiser )

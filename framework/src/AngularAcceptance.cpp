@@ -16,7 +16,7 @@
 #include "TFile.h"
 #include "TTree.h"
 
-using namespace::std;
+using std::ifstream;
 
 AngularAcceptance::AngularAcceptance( const AngularAcceptance& input ) :
 	_af1(input._af1), _af2(input._af2), _af3(input._af3), _af4(input._af4), _af5(input._af5), _af6(input._af6)

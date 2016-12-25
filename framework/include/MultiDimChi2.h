@@ -11,7 +11,8 @@
 #include <string>
 #include "IPDF.h"
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 struct ThisObsBinning
 {

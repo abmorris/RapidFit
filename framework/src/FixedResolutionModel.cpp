@@ -17,8 +17,7 @@
 #include <vector>
 #include <string>
 
-using namespace::std;
-
+using std::make_pair;
 
 //............................................
 // Constructor 

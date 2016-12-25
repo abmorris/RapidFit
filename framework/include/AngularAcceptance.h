@@ -26,8 +26,7 @@
 #include "DataPoint.h"
 #include "Observable.h"
 
-using namespace::std;
-
+using std::string;
 
 //=======================================
 class AngularAcceptance

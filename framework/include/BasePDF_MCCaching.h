@@ -96,7 +96,7 @@
 #include <cmath>
 #include <pthread.h>
 
-using namespace::std;
+
 
 class IPDF;
 

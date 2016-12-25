@@ -10,7 +10,7 @@
 #include <string>
 #include <float.h>
 
-using namespace::std;
+
 
 vector<double>* MultiThreadedFunctions::ParallelEvaluate( IPDF* thisFunction, IDataSet* thesePoints, ThreadingConfig* threadingInfo )
 {

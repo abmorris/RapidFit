@@ -25,7 +25,8 @@
 #include <time.h>
 #include <pthread.h>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class IPDF_MCCaching
 {

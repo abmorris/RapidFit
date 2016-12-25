@@ -25,7 +25,7 @@
 
 class IPDF;
 
-using namespace::std;
+
 ///	This is required to use the ROOT::Math::IBaseFunctionMultiDim::Clone Copy function
 using namespace ROOT::Math;
 

@@ -19,7 +19,10 @@
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+using std::stringstream;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 //Constructor with correct argument
 ObservableDiscreteConstraint::ObservableDiscreteConstraint( string Name, vector<double> NewValues, string NewUnit, string TF1 )

@@ -11,7 +11,8 @@
 
 class IMistagCalib;
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class MistagCalib3fb : public IMistagCalib
 {

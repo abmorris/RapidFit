@@ -6,7 +6,10 @@
 #include <vector>
 #include <iostream>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::pair;
 
 ObservableRef::ObservableRef( string ObsName ) : Observable_Name( ObsName ), Observable_Index(-1), externID(0)
 {

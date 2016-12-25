@@ -20,7 +20,9 @@
 #include <cstring>
 #include <map>
 
-using namespace::std;
+using std::vector;
+using std::string;
+using std::pair;
 
 class PhaseSpaceBoundary;
 

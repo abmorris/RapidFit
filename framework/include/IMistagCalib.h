@@ -5,7 +5,7 @@
 #include "ParameterSet.h"
 #include "DataPoint.h"
 
-using namespace::std;
+
 
 class IMistagCalib
 {

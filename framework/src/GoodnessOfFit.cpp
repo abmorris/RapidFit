@@ -38,7 +38,9 @@
 #include <time.h>
 #include <iomanip>
 
-using namespace::std;
+using std::find;
+using std::set;
+using std::setprecision;
 
 namespace GoodnessOfFit
 {

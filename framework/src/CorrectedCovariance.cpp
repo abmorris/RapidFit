@@ -16,7 +16,7 @@
 #include <cstdlib>
 #include <iomanip>
 
-using namespace::std;
+using std::setprecision;
 
 void CorrectedCovariance::DumpMatrix( TMatrixD * Input )
 {

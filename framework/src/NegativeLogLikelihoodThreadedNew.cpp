@@ -34,7 +34,7 @@
 #include <pthread.h>
 #include <float.h>
 
-using namespace::std;
+
 
 //Default constructor
 NegativeLogLikelihoodThreadedNew::NegativeLogLikelihoodThreadedNew() : FitFunction()

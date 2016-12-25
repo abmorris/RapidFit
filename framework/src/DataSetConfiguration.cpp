@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <sstream>
 
-using namespace::std;
+
 
 //Constructor with correct argument
 DataSetConfiguration::DataSetConfiguration( string DataSource, long DataNumber, string cut, vector<string> DataArguments, vector<string> DataArgumentNames, int starting_entry, PhaseSpaceBoundary* Boundary ) :

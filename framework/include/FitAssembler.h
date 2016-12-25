@@ -28,7 +28,8 @@
 #include <string>
 #include <exception>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class FitAssembler
 {

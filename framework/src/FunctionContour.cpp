@@ -12,6 +12,11 @@
 //	System Headers
 #include <iostream>
 
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::make_pair;
+
 //Default constructor
 FunctionContour::FunctionContour() : xName(), yName(), allContours()
 {

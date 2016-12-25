@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cmath>
 
-using namespace::std;
+using std::queue;
 
 const int MAXIMUM_SAMPLES = 10000;
 const double MAXIMUM_GRADIENT_TOLERANCE = 0.05;

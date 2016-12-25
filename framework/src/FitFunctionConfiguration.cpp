@@ -16,7 +16,7 @@
 #include <sstream>
 #include <iostream>
 
-using namespace::std;
+
 
 //Constructor with only name of FitFunction
 FitFunctionConfiguration::FitFunctionConfiguration( string InputName ) :

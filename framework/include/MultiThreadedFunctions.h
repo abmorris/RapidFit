@@ -21,7 +21,9 @@ struct pthread_t;
 #define __GNUC__
 #endif
 
-using namespace::std;
+using std::vector;
+
+
 
 class MultiThreadedFunctions
 {

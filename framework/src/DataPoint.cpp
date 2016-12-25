@@ -20,7 +20,10 @@
 #include <iomanip>
 #include <limits>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::numeric_limits;
 
 //	Required for Sorting
 DataPoint::DataPoint() : allObservables(), allNames(), myPhaseSpaceBoundary(NULL), thisDiscreteIndex(-1),

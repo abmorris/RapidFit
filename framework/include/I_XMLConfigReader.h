@@ -44,7 +44,8 @@
 #include <vector>
 #include <string>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class I_XMLConfigReader
 {

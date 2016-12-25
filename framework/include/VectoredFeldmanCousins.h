@@ -10,7 +10,9 @@
 #include <string>
 #include <vector>
 
-using namespace::std;
+using std::vector;
+using std::string;
+using std::streambuf;
 
 class VectoredFeldmanCousins : public IStudy
 {

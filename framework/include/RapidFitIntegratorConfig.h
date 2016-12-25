@@ -11,8 +11,6 @@
 
 #include "Threading.h"
 
-using namespace::std;
-
 class RapidFitIntegratorConfig
 {
 	public:

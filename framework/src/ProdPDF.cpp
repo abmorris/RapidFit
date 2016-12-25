@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <sstream>
 
-using namespace::std;
+
 
 PDF_CREATOR( ProdPDF );
 

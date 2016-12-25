@@ -10,7 +10,7 @@
 
 class IPDF;
 
-using namespace::std;
+using std::vector;
 
 class MakeFoam
 {

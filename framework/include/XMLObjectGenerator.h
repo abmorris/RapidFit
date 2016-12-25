@@ -20,9 +20,9 @@
 #include "PDFWithData.h"
 
 #include <string>
-#include <vector>
 
-using namespace::std;
+using std::pair;
+using std::string;
 
 class XMLObjectGenerator
 {

@@ -15,7 +15,9 @@
 #include <cstdlib>
 #include <string>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 CombinedMistagCalib::CombinedMistagCalib( PDFConfigurator* configurator ) : IMistagCalib(),
 	_tagOS(), _tagSS(), _mistagOS(), _mistagSS(),

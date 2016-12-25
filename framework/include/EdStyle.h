@@ -23,7 +23,8 @@
 ///	System Headers
 #include <string.h>
 
-using namespace::std;
+using std::string;
+using std::stringstream;
 
 class EdStyle {
 	public:

@@ -12,7 +12,8 @@
 #include <string>
 #include <vector>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 /*!
  * This is required to be able to compile all of the code for running on the grid.

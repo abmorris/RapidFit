@@ -52,7 +52,7 @@ pthread_mutex_t multi_dim_lock;
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+using std::setw;
 
 //1% tolerance on integral value
 //const double INTEGRAL_PRECISION_THRESHOLD = 0.01;

@@ -18,7 +18,11 @@
 #include <algorithm>
 #include <time.h>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::stringstream;
+using std::ifstream;
 
 string StringProcessing::TimeString()
 {

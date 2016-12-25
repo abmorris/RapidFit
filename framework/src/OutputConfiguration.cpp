@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <iomanip>
 
-using namespace::std;
+using std::setprecision;
 
 //Constructor with correct arguments
 OutputConfiguration::OutputConfiguration( vector< pair< string, string > > InputContours, string PullPlotType, vector<ScanParam*> ScanParameters, vector<pair<ScanParam*, ScanParam*> > _2DScanParameters, vector<CompPlotter_config*> Components ) :

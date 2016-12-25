@@ -29,7 +29,7 @@
 
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+
 
 //============================================================================================
 class Bs2JpsiPhi_Signal_v8a : public BasePDF

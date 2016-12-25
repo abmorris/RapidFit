@@ -23,7 +23,7 @@
 
 #define DOUBLE_TOLERANCE_DATA 1E-8
 
-using namespace::std;
+using std::setprecision;
 
 MemoryDataSet::MemoryDataSet( PhaseSpaceBoundary* NewBoundary, vector<DataPoint*> inputData ) :
 	allData(), dataBoundary( new PhaseSpaceBoundary(*NewBoundary) ), allSubSets(), WeightName(""), useWeights(false), alpha(1.), alphaName("uninitialized"), canDelete(false)

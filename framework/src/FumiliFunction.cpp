@@ -16,7 +16,7 @@
 #include <iostream>
 #include <cmath>
 
-using namespace::std;
+
 
 //Default constructor
 //FumiliFunction::FumiliFunction() : ParametricFunction(1), function(), parameters()

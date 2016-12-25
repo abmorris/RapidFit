@@ -18,7 +18,10 @@
 #include <iostream>
 #include <stdlib.h>
 
-using namespace::std;
+using std::stringstream;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 //Constructor with correct arguments
 ExternalConstMatrix::ExternalConstMatrix( string NewName, string NewValue, string NewError, string NewCorrelations ) :

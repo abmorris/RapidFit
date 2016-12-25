@@ -14,7 +14,7 @@
 ///	System Headers
 #include <vector>
 
-using namespace::std;
+
 
 /*!
  * Constructor with correct arguments, including covariance Matrix and contours

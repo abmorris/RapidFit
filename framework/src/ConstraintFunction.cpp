@@ -16,7 +16,11 @@
 #include <sstream>
 #include <iomanip>
 
-using namespace::std;
+using std::cout;
+using std::endl;
+using std::stringstream;
+using std::setw;
+using std::left;
 
 //Constructor with correct arguments
 ConstraintFunction::ConstraintFunction( const vector< IConstraintFunction* > NewConstraints ) : Found_Position(), allConstraints()

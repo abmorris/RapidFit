@@ -20,7 +20,7 @@
 #include <sstream>
 #include <pthread.h>
 
-using namespace::std;
+
 
 //Constructor
 BasePDF_MCCaching::BasePDF_MCCaching() : IPDF_MCCaching(),

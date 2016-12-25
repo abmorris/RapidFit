@@ -20,7 +20,7 @@
 #include <string>
 #include <sstream>
 
-using namespace::std;
+
 
 MultiXMLConfigReader::MultiXMLConfigReader( vector<string> fileNames, vector<pair<string, string> >* OverrideXML ) : I_XMLConfigReader(), XMLReaders(), storedSeed(-1), storedRepeats(-1), _fileNames( fileNames )
 {

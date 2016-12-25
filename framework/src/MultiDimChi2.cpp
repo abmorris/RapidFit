@@ -17,7 +17,7 @@
 #include "DebugClass.h"
 #include "TMath.h"
 
-using namespace::std;
+
 
 MultiDimChi2::MultiDimChi2( vector<PDFWithData*> allObjects, PhaseSpaceBoundary* thisBound, vector<string> wantedObservables ) :
 	internalHisto(NULL), allBinCenters(NULL) 

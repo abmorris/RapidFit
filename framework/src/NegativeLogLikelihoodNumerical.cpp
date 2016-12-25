@@ -33,7 +33,7 @@
 #include "TFile.h"
 #include "TNtuple.h"
 
-using namespace::std;
+
 
 pthread_mutex_t _n_eval_lock;
 pthread_mutex_t _n_int_lock;

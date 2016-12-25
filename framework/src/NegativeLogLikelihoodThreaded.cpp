@@ -33,7 +33,7 @@
 #include <float.h>
 #include <algorithm>
 
-using namespace::std;
+
 
 pthread_mutex_t eval_lock;
 

@@ -3,8 +3,6 @@
 
 #include <string>
 
-using namespace::std;
-
 ComponentRef::ComponentRef( const string input, const string obs ) :
 	thisSubComponent(NULL), thisIndex(-1), thisName( input ), obsName( obs )
 {

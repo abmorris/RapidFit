@@ -28,9 +28,13 @@
 #include <iomanip>
 #include <exception>
 
-using namespace::std;
+using std::flush;
+using std::left;
+using std::setw;
+using std::setprecision;
+using std::shared_ptr;
 
-std::shared_ptr<TMinuit> MinuitWrapper::currentMinuitInstance = std::shared_ptr<TMinuit>(new TMinuit);
+shared_ptr<TMinuit> MinuitWrapper::currentMinuitInstance = shared_ptr<TMinuit>(new TMinuit);
 
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6

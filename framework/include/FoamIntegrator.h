@@ -20,7 +20,7 @@ class IPDF;
 class IDataSet;
 class MakeFoam;
 
-using namespace::std;
+
 
 class FoamIntegrator
 {

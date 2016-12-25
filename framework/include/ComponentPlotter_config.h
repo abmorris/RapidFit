@@ -17,7 +17,7 @@
 #include <vector>
 #include <string>
 
-using namespace::std;
+
 
 /*!
  * This was originally a struct and I passed it around several places, but rootcint hates things like vector<struct something*> so it's a dummy class

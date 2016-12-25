@@ -18,7 +18,7 @@
 ///	System Headers
 #include <vector>
 
-using namespace::std;
+using std::string;
 
 class ConstraintFunction
 {

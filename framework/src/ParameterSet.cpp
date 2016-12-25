@@ -18,7 +18,10 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace::std;
+using std::stringstream;
+using std::cout;
+using std::endl;
+using std::cerr;
 
 vector<string> ParameterSet::DiffSets( ParameterSet* first, ParameterSet* second )
 {

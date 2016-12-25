@@ -23,7 +23,10 @@
 #include <sstream>
 #include <pthread.h>
 
-using namespace::std;
+using std::vector;
+using std::stringstream;
+using std::cout;
+using std::endl;
 
 //Constructor
 BasePDF_Framework::BasePDF_Framework( IPDF* thisPDF ) : IPDF_Framework(), PDFName("Base"), PDFLabel("Base"), copy_object( NULL ), debug_mutex(NULL), can_remove_mutex(true),

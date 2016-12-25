@@ -17,7 +17,7 @@
 ///	System Headers
 #include <string>
 
-using namespace::std;
+
 
 class Blinder
 {

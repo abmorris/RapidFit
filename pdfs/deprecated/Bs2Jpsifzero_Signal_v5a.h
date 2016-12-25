@@ -27,7 +27,7 @@
 
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+
 
 //============================================================================================
 class Bs2Jpsifzero_Signal_v5a : public BasePDF

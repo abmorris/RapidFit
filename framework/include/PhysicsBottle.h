@@ -18,6 +18,8 @@
 //	System Headers
 #include <vector>
 
+using std::vector;
+
 class PhysicsBottle
 {
 	public:

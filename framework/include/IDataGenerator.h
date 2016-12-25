@@ -14,7 +14,7 @@
 //	RapidFit Headers
 #include "IDataSet.h"
 
-using namespace::std;
+
 
 class IDataGenerator
 {

@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-using namespace::std;
+
 
 //	Destructor
 MCStudy::~MCStudy()

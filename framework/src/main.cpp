@@ -59,7 +59,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-using namespace::std;
+using std::ifstream;
+using std::ofstream;
+using std::setprecision;
 
 //	Standard opening into RapidFit when not in CINT/pyROOT
 #ifndef __CINT__

@@ -21,7 +21,7 @@
 #include <sstream>
 #include <pthread.h>
 
-using namespace::std;
+
 
 //Constructor
 BasePDF::BasePDF() : BasePDF_Framework( this ), BasePDF_MCCaching(),

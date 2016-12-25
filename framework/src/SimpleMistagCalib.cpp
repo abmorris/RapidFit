@@ -11,7 +11,9 @@
 #include <cmath>
 #include <cstdlib>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 SimpleMistagCalib::SimpleMistagCalib( PDFConfigurator* configurator ) : IMistagCalib(),
 	_tag(), _mistag(), _mistagP0(), _mistagP1(), _mistagSetPoint(),

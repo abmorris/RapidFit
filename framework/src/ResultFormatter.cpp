@@ -35,7 +35,11 @@
 #include <sstream>
 #include <fstream>
 
-using namespace::std;
+using std::setw;
+using std::setprecision;
+using std::ofstream;
+using std::fixed;
+using std::ios_base;
 
 //Output data as a RootNTuple
 void ResultFormatter::MakeRootDataFile( string FullFileName, vector<IDataSet*> OutputData )

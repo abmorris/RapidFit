@@ -15,8 +15,6 @@
 #include "IDataSet.h"
 #include "IPDF.h"
 
-using namespace::std;
-
 class IPrecalculator
 {
 	public:

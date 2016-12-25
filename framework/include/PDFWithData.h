@@ -19,9 +19,8 @@
 #include "DebugClass.h"
 //	System Headers
 #include <string>
-#include <vector>
 
-using namespace::std;
+using std::string;
 
 class PDFWithData
 {

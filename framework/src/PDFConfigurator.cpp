@@ -21,7 +21,7 @@
 #include <sstream>
 #include <iomanip>
 
-using namespace::std;
+
 
 ///..........................................
 //Default constructor & destructor

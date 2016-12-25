@@ -11,7 +11,7 @@
 
 class IMistagCalib;
 
-using namespace::std;
+
 
 class CombinedMistagCalib : public IMistagCalib
 {

@@ -28,7 +28,7 @@
 
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+
 
 //Make a physics parameter from an appropriate XML tag
 PhysicsParameter * XMLObjectGenerator::GetPhysicsParameter( XMLTag * InputTag, string & ParameterName )

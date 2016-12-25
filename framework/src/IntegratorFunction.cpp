@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <float.h>
 
-using namespace::std;
+
 
 //	Constructor for Integrator Objects
 IntegratorFunction::IntegratorFunction( IPDF * InputFunction, const DataPoint * InputPoint, vector<string> IntegrateThese, vector<string> DontIntegrateThese,

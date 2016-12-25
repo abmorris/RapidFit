@@ -21,8 +21,6 @@
 #include "PhaseSpaceBoundary.h"
 #include "IDataSet.h"
 
-using namespace::std;
-
 class AcceptReject : public IDataGenerator
 {
 	public:

@@ -19,6 +19,9 @@
 #include "LegendreMomentShape.h"
 #include "NDHist_Adaptive.h"
 
+using std::shared_ptr;
+using std::unique_ptr;
+
 class Bs2PhiKKSignal : public BasePDF
 {
     public:

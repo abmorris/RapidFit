@@ -7,7 +7,11 @@
 #include <string>
 #include <iomanip>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::clog;
+using std::endl;
+using std::pair;
 
 VectoredFeldmanCousins::VectoredFeldmanCousins( FitResultVector* input_GlobalResult, FitResultVector* ResultsForFC, unsigned int inputNuisenceModel, OutputConfiguration* new_makeOutput, MinimiserConfiguration* newMinimiser, FitFunctionConfiguration* newFunction, I_XMLConfigReader* new_xmlFile, vector< PDFWithData* > new_pdfsAndData ) : 
 	GlobalFitResult(), GlobalFitPhysicsParameters(), FitAtGridPoints(), cout_bak(NULL), cerr_bak(NULL), clog_bak(NULL), allPhaseSpaces(),

@@ -15,7 +15,7 @@
 ///	System Headers
 #include <string>
 
-using namespace::std;
+using std::string;
 
 class ComponentRef
 {

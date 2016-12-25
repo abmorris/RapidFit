@@ -15,7 +15,9 @@
 #include <vector>
 #include <cstdio>
 
-using namespace::std;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 /*ScanParam::ScanParam() : name(), minimum(), maximum(), sigma(), points()
 {

@@ -49,7 +49,11 @@
 #endif
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+using std::stringstream;
+using std::setw;
+using std::setprecision;
+using std::flush;
+using std::left;
 
 //Constructor with correct arguments
 ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TString PDFStr, TFile* filename, string ObservableName, CompPlotter_config* config, int PDF_Num ) :

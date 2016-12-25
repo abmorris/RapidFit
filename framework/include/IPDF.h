@@ -31,7 +31,14 @@
 #include <pthread.h>
 #include <complex>
 
-using namespace::std;
+using std::vector;
+using std::string;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::stringstream;
+using std::complex;
+using std::make_pair;
 
 class IPDF : public virtual IPDF_NormalisationCaching, public virtual IPDF_MCCaching, public virtual IPDF_Framework
 {

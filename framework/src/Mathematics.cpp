@@ -40,7 +40,11 @@
 
 pthread_mutex_t ROOT_Lock = pthread_mutex_t();
 
-using namespace::std;
+using std::complex;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::setprecision;
 
 bool RooMathinit=false;
 

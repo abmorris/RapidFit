@@ -25,7 +25,7 @@
 #include <sstream>
 #include <cstdlib>
 
-using namespace::std;
+
 
 //-----------------------------------------------------------------------------
 // Implementation file for class : EdStyle

@@ -14,7 +14,7 @@
 #include <string>
 #include <sstream>
 
-using namespace::std;
+
 
 //Constructor for a minimiser only specified by name
 MinimiserConfiguration::MinimiserConfiguration( string InputName ) :

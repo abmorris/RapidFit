@@ -15,7 +15,9 @@
 #include <vector>
 #include <string>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 //Constructor with correct argument
 Observable::Observable( const string Name, const double NewValue, const string NewUnit )
@@ -23,7 +25,7 @@ Observable::Observable( const string Name, const double NewValue, const string N
 {
 	if (unit == "")
 	{
-		cerr << "Observable \"" << Name << "\" has no unit! What kind of physicist are you?" << endl;
+		cerr << "Observable \"" << Name << "\" has no unit" << endl;
 	}
 }
 

@@ -20,7 +20,10 @@
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6
 
-using namespace::std;
+using std::stringstream;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 ResultParameter::ResultParameter( const PhysicsParameter* Input )
 	: name("Undefined"), value(0.0), originalValue(-9999.), error(0.0), minimum(0.0), maximum(0.0), stepSize(0.0), type("Uninitialised"), unit("Uninitialised"), ScanStatus(false),

@@ -15,7 +15,10 @@
 #include <sstream>
 #include <cstdlib>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::stringstream;
 
 //#define CONTINUOUS_TOLERANCE DBL_MIN
 #define CONTINUOUS_TOLERANCE 1E-9

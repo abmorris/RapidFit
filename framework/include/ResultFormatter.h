@@ -22,7 +22,8 @@
 #include <vector>
 #include <sstream>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class ResultFormatter
 {

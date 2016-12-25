@@ -28,7 +28,7 @@
 #include <cmath>
 #include <pthread.h>
 
-using namespace::std;
+using std::vector;
 
 
 class BasePDF_Framework : public virtual IPDF_Framework

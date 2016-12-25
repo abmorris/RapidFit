@@ -25,6 +25,9 @@
 #include <string>
 #include <memory>
 
+using std::vector;
+using std::string;
+
 class MinuitWrapper : public IMinimiser
 {
 	public:

@@ -9,7 +9,7 @@
 #include "IMinimiser.h"
 #include "RapidFitMatrix.h"
 
-using namespace::std;
+
 
 class CorrectedCovariance
 {

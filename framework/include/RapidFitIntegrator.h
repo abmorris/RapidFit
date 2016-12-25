@@ -31,7 +31,8 @@ class FoamIntegrator;
 class IntegratorFunction;
 
 using namespace ROOT::Math;
-using namespace::std;
+using std::vector;
+using std::string;
 
 static vector<DataPoint*> _global_doEval_points;
 static vector<double> _global_range_minima;

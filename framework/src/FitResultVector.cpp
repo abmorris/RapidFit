@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-using namespace::std;
+
 
 //  Constructor to Return a single array from multiple arrays
 FitResultVector::FitResultVector( const vector<FitResultVector*> Result_Array ) :

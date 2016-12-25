@@ -28,7 +28,7 @@
 #define DOUBLE_TOLERANCE 1E-6
 #define DEBUGFLAG true
 
-using namespace::std;
+
 
 //============================================================================================
 class Bs2Jpsifzero_Signal_v5 : public BasePDF

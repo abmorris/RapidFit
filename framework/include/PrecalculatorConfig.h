@@ -8,7 +8,7 @@
 #include <string>
 #include <cmath>
 
-using namespace::std;
+using std::string;
 
 class PrecalculatorConfig
 {

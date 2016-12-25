@@ -7,7 +7,7 @@
 
 #include <string>
 
-using namespace::std;
+
 
 PrecalculatorConfig::PrecalculatorConfig() : name("undefined"), weightName("undefined"), filename("WeightedFile"), config(0), useAlpha(false)
 {

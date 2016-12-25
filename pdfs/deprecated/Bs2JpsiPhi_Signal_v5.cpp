@@ -16,7 +16,7 @@
 #include <iomanip>
 // #include "TF1.h"
 
-using namespace::std;
+
 
 PDF_CREATOR( Bs2JpsiPhi_Signal_v5 );
 

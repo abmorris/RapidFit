@@ -36,7 +36,7 @@
 #include <algorithm>
 #include <time.h>
 
-using namespace::std;
+
 
 namespace JackKnife
 {

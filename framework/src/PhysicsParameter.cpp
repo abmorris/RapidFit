@@ -16,7 +16,10 @@
 #include <sstream>
 #include <cmath>
 
-using namespace::std;
+using std::stringstream;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 const double default_val = -9999.;
 

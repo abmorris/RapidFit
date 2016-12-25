@@ -17,7 +17,8 @@
 //	System Headers
 #include <vector>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class MemoryDataSet : public IDataSet
 {

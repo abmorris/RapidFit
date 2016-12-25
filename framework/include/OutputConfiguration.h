@@ -23,7 +23,8 @@
 #include <string>
 #include <utility>
 
-using namespace::std;
+using std::vector;
+using std::string;
 
 class OutputConfiguration
 {

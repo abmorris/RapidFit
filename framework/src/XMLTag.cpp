@@ -16,7 +16,9 @@
 #include <stdlib.h>
 #include <string>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 //Default constructor w Override tags
 XMLTag::XMLTag( vector<pair<string,string> >* Override_Tags, string GlobalPrepend ): children(), value(), name("RapidFit"), parent(NULL), path(GlobalPrepend), forbidden(Override_Tags)

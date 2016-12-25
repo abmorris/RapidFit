@@ -17,8 +17,7 @@
 #include <string>
 #include <iomanip>
 
-using namespace::std;
-
+using std::setw;
 
 //  Interface for internal calls
 void ScanStudies::DoScan( MinimiserConfiguration * MinimiserConfig, FitFunctionConfiguration * FunctionConfig, ParameterSet* BottleParameters,

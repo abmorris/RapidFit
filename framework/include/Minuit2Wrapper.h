@@ -23,6 +23,9 @@
 #include <vector>
 #include <string>
 
+using std::vector;
+using std::string;
+
 using namespace ROOT::Minuit2;
 
 class Minuit2Wrapper : public IMinimiser

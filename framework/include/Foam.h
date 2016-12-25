@@ -25,7 +25,7 @@
 ///	System Headers
 #include <vector>
 
-using namespace::std;
+using std::vector;
 
 class Foam : public IDataGenerator
 {

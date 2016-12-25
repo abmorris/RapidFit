@@ -15,7 +15,10 @@
 #include <sstream>
 #include <iostream>
 
-using namespace::std;
+using std::stringstream;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 //Constructor with correct arguments
 ExternalConstraint::ExternalConstraint( string NewName, double NewValue, double NewError ) : name(NewName), value(NewValue), error(NewError), internalParameterSet(NULL), wantedParameters()

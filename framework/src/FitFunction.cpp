@@ -32,7 +32,7 @@
 #include <ctime>
 #include <algorithm>
 
-using namespace::std;
+using std::numeric_limits;
 
 //Default constructor
 FitFunction::FitFunction() :

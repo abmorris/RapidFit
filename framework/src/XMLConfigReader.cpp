@@ -32,7 +32,7 @@
 #include <float.h>
 #include <vector>
 
-using namespace::std;
+using std::ifstream;
 
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6

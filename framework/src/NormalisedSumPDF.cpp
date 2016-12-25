@@ -20,7 +20,7 @@
 
 PDF_CREATOR( NormalisedSumPDF );
 
-using namespace::std;
+
 
 NormalisedSumPDF::NormalisedSumPDF( const NormalisedSumPDF& input ) : BasePDF( (BasePDF) input ),
 	prototypeDataPoint( input.prototypeDataPoint ), prototypeParameterSet( input.prototypeParameterSet ), doNotIntegrateList( input.doNotIntegrateList ),

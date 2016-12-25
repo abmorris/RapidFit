@@ -17,7 +17,10 @@
 #include <sstream>
 #include <cmath>
 
-using namespace::std;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::stringstream;
 
 //Constructor with correct arguments
 ResultParameterSet::ResultParameterSet( vector<string> NewNames ) : allParameters(), allNames()

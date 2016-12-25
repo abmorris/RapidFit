@@ -18,7 +18,7 @@
 //	System Headers
 #include <iostream>
 
-using namespace::std;
+
 
 //Constructor with correct arguments
 ToyStudy::ToyStudy( MinimiserConfiguration * TheMinimiser, FitFunctionConfiguration * TheFunction, ParameterSet* StudyParameters,

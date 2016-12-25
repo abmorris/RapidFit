@@ -15,7 +15,14 @@
 #include <iostream>
 #include <complex>
 
-using namespace::std;
+using std::ifstream;
+using std::ofstream;
+using std::complex;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::make_pair;
+using std::stringstream;
 
 bool DebugClass::DebugAllStatus = false;
 

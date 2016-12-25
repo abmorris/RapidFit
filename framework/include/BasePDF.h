@@ -97,7 +97,7 @@
 #include <cmath>
 #include <pthread.h>
 
-using namespace::std;
+
 
 class BasePDF : public BasePDF_Framework, public BasePDF_MCCaching, public IPDF
 {

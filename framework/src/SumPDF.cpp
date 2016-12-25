@@ -16,7 +16,7 @@
 #include <sstream>
 #include <float.h>
 
-using namespace::std;
+
 
 PDF_CREATOR( SumPDF );
 

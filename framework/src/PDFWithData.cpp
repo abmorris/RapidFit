@@ -16,7 +16,7 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace::std;
+
 
 //Constructor with correct arguments
 PDFWithData::PDFWithData( IPDF * InputPDF, PhaseSpaceBoundary * InputBoundary, DataSetConfiguration* DataConfig ) :

@@ -15,7 +15,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-using namespace::std;
+
 
 //Constructor with correct argument
 PhysicsBottle::PhysicsBottle( const ParameterSet * NewParameters ) : allPDFs(), allDataSets(), allConstraints(), bottleParameters(new ParameterSet( *NewParameters) )
