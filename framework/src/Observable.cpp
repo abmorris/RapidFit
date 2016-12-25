@@ -106,7 +106,7 @@ void Observable::Print() const
 	cout << "\tUnit: " << unit;
 	if( bin_num != -1 ) cout << "\tBinNum: " << bin_num << "\tAcceptance: " << acceptance;
 	if( bkg_bin_num != -1 ) cout << "\tBkgBinNum: " << bkg_bin_num << "\tBkgAcceptance: " << bkg_acceptance;
-	cout << endl;
+	cout << "\n";
 }
 
 void Observable::SetObservable( const Observable* input )
