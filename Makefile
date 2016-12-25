@@ -25,7 +25,7 @@ CXX          = $(CC) $(shell if [ "$(shell root-config --arch | grep 32)" = "" ]
 RM           = rm -f
 
 CXXFLAGS_BASE_MINIMAL = -D_GNU_SOURCE -D__USE_GNU -fPIC
-CXXFLAGS_BASE_WARNINGS = -Wextra -Wno-non-virtual-dtor -Wno-reorder -Wshadow -Wmissing-noreturn -Wcast-align
+CXXFLAGS_BASE_WARNINGS = -Werror -Wall -Wextra -Wno-non-virtual-dtor -Wno-reorder -Wshadow -Wmissing-noreturn -Wcast-align
 #		Compiler Flags
 CXXFLAGS_BASE_COMMON  = $(CXXFLAGS_BASE_MINIMAL) -D__ROOFIT_NOBANNER  $(CXXFLAGS_BASE_WARNINGS)
 CXXFLAGS_BASE = $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectorize -finline-limit=2000 -fprefetch-loop-arrays -fmerge-all-constants
@@ -95,20 +95,25 @@ all : $(EXEDIR)/fitting
 objs : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 
 $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRDALITZEXT)
-	$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 $(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT)
-	$(CXX) $(CXXFLAGS) -Wall $(USE_GSL) $(INCGSL) -c $< -o $@
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 $(OBJUTILDIR)/%.o : $(UTILSSRC)/%.$(UTILSSRCEXT) $(INCUTILS)/%.$(HDREXT)
-	$(CXX) $(CXXFLAGSUTIL) $(USE_GSL) $(INCGSL) -c $< -o $@
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGSUTIL) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(HDREXT)
-	$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 #	Main Build of RapidFit Binary
 $(EXEDIR)/fitting : objs
-	$(CXX) $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
+	@echo "Linking $@"
+	@$(CXX) $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 	chmod +t $(EXEDIR)/fitting
 
 #	Cleanup
@@ -120,47 +125,59 @@ SHARED_UTIL_LIBS=$(OBJDIR)/StringProcessing.o $(OBJUTILDIR)/TTree_Processing.o $
 
 #       New mostly automated plotting tool taking the pain out of plotting RapidFit output
 $(EXEDIR)/RapidPlot: $(OBJUTILDIR)/RapidPlot.o $(OBJUTILDIR)/DoFCAnalysis.o $(OBJUTILDIR)/OutputPlots.o $(OBJUTILDIR)/CorrMatrix.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 $(EXEDIR)/RapidToyDiff: $(OBJUTILDIR)/RapidToyDiff.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 $(EXEDIR)/RapidDiff: $(OBJUTILDIR)/RapidDiff.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 ###   Various tools for the utils directory
 
 #       Tool for printing information about a ROOT file and it's contents
 $(EXEDIR)/print: $(OBJUTILDIR)/print.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 ###	Tool for extracting the angular distribution from the sidebands in JpsiPhi
 $(EXEDIR)/AngularDist: $(OBJUTILDIR)/AngularDist.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 ###	Tool for making an exact comparison between 2 tuple branches and plotting the output
 $(EXEDIR)/tupleDiff: $(OBJUTILDIR)/tupleDiff.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 $(EXEDIR)/Compare: $(OBJUTILDIR)/Compare.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 $(EXEDIR)/ApplyWeights: $(OBJUTILDIR)/ApplyWeights.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 $(EXEDIR)/weighted: $(OBJUTILDIR)/weighted.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 ###	Tool for calculating gamma/deltaGamma from angular momentum analysis
 $(EXEDIR)/lifetime_tool: $(OBJUTILDIR)/lifetime_tool.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAFS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAFS) $(ROOTLIBS)
 
 $(EXEDIR)/Per-Event: $(OBJUTILDIR)/Per-Event.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 #       Tool for printing information about a ROOT file and it's contents
 $(EXEDIR)/plotDists: $(OBJUTILDIR)/plotDists.o $(SHARED_UTIL_LIBS)
-	$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
+	@echo "Linking $@"
+	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
 
 utils:	$(LIBDIR)/libUtils.so $(EXEDIR)/print $(EXEDIR)/RapidPlot $(EXEDIR)/RapidDiff $(EXEDIR)/RapidToyDiff
 
@@ -175,31 +192,34 @@ lib: $(LIBDIR)/libRapidRun.so
 #	It requires the explicit paths of all files, or that you remain in the same working directory at all times during the build process
 #	We want to place the output dictionary in the Build directory as this is CODE that is NOT to be editted by the $USER!
 $(OBJDIR)/rapidfit_dict.cpp: framework/include/RapidRun.h framework/include/LinkDef.h
-	@echo "Building RapidFit ROOT Dictionary source"
+	@echo "Generating $@"
 	rootcint -f $(OBJDIR)/rapidfit_dict.cpp -c $^
 
 #	Compile the class that root has generated for us which is the linker interface to root	(i.e. dictionaries & such)
 $(OBJDIR)/rapidfit_dict.o: $(OBJDIR)/rapidfit_dict.cpp
-	@echo "Building RapidFit ROOT Dictionary object"
-	$(CXX) $(CXXFLAGS) -o $@ -I. -c $<
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGS) -o $@ -I. -c $<
 
 #	Class which has a dictionary generated for it, think of this as the equivalent to int main() in a CINT-y Universe
 $(OBJDIR)/RapidRun.o: $(SRCDIR)/RapidRun.cpp
-	$(CXX) $(CXXFLAGS) -o $@ -c $<
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 #	Finally, Compile RapidFit as a library making use of the existing binaries for other classes
 $(LIBDIR)/libRapidRun.so: $(OBJDIR)/RapidRun.o objs
-	$(CXX) -shared $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
+	@echo "Linking $@"
+	@$(CXX) -shared $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 
 $(OBJUTILDIR)/utilsDict.cpp: $(UTILHEADERS) $(INCUTILS)/LinkDef.h
-	@echo "Building Utils Root Dictionary:"
-	@echo "rootcint -f $(OBJUTILDIR)/utilsDict.cpp -c -I"$(PWD)" $^"
+	@echo "Building $@"
 	@rootcint -f $(OBJUTILDIR)/utilsDict.cpp -c -I"$(PWD)" $^
 
 $(OBJUTILDIR)/utilsDict.o: $(OBJUTILDIR)/utilsDict.cpp
-	$(CXX) $(CXXFLAGSUTIL) -o $@ -I"$(PWD)" -c $<
+	@echo "Building $@"
+	@$(CXX) $(CXXFLAGSUTIL) -o $@ -I"$(PWD)" -c $<
 
 #	This is the Utils library which exposes a LOT of pre-written useful functions to the user
 $(LIBDIR)/libUtils.so: $(SHARED_UTIL_LIBS)
-	$(CXX) -shared -o $@ $^ $(LINKFLAGS)
+	@echo "Linking $@"
+	@$(CXX) -shared -o $@ $^ $(LINKFLAGS)
 

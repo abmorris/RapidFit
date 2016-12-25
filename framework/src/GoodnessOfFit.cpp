@@ -98,7 +98,7 @@ namespace GoodnessOfFit
 		PhaseSpaceBoundary * phase = NULL;
 		DataSetConfiguration * dataConfig = NULL;
 		MemoryDataSet * mc = NULL;
-		unsigned int ulTime = 0;
+//		unsigned int ulTime = 0;
 		unsigned int nData = 0;
 		vector<IDataSet*> mcData;
 
@@ -110,7 +110,7 @@ namespace GoodnessOfFit
 			phase = data.back()->GetBoundary();
 
 			(*iter)->SetPhysicsParameters( parSetFromFit );
-			ulTime = static_cast<unsigned int>( time( NULL ));
+//			ulTime = static_cast<unsigned int>( time( NULL ));
 			pdf = (*iter)->GetPDF();
 			pdf->SetMCCacheStatus( false );
 
@@ -145,7 +145,7 @@ namespace GoodnessOfFit
 		dataConfig->SetSource( "Foam" );
 		bool model = false;
 		double pvalue = 0.;
-		unsigned int ulTime = static_cast<unsigned int>( time( NULL ));
+//		unsigned int ulTime = static_cast<unsigned int>( time( NULL ));
 		for ( int i = 0; i < repeats; )
 		{
 			cout << "Ensemble " << i << endl;
@@ -172,7 +172,7 @@ namespace GoodnessOfFit
 				}
 			}
 			// Generate large sample of MC
-			ulTime = static_cast<unsigned int>( time( NULL ));
+//			ulTime = static_cast<unsigned int>( time( NULL ));
 			pdf->SetMCCacheStatus( false );
 			MemoryDataSet * mcData = (MemoryDataSet*)dataConfig->MakeDataSet( phase, pdf, 10*nData );
 
@@ -293,7 +293,7 @@ namespace GoodnessOfFit
 		double U = 0;
 		DataPoint * event_i = 0;
 		DataPoint * event_j = 0;
-		DataPoint * closest = 0;
+//		DataPoint * closest = 0;
 		bool firstEvent = true;
 		size_t dimension = (pdf->GetPrototypeDataPoint()).size();
 		if ( dimension == 7 ) dimension = 5;
@@ -320,7 +320,7 @@ namespace GoodnessOfFit
 				if (distance < smallest_distance)
 				{
 					smallest_distance = distance;
-					closest = event_j;
+//					closest = event_j;
 				}
 			}
 			sd = smallest_distance;

@@ -490,9 +490,11 @@ double MultiDimChi2::CalculateTotalExpected( vector<double> thisBinCenter )
 }
 
 double MultiDimChi2::CorrectIntegral( double input_Integral, DataPoint* thisPoint, PhaseSpaceBoundary* thisPhaseSpace, RapidFitIntegrator* thisPDFIntegrator )
-{
+{ // XXX What the fuck is the point of this function???? Just to generate compiler warnings?
 	double output_integral = input_Integral;
-
+	(void)thisPoint;
+	(void)thisPhaseSpace;
+	(void)thisPDFIntegrator;
 	//	Correct for Non Unitary PDF
 	output_integral /= 1.;//hisPDFIntegrator->TestIntegral( thisPoint, thisPhaseSpace );
 
@@ -633,6 +635,7 @@ void MultiDimChi2::AddCoordinates( unsigned int thisDim )
 
 void MultiDimChi2::ConstructBoundaries( PhaseSpaceBoundary* totalPhaseSpace, vector<string> wanted_observables )
 {
+	(void)wanted_observables;
 	for( unsigned int i=0; i< allPDFs.size(); ++i )
 	{
 		vector<string> allDescribedObservables = allPDFs[i]->GetPrototypeDataPoint();
@@ -654,6 +657,7 @@ void MultiDimChi2::ConstructBoundaries( PhaseSpaceBoundary* totalPhaseSpace, vec
 
 double MultiDimChi2::CalculateRange( PhaseSpaceBoundary* thisBound )
 {
+	(void)thisBound;
 	double range = 1.;
 	for( unsigned int i=0; i< theseDimensions.size(); ++i )
 	{
@@ -695,7 +699,7 @@ double MultiDimChi2::PDF2DataNormalisation( unsigned int PDFDataNum, const unsig
 
 	pdfIntegrator->ForceTestStatus( false );
 	//doNotList = StringProcessing::CombineUniques( doNotList, wanted_params );
-	double thisIntegral = 0.;
+//	double thisIntegral = 0.;
 	//allCombinations[i]->SetPhaseSpaceBoundary( thisBound );
 	//cout << thisBound->DiscreteDescription( allCombinations[i] ) << endl;
 	double thisRatio =  pdfIntegrator->TestIntegral( thisDataPoint, thisBound3, doNotList );
@@ -705,7 +709,7 @@ double MultiDimChi2::PDF2DataNormalisation( unsigned int PDFDataNum, const unsig
 	//      (some constant close to 1. exactly 1. for numerical PDFs)
 
 	vector<DataPoint*> allCombinations = thisBound->GetDiscreteCombinations();
-	DataPoint* thisCombination = allCombinations[combinationIndex];
+//	DataPoint* thisCombination = allCombinations[combinationIndex];
 
 	double total_yield=0.;
 
@@ -727,7 +731,7 @@ double MultiDimChi2::PDF2DataNormalisation( unsigned int PDFDataNum, const unsig
 		total_yield = thisDataSet->GetDataNumber( allCombinations[combinationIndex] );
 	}
 
-	double dataNum = total_yield;
+//	double dataNum = total_yield;
 	//cout << "\t\tScaling Based on DataNumber in this Combination: " << dataNum / (double) data_binning << endl;
 	//normalisation *= dataNum / (double) data_binning;                               //      Normalise to this density of events     (Num of events per bin in flatPDF)
 
@@ -769,7 +773,7 @@ double MultiDimChi2::PDF2DataNormalisation( unsigned int PDFDataNum, const unsig
 	delete thisBound2;
 	//delete newPDF;
 
-	double someNum = pdfIntegrator->NumericallyIntegrateDataPoint( thisDataPoint, thisBound3, doNotList );
+//	double someNum = pdfIntegrator->NumericallyIntegrateDataPoint( thisDataPoint, thisBound3, doNotList );
 
 	//cout << "\t\tScaling Based on the Total Integral of the PDF: " << 1./combinationIntegrals[ PDFDataNum ][ combinationIndex ] << endl;
 	//normalisation /= combinationIntegrals[ PDFDataNum ][ combinationIndex ];                      //      Total Integral of the PDF       (We're plotting prob of PDF being at this point for a non-unitary PDF)

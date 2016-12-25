@@ -32,10 +32,12 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
   , JKK(_JKK)
   , lineshape(_lineshape)
 {
+  // Barrier factors
   string RBs_str = config->getConfigurationValue("RBs");
-  RBs = std::atof(RBs_str.c_str());
   string RKK_str = config->getConfigurationValue("RKK");
+  RBs = std::atof(RBs_str.c_str());
   RKK = std::atof(RKK_str.c_str());
+  // Component scale factor
   fraction = PhysPar(config,KKname+"_fraction");
   // KK resonance parameters
   // Breit Wigner
@@ -51,13 +53,10 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
     KKpars.push_back(PhysPar(config,KKname+"_gpipi"));
     KKpars.push_back(PhysPar(config,KKname+"_Rg"));
   }
-  else
+  else if(lineshape!="NR")
   {
-    if(lineshape!="NR")
-    {
-      lineshape = "NR";
-      cerr << "Bs2PhiKKComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << endl;
-    }
+    lineshape = "NR";
+    cerr << "Bs2PhiKKComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << endl;
   }
   // Helicity amplitude observables
   int lambda_max = TMath::Min(1, _JKK); // Maximum helicity
@@ -100,25 +99,25 @@ void Bs2PhiKKComponent::Initialise()
     KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
   // Build the barrier factor and Wigner function objects
   Bsbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RBs));
-  wignerPhi =  std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+  wignerPhi = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
   switch (JKK)
   {
     case 0:
       KKbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RKK));
-      wignerKK = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
+      wignerKK  = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
       break;
     case 1:
       KKbarrier = std::unique_ptr<DPBarrierL1>(new DPBarrierL1(RKK));
-      wignerKK = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+      wignerKK  = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
       break;
     case 2:
       KKbarrier = std::unique_ptr<DPBarrierL2>(new DPBarrierL2(RKK));
-      wignerKK = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
+      wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
       break;
     default:
       cerr << "Bs2PhiKKComponent WARNING: Do not know which barrier factor to use." << endl;
       KKbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RKK));
-      wignerKK = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This shouldn't happen
+      wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This shouldn't happen
       break;
   }
   UpdateParameters();
@@ -217,16 +216,6 @@ TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, d
   // Result
   double frac = fraction.value;
   double ofbf = OFBF(mKK);
-  /*
-  if(std::isnan(frac))
-    cerr << this->GetName() << " fraction is not a number." << endl;
-  if(std::isnan(massPart.Re()) || std::isnan(massPart.Im()))
-    cerr << this->GetName() << " mass-dependent part evaluates to not a number." << endl;
-  if(std::isnan(angularPart.Re()) || std::isnan(angularPart.Im()))
-    cerr << this->GetName() << " angular part evaluates to not a number." << endl;
-  if(std::isnan(ofbf))
-    cerr << this->GetName() << " orbital & barrier factors evaluate to not a number." << endl;
-  */
   return frac * massPart * angularPart * ofbf;
 }
 void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)

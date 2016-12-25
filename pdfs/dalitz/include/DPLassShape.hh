@@ -20,7 +20,7 @@ class DPLassShape: public virtual DPMassShape
     TComplex massShape(double m);
 
     void setResonanceParameters(double a, double r);
-    void setParameters(double* pars){};
+    void setParameters(double* pars);
 
   private:
 

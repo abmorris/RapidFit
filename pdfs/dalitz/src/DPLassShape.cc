@@ -122,7 +122,11 @@ double DPLassShape::daughterMomentum(double m)
 
   return momentum;
 }
-
+void DPLassShape::setParameters(double* pars)
+{
+	setResonanceParameters(pars[0],pars[1]);
+	return;
+}
 void DPLassShape::setResonanceParameters(double a_lass, double r_lass)
 {
 	a = a_lass;

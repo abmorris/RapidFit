@@ -327,6 +327,7 @@ void OutputConfiguration::MergeProjectionResults( vector<ComponentPlotter*>& all
 
 	int num=(int) all_components_for_all_results[0].size();
 	bool compatible=true;
+	(void)allComponentPlotters;
 
 	for( unsigned int i=0; i< all_components_for_all_results.size(); ++i )
 	{

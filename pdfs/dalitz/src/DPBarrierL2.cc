@@ -1,7 +1,7 @@
 #include "DPBarrierL2.hh"
 #include "TMath.h"
 
-DPBarrierL2::DPBarrierL2(double radius) : DPBarrierFactor(radius)
+DPBarrierL2::DPBarrierL2(double _radius) : DPBarrierFactor(_radius)
 {
 }
 

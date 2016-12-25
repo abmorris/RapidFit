@@ -23,19 +23,19 @@
 ///	System Headers
 #include <vector>
 #include <string>
-
-static TMinuit* currentMinuitInstance;
+#include <memory>
 
 class MinuitWrapper : public IMinimiser
 {
 	public:
+		static std::shared_ptr<TMinuit> currentMinuitInstance;
 		//MinuitWrapper();
 		MinuitWrapper( int, int=0 );
 		~MinuitWrapper();
 
 		//Interface functions
 		void SetOutputLevel( int );
-                virtual void SetupFit( IFitFunction* );
+		virtual void SetupFit( IFitFunction* );
 		virtual void FixParameters( vector<double>, vector<string> );
 		virtual void Minimise();
 		virtual FitResult * GetFitResult();
@@ -61,7 +61,6 @@ class MinuitWrapper : public IMinimiser
 		//	Uncopyable!
 		MinuitWrapper ( const MinuitWrapper& );
 		MinuitWrapper& operator = ( const MinuitWrapper& );
-
 		static void Function( Int_t&, Double_t*, Double_t&, Double_t*, Int_t );
 		static IFitFunction * function;
 		static ParameterSet* LastSet;

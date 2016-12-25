@@ -30,6 +30,8 @@
 
 using namespace::std;
 
+std::shared_ptr<TMinuit> MinuitWrapper::currentMinuitInstance = std::shared_ptr<TMinuit>(new TMinuit);
+
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6
 
@@ -211,7 +213,7 @@ void MinuitWrapper::CallHesse()
 //Use Migrad to minimise the given function
 void MinuitWrapper::Minimise()
 {
-	currentMinuitInstance = minuit;
+	MinuitWrapper::currentMinuitInstance = shared_ptr<TMinuit>(minuit);
 	int errorFlag = 0;
 	double* arguments = new double[2];// = {0.0, 0.0};
 	vector<string> allNames = function->GetParameterSet()->GetAllNames();
@@ -578,7 +580,7 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 
 	double min, edm, errdef;
 	int mnpar, nparx, stat;
-	currentMinuitInstance->mnstat( min, edm, errdef, mnpar, nparx, stat );
+	MinuitWrapper::currentMinuitInstance->mnstat( min, edm, errdef, mnpar, nparx, stat );
 
 	cout << "Call: " << left << setw(5) << function->GetCallNum() << " NLL: " << setprecision(6) << setw(8) << fval << " minNLL: " << setprecision(6) << setw(8) << min;
 	cout << " EDM: " << setprecision(6) << setw(8) << edm;

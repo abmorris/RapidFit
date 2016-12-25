@@ -1,7 +1,7 @@
 #include "DPBarrierL1.hh"
 #include "TMath.h"
 
-DPBarrierL1::DPBarrierL1(double radius) : DPBarrierFactor(radius)
+DPBarrierL1::DPBarrierL1(double _radius) : DPBarrierFactor(_radius)
 {
  //std::cout << "DPBarrierL1 const " << std::endl;
 }
