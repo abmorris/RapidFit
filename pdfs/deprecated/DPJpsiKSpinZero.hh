@@ -1,7 +1,7 @@
 #ifndef DP_JPSIKSPINZERO
 #define DP_JPSIKSPINZERO
 
-#include "TComplex.h"
+#include <complex>
 #include "DPComponent.hh"
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ0.hh"

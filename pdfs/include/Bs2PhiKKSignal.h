@@ -1,10 +1,3 @@
-/** @class Bs2PhiKKSignal Bs2PhiKKSignal.h
- *
- *  RapidFit PDF for Bs2PhiKKSignal
- *
- *  @author Adam Morris
- *  @date Aug 2016
- */
 #ifndef Bs2PhiKKSignal_H
 #define Bs2PhiKKSignal_H
 
@@ -19,9 +12,6 @@
 #include "LegendreMomentShape.h"
 #include "NDHist_Adaptive.h"
 
-using std::shared_ptr;
-using std::unique_ptr;
-
 class Bs2PhiKKSignal : public BasePDF
 {
     public:
@@ -35,9 +25,9 @@ class Bs2PhiKKSignal : public BasePDF
       bool SetPhysicsParameters(ParameterSet*);
       // Extra stuff
       double EvaluateComponent( DataPoint*, ComponentRef* );
-      vector<string> PDFComponents();
+      std::vector<std::string> PDFComponents();
     protected:
-      vector<Bs2PhiKKComponent> components;
+      std::vector<Bs2PhiKKComponent> components;
       // K+K− mass and helicity angles
       double        mKK    , ctheta_1    , ctheta_2    , phi    ;
       ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
@@ -46,26 +36,26 @@ class Bs2PhiKKSignal : public BasePDF
       // phi(1020) mass
       PhysPar phimass;
       // Options
-      vector<string> componentnames;
+      std::vector<std::string> componentnames;
       bool acceptance_moments;
       bool acceptance_histogram;
       // Acceptance
-      unique_ptr<LegendreMomentShape> acc_m;
-      shared_ptr<NDHist_Adaptive> acc_h;
+      std::unique_ptr<LegendreMomentShape> acc_m;
+      std::shared_ptr<NDHist_Adaptive> acc_h;
       double acceptance; // Evaluate during ReadDataPoint()
     private:
       // Calculation
       double TotalDecayRate();
       double ComponentDecayRate(Bs2PhiKKComponent&); // For plotting individual components
-      double ComponentDecayRate(Bs2PhiKKComponent&, string); // Pass option "odd" or "even"
-      double TimeIntegratedDecayRate(TComplex,TComplex);
+      double ComponentDecayRate(Bs2PhiKKComponent&, std::string); // Pass option "odd" or "even"
+      double TimeIntegratedDecayRate(std::complex<double>,std::complex<double>);
       void ReadDataPoint(DataPoint*);
       double p1stp3();
       void CalculateAcceptance();
       // Stuff to do on creation
       void Initialise();
       void MakePrototypes();
-      Bs2PhiKKComponent ParseComponent(PDFConfigurator*, string, string);
+      Bs2PhiKKComponent ParseComponent(PDFConfigurator*, std::string, std::string);
 };
 #endif
 

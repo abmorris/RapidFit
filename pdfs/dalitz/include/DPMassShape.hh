@@ -1,7 +1,7 @@
 #ifndef DP_MASS_SHAPE
 #define DP_MASS_SHAPE
 
-#include "TComplex.h"
+#include <complex>
 #include <iostream>
 
 class DPMassShape
@@ -13,7 +13,7 @@ class DPMassShape
     DPMassShape( const DPMassShape& ) {};
     virtual ~DPMassShape() { };//std::cout << "MassShape destructor" << std::endl; };
 
-    virtual TComplex massShape(double m) = 0;
+    virtual std::complex<double> massShape(double m) = 0;
 
     virtual void setResonanceParameters(double mass, double sigma) = 0;
 

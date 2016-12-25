@@ -10,8 +10,8 @@
 // Std Libraries
 #include <iostream>
 #include <stdexcept>
-// ROOT Libraries
-#include "TComplex.h"
+#include <cmath>
+#include <complex>
 // RapidFit
 #include "PDFConfigurator.h"
 
@@ -169,7 +169,7 @@ double Bs2PhiPhi::Evaluate(DataPoint* measurement)
   ctheta_1  = measurement->GetObservable(ctheta_1Name)->GetValue();
   ctheta_2  = measurement->GetObservable(ctheta_2Name)->GetValue();
   // Check if the datapoint makes sense
-  if(phi < -TMath::Pi() || phi > TMath::Pi()
+  if(phi < -M_PI || phi > M_PI
        || ctheta_1 < -1 || ctheta_1 > 1
        || ctheta_2 < -1 || ctheta_2 > 1
   )
@@ -177,7 +177,7 @@ double Bs2PhiPhi::Evaluate(DataPoint* measurement)
     cout << "Received unphysical datapoint" << endl;
     measurement->Print();
   }
-  phi+=TMath::Pi();
+  phi+=M_PI;
   // Evaluate the PDF at this point
   double Gamma = 0;
   // Trig identities
@@ -226,6 +226,6 @@ double Bs2PhiPhi::Normalisation(PhaseSpaceBoundary* boundary)
 {
   (void)boundary;
   double Q = (2-dGsGs)/(2+dGsGs);
-  return (32.0*TMath::Pi())/9.0 * (Azerosq*(Q-1)+Aparasq*(Q-1)+1)/Q;
+  return (32.0*M_PI)/9.0 * (Azerosq*(Q-1)+Aparasq*(Q-1)+1)/Q;
 }
 

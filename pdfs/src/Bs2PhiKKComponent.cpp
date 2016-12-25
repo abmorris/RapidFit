@@ -3,8 +3,6 @@
 // Std Libraries
 #include <iostream>
 #include <stdexcept>
-// ROOT Libraries
-#include "TMath.h"
 // RapidFit Dalitz Plot Libraries
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
@@ -17,24 +15,20 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 
-using std::cout;
-using std::cerr;
-using std::endl;
-
 double Bs2PhiKKComponent::mBs  = 5.36677;
 double Bs2PhiKKComponent::mK   = 0.493677;
 double Bs2PhiKKComponent::mpi  = 0.139570;
 
 // Constructor
-Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, string _KKname, int _JKK, string _lineshape) :
+Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phiname, std::string _KKname, int _JKK, std::string _lineshape) :
     phiname(_phiname)
   , KKname(_KKname)
   , JKK(_JKK)
   , lineshape(_lineshape)
 {
   // Barrier factors
-  string RBs_str = config->getConfigurationValue("RBs");
-  string RKK_str = config->getConfigurationValue("RKK");
+  std::string RBs_str = config->getConfigurationValue("RBs");
+  std::string RKK_str = config->getConfigurationValue("RKK");
   RBs = std::atof(RBs_str.c_str());
   RKK = std::atof(RKK_str.c_str());
   // Component scale factor
@@ -56,10 +50,10 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
   else if(lineshape!="NR")
   {
     lineshape = "NR";
-    cerr << "Bs2PhiKKComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << endl;
+    std::cerr << "Bs2PhiKKComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << std::endl;
   }
   // Helicity amplitude observables
-  int lambda_max = TMath::Min(1, _JKK); // Maximum helicity
+  int lambda_max = std::min(1, _JKK); // Maximum helicity
   if(lineshape!="NR")
     for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
       helicities.push_back(lambda);
@@ -84,7 +78,7 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, string _phiname, s
   }
   // Make the helicity amplitude vector
   while(Ahel.size() < n)
-    Ahel.push_back(TComplex(sqrt(1. / (double)n), 0, true));
+    Ahel.push_back(std::polar<double>(sqrt(1. / (double)n), 0));
   Initialise();
 }
 void Bs2PhiKKComponent::Initialise()
@@ -115,7 +109,7 @@ void Bs2PhiKKComponent::Initialise()
       wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
       break;
     default:
-      cerr << "Bs2PhiKKComponent WARNING: Do not know which barrier factor to use." << endl;
+      std::cerr << "Bs2PhiKKComponent WARNING: Do not know which barrier factor to use." << std::endl;
       KKbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RKK));
       wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This shouldn't happen
       break;
@@ -143,18 +137,16 @@ Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
 }
 // Get the corresponding helicity amplitude for a given value of helicity, instead of using array indices
-TComplex Bs2PhiKKComponent::A(int lambda)
+std::complex<double> Bs2PhiKKComponent::A(int lambda)
 {
-  if(abs(lambda) > helicities.back()) return TComplex(0, 0); //safety
+  if(abs(lambda) > helicities.back()) return std::complex<double>(0, 0); //safety
   int i = lambda + helicities.back();
   return Ahel[i];
 }
 // Angular part of the amplitude
-TComplex Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
+std::complex<double> Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
 {
-  TComplex exparg = TComplex::I()*Phi;
-  exparg*=lambda;
-  return wignerPhi->function(ctheta_1, lambda, 0) * wignerKK->function(ctheta_2, lambda, 0) * TComplex::Exp(exparg);
+  return wignerPhi->function(ctheta_1, lambda, 0) * wignerKK->function(ctheta_2, lambda, 0) * std::polar<double>(1, lambda*Phi);
 }
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(double mKK)
@@ -167,52 +159,51 @@ double Bs2PhiKKComponent::OFBF(double mKK)
   double Mres = KKpars[0].value;
   double m_min  = mK + mK;
   double m_max  = mBs - mphi;
-  double m0_eff = m_min + (m_max - m_min) * (1 + TMath::TanH((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
+  double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
   // Momenta
   double pBs  = DPHelpers::daughterMomentum(mBs,  mphi, mKK   );
   double pKK  = DPHelpers::daughterMomentum(mKK,  mK,   mK    );
   double pBs0 = DPHelpers::daughterMomentum(mBs,  mphi, m0_eff);
   double pKK0 = DPHelpers::daughterMomentum(Mres, mK,   mK    );
-  double orbitalFactor = //TMath::Power(pBs/mBs,   0)* // == 1 so don't bother
-                         TMath::Power(pKK/mKK, JKK);
+  double orbitalFactor = //std::pow(pBs/mBs,   0)* // == 1 so don't bother
+                         std::pow(pKK/mKK, JKK);
   // Barrier factors
   double barrierFactor = Bsbarrier->barrier(pBs0, pBs)*
                          KKbarrier->barrier(pKK0, pKK);
   return orbitalFactor * barrierFactor;
 }
 // The full amplitude
-TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
+std::complex<double> Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
 {
   return Amplitude(mKK, phi, ctheta_1, ctheta_2, "");
 }
 // The full amplitude with an option
-TComplex Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2, string option)
+std::complex<double> Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2, std::string option)
 {
   // Mass-dependent part
-  TComplex massPart = KKLineShape->massShape(mKK);
+  std::complex<double> massPart = KKLineShape->massShape(mKK);
   // Angular part
-  TComplex angularPart(0, 0);
-  if(option.find("odd") != string::npos || option.find("even") != string::npos)
+  std::complex<double> angularPart(0, 0);
+  if(option.find("odd") != std::string::npos || option.find("even") != std::string::npos)
   {
-    TComplex Aperp(sqrt(magsqs[0].value),phases[0].value,true);
-    TComplex Apara(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value,true);
+    std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
+    std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
     // Temporary helicity amplitudes
-    TComplex* HelAmp;
+    std::vector<std::complex<double>> HelAmp;
     // CP-odd component
-    if(option.find("odd") != string::npos)
-      HelAmp = new TComplex[3]{-Aperp/sqrt(2.), TComplex(0, 0), Aperp/sqrt(2.)};
+    if(option.find("odd") != std::string::npos)
+      HelAmp = {-Aperp/sqrt(2.), std::complex<double>(0, 0), Aperp/sqrt(2.)};
     // CP-even component
     else
-      HelAmp = new TComplex[3]{Apara/sqrt(2.), A(0), Apara/sqrt(2.)};
+      HelAmp = {Apara/sqrt(2.), A(0), Apara/sqrt(2.)};
     for(int lambda : helicities)
       angularPart += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
-    delete[] HelAmp;
   }
   else // assume full amplitude, don't thow an error
     for(int lambda : helicities)
       angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
   if(helicities.size()==0)
-    angularPart = TComplex(1,0);
+    angularPart = std::complex<double>(1,0);
   // Result
   double frac = fraction.value;
   double ofbf = OFBF(mKK);
@@ -236,13 +227,13 @@ void Bs2PhiKKComponent::UpdateParameters()
     case 0:
       break;
     case 1:
-      Ahel[0] = TComplex(1.0,phases[0].value,true);
+      Ahel[0] = std::polar<double>(1.0,phases[0].value);
       break;
     case 3:
       { // new scope here because we need to declare temporary variables
-        TComplex Aperp(sqrt(magsqs[0].value),phases[0].value,true);
-        TComplex Azero(sqrt(magsqs[1].value),phases[1].value,true);
-        TComplex Apara(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value,true);
+        std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
+        std::complex<double> Azero = std::polar(sqrt(magsqs[1].value),phases[1].value);
+        std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
         Ahel[0] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
         Ahel[1] = Azero;
         Ahel[2] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)

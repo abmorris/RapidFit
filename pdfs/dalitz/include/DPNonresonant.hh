@@ -3,7 +3,7 @@
 
 #include "DPMassShape.hh"
 
-#include "TComplex.h"
+#include <complex>
 
 class DPNonresonant: public virtual DPMassShape
 {
@@ -14,7 +14,7 @@ class DPNonresonant: public virtual DPMassShape
     DPNonresonant(const DPNonresonant& other);
     ~DPNonresonant();
 
-    TComplex massShape(double m);
+    std::complex<double> massShape(double m);
 
     void setParameters(double* pars) { (void)pars; }
 

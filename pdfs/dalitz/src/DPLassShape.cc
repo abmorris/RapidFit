@@ -58,18 +58,18 @@ DPLassShape::~DPLassShape()
   }
 }
 
-TComplex DPLassShape::massShape(double m)
+std::complex<double> DPLassShape::massShape(double m)
 {
 // Calculate delta_R
   double tanDeltaR=mR*gamma(m)/(mR*mR-m*m);
   double deltaR=0;
   if ( (mR-m) < DOUBLE_TOLERANCE )
   {
-    deltaR=TMath::Pi()/2.0;
+    deltaR=M_PI/2.0;
   }
   else
   {
-    deltaR=TMath::ATan(tanDeltaR);
+    deltaR=std::atan(tanDeltaR);
   }
 
 // Calculate delta_B
@@ -84,21 +84,21 @@ TComplex DPLassShape::massShape(double m)
     }
     else
     {
-      deltaB=TMath::Pi();
+      deltaB=M_PI;
     }
   }
-  else if (cotDeltaB < DOUBLE_TOLERANCE || TMath::IsNaN(1./cotDeltaB))
+  else if (cotDeltaB < DOUBLE_TOLERANCE || std::isnan(1./cotDeltaB))
   {
-    deltaB=TMath::Pi()/2.0;
+    deltaB=M_PI/2.0;
   }
   else
   {
-    deltaB=TMath::ATan(1.0/cotDeltaB);
+    deltaB=std::atan(1.0/cotDeltaB);
   }
 
-  double sinDeltas=TMath::Sin(deltaR+deltaB);
-  double cosDeltas=TMath::Cos(deltaR+deltaB);
-  TComplex result(sinDeltas*cosDeltas,sinDeltas*sinDeltas);
+  double sinDeltas=std::sin(deltaR+deltaB);
+  double cosDeltas=std::cos(deltaR+deltaB);
+  std::complex<double> result(sinDeltas*cosDeltas,sinDeltas*sinDeltas);
 
   return result;
 }
@@ -107,7 +107,7 @@ double DPLassShape::gamma(double m)
 {
   double pp=daughterMomentum(m);  // momentum of daughter at the actual mass
   double bb=barrier->barrier(pR0,pp);  // Barrier factor
-  double gg=gammaR*mR/m*bb*bb*TMath::Power(pp/pR0,2*LR+1);
+  double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
 
   return gg;
 }
@@ -117,7 +117,7 @@ double DPLassShape::daughterMomentum(double m)
   double momentum;
 
   momentum=(m*m-(m1+m2)*(m1+m2))*(m*m-(m1-m2)*(m1-m2));
-  momentum=TMath::Sqrt(momentum);
+  momentum=std::sqrt(momentum);
   momentum/=2*m;
 
   return momentum;

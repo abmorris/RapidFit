@@ -4,7 +4,7 @@
 #include "DPMassShape.hh"
 #include "DPBarrierFactor.hh"
 
-#include "TComplex.h"
+#include <complex>
 
 class DPLassShape: public virtual DPMassShape
 {
@@ -17,7 +17,7 @@ class DPLassShape: public virtual DPMassShape
     DPLassShape( const DPLassShape& );
     ~DPLassShape();
 
-    TComplex massShape(double m);
+    std::complex<double> massShape(double m);
 
     void setResonanceParameters(double a, double r);
     void setParameters(double* pars);

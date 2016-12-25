@@ -1,7 +1,7 @@
 #ifndef DPFlatteShape_H
 #define DPFlatteShape_H
 #include "DPMassShape.hh"
-#include "TComplex.h"
+#include <complex>
 class DPFlatteShape: public virtual DPMassShape
 {
 
@@ -11,7 +11,7 @@ class DPFlatteShape: public virtual DPMassShape
     DPFlatteShape( const DPFlatteShape& );
     ~DPFlatteShape();
 
-    TComplex massShape(double x);
+    std::complex<double> massShape(double x);
 
     void setParameters(double* pars);
   

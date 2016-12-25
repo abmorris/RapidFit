@@ -76,11 +76,11 @@ DPBWResonanceShape::~DPBWResonanceShape()
   }
 }
 
-TComplex DPBWResonanceShape::massShape(double m)
+std::complex<double> DPBWResonanceShape::massShape(double m)
 {
   //std::cout << "DPBWResonanceShape m" << m << " " << mR << std::endl;
-  TComplex result(1,0);
-  TComplex denominator(mR*mR-m*m,-mR*gamma(m));
+  std::complex<double> result(1,0);
+  std::complex<double> denominator(mR*mR-m*m,-mR*gamma(m));
 
   result/=denominator;
 
@@ -91,7 +91,7 @@ double DPBWResonanceShape::gamma(double m)
 {
   double pp=daughterMomentum(m);  // momentum of daughter at the actual mass
   double bb=barrier->barrier(pR0,pp);  // Barrier factor
-  double gg=gammaR*mR/m*bb*bb*TMath::Power(pp/pR0,2*LR+1);
+  double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
   return gg;
 }
 
@@ -100,7 +100,7 @@ double DPBWResonanceShape::daughterMomentum(double m)
   double momentum;
 
   momentum=(m*m-(m1+m2)*(m1+m2))*(m*m-(m1-m2)*(m1-m2));
-  momentum=TMath::Sqrt(momentum);
+  momentum=std::sqrt(momentum);
   momentum/=2*m;
 
   return momentum;

@@ -40,18 +40,18 @@ DPGLassShape::DPGLassShape( const DPGLassShape& other ) : DPMassShape( other ),
 	fraction(other.fraction), phaseR(other.phaseR), phaseB(other.phaseB),
 	barrier(NULL)
 {
-	if ( other.barrier != NULL )
-	{
-  		switch (LR)
-  		{
-    			case 0: barrier=new DPBarrierL0(R);
-            		break;
-    		default: std::cout<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
-             		barrier=new DPBarrierL0(R);
-             		break;
-  		}
-	}
-	pR0=daughterMomentum(mR);
+if ( other.barrier != NULL )
+{
+  switch (LR)
+  {
+    case 0: barrier=new DPBarrierL0(R);
+            break;
+    default:  std::cout<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
+              barrier=new DPBarrierL0(R);
+              break;
+  }
+}
+pR0=daughterMomentum(mR);
 }
 
 DPGLassShape::~DPGLassShape()
@@ -62,18 +62,18 @@ DPGLassShape::~DPGLassShape()
   }
 }
 
-TComplex DPGLassShape::massShape(double m)
+std::complex<double> DPGLassShape::massShape(double m)
 {
 // Calculate delta_R
   double tanDeltaR=mR*gamma(m)/(mR*mR-m*m);
   double deltaR=0;
   if ( (mR-m) < DOUBLE_TOLERANCE )
   {
-    deltaR=TMath::Pi()/2.0;
+    deltaR=M_PI/2.0;
   }
   else
   {
-    deltaR=TMath::ATan(tanDeltaR);
+    deltaR=std::atan(tanDeltaR);
   }
 
 // Calculate delta_B
@@ -88,25 +88,21 @@ TComplex DPGLassShape::massShape(double m)
     }
     else
     {
-      deltaB=TMath::Pi();
+      deltaB=M_PI;
     }
   }
-  else if (cotDeltaB < DOUBLE_TOLERANCE || TMath::IsNaN(1./cotDeltaB))
+  else if (cotDeltaB < DOUBLE_TOLERANCE || std::isnan(1./cotDeltaB))
   {
-    deltaB=TMath::Pi()/2.0;
+    deltaB=M_PI/2.0;
   }
   else
   {
-    deltaB=TMath::ATan(1.0/cotDeltaB);
+    deltaB=std::atan(1.0/cotDeltaB);
   }
 
-//  double sinDeltas=TMath::Sin(deltaR+deltaB);
-//  double cosDeltas=TMath::Cos(deltaR+deltaB);
-//  TComplex result(sinDeltas*cosDeltas,sinDeltas*sinDeltas);
-  TComplex result(0,0);
-  result+=fraction*TComplex::Sin(deltaR)*TComplex::Exp(TComplex::I()*(deltaR+phaseR))*
-          TComplex::Exp(2.0*TComplex::I()*(deltaB+phaseB));
-  result+=(1-fraction)*TComplex::Sin(deltaB+phaseB)*TComplex::Exp(TComplex::I()*(deltaB+phaseB));
+  std::complex<double> result(0,0);
+  result += fraction * sin(deltaR) * std::polar(1.,deltaR+phaseR) * std::polar(1.,2.0*(deltaB+phaseB));
+  result += (1-fraction) * sin(deltaB+phaseB) * std::polar(1.,deltaB+phaseB);
 
   return result;
 }
@@ -115,7 +111,7 @@ double DPGLassShape::gamma(double m)
 {
   double pp=daughterMomentum(m);  // momentum of daughter at the actual mass
   double bb=barrier->barrier(pR0,pp);  // Barrier factor
-  double gg=gammaR*mR/m*bb*bb*TMath::Power(pp/pR0,2*LR+1);
+  double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
 
   return gg;
 }
@@ -125,7 +121,7 @@ double DPGLassShape::daughterMomentum(double m)
   double momentum;
 
   momentum=(m*m-(m1+m2)*(m1+m2))*(m*m-(m1-m2)*(m1-m2));
-  momentum=TMath::Sqrt(momentum);
+  momentum=std::sqrt(momentum);
   momentum/=2*m;
 
   return momentum;
@@ -145,8 +141,8 @@ void DPGLassShape::setParameters(double* pars)
 
 void DPGLassShape::setResonanceParameters(double a_lass, double r_lass)
 {
-	a = a_lass;
-	r = r_lass;
-    pR0=daughterMomentum(mR);
-	return;
+  a = a_lass;
+  r = r_lass;
+  pR0=daughterMomentum(mR);
+  return;
 }

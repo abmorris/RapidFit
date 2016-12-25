@@ -1,17 +1,10 @@
-/** @class Bs2PhiKKSignal Bs2PhiKKSignal.cpp
- *
- *  RapidFit PDF for Bs2PhiKKSignal
- *
- *  @author Adam Morris
- *  @date Aug 2016
- */
 // Self
 #include "Bs2PhiKKSignal.h"
 // Std Libraries
 #include <iostream>
 #include <stdexcept>
+#include <complex>
 // ROOT Libraries
-#include "TComplex.h"
 #include "TKey.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -19,8 +12,6 @@
 #include "StringProcessing.h"
 #include "PDFConfigurator.h"
 #include "DPHelpers.hh"
-
-using std::abs;
 
 PDF_CREATOR( Bs2PhiKKSignal )
 /*****************************************************************************/
@@ -36,14 +27,14 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   , phiName     (config->getName("phi"     ))
   , ctheta_1Name(config->getName("ctheta_1"))
   , ctheta_2Name(config->getName("ctheta_2"))
-  , acceptance_moments((string)config->getConfigurationValue("CoefficientsFile") != "")
-  , acceptance_histogram((string)config->getConfigurationValue("HistogramFile") != "")
+  , acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
+  , acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
 {
   std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
-  string phiname = config->getConfigurationValue("phiname");
+  std::string phiname = config->getConfigurationValue("phiname");
   phimass = PhysPar(config,phiname+"_mass");
   dGsGs = PhysPar(config,"dGsGs");
-  vector<string> reslist = StringProcessing::SplitString( config->getConfigurationValue("resonances"), ' ' );
+  std::vector<std::string> reslist = StringProcessing::SplitString( config->getConfigurationValue("resonances"), ' ' );
   std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
   std::cout << "┃ Component\t│ Spin\t│ Lineshape\t┃\n";
   std::cout << "┠───────────────┼───────┼───────────────┨\n";
@@ -57,11 +48,11 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
   std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
   if(componentnames.size() > 1)
     componentnames.push_back("interference");
-  if(acceptance_moments) acc_m = unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
+  if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
   else if(acceptance_histogram)
   {
     TFile* histfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
-    acc_h = shared_ptr<NDHist_Adaptive>(new NDHist_Adaptive(histfile));
+    acc_h = std::shared_ptr<NDHist_Adaptive>(new NDHist_Adaptive(histfile));
     acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
     acc_h->SetDimScales({1e-3,0.1,1.,1.}); // TODO: read this from the file
   }
@@ -94,7 +85,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
   , acceptance_moments(copy.acceptance_moments)
   , acceptance_histogram(copy.acceptance_histogram)
 {
-  if(acceptance_moments) acc_m = unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
+  if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
   else if(acceptance_histogram) acc_h = copy.acc_h;
   Initialise();
 }
@@ -113,7 +104,7 @@ void Bs2PhiKKSignal::Initialise()
 }
 /*****************************************************************************/
 // Build a component object from a passed option
-Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string phiname, string option)
+Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::string phiname, std::string option)
 {
   // Syntax: <resonance name>(<spin>,<lineshape>)
   // - the list is space-delimited: no extra spaces, please!
@@ -122,9 +113,9 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, string
   // - lineshape name must be 2 capital letters
   // - see Bs2PhiKKComponent.cpp for implemented lineshapes (BW, FT, NR... but more can be added)
   // Example: "phi1020(1,BW)"
-  string KKname = option.substr(0,option.find('('));
+  std::string KKname = option.substr(0,option.find('('));
   int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
-  string lineshape = option.substr(option.find(',')+1,2);
+  std::string lineshape = option.substr(option.find(',')+1,2);
   std::cout << "┃ " << KKname << "\t│    " << JKK << "\t│ " << lineshape << " shape \t┃\n";
   return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
 }
@@ -139,12 +130,12 @@ void Bs2PhiKKSignal::MakePrototypes()
   allObservables.push_back(ctheta_1Name);
   allObservables.push_back(ctheta_2Name);
   // Make the parameter set
-  vector<string> parameterNames;
+  std::vector<std::string> parameterNames;
   // Resonance parameters
   parameterNames.push_back(dGsGs.name);
   parameterNames.push_back(phimass.name);
   for(auto comp: components)
-    for(string par: comp.GetPhysicsParameters())
+    for(std::string par: comp.GetPhysicsParameters())
       if(par!=phimass.name.Name()) parameterNames.push_back(par);
   allParameters = *( new ParameterSet(parameterNames) );
 }
@@ -161,7 +152,7 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 }
 /*****************************************************************************/
 // List of components
-vector<string> Bs2PhiKKSignal::PDFComponents()
+std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 {
   // Avoid redundant plotting for single-component PDFs
   if(componentnames.size()>1)
@@ -173,7 +164,7 @@ vector<string> Bs2PhiKKSignal::PDFComponents()
 // Evaluate a single component
 double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
-  string compName = component->getComponentName();
+  std::string compName = component->getComponentName();
   if(compName=="0") // should quicken things up slightly?
     return Evaluate(measurement);
   ReadDataPoint(measurement);
@@ -189,7 +180,7 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
   else
   {
     for(auto comp: components)
-      if(compName.find(comp.GetName()) != string::npos)
+      if(compName.find(comp.GetName()) != std::string::npos)
         evalRes = ComponentDecayRate(comp, compName);
     // If none of the component names matched, assume total PDF
     if(evalRes<0) return Evaluate(measurement);
@@ -214,7 +205,7 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
   ctheta_2  = measurement->GetObservable(ctheta_2Name)->GetValue();
   CalculateAcceptance(); // Evaluate this here so we can check for negative acceptance
   // Check if the datapoint makes sense
-  if(phi < -TMath::Pi() || phi > TMath::Pi()
+  if(phi < -M_PI || phi > M_PI
        || ctheta_1 < -1 || ctheta_1 > 1
        || ctheta_2 < -1 || ctheta_2 > 1
        || acceptance < 0
@@ -222,15 +213,15 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
   {
     measurement->Print();
   }
-  phi+=TMath::Pi();
+  phi+=M_PI;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::TotalDecayRate()
 {
-  map<bool,TComplex> TotalAmp;
+  map<bool,std::complex<double>> TotalAmp;
   for(auto anti : {false,true})
   {
-    TotalAmp[anti] = TComplex(0,0);
+    TotalAmp[anti] = std::complex<double>(0,0);
     for(auto comp : components)
       TotalAmp[anti] += anti ? comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2) : comp.Amplitude(mKK, phi, ctheta_1, ctheta_2);
   }
@@ -240,17 +231,16 @@ double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp)
 {
   return ComponentDecayRate(comp,"");
 }
-double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp, string option)
+double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp, std::string option)
 {
   return TimeIntegratedDecayRate(comp.Amplitude(mKK, phi, ctheta_1, ctheta_2, option),comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2, option));
 }
-double Bs2PhiKKSignal::TimeIntegratedDecayRate(TComplex A, TComplex Abar)
+double Bs2PhiKKSignal::TimeIntegratedDecayRate(std::complex<double> A, std::complex<double> Abar)
 {
   double GH = (2-dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
   double GL = (2+dGsGs.value); // Actually Γ/2ΓL
-//  return (A.Rho2())*(1/GL + 1/GH) + (TComplex::Power(TComplex::Conjugate(A),2)).Re()*(1/GL - 1/GH);
-  double termone = (A.Rho2() + Abar.Rho2())*(1./GL + 1./GH);
-  double termtwo = 2*(Abar*TComplex::Conjugate(A)).Re()*(1./GL - 1./GH);
+  double termone = (std::norm(A) + std::norm(Abar))*(1./GL + 1./GH);
+  double termtwo = 2*std::real(Abar*std::conj(A))*(1./GL - 1./GH);
   if(!std::isnan(termone) && !std::isnan(termtwo))
     return  (termone + termtwo) * p1stp3() * acceptance;
   else
@@ -260,7 +250,7 @@ double Bs2PhiKKSignal::TimeIntegratedDecayRate(TComplex A, TComplex Abar)
 void Bs2PhiKKSignal::CalculateAcceptance()
 {
   if(acceptance_moments) acceptance = acc_m->Evaluate(mKK*1000, phi, ctheta_1, ctheta_2);
-  else if(acceptance_histogram) acceptance = acc_h->Eval({mKK*1000, abs(phi), abs(ctheta_1), abs(ctheta_2)});
+  else if(acceptance_histogram) acceptance = acc_h->Eval({mKK*1000, std::abs(phi), std::abs(ctheta_1), std::abs(ctheta_2)});
   acceptance = acceptance > 0 ? acceptance : 1e-12;
 }
 /*****************************************************************************/
@@ -273,7 +263,7 @@ double Bs2PhiKKSignal::p1stp3()
   double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
   double pB = DPHelpers::daughterMomentum(mBs, mKK, mPhi);
   double pRpB = pR * pB;
-  return TMath::IsNaN(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
+  return std::isnan(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::Normalisation(PhaseSpaceBoundary* boundary)

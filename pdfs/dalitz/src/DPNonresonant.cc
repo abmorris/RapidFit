@@ -14,10 +14,10 @@ DPNonresonant::~DPNonresonant()
 {
 }
 
-TComplex DPNonresonant::massShape(double m)
+std::complex<double> DPNonresonant::massShape(double m)
 {
   (void)m;
-  TComplex result(1,0);
+  std::complex<double> result(1,0);
   return result;
 }
 

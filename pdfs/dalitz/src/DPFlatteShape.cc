@@ -1,5 +1,5 @@
 #include "DPFlatteShape.hh"
-#include "TComplex.h"
+#include <complex>
 DPFlatteShape::DPFlatteShape(double in_mean, double in_g0, double in_m0a, double in_m0b, double in_g1, double in_m1a, double in_m1b) : 
     mean(in_mean)
   , g0(in_g0) 
@@ -24,11 +24,11 @@ DPFlatteShape::DPFlatteShape(const DPFlatteShape& other) :
 DPFlatteShape::~DPFlatteShape()
 {
 }
-TComplex DPFlatteShape::massShape(double x)
+std::complex<double> DPFlatteShape::massShape(double x)
 {
   if (g0<0 || g1<0)
   {
-  return TComplex(0,0);
+  return std::complex<double>(0,0);
   }
   double s = x*x;
   // Energy, centre of mass p^2 of first channel
@@ -37,13 +37,13 @@ TComplex DPFlatteShape::massShape(double x)
   // Energy, centre of mass p^2 of second channel
   double E1a = 0.5 * (s + m1a*m1a - m1b*m1b) / x;
   double qSq1 = E1a*E1a - m1a*m1a; 
-  TComplex gamma0 = (qSq0 > 0) ? TComplex(g0*sqrt(qSq0),0) : TComplex(0, g0*sqrt(-qSq0));
-  TComplex gamma1 = (qSq1 > 0) ? TComplex(g1*sqrt(qSq1),0) : TComplex(0, g1*sqrt(-qSq1));
-  TComplex gamma = gamma0 + gamma1;
-  TComplex partA(mean*mean - s, 0);
-  TComplex partB = TComplex(0.0, 2*mean/x) * gamma;
-  TComplex denom = partA - partB;
-  TComplex T(1,0);
+  std::complex<double> gamma0 = (qSq0 > 0) ? std::complex<double>(g0*sqrt(qSq0),0) : std::complex<double>(0, g0*sqrt(-qSq0));
+  std::complex<double> gamma1 = (qSq1 > 0) ? std::complex<double>(g1*sqrt(qSq1),0) : std::complex<double>(0, g1*sqrt(-qSq1));
+  std::complex<double> gamma = gamma0 + gamma1;
+  std::complex<double> partA(mean*mean - s, 0);
+  std::complex<double> partB = std::complex<double>(0.0, 2*mean/x) * gamma;
+  std::complex<double> denom = partA - partB;
+  std::complex<double> T(1,0);
   T = T / denom;
   return T;
 }
