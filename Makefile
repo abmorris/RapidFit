@@ -92,8 +92,6 @@ LINKFLAGS += $(USE_GSL) $(LINKGSL) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(COMLIBFLAGS) 
 #	Default build command when someone asks for 'make'
 all : $(EXEDIR)/fitting
 
-objs : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
-
 $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRDALITZEXT)
 	@echo "Building $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
@@ -111,7 +109,7 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(HDREXT)
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 #	Main Build of RapidFit Binary
-$(EXEDIR)/fitting : objs
+$(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 	@echo "Linking $@"
 	@$(CXX) $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 	chmod +t $(EXEDIR)/fitting
@@ -206,7 +204,7 @@ $(OBJDIR)/RapidRun.o: $(SRCDIR)/RapidRun.cpp
 	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 #	Finally, Compile RapidFit as a library making use of the existing binaries for other classes
-$(LIBDIR)/libRapidRun.so: $(OBJDIR)/RapidRun.o objs
+$(LIBDIR)/libRapidRun.so: $(OBJDIR)/RapidRun.o $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 	@echo "Linking $@"
 	@$(CXX) -shared $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 
