@@ -1,10 +1,3 @@
-/** @class Bs2PhiPhi Bs2PhiPhi.h
- *
- *  RapidFit PDF for Bs2PhiPhi
- *
- *  @author Adam Morris
- *  @date Aug 2016
- */
 #ifndef Bs2PhiPhi_H
 #define Bs2PhiPhi_H
 

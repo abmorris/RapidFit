@@ -1,10 +1,3 @@
-/** @class LegendreMomentShapePDF LegendreMomentShapePDF.h
- *
- *  RapidFit PDF for LegendreMomentShapePDF
- *
- *  @author Adam Morris
- *  @date Feb 2016
- */
 #ifndef LegendreMomentShapePDF_H
 #define LegendreMomentShapePDF_H
 

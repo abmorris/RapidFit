@@ -1,10 +1,3 @@
-/** @class Bs2PhiPhi Bs2PhiPhi.cpp
- *
- *  RapidFit PDF for Bs2PhiPhi
- *
- *  @author Adam Morris
- *  @date Aug 2016
- */
 // Self
 #include "Bs2PhiPhi.h"
 // Std Libraries

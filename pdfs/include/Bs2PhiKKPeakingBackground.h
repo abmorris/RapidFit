@@ -1,10 +1,3 @@
-/** @class Bs2PhiKKPeakingBackground Bs2PhiKKPeakingBackground.h
- *
- *  RapidFit PDF for Bs2PhiKKPeakingBackground
- *
- *  @author Adam Morris
- *  @date Mar 2016
- */
 #ifndef Bs2PhiKKPeakingBackground_H
 #define Bs2PhiKKPeakingBackground_H
 

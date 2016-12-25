@@ -1,10 +1,3 @@
-/** @class LegendreMomentShapePDF LegendreMomentShapePDF.cpp
- *
- *  RapidFit PDF for LegendreMomentShapePDF
- *
- *  @author Adam Morris
- *  @date Feb 2016
- */
 #include "LegendreMomentShapePDF.h"
 PDF_CREATOR( LegendreMomentShapePDF )
 

@@ -1,10 +1,3 @@
-/** @class Bs2PhiKKBackground Bs2PhiKKBackground.h
- *
- *  RapidFit PDF for Bs2PhiKKBackground
- *
- *  @author Adam Morris
- *  @date Feb 2016
- */
 #ifndef Bs2PhiKKBackground_H
 #define Bs2PhiKKBackground_H
 
