@@ -16,8 +16,8 @@ DPNonresonant::~DPNonresonant()
 
 std::complex<double> DPNonresonant::massShape(double m)
 {
-  (void)m;
-  std::complex<double> result(1,0);
-  return result;
+	(void)m;
+	std::complex<double> result(1,0);
+	return result;
 }
 

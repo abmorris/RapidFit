@@ -14,32 +14,32 @@
 
 class Bs2PhiKKBackground : public BasePDF
 {
-    public:
-      // *structors
-      Bs2PhiKKBackground(PDFConfigurator*);
-      Bs2PhiKKBackground(const Bs2PhiKKBackground&);
-      ~Bs2PhiKKBackground();
-      // Required methods
-      double Evaluate(DataPoint*);
-      double EvaluateComponent(DataPoint*,ComponentRef*);
-      double Normalisation(PhaseSpaceBoundary*);
-      bool SetPhysicsParameters(ParameterSet*);
-      vector<string> GetDoNotIntegrateList();
-      vector<string> PDFComponents();
-    protected:
-      // Shape parameters
-      double        A,     B,     C,     M;
-      ObservableRef AName, BName, CName, MName;
-      // K+K− mass and helicity angles
-      double        mKK,     ctheta_1,     ctheta_2,     phi;
-      ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
-      // Acceptance object
-      LegendreMomentShape* shape;
-    private:
-      string filename;
-      // Stuff to do on creation
-      void Initialise();
-      void MakePrototypes();
+	public:
+		// *structors
+		Bs2PhiKKBackground(PDFConfigurator*);
+		Bs2PhiKKBackground(const Bs2PhiKKBackground&);
+		~Bs2PhiKKBackground();
+		// Required methods
+		double Evaluate(DataPoint*);
+		double EvaluateComponent(DataPoint*,ComponentRef*);
+		double Normalisation(PhaseSpaceBoundary*);
+		bool SetPhysicsParameters(ParameterSet*);
+		vector<string> GetDoNotIntegrateList();
+		vector<string> PDFComponents();
+	protected:
+		// Shape parameters
+		double        A,     B,     C,     M;
+		ObservableRef AName, BName, CName, MName;
+		// K+K− mass and helicity angles
+		double        mKK,     ctheta_1,     ctheta_2,     phi;
+		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
+		// Acceptance object
+		LegendreMomentShape* shape;
+	private:
+		string filename;
+		// Stuff to do on creation
+		void Initialise();
+		void MakePrototypes();
 };
 #endif
 

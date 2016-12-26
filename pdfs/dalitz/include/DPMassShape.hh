@@ -6,18 +6,13 @@
 
 class DPMassShape
 {
-
-  public:
-
-    DPMassShape() {};
-    DPMassShape( const DPMassShape& ) {};
-    virtual ~DPMassShape() { };//std::cout << "MassShape destructor" << std::endl; };
-
-    virtual std::complex<double> massShape(double m) = 0;
-
-    virtual void setResonanceParameters(double mass, double sigma) = 0;
-
-    virtual void setParameters(double* pars) = 0;
+	public:
+		DPMassShape() {};
+		DPMassShape( const DPMassShape& ) {};
+		virtual ~DPMassShape() {};
+		virtual std::complex<double> massShape(double m) = 0;
+		virtual void setResonanceParameters(double mass, double sigma) = 0;
+		virtual void setParameters(double* pars) = 0;
 };
 
 #endif

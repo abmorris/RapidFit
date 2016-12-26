@@ -23,7 +23,7 @@
  * Overload:
  *          All of the above +
  *
- *          SetParameterSet( ParameterSet* )
+ *          SetPhysicsParameters( ParameterSet* )
  *             (This is only called once per IMinimiser call so pre-calculate as much as possible here to save repeating it for every event!)
  *
  * Re-Use the variables:
