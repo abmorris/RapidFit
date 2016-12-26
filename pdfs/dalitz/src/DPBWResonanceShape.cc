@@ -43,28 +43,28 @@ DPBWResonanceShape::DPBWResonanceShape( const DPBWResonanceShape& other ) : DPMa
    mR(other.mR), gammaR(other.gammaR), LR(other.LR), m1(other.m1), m2(other.m2), R(other.R), barrier(NULL)
 {
     std::cout << "In DPBW copy const " << mR << " " << gammaR << " " << LR << " " << R << std::endl;
-  	if ( other.barrier != NULL )
-	{
-  		switch (LR)
-  		{
-    			case 0: barrier=new DPBarrierL0(R);
-            			break;
-    			case 1: barrier=new DPBarrierL1(R);
-            			break;
-    			case 2: barrier=new DPBarrierL2(R);
-            			break;
-    			case 3: barrier=new DPBarrierL3(R);
-            			break;
-    			case 4: barrier=new DPBarrierL4(R);
-            			break;
-    			case 5: barrier=new DPBarrierL5(R);
-            			break;
-    			default: std::cerr<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
-             			barrier=new DPBarrierL0(R);
-             			break;
-  		}
-	}
-  	pR0=daughterMomentum(mR);
+    if ( other.barrier != NULL )
+  {
+    switch (LR)
+    {
+      case 0: barrier=new DPBarrierL0(R);
+              break;
+      case 1: barrier=new DPBarrierL1(R);
+              break;
+      case 2: barrier=new DPBarrierL2(R);
+              break;
+      case 3: barrier=new DPBarrierL3(R);
+              break;
+      case 4: barrier=new DPBarrierL4(R);
+              break;
+      case 5: barrier=new DPBarrierL5(R);
+              break;
+      default: std::cerr<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
+               barrier=new DPBarrierL0(R);
+               break;
+    }
+  }
+    pR0=daughterMomentum(mR);
 }
 
 DPBWResonanceShape::~DPBWResonanceShape()
@@ -113,8 +113,8 @@ void DPBWResonanceShape::setParameters(double* pars)
 
 void DPBWResonanceShape::setResonanceParameters( double mass, double sigma )
 {
-	mR = mass;
-	gammaR = sigma;
-	pR0 = daughterMomentum(mR);
+  mR = mass;
+  gammaR = sigma;
+  pR0 = daughterMomentum(mR);
 }
 
