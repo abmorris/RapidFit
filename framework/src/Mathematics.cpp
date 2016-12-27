@@ -796,11 +796,11 @@ namespace Mathematics
     double * minima = new double[4];
     double * maxima = new double[4];
     minima[0] = -1.;
-    minima[1] = -TMath::Pi();
+    minima[1] = -M_PI;
     minima[2] = -1.;
     minima[3] = boundary->GetConstraint("mKK")->GetMinimum();
     maxima[0] = 1.;
-    maxima[1] = TMath::Pi();
+    maxima[1] = M_PI;
     maxima[2] = 1.;
     maxima[3] = boundary->GetConstraint("mKK")->GetMaximum();
     // Sum the inverse PDF values over the accepted events

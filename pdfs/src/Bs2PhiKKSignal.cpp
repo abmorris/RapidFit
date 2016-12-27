@@ -244,7 +244,7 @@ double Bs2PhiKKSignal::TimeIntegratedDecayRate(std::complex<double> A, std::comp
 void Bs2PhiKKSignal::CalculateAcceptance()
 {
 	if(acceptance_moments)
-		acceptance = acc_m->Evaluate(mKK*1000, phi, ctheta_1, ctheta_2);
+		acceptance = acc_m->Evaluate(mKK, phi, ctheta_1, ctheta_2);
 	else if(acceptance_histogram)
 		acceptance = acc_h->Eval({mKK*1000, std::abs(phi), std::abs(ctheta_1), std::abs(ctheta_2)});
 	acceptance = acceptance > 0 ? acceptance : 1e-12;

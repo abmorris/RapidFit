@@ -5,7 +5,7 @@
  * by many PDFs. For example, gaussian's convolved with trigonometric
  * functions.
  *
- * @author Greig A Cowan, Pete Clalrke greig.cowan@cern.ch
+ * @author Greig A Cowan, Pete Clarke greig.cowan@cern.ch
  */
 
 #pragma once
