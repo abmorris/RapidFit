@@ -769,7 +769,6 @@ namespace Mathematics
     cout << "Calculating acceptance coefficients" << endl;
     RapidFitIntegrator * rapidInt = new RapidFitIntegrator( PDF, true, true);
     rapidInt->SetFixedIntegralPoints(10000);
-    ComponentRef * thisRef = new ComponentRef( "0", "dummyObservable" );
     PhaseSpaceBoundary * boundary = dataSet->GetBoundary();
     
     const int l_max = mass_dependent ? 2 : 0; // mKK
@@ -825,13 +824,6 @@ namespace Mathematics
     double cosPsi(0.);
     double val(1.);
     double coeff(0.);
-    vector<string> dontIntegrate = PDF->GetDoNotIntegrateList();
-    double evalPDFnorm (1.);
-    if(weight_with_PDF)
-    {
-      evalPDFnorm = rapidInt->NumericallyIntegratePhaseSpace( boundary, dontIntegrate, thisRef );
-      cout << "PDF numerically integrates to " << evalPDFnorm << endl;
-    }
     for (int e = 0; e < numEvents; e++)
     {
       if (e % 1000 == 0)
@@ -847,21 +839,17 @@ namespace Mathematics
         mKK      = event->GetObservable("mKK")->GetValue();
         mKK_mapped = (mKK - minima[3])/(maxima[3]-minima[3])*2.+ (-1);
       }
-      const double mK  = 493.677;
-      const double mBs  = 5366.77;
-      const double mPhi= 1019.461;
+      const double mK  = 0.493677;
+      const double mBs  = 5.36677;
+      const double mPhi= 1.019461;
       if(weight_with_PDF)
       {
         double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
         double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
-        val = p1_st*p3/1e6; // GeV
+        val = p1_st*p3;
       }
       else
         val = 1.0;
-//      if(weight_with_PDF)
-//      {
-//        val = PDF->Evaluate( event );
-//      }
       cosThetaAcc->Fill(cosTheta,1/val);
       phiAcc->Fill(phi,1/val);
       cosPsiAcc->Fill(cosPsi,1/val);
@@ -895,7 +883,7 @@ namespace Mathematics
     double error(0.);
     double signif(0.);
     char branchname[5];
-    double threshold = 5;
+    double threshold = 2;
     if(threshold<1) threshold=1;
     for ( int l = 0; l < l_max + 1; l++ )
     {
@@ -991,21 +979,25 @@ namespace Mathematics
     TCanvas * canvas = new TCanvas("acc_can");
     canvas->Divide( 2, 2, (Float_t)0.01, (Float_t)0.01, 0 );
     canvas->cd(1);
+    mKKAcc->SetLineColor(1);
     mKKAcc->Draw();
-//    mKKAcc->SetMinimum(0);
-    mKKAccProj->Draw("same");
+    mKKAcc->SetMinimum(0);
+    mKKAccProj->Draw("HIST SAME C");
     canvas->cd(2);
+    phiAcc->SetLineColor(1);
     phiAcc->Draw();
-//    phiAcc->SetMinimum(0);
-    phiAccProj->Draw("same");
+    phiAcc->SetMinimum(0);
+    phiAccProj->Draw("HIST SAME C");
     canvas->cd(3);
+    cosThetaAcc->SetLineColor(1);
     cosThetaAcc->Draw();
-//    cosThetaAcc->SetMinimum(0);
-    cosThetaAccProj->Draw("same");
+    cosThetaAcc->SetMinimum(0);
+    cosThetaAccProj->Draw("HIST SAME C");
     canvas->cd(4);
+    cosPsiAcc->SetLineColor(1);
     cosPsiAcc->Draw();
-//    cosPsiAcc->SetMinimum(0);
-    cosPsiAccProj->Draw("same");
+    cosPsiAcc->SetMinimum(0);
+    cosPsiAccProj->Draw("HIST SAME C");
     canvas->SaveAs((filename+".root").c_str());
     canvas->SaveAs((filename+".pdf").c_str());
     return 1.;
