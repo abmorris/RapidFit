@@ -616,7 +616,7 @@ namespace Mathematics
 				*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
 			}
 			weight = lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
-			tree->Fill(mKK, phi, ctheta_1, ctheta_2, weight);
+			tree->Fill((float)mKK, (float)phi, (float)ctheta_1, (float)ctheta_2, (float)weight);
 			delete point;
 		}
 		TFile * acceptance_file = TFile::Open("sampled_LegendreMomentShape.root","RECREATE");
