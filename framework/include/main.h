@@ -106,10 +106,6 @@ int calculateFitFractions( RapidFitConfiguration* config );
 
 int calculateAcceptanceCoefficients( RapidFitConfiguration* config );
 
-int calculateAngularAcceptanceCoeff( RapidFitConfiguration* config );
-
-int calculateBackgroundCoefficients( RapidFitConfiguration* config );
-
 int PerformToyStudy( RapidFitConfiguration* config );
 
 int PerformMCStudy( RapidFitConfiguration* config );

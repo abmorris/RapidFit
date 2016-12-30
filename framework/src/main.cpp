@@ -197,11 +197,6 @@ int RapidFit( vector<string> input )
 
 	//	3)
 	else if( thisConfig->calculateAcceptanceCoefficients && thisConfig->configFileNameFlag ) calculateAcceptanceCoefficients( thisConfig );
-	else if( thisConfig->calculateAngularAcceptanceCoeff && thisConfig->configFileNameFlag ) calculateAngularAcceptanceCoeff( thisConfig );
-	else if( thisConfig->calculateBackgroundCoefficients && thisConfig->configFileNameFlag ) calculateBackgroundCoefficients( thisConfig );
-
-
-
 	//	6)
 	else if( thisConfig->testComponentPlotFlag && thisConfig->configFileNameFlag && thisConfig->observableNameFlag ) testComponentPlot( thisConfig );
 
@@ -1073,25 +1068,7 @@ int calculateAcceptanceCoefficients( RapidFitConfiguration* config )
 	IDataSet * dataSet = pdfAndData->GetDataSet();
 	IPDF * pdf = pdfAndData->GetPDF();
 
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, true, true);
-}
-int calculateAngularAcceptanceCoeff( RapidFitConfiguration* config )
-{
-	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
-	pdfAndData->SetPhysicsParameters( config->xmlFile->GetFitParameters() );
-	IDataSet * dataSet = pdfAndData->GetDataSet();
-	IPDF * pdf = pdfAndData->GetPDF();
-
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, false, true);
-}
-int calculateBackgroundCoefficients( RapidFitConfiguration* config )
-{
-	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
-	pdfAndData->SetPhysicsParameters( config->xmlFile->GetFitParameters() );
-	IDataSet * dataSet = pdfAndData->GetDataSet();
-	IPDF * pdf = pdfAndData->GetPDF();
-
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, false, false);
+	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, true);
 }
 
 

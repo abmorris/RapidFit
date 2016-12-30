@@ -114,7 +114,7 @@ namespace Mathematics
 	double expErfInt( double tlimit, double tau, double sigma);
 	double expErfInt_Wrapper( vector<double> input );
 
-    int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF , bool mass_dependent, bool weight_with_PDF);
+	int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF , bool mass_dependent);
 
 }
 

@@ -1,21 +1,6 @@
 /**
-
   WARNING: This is a version that should only be used for the Bs→ϕKK angular analysis.
-  
-  @namespace Mathematics
-
-  Namespace holding some common mathematical functions that are used
-  by many PDFs. For example, gaussian's convolved with trigonometric
-  functions.
-
-  @author Greig A Cowan greig.cowan@cern.ch
-  @date 2009-12-22
-  
-  @butcherer Adam Morris adam.morris@cern.ch
-  @butchered 2015/2016
-  I'm so sorry for the hard-coding. 
  */
-
 ///  ROOT Headers
 #include "TNtuple.h"
 #include "TMath.h"
@@ -30,6 +15,7 @@
 #include "main.h"
 #include "Mathematics.h"
 #include "DPHelpers.hh"
+#include "LegendreMomentShape.h"
 ///  System Headers
 #include <vector>
 #include <cmath>
@@ -37,17 +23,13 @@
 #include <pthread.h>
 #include <iomanip>
 #include <complex>
-
 pthread_mutex_t ROOT_Lock = pthread_mutex_t();
-
 using std::complex;
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::setprecision;
-
 bool RooMathinit=false;
-
 #ifdef __RAPIDFIT_USE_GSL
 ///  GSL Headers
 #include <gsl/gsl_complex_math.h>
@@ -56,1019 +38,650 @@ bool RooMathinit=false;
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_sf_legendre.h>
 #include <gsl/gsl_qrng.h>
-
 const gsl_complex prefix = gsl_complex_rect( (2./sqrt( Mathematics::Pi())), 0. );
-
 gsl_complex gsl_erf( gsl_complex z )
 {
-  gsl_complex result = gsl_complex_rect( 0., 0. );
-  gsl_complex numerator  = gsl_complex_rect( 0., 0.);
-  gsl_complex denominator  = gsl_complex_rect( 0., 0. );
-
-  //  Common factor which changes term to term
-  int factor=-1;
-  //gsl_complex gsl_factor = gsl_complex_rect( 0., 0. );
-
-  //  Running numerator turn in the expansion
-  gsl_complex z_raised = z;
-
-  //  Common Factor in the expansion
-  gsl_complex z_square = gsl_complex_mul( z, z );
-
-  //  Running factor to govern the size of each step
-  unsigned int fact =1;
-
-  numerator = z;
-  GSL_SET_REAL( &denominator, fact );
-  result  = gsl_complex_add( result, gsl_complex_div( numerator, denominator ) );
-
-  //  Can't get better than double precision
-  //  If the numerator varies by less than this we should assume we've reached as good as we can get
-  for( unsigned int i = 1;
-      (GSL_REAL(z_raised)>(1E-25)*GSL_REAL(z)) && (GSL_IMAG(z_raised)>(1E-25)*GSL_IMAG(z));
-      ++i )
-  {
-    factor*=-1;
-    //  Assumed Quicker than constructing a complex number and doing a complex multiplication
-    GSL_SET_REAL( &z, (double)factor*GSL_REAL(z) );
-
-    z_raised = gsl_complex_mul( z_raised, z_square );
-    fact*=i;
-
-    //numerator  = gsl_complex_pow_real( z, 2*i+1 );
-    numerator = z_raised;
-
-    //  Only a real number
-    GSL_SET_REAL( &denominator, (2*i + 1)*fact );
-
-    //  Add this term in the series to the result
-    result  = gsl_complex_add( result, gsl_complex_div( numerator, denominator ) );
-  }
-
-  result = gsl_complex_mul( prefix, result );
-
-  return result;
+	gsl_complex result = gsl_complex_rect( 0., 0. );
+	gsl_complex numerator  = gsl_complex_rect( 0., 0.);
+	gsl_complex denominator  = gsl_complex_rect( 0., 0. );
+	//  Common factor which changes term to term
+	int factor=-1;
+	//gsl_complex gsl_factor = gsl_complex_rect( 0., 0. );
+	//  Running numerator turn in the expansion
+	gsl_complex z_raised = z;
+	//  Common Factor in the expansion
+	gsl_complex z_square = gsl_complex_mul( z, z );
+	//  Running factor to govern the size of each step
+	unsigned int fact =1;
+	numerator = z;
+	GSL_SET_REAL( &denominator, fact );
+	result  = gsl_complex_add( result, gsl_complex_div( numerator, denominator ) );
+	//  Can't get better than double precision
+	//  If the numerator varies by less than this we should assume we've reached as good as we can get
+	for( unsigned int i = 1; (GSL_REAL(z_raised)>(1E-25)*GSL_REAL(z)) && (GSL_IMAG(z_raised)>(1E-25)*GSL_IMAG(z)); ++i )
+	{
+		factor*=-1;
+		//  Assumed Quicker than constructing a complex number and doing a complex multiplication
+		GSL_SET_REAL( &z, (double)factor*GSL_REAL(z) );
+		z_raised = gsl_complex_mul( z_raised, z_square );
+		fact*=i;
+		//numerator  = gsl_complex_pow_real( z, 2*i+1 );
+		numerator = z_raised;
+		//  Only a real number
+		GSL_SET_REAL( &denominator, (2*i + 1)*fact );
+		//  Add this term in the series to the result
+		result  = gsl_complex_add( result, gsl_complex_div( numerator, denominator ) );
+	}
+	result = gsl_complex_mul( prefix, result );
+	return result;
 }
-
 #endif
-
 namespace Mathematics
 {
-
-  // Mathematica integral of the exp * erf
-  //Integrate[(1*Exp[-(x/t) + s^2/(2*t^2)]* erfc[-((x - s^2/t)/(Sqrt[2]*s))])/2, x] ==
-  //(t*(erf[x/(Sqrt[2]*s)] - E^((s^2 - 2*t*x)/(2*t^2))* erfc[(s^2 - t*x)/(Sqrt[2]*s*t)]))/2
-  double expErfInt( double tlimit, double tau, double sigma)
-  {
-    const double sigma_2=sigma*sigma;
-    const double tau_2 = tau*tau;
-    const double inv_tau2 = 1./tau_2;
-    const double inv_r2_sigma = 1./(sqrt_2*sigma);
-    const double inv_r2_sigma_tau = inv_r2_sigma/tau;
-    const double tau_tlimit = tau*tlimit;
-    return 0.5 * (tau * ( erf( tlimit*inv_r2_sigma )
-          - exp( (sigma_2*0.5 - tau_tlimit)*inv_tau2 )
-          * erfc( (sigma_2 - tau_tlimit)*inv_r2_sigma_tau )
-            )
-           );
-  }
-
-  //--------------------------- exp and exp*sin and exp*cos time functions -------------------------
-  // time functions for use in PDFs with resolution
-
-  //...................................................................
-  // All of these functions were taken from Yue Hongs code
-
-  // Calculate exp(-u^2) cwerf(swt*c + i(u+c)), taking care of numerical instabilities
-  //RooComplex TimeFunctionUtility::evalCerf(double swt, double u, double c) const {
-  //  RooComplex z(swt*c,u+c);
-  //  return (z.im()>-4.0) ? RooMath::FastComplexErrFunc(z)*exp(-u*u) : evalCerfApprox(swt,u,c) ;
-  ///}  DIDNT APPEAR TO BE USED
-
-  // use the approximation: erf(z) = exp(-z*z)/(sqrt(pi)*z) to explicitly cancel the divergent exp(y*y) behaviour of
-  // CWERF for z = x + i y with large negative y
-  complex<double> evalCerfApprox( double swt, double u, double c)
-  {
-    const double swt_c=swt*c;
-    complex<double> z(swt_c,u+c);
-    complex<double> zc(u+c,-swt_c);
-    complex<double> zsq= z*z;
-    complex<double> v= -zsq - u*u;
-    double v_mag = exp( v.real() );
-    complex<double> v_exp( v_mag*cos(v.imag()), v_mag*sin(v.imag()) );
-    double zsq_mag = exp( zsq.real() );
-    complex<double> zsq_exp( zsq_mag*cos(zsq.imag()), zsq_mag*sin(zsq.imag()) );
-    return v_exp*(-zsq_exp/(zc*rootpi) + 1.)*2.; //why shoule be a 2 here?
-    //   return v.exp()*(-zsq.exp()/(zc*rootpi) + 1);
-  }
-
-  complex<double> evalCerf( double swt, double u, double c )
-  {
+	// Mathematica integral of the exp * erf
+	//Integrate[(1*Exp[-(x/t) + s^2/(2*t^2)]* erfc[-((x - s^2/t)/(Sqrt[2]*s))])/2, x] ==
+	//(t*(erf[x/(Sqrt[2]*s)] - E^((s^2 - 2*t*x)/(2*t^2))* erfc[(s^2 - t*x)/(Sqrt[2]*s*t)]))/2
+	double expErfInt( double tlimit, double tau, double sigma)
+	{
+		const double sigma_2=sigma*sigma;
+		const double tau_2 = tau*tau;
+		const double inv_tau2 = 1./tau_2;
+		const double inv_r2_sigma = 1./(sqrt_2*sigma);
+		const double inv_r2_sigma_tau = inv_r2_sigma/tau;
+		const double tau_tlimit = tau*tlimit;
+		return 0.5 * (tau * ( erf( tlimit*inv_r2_sigma )
+		           - exp( (sigma_2*0.5 - tau_tlimit)*inv_tau2 )
+		           * erfc( (sigma_2 - tau_tlimit)*inv_r2_sigma_tau ) ) );
+	}
+	//--------------------------- exp and exp*sin and exp*cos time functions -------------------------
+	// time functions for use in PDFs with resolution
+	//...................................................................
+	// All of these functions were taken from Yue Hongs code
+	// Calculate exp(-u^2) cwerf(swt*c + i(u+c)), taking care of numerical instabilities
+	//RooComplex TimeFunctionUtility::evalCerf(double swt, double u, double c) const {
+	//  RooComplex z(swt*c,u+c);
+	//  return (z.im()>-4.0) ? RooMath::FastComplexErrFunc(z)*exp(-u*u) : evalCerfApprox(swt,u,c) ;
+	///}  DIDNT APPEAR TO BE USED
+	// use the approximation: erf(z) = exp(-z*z)/(sqrt(pi)*z) to explicitly cancel the divergent exp(y*y) behaviour of
+	// CWERF for z = x + i y with large negative y
+	complex<double> evalCerfApprox( double swt, double u, double c)
+	{
+		const double swt_c=swt*c;
+		complex<double> z(swt_c,u+c);
+		complex<double> zc(u+c,-swt_c);
+		complex<double> zsq= z*z;
+		complex<double> v= -zsq - u*u;
+		double v_mag = exp( v.real() );
+		complex<double> v_exp( v_mag*cos(v.imag()), v_mag*sin(v.imag()) );
+		double zsq_mag = exp( zsq.real() );
+		complex<double> zsq_exp( zsq_mag*cos(zsq.imag()), zsq_mag*sin(zsq.imag()) );
+		return v_exp*(-zsq_exp/(zc*rootpi) + 1.)*2.; //why shoule be a 2 here?
+		//   return v.exp()*(-zsq.exp()/(zc*rootpi) + 1);
+	}
+	complex<double> evalCerf( double swt, double u, double c )
+	{
 #if ROOT_VERSION_CODE < ROOT_VERSION(5,34,10)
-    RooComplex z( swt*c, u+c );
-    complex<double> returnable = 0.;
-    if( (u+c) > -4.0 )
-    {
-      if( !RooMathinit )
-      {
-        pthread_mutex_lock( &ROOT_Lock );
+		RooComplex z( swt*c, u+c );
+		complex<double> returnable = 0.;
+		if( (u+c) > -4.0 )
+		{
+			if( !RooMathinit )
+			{
+				pthread_mutex_lock( &ROOT_Lock );
 #if ROOT_VERSION_CODE >= ROOT_VERSION(5,34,0)
-        if( !RooMathinit ) RooMath::initFastCERF( 800, -4.0, 4.0, 1000, -4.0, 6.0 );
+				if( !RooMathinit ) RooMath::initFastCERF( 800, -4.0, 4.0, 1000, -4.0, 6.0 );
 #else
-        if( !RooMathinit ) RooComplex RooReturnable = RooMath::ITPComplexErrFunc( z, 13 )*exp( -u*u );
+				if( !RooMathinit ) RooComplex RooReturnable = RooMath::ITPComplexErrFunc( z, 13 )*exp( -u*u );
 #endif
-        RooMathinit = true;
-        pthread_mutex_unlock( &ROOT_Lock );
-      }
-      RooComplex thisRes = RooMath::ITPComplexErrFunc( z, 13 )*exp( -u*u );
-      returnable = complex<double>( thisRes.re(), thisRes.im() );
-    }
-    else
-    {
-      returnable = evalCerfApprox( swt, u, c );
-    }
-    return returnable;
+				RooMathinit = true;
+				pthread_mutex_unlock( &ROOT_Lock );
+			}
+			RooComplex thisRes = RooMath::ITPComplexErrFunc( z, 13 )*exp( -u*u );
+			returnable = complex<double>( thisRes.re(), thisRes.im() );
+		}
+		else
+		{
+			returnable = evalCerfApprox( swt, u, c );
+		}
+		return returnable;
 #else
-    complex<double> z_stl( swt*c, u+c );
-    complex<double> returnable = 0.;
-    if( (u+c) > -4.0 )
-    {
-      if( !RooMathinit )
-      {
-        pthread_mutex_lock( &ROOT_Lock );
-        if( !RooMathinit ) returnable = RooMath::faddeeva( z_stl )*exp( -u*u );
-        RooMathinit = true;
-        pthread_mutex_unlock( &ROOT_Lock );
-      }
-      returnable = RooMath::faddeeva( z_stl )*exp( -u*u );
-    }
-    else
-    {
-      returnable = evalCerfApprox( swt, u, c );
-    }
-    return returnable;
+		complex<double> z_stl( swt*c, u+c );
+		complex<double> returnable = 0.;
+		if( (u+c) > -4.0 )
+		{
+			if( !RooMathinit )
+			{
+				pthread_mutex_lock( &ROOT_Lock );
+				if( !RooMathinit ) returnable = RooMath::faddeeva( z_stl )*exp( -u*u );
+				RooMathinit = true;
+				pthread_mutex_unlock( &ROOT_Lock );
+			}
+			returnable = RooMath::faddeeva( z_stl )*exp( -u*u );
+		}
+		else
+		{
+			returnable = evalCerfApprox( swt, u, c );
+		}
+		return returnable;
 #endif
-  }
-
-  double evalCerfRe( double swt, double u, double c )
-  {
+	}
+	double evalCerfRe( double swt, double u, double c )
+	{
 #if ROOT_VERSION_CODE < ROOT_VERSION(5,34,10)
-    RooComplex z( swt*c, u+c );
-    double returnable = 0.;
-    if( (u+c) > -4.0 )
-    {
-      if( !RooMathinit )
-      {
-        pthread_mutex_lock( &ROOT_Lock );
+		RooComplex z( swt*c, u+c );
+		double returnable = 0.;
+		if( (u+c) > -4.0 )
+		{
+			if( !RooMathinit )
+			{
+				pthread_mutex_lock( &ROOT_Lock );
 #if ROOT_VERSION_CODE >= ROOT_VERSION(5,34,0)
-        if( !RooMathinit ) RooMath::initFastCERF( 800, -4.0, 4.0, 1000, -4.0, 6.0 );
+				if( !RooMathinit ) RooMath::initFastCERF( 800, -4.0, 4.0, 1000, -4.0, 6.0 );
 #else
-        if( !RooMathinit ) RooComplex RooReturnable = RooMath::ITPComplexErrFuncRe( z, 13 )*exp( -u*u );
+				if( !RooMathinit ) RooComplex RooReturnable = RooMath::ITPComplexErrFuncRe( z, 13 )*exp( -u*u );
 #endif
-        RooMathinit = true;
-        pthread_mutex_unlock( &ROOT_Lock );
-      }
-      returnable = RooMath::ITPComplexErrFuncRe( z, 13 )*exp( -u*u );
-    }
-    else
-    {
-      returnable = evalCerfApprox( swt, u, c ).real();
-    }
-    return returnable;
+				RooMathinit = true;
+				pthread_mutex_unlock( &ROOT_Lock );
+			}
+			returnable = RooMath::ITPComplexErrFuncRe( z, 13 )*exp( -u*u );
+		}
+		else
+		{
+			returnable = evalCerfApprox( swt, u, c ).real();
+		}
+		return returnable;
 #else
-    complex<double> z_stl( swt*c, u+c );
-    double returnable = 0.;
-    if( (u+c) > -4.0 )
-    {
-      if( !RooMathinit )
-      {
-        pthread_mutex_lock( &ROOT_Lock );
-        if( !RooMathinit ) returnable = RooMath::faddeeva( z_stl ).real()*exp( -u*u );
-        RooMathinit = true;
-        pthread_mutex_unlock( &ROOT_Lock );
-      }
-      returnable = RooMath::faddeeva( z_stl ).real()*exp( -u*u );
-    }
-    else
-    {
-      returnable = evalCerfApprox( swt, u, c ).real();
-    }
-    return returnable;
+		complex<double> z_stl( swt*c, u+c );
+		double returnable = 0.;
+		if( (u+c) > -4.0 )
+		{
+			if( !RooMathinit )
+			{
+				pthread_mutex_lock( &ROOT_Lock );
+				if( !RooMathinit ) returnable = RooMath::faddeeva( z_stl ).real()*exp( -u*u );
+				RooMathinit = true;
+				pthread_mutex_unlock( &ROOT_Lock );
+			}
+			returnable = RooMath::faddeeva( z_stl ).real()*exp( -u*u );
+		}
+		else
+		{
+			returnable = evalCerfApprox( swt, u, c ).real();
+		}
+		return returnable;
 #endif
-  }
-
-  double evalCerfIm( double swt, double u, double c)
-  {
+	}
+	double evalCerfIm( double swt, double u, double c)
+	{
 #if ROOT_VERSION_CODE < ROOT_VERSION(5,34,10)
-    RooComplex z( swt*c, u+c );
-    double returnable = 0.;
-    if( (u+c) > -4.0 )
-    {
-      if( !RooMathinit )
-      {
-        pthread_mutex_lock( &ROOT_Lock );
+		RooComplex z( swt*c, u+c );
+		double returnable = 0.;
+		if( (u+c) > -4.0 )
+		{
+			if( !RooMathinit )
+			{
+				pthread_mutex_lock( &ROOT_Lock );
 #if ROOT_VERSION_CODE >= ROOT_VERSION(5,34,0)
-        if( !RooMathinit ) RooMath::initFastCERF( 800, -4.0, 4.0, 1000, -4.0, 6.0 );
+				if( !RooMathinit ) RooMath::initFastCERF( 800, -4.0, 4.0, 1000, -4.0, 6.0 );
 #else
-        if( !RooMathinit ) returnable = RooMath::ITPComplexErrFuncIm( z, 13 )*exp( -u*u );
+				if( !RooMathinit ) returnable = RooMath::ITPComplexErrFuncIm( z, 13 )*exp( -u*u );
 #endif
-        RooMathinit = true;
-        pthread_mutex_unlock( &ROOT_Lock );
-      }
-    }
-    else
-    {
-      returnable = evalCerfApprox( swt, u, c ).imag();
-    }
-    return returnable;
+				RooMathinit = true;
+				pthread_mutex_unlock( &ROOT_Lock );
+			}
+		}
+		else
+		{
+			returnable = evalCerfApprox( swt, u, c ).imag();
+		}
+		return returnable;
 #else
-    complex<double> z_stl( swt*c, u+c );
-    double returnable = 0.;
-    if( (u+c) > -4.0 )
-    {
-      if( !RooMathinit )
-      {
-        pthread_mutex_lock( &ROOT_Lock );
-        if( !RooMathinit ) returnable = RooMath::faddeeva( z_stl ).imag()*exp( -u*u );
-        RooMathinit = true;
-        pthread_mutex_unlock( &ROOT_Lock );
-      }
-      returnable = RooMath::faddeeva( z_stl ).imag()*exp( -u*u );
-    }
-    else
-    {
-      returnable = evalCerfApprox( swt, u, c ).imag();
-    }
-    return returnable;
+		complex<double> z_stl( swt*c, u+c );
+		double returnable = 0.;
+		if( (u+c) > -4.0 )
+		{
+			if( !RooMathinit )
+			{
+				pthread_mutex_lock( &ROOT_Lock );
+				if( !RooMathinit ) returnable = RooMath::faddeeva( z_stl ).imag()*exp( -u*u );
+				RooMathinit = true;
+				pthread_mutex_unlock( &ROOT_Lock );
+			}
+			returnable = RooMath::faddeeva( z_stl ).imag()*exp( -u*u );
+		}
+		else
+		{
+			returnable = evalCerfApprox( swt, u, c ).imag();
+		}
+		return returnable;
 #endif
-  }
+	}
+	//evaluate a simple exponential with single gaussian time resolution
+	double Exp( double t, double gamma, double resolution )
+	{
+		if(resolution > 0.) {
+			const double t_gamma=t*gamma;
+			const double resolution_2_gamma=resolution*resolution*gamma;
+			const double theExp = exp( -t_gamma + resolution_2_gamma*gamma *0.5 ) ;
+			const double theErfc = erfc(  -( t - resolution_2_gamma ) *_over_sqrt_2 /resolution )  ;
+			return theExp * theErfc  *0.5 ;
+			// Yue hongs code
+			//double c = gamma * resolution *_over_sqrt_2;
+			//double u = t / resolution *_over_sqrt_2;
+			//return exp( c*c - gamma*t ) * erfc(c-u) / 2.;
+		}
+		else {
+			if( t < 0.0 ) return 0.0 ;
+			return exp( -t*gamma ) ;
+		}
+	}
+	//.......................................
+	// Evaluate integral of a simple exponential with single gaussian time resolution
+	/* From Mathematica we have:
+		 R2[t_] := 0.5 * Exp[-t*gamma + timeRes*timeRes*gamma*gamma*0.5] * Erfc[-(t - timeRes*timeRes*gamma)/(Sqrt[2]*timeRes)]
+		 CForm[FullSimplify[Simplify[Integrate[R2[t], {t, tlow, thigh}]]]]
+		 (
+		 -2*exp((gamma*gamma*timeRes*timeRes)*0.5.) -
+		 exp( gamma*thigh)*Erfc(thigh/(sqrt(2)*timeRes)) +
+		 exp((gamma*gamma*timeRes*timeRes)*0.5)           * Erfc((thigh - gamma*timeRes*timeRes)/(sqrt(2)*timeRes)) +
+		 exp((gamma*(2*thigh + gamma*timeRes*timeRes - 2*tlow))*0.5) * Erfc((gamma*timeRes*timeRes - tlow )/(sqrt(2)*timeRes)) +
+		 exp( gamma*thigh)*Erfc(tlow/(sqrt(2)*timeRes))
+		 )/(2.*exp(gamma*thigh)*gamma)
+	 */
+	double ExpInt( double tlow, double thigh, double gamma, double resolution  )
+	{
+		if( thigh < tlow )
+		{
+			std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
+			return -1.0 ;
+		}
+		const double invgamma=1./gamma;
+		if( resolution > 0. )
+		{
+			const double sigma_2=resolution*resolution;
+			const double inv_tau2 = gamma*gamma;
+			const double inv_r2_sigma = 1./(sqrt_2*resolution);
+			const double inv_r2_sigma_tau = inv_r2_sigma*gamma;
+			const double tau_thigh = invgamma*thigh;
+			const double tau_tlow = invgamma*tlow;
+			const double half_invgamma = 0.5*invgamma;
+			const double half_sigma_2 = sigma_2*0.5;
+			const double int_tHigh = erf( thigh*inv_r2_sigma )
+			                       - exp( (half_sigma_2 - tau_thigh )*inv_tau2 )
+			                       * erfc( (sigma_2 - tau_thigh )*inv_r2_sigma_tau ) ;
+			const double int_tLow = erf( tlow*inv_r2_sigma )
+			                      - exp( (half_sigma_2 - tau_tlow )*inv_tau2 )
+			                      * erfc( (sigma_2 - tau_tlow )*inv_r2_sigma_tau ) ;
+			return half_invgamma * ( int_tHigh - int_tLow );
+		}
+		else
+		{
+			const double exp_gamma_thigh=exp(-gamma*thigh);
+			if( tlow < 0. ) return invgamma * ( 1.0 - exp_gamma_thigh ) ;
+			else return invgamma * ( exp(-gamma*tlow) - exp_gamma_thigh ) ;
+		}
+	}
+	//evaluate a simple exponential with single gaussian time resolution, allowing for an acceptance (1.0 - b*t) - formula from wolfram
+	double Exp_betaAcceptance( double t, double gamma, double resolution, double acceptanceParameter  )
+	{
+		if(resolution > 0.)
+		{
+			// At present we dont know how to do this with resolution included
+			cout <<" Mathematics::Exp_betaAcceptance - with (1-bt) acceptance : This doesnt work when resolution .ne. 0 yet " << endl ;
+			exit(1) ;
+		}
+		else {
+			if( t < 0.0 ) return 0.0 ;
+			return exp( -gamma * t ) * (1. - acceptanceParameter * t ) ;
+		}
+	}
 
+	// Evaluate integral of a simple exponential with single gaussian time resolution, allowing for an acceptance (1.0 - b*t) - formula from wolfram
+	// I = -1/G * exp (-tG) (1 - b(1/G +t ))  instead of I = -1/G * exp (-tG)
+	double ExpInt_betaAcceptance( double tlow, double thigh, double gamma, double resolution, double acceptanceParameter  )
+	{
+		if( thigh < tlow )
+		{
+			std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
+			exit(1) ;
+		}
+		if( resolution > 0. )
+		{
+			// At present we dont know how to do this with resolution included
+			cout <<" Mathematics::ExpInt_betaAcceptance - with (1-bt) acceptance : This doesnt work when resolution .ne. 0 yet " << endl ;
+			exit(1) ;
+		}
+		else
+		{
+			double LoFactor=0, UpFactor=0 ;
+			const double invgamma = 1./gamma;
+			if( tlow < 0. ) {
+				LoFactor = (1. - acceptanceParameter*invgamma) * (-invgamma) ;
+			}
+			else {
+				LoFactor = (1. - acceptanceParameter*(invgamma+tlow)) * (-invgamma) * exp(-gamma*tlow) ;
+			}
+			UpFactor = (1. - acceptanceParameter*(invgamma+thigh)) * (-invgamma) * exp(-gamma*thigh) ;
+			return UpFactor - LoFactor ;
+		}
+	}
+	//evaluate a simple exponential X cosh with single gaussian time resolution
+	//When you express the cosh as a sum of exp and then multiply out, you are
+	//left with just a sum of exponentials.
+	double ExpCosh( double t, double gamma, double deltaGamma, double resolution )
+	{
+		const double dg_2 = deltaGamma*0.5;
+		const double gammaL = gamma + dg_2;
+		const double gammaH = gamma - dg_2;
+		return ( Exp( t, gammaH, resolution ) + Exp( t, gammaL, resolution ) ) *0.5;
+	}
+	// Evaluate integral of a simple exponential X cosh with single gaussian time resolution
+	double ExpCoshInt( double tlow, double thigh, double gamma, double deltaGamma, double resolution  )
+	{
+		const double dg_2 = deltaGamma*0.5;
+		const double gammaL = gamma + dg_2;
+		const double gammaH = gamma - dg_2;
+		return ( ExpInt( tlow, thigh, gammaH, resolution ) + ExpInt( tlow, thigh, gammaL, resolution ) )*0.5;
+	}
+	//evaluate a simple exponential with single gaussian time resolution
+	//When you express the sinh as a sum of exp and then multiply out, you are
+	//left with just a sum of exponentials.
+	double ExpSinh( double t, double gamma, double deltaGamma, double resolution )
+	{
+		const double dg_2 = deltaGamma*0.5;
+		const double gammaL = gamma + dg_2;
+		const double gammaH = gamma - dg_2;
+		return ( Exp( t, gammaH, resolution ) - Exp( t, gammaL, resolution ) )*0.5;
+	}
+	// Evaluate integral of a simple exponential X sinh with single gaussian time resolution
+	double ExpSinhInt( double tlow, double thigh, double gamma, double deltaGamma, double resolution  )
+	{
+		const double dg_2 = deltaGamma*0.5;
+		const double gammaL = gamma + dg_2;
+		const double gammaH = gamma - dg_2;
+		return ( ExpInt( tlow, thigh, gammaH, resolution ) - ExpInt( tlow, thigh, gammaL, resolution ))*0.5;
+	}
+	// Mathematica integral of the exp * cos * erf
+	//Integrate[(1*Exp[-(x/t) + s^2/(2*t^2)]* Erfc[-((x - s^2/t)/(Sqrt[2]*s))])/2, x] ==
+	// Evaluate exponential X cosine with single time resolution
+	double ExpCos( double t, double gamma, double deltaM, double resolution )
+	{
+		if(resolution > 0.) {
+			//Yue Hongs code
+			const double c = gamma * resolution*_over_sqrt_2;
+			const double u = (t / resolution) *_over_sqrt_2 ;
+			const double wt = deltaM / gamma ;
+			return ( evalCerfRe(wt,-u,c) + evalCerfRe(-wt,-u,c) ) *0.25 ;
+			// My code which didnt work due to numerical instability
+			//double theExp = exp( -t*gamma + timeRes*timeRes * ( gamma*gamma - deltaM*deltaM ) / 2. ) ;
+			//double theCos = cos( deltaM * ( t - timeRes*timeRes*gamma ) ) ;
+			//double theSin = sin( deltaM * ( t - timeRes*timeRes*gamma ) ) ;
+			//RooComplex z( -( t - timeRes*timeRes*gamma )*_over_sqrt_2/timeRes,  - timeRes*deltaM*_over_sqrt_2 ) ;
+			//double theReErfc = (z.im()>-4.0) ? ( 1.0 - RooMath::FastComplexErrFuncRe(z) ) : ( 1.0 - RooMath::FastComplexErrFuncRe(z) );
+			//double theImErfc = (z.im()>-4.0) ? ( 1.0 - RooMath::FastComplexErrFuncIm(z) ) : ( 1.0 - RooMath::FastComplexErrFuncIm(z) );
+			//return theExp * ( theCos*theReErfc - theSin*theImErfc ) / 2.0 ;
+		}
+		else {
+			if( t < 0.0 ) return 0.0 ;
+			return exp( -gamma *t ) * cos( deltaM * t )  ;
+		}
+	}
+	pair<double, double> ExpCosSin( double t, double gamma, double deltaM, double resolution )
+	{
+		if(resolution > 0.) {
+			const double c = gamma * resolution*_over_sqrt_2;
+			const double u = (t / resolution) *_over_sqrt_2 ;
+			const double wt = deltaM / gamma ;
+			const complex<double> _cerf_plus = evalCerf( wt,-u,c );
+			const complex<double> _cerf_minus = evalCerf( -wt,-u,c );
+			const double ExpCos =  ( _cerf_plus.real() + _cerf_minus.real() ) * 0.25;
+			const double ExpSin =  ( _cerf_plus.imag() - _cerf_minus.imag() ) * 0.25;
+			return make_pair( ExpCos, ExpSin );
+		}
+		else {
+			const double deltaM_t = deltaM * t;
+			const double exp_val = exp( -gamma *t );
+			const double ExpCos = exp_val * cos( deltaM_t );
+			const double ExpSin = exp_val * sin( deltaM_t );
+			return make_pair( ExpCos, ExpSin );
+		}
+	}
 
-  //----------------------------------------------------------------------------------------------
-  //........................................
-  //evaluate a simple exponential with single gaussian time resolution
-  double Exp( double t, double gamma, double resolution )
-  {
-    if(resolution > 0.) {
+	pair<double,double> ExpCosSinInt( double tlow, double thigh, double gamma, double deltaM, double resolution  )
+	{
+		if( thigh < tlow ) {
+			std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
+			return make_pair(-1.0,-1.0);
+		}
+		if( resolution > 0.) {
+			//Added by Pete after getting code from Yuehong 120118
+			const double c = gamma * resolution * _over_sqrt_2;
+			const double inv_res = 1./resolution;
+			const double umax = (thigh * inv_res ) *_over_sqrt_2 ;
+			const double umin = (tlow * inv_res ) *_over_sqrt_2 ;
+			const double wt = deltaM / gamma ;
+			complex<double> evalDif( evalCerf(-wt,-umax,c) - evalCerf(-wt,-umin,c) );
+			const double evalDifRe = evalDif.real();
+			const double evalDifIm = evalDif.imag();
+			const double factor = -0.5/gamma/(1+wt*wt);
+			const double erf_max = RooMath::erf(-umax);
+			const double erf_min = RooMath::erf(-umin);
+			const double deltaCos = factor * ( evalDifRe + wt*evalDifIm + erf_max - erf_min );
+			const double deltaSin = factor * ( -evalDifIm + wt*evalDifRe - -wt*(erf_max - erf_min) );
+			return make_pair( deltaCos, deltaSin );
+		}
+		else
+		{
+			double real_tlow=tlow;
+			if( tlow < 0. ) real_tlow = 0. ;
+			const double deltaM_tlow=deltaM*real_tlow;
+			const double gamma_deltaM = gamma*deltaM;
+			const double deltaM_thigh=deltaM*thigh;
+			const double factor = 1./( gamma_deltaM*gamma_deltaM );
+			const double exp_lo = exp(-gamma*real_tlow);
+			const double exp_hi = exp(-gamma*thigh);
+			const double sin_hi = sin(deltaM_thigh);
+			const double cos_hi = cos(deltaM_thigh);
+			const double sin_lo = sin(deltaM_tlow);
+			const double cos_lo = cos(deltaM_tlow);
+			const double expCos = ( ( exp_lo * ( gamma*cos_lo - deltaM*sin_lo ) )
+			                       -( exp_hi * ( gamma*cos_hi - deltaM*sin_hi ) )
+			                      ) * factor;
+			const double expSin = ( ( exp_lo * ( gamma*sin_lo + deltaM*cos_lo ) )
+			                       -( exp_hi * ( gamma*sin_hi + deltaM*cos_hi ) )
+			                      ) * factor;
+			return make_pair( expCos, expSin );
+		}
+	}
+	// Evaluate integral of exponential X cosine with single time resolution
+	double ExpCosInt( double tlow, double thigh, double gamma, double deltaM, double resolution  )
+	{
+		if( thigh < tlow ) {
+			std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
+			return -1.0 ;
+		}
+		if( resolution > 0.) {
+			//Added by Pete after getting code from Yuehong 120118
+			const double c = gamma * resolution * _over_sqrt_2;
+			const double inv_res = 1./resolution;
+			const double umax = (thigh * inv_res ) *_over_sqrt_2 ;
+			const double umin = (tlow * inv_res ) *_over_sqrt_2 ;
+			const double wt = deltaM / gamma ;
+			complex<double> evalDif( evalCerf(-wt,-umax,c) - evalCerf(-wt,-umin,c) );
+			const double evalDifRe = evalDif.real();
+			const double evalDifIm = evalDif.imag();
+			double deltaCos = -0.5/gamma/(1+wt*wt) * ( evalDifRe + wt*evalDifIm + RooMath::erf(-umax) - RooMath::erf(-umin) );
+			return deltaCos;
+		}
+		else
+		{
+			double real_tlow=tlow;
+			if( tlow < 0. ) real_tlow = 0. ;
+			const double deltaM_tlow=deltaM*real_tlow;
+			const double gamma_deltaM = gamma*deltaM;
+			const double deltaM_thigh=deltaM*thigh;
+			return ( ( exp(-gamma*real_tlow)* (gamma*cos(deltaM_tlow) - deltaM*sin(deltaM_tlow)))
+			        -( exp(-gamma*thigh)* (gamma*cos(deltaM_thigh) - deltaM*sin(deltaM_thigh)))
+			       ) / ( gamma_deltaM*gamma_deltaM );
+		}
+	}
 
-      const double t_gamma=t*gamma;
-      const double resolution_2_gamma=resolution*resolution*gamma;
-      const double theExp = exp( -t_gamma + resolution_2_gamma*gamma *0.5 ) ;
-      const double theErfc = erfc(  -( t - resolution_2_gamma ) *_over_sqrt_2 /resolution )  ;
-      return theExp * theErfc  *0.5 ;
-
-      // Yue hongs code
-      //double c = gamma * resolution *_over_sqrt_2;
-      //double u = t / resolution *_over_sqrt_2;
-      //return exp( c*c - gamma*t ) * erfc(c-u) / 2.;
-    }
-    else {
-      if( t < 0.0 ) return 0.0 ;
-      return exp( -t*gamma ) ;
-    }
-
-  }
-
-  //.......................................
-  // Evaluate integral of a simple exponential with single gaussian time resolution
-  /* From Mathematica we have:
-     R2[t_] := 0.5 * Exp[-t*gamma + timeRes*timeRes*gamma*gamma*0.5] * Erfc[-(t - timeRes*timeRes*gamma)/(Sqrt[2]*timeRes)]
-     CForm[FullSimplify[Simplify[Integrate[R2[t], {t, tlow, thigh}]]]]
-     (
-     -2*exp((gamma*gamma*timeRes*timeRes)*0.5.) -
-     exp( gamma*thigh)*Erfc(thigh/(sqrt(2)*timeRes)) +
-     exp((gamma*gamma*timeRes*timeRes)*0.5)           * Erfc((thigh - gamma*timeRes*timeRes)/(sqrt(2)*timeRes)) +
-     exp((gamma*(2*thigh + gamma*timeRes*timeRes - 2*tlow))*0.5) * Erfc((gamma*timeRes*timeRes - tlow )/(sqrt(2)*timeRes)) +
-     exp( gamma*thigh)*Erfc(tlow/(sqrt(2)*timeRes))
-     )/(2.*exp(gamma*thigh)*gamma)
-   */
-  double ExpInt( double tlow, double thigh, double gamma, double resolution  )
-  {
-    if( thigh < tlow )
-    {
-      std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
-      return -1.0 ;
-    }
-
-    const double invgamma=1./gamma;
-    if( resolution > 0. )
-    {
-      const double sigma_2=resolution*resolution;
-      const double inv_tau2 = gamma*gamma;
-      const double inv_r2_sigma = 1./(sqrt_2*resolution);
-      const double inv_r2_sigma_tau = inv_r2_sigma*gamma;
-      const double tau_thigh = invgamma*thigh;
-      const double tau_tlow = invgamma*tlow;
-      const double half_invgamma = 0.5*invgamma;
-      const double half_sigma_2 = sigma_2*0.5;
-      const double int_tHigh = erf( thigh*inv_r2_sigma )
-                       - exp( (half_sigma_2 - tau_thigh )*inv_tau2 )
-                      * erfc( (sigma_2 - tau_thigh )*inv_r2_sigma_tau ) ;
-
-      const double int_tLow = erf( tlow*inv_r2_sigma )
-                                              - exp( (half_sigma_2 - tau_tlow )*inv_tau2 )
-               * erfc( (sigma_2 - tau_tlow )*inv_r2_sigma_tau ) ;
-
-      return half_invgamma * ( int_tHigh - int_tLow );
-    }
-    else
-    {
-      const double exp_gamma_thigh=exp(-gamma*thigh);
-      if( tlow < 0. ) return invgamma * ( 1.0 - exp_gamma_thigh ) ;
-      else return invgamma * ( exp(-gamma*tlow) - exp_gamma_thigh ) ;
-    }
-  }
-
-  //------------------------------------------------------------------------------------------
-  //........................................
-  //evaluate a simple exponential with single gaussian time resolution, allowing for an acceptance (1.0 - b*t) - formula from wolfram
-  double Exp_betaAcceptance( double t, double gamma, double resolution, double acceptanceParameter  )
-  {
-    if(resolution > 0.)
-    {
-      // At present we dont know how to do this with resolution included
-      cout <<" Mathematics::Exp_betaAcceptance - with (1-bt) acceptance : This doesnt work when resolution .ne. 0 yet " << endl ;
-      exit(1) ;
-    }
-    else {
-      if( t < 0.0 ) return 0.0 ;
-      return exp( -gamma * t ) * (1. - acceptanceParameter * t ) ;
-    }
-  }
-
-
-  //.....................................................
-  // Evaluate integral of a simple exponential with single gaussian time resolution, allowing for an acceptance (1.0 - b*t) - formula from wolfram
-  // I = -1/G * exp (-tG) (1 - b(1/G +t ))  instead of I = -1/G * exp (-tG)
-  double ExpInt_betaAcceptance( double tlow, double thigh, double gamma, double resolution, double acceptanceParameter  )
-  {
-    if( thigh < tlow )
-    {
-      std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
-      exit(1) ;
-    }
-
-    if( resolution > 0. )
-    {
-      // At present we dont know how to do this with resolution included
-      cout <<" Mathematics::ExpInt_betaAcceptance - with (1-bt) acceptance : This doesnt work when resolution .ne. 0 yet " << endl ;
-      exit(1) ;
-    }
-    else
-    {
-      double LoFactor=0, UpFactor=0 ;
-
-      const double invgamma = 1./gamma;
-      if( tlow < 0. ) {
-        LoFactor = (1. - acceptanceParameter*invgamma) * (-invgamma) ;
-      }
-      else {
-        LoFactor = (1. - acceptanceParameter*(invgamma+tlow)) * (-invgamma) * exp(-gamma*tlow) ;
-      }
-      UpFactor = (1. - acceptanceParameter*(invgamma+thigh)) * (-invgamma) * exp(-gamma*thigh) ;
-
-      return UpFactor - LoFactor ;
-
-    }
-  }
-
-  //----------------------------------------------------------------------------------------------------------
-  //........................................
-  //evaluate a simple exponential X cosh with single gaussian time resolution
-  //When you express the cosh as a sum of exp and then multiply out, you are
-  //left with just a sum of exponentials.
-  double ExpCosh( double t, double gamma, double deltaGamma, double resolution )
-  {
-    const double dg_2 = deltaGamma*0.5;
-    const double gammaL = gamma + dg_2;
-    const double gammaH = gamma - dg_2;
-    return ( Exp( t, gammaH, resolution ) + Exp( t, gammaL, resolution ) ) *0.5;
-  }
-
-  //.......................................
-  // Evaluate integral of a simple exponential X cosh with single gaussian time resolution
-  double ExpCoshInt( double tlow, double thigh, double gamma, double deltaGamma, double resolution  )
-  {
-    const double dg_2 = deltaGamma*0.5;
-    const double gammaL = gamma + dg_2;
-    const double gammaH = gamma - dg_2;
-    return ( ExpInt( tlow, thigh, gammaH, resolution ) + ExpInt( tlow, thigh, gammaL, resolution ) )*0.5;
-  }
-
-  //........................................
-  //evaluate a simple exponential with single gaussian time resolution
-  //When you express the sinh as a sum of exp and then multiply out, you are
-  //left with just a sum of exponentials.
-  double ExpSinh( double t, double gamma, double deltaGamma, double resolution )
-  {
-    const double dg_2 = deltaGamma*0.5;
-    const double gammaL = gamma + dg_2;
-    const double gammaH = gamma - dg_2;
-    return ( Exp( t, gammaH, resolution ) - Exp( t, gammaL, resolution ) )*0.5;
-  }
-
-  //.......................................
-  // Evaluate integral of a simple exponential X sinh with single gaussian time resolution
-  double ExpSinhInt( double tlow, double thigh, double gamma, double deltaGamma, double resolution  )
-  {
-    const double dg_2 = deltaGamma*0.5;
-    const double gammaL = gamma + dg_2;
-    const double gammaH = gamma - dg_2;
-    return ( ExpInt( tlow, thigh, gammaH, resolution ) - ExpInt( tlow, thigh, gammaL, resolution ))*0.5;
-  }
-
-  // Mathematica integral of the exp * cos * erf
-  //Integrate[(1*Exp[-(x/t) + s^2/(2*t^2)]* Erfc[-((x - s^2/t)/(Sqrt[2]*s))])/2, x] ==
-
-  //.................................................................
-  // Evaluate exponential X cosine with single time resolution
-  double ExpCos( double t, double gamma, double deltaM, double resolution )
-  {
-
-    if(resolution > 0.) {
-
-      //Yue Hongs code
-      const double c = gamma * resolution*_over_sqrt_2;
-      const double u = (t / resolution) *_over_sqrt_2 ;
-      const double wt = deltaM / gamma ;
-      return ( evalCerfRe(wt,-u,c) + evalCerfRe(-wt,-u,c) ) *0.25 ;
-
-      // My code which didnt work due to numerical instability
-      //double theExp = exp( -t*gamma + timeRes*timeRes * ( gamma*gamma - deltaM*deltaM ) / 2. ) ;
-      //double theCos = cos( deltaM * ( t - timeRes*timeRes*gamma ) ) ;
-      //double theSin = sin( deltaM * ( t - timeRes*timeRes*gamma ) ) ;
-      //RooComplex z( -( t - timeRes*timeRes*gamma )*_over_sqrt_2/timeRes,  - timeRes*deltaM*_over_sqrt_2 ) ;
-      //double theReErfc = (z.im()>-4.0) ? ( 1.0 - RooMath::FastComplexErrFuncRe(z) ) : ( 1.0 - RooMath::FastComplexErrFuncRe(z) );
-      //double theImErfc = (z.im()>-4.0) ? ( 1.0 - RooMath::FastComplexErrFuncIm(z) ) : ( 1.0 - RooMath::FastComplexErrFuncIm(z) );
-      //return theExp * ( theCos*theReErfc - theSin*theImErfc ) / 2.0 ;
-
-    }
-    else {
-      if( t < 0.0 ) return 0.0 ;
-      return exp( -gamma *t ) * cos( deltaM * t )  ;
-    }
-
-  }
-
-  pair<double, double> ExpCosSin( double t, double gamma, double deltaM, double resolution )
-  {
-    if(resolution > 0.) {
-      const double c = gamma * resolution*_over_sqrt_2;
-      const double u = (t / resolution) *_over_sqrt_2 ;
-      const double wt = deltaM / gamma ;
-      const complex<double> _cerf_plus = evalCerf( wt,-u,c );
-      const complex<double> _cerf_minus = evalCerf( -wt,-u,c );
-
-      const double ExpCos =  ( _cerf_plus.real() + _cerf_minus.real() ) * 0.25;
-      const double ExpSin =  ( _cerf_plus.imag() - _cerf_minus.imag() ) * 0.25;
-      return make_pair( ExpCos, ExpSin );
-    }
-    else {
-      const double deltaM_t = deltaM * t;
-      const double exp_val = exp( -gamma *t );
-      const double ExpCos = exp_val * cos( deltaM_t );
-      const double ExpSin = exp_val * sin( deltaM_t );
-      return make_pair( ExpCos, ExpSin );
-    }
-  }
-
-
-  pair<double,double> ExpCosSinInt( double tlow, double thigh, double gamma, double deltaM, double resolution  )
-  {
-    if( thigh < tlow ) {
-      std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
-      return make_pair(-1.0,-1.0);
-    }
-
-    if( resolution > 0.) {
-      //Added by Pete after getting code from Yuehong 120118
-      const double c = gamma * resolution * _over_sqrt_2;
-      const double inv_res = 1./resolution;
-      const double umax = (thigh * inv_res ) *_over_sqrt_2 ;
-      const double umin = (tlow * inv_res ) *_over_sqrt_2 ;
-      const double wt = deltaM / gamma ;
-      complex<double> evalDif( evalCerf(-wt,-umax,c) - evalCerf(-wt,-umin,c) );
-
-      const double evalDifRe = evalDif.real();
-      const double evalDifIm = evalDif.imag();
-
-      const double factor = -0.5/gamma/(1+wt*wt);
-
-      const double erf_max = RooMath::erf(-umax);
-      const double erf_min = RooMath::erf(-umin);
-      const double deltaCos = factor * ( evalDifRe + wt*evalDifIm + erf_max - erf_min );
-      const double deltaSin = factor * ( -evalDifIm + wt*evalDifRe - -wt*(erf_max - erf_min) );
-
-      return make_pair( deltaCos, deltaSin );
-    }
-    else
-    {
-      double real_tlow=tlow;
-      if( tlow < 0. ) real_tlow = 0. ;
-
-      const double deltaM_tlow=deltaM*real_tlow;
-      const double gamma_deltaM = gamma*deltaM;
-      const double deltaM_thigh=deltaM*thigh;
-
-      const double factor = 1./( gamma_deltaM*gamma_deltaM );
-      const double exp_lo = exp(-gamma*real_tlow);
-      const double exp_hi = exp(-gamma*thigh);
-
-      const double sin_hi = sin(deltaM_thigh);
-      const double cos_hi = cos(deltaM_thigh);
-      const double sin_lo = sin(deltaM_tlow);
-      const double cos_lo = cos(deltaM_tlow);
-
-      const double expCos = ( ( exp_lo * ( gamma*cos_lo - deltaM*sin_lo ))
-          -( exp_hi * ( gamma*cos_hi - deltaM*sin_hi ))
-          ) * factor;
-
-      const double expSin = ( ( exp_lo * ( gamma*sin_lo + deltaM*cos_lo ) )
-          -( exp_hi * ( gamma*sin_hi + deltaM*cos_hi ) )
-          ) * factor;
-
-      return make_pair( expCos, expSin );
-    }
-  }
-
-  //.................................................................
-  // Evaluate integral of exponential X cosine with single time resolution
-  double ExpCosInt( double tlow, double thigh, double gamma, double deltaM, double resolution  )
-  {
-    if( thigh < tlow ) {
-      std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
-      return -1.0 ;
-    }
-
-    if( resolution > 0.) {
-      //Added by Pete after getting code from Yuehong 120118
-      const double c = gamma * resolution * _over_sqrt_2;
-      const double inv_res = 1./resolution;
-      const double umax = (thigh * inv_res ) *_over_sqrt_2 ;
-      const double umin = (tlow * inv_res ) *_over_sqrt_2 ;
-      const double wt = deltaM / gamma ;
-      complex<double> evalDif( evalCerf(-wt,-umax,c) - evalCerf(-wt,-umin,c) );
-
-      const double evalDifRe = evalDif.real();
-      const double evalDifIm = evalDif.imag();
-
-      double deltaCos = -0.5/gamma/(1+wt*wt) * ( evalDifRe + wt*evalDifIm + RooMath::erf(-umax) - RooMath::erf(-umin) );
-      return deltaCos;
-    }
-    else
-    {
-      double real_tlow=tlow;
-      if( tlow < 0. ) real_tlow = 0. ;
-
-      const double deltaM_tlow=deltaM*real_tlow;
-      const double gamma_deltaM = gamma*deltaM;
-      const double deltaM_thigh=deltaM*thigh;
-      return (
-          ( exp(-gamma*real_tlow)* (gamma*cos(deltaM_tlow) - deltaM*sin(deltaM_tlow)))
-          -( exp(-gamma*thigh)* (gamma*cos(deltaM_thigh) - deltaM*sin(deltaM_thigh)))
-             )/( gamma_deltaM*gamma_deltaM );
-    }
-  }
-
-
-  //.................................................................
-  // Evaluate exponential X sine with single time resolution
-  double ExpSin( double t, double gamma, double deltaM, double resolution )
-  {
-    if(resolution > 0.) {
-
-      //Yue Hongs code
-      const double c = gamma * resolution*_over_sqrt_2;
-      const double u = (t / resolution) *_over_sqrt_2 ;
-      const double wt = deltaM / gamma ;
-      const double val1 = evalCerfIm(wt,-u,c);
-      const double val2 = evalCerfIm(-wt,-u,c);
-      return ( val1 - val2 ) * 0.25 ;
-
-      // My code which didnt work due to numerical instability
-      //double theExp = exp( -t*gamma() + resolution*resolution * ( gamma()*gamma() - delta_ms*delta_ms ) / 2. ) ;
-      //double theCos = cos( delta_ms * ( t - resolution*resolution*gamma() ) ) ;
-      //double theSin = sin( delta_ms * ( t - resolution*resolution*gamma() ) ) ;
-      //RooComplex z( -( t - resolution*resolution*gamma() )*_over_sqrt_2/resolution,  - resolution*delta_ms*_over_sqrt_2) ;
-      //double theReErfc = (z.im()>-4.0) ? ( 1.0 - RooMath::FastComplexErrFuncRe(z) ) : ( 1.0 - RooMath::FastComplexErrFuncRe(z) );
-      //double theImErfc = (z.im()>-4.0) ? ( 1.0 - RooMath::FastComplexErrFuncIm(z) ) : ( 1.0 - RooMath::FastComplexErrFuncIm(z) );
-      //return theExp * ( theCos*theImErfc + theSin*theReErfc ) / 2.0 ;
-    }
-    else {
-      if( t < 0.0 ) return 0.0 ;
-      return exp( -gamma *t ) * sin( deltaM * t )  ;
-    }
-
-  }
-
-  //.................................................................
-  // Evaluate integral of exponential X cosine with single time resolution
-  double ExpSinInt( double tlow, double thigh, double gamma, double deltaM, double resolution  )
-  {
-    if( thigh < tlow ) {
-      std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
-      return -1.0 ;
-    }
-
-    if( resolution > 0. ) {
-      //Added by Pete after getting code from Yuehong 120118
-      const double c = gamma * resolution * _over_sqrt_2;
-      const double inv_res = 1. / resolution;
-      const double umax = (thigh * inv_res ) *_over_sqrt_2;
-      const double umin = (tlow * inv_res ) *_over_sqrt_2;
-      const double wt = deltaM / gamma;
-      complex<double> evalDif( evalCerf(-wt,-umax,c) - evalCerf(-wt,-umin,c) );
-
-      const double evalDifRe = evalDif.real();
-      const double evalDifIm = evalDif.imag();
-
-      double deltaSin = -0.5/gamma/(1.+wt*wt) * ( -evalDifIm +   wt*evalDifRe -   -wt*(RooMath::erf(-umax) - RooMath::erf(-umin)) ) ;
-      return deltaSin;
-    }
-    else
-    {
-      double real_tlow=tlow;
-      if( tlow < 0. ) real_tlow = 0. ;
-
-      const double deltaM_tlow=deltaM*real_tlow;
-      const double gamma_deltaM = gamma*deltaM;
-      const double deltaM_thigh=deltaM*thigh;
-      return (   ( exp(-gamma*real_tlow) * (gamma*sin(deltaM_tlow) + deltaM*cos(deltaM_tlow)) )
-          -( exp(-gamma*thigh) * (gamma*sin(deltaM_thigh) + deltaM*cos(deltaM_thigh)) )
-             )/ ( gamma_deltaM * gamma_deltaM );
-    }
-  }
-
-
-
-
-  struct AccParam
-  {
-    AccParam(double * coefficients, int i_MAX, int j_MAX, int k_MAX, int l_MAX, int numEvents):
-      pcoeff(coefficients)
-      , l_max(l_MAX)
-      , i_max(i_MAX)
-      , k_max(k_MAX)
-      , j_max(j_MAX)
-      , num(numEvents)
-    {}
-    double parameterisation( double * omega, double * p )
-    {
-      (void) p;
-      double returnValue(0.);
-      double cosTheta(omega[0]);
-      double phi     (omega[1]);
-      double cosPsi  (omega[2]);
-      double mKK    (omega[3]);
-      double Q_l(0.);  // mKK
-      double P_i(0.);  // cosPsi
-      double Y_jk(0.); // cosTheta, phi
+	// Evaluate exponential X sine with single time resolution
+	double ExpSin( double t, double gamma, double deltaM, double resolution )
+	{
+		if(resolution > 0.) {
+			//Yue Hongs code
+			const double c = gamma * resolution*_over_sqrt_2;
+			const double u = (t / resolution) *_over_sqrt_2 ;
+			const double wt = deltaM / gamma ;
+			const double val1 = evalCerfIm(wt,-u,c);
+			const double val2 = evalCerfIm(-wt,-u,c);
+			return ( val1 - val2 ) * 0.25 ;
+		}
+		else {
+			if( t < 0.0 ) return 0.0 ;
+			return exp( -gamma *t ) * sin( deltaM * t )  ;
+		}
+	}
+	// Evaluate integral of exponential X cosine with single time resolution
+	double ExpSinInt( double tlow, double thigh, double gamma, double deltaM, double resolution  )
+	{
+		if( thigh < tlow ) {
+			std::cerr << " Mathematics::ExpInt: thigh is < tlow " << std::endl ;
+			return -1.0 ;
+		}
+		if( resolution > 0. ) {
+			//Added by Pete after getting code from Yuehong 120118
+			const double c = gamma * resolution * _over_sqrt_2;
+			const double inv_res = 1. / resolution;
+			const double umax = (thigh * inv_res ) *_over_sqrt_2;
+			const double umin = (tlow * inv_res ) *_over_sqrt_2;
+			const double wt = deltaM / gamma;
+			complex<double> evalDif( evalCerf(-wt,-umax,c) - evalCerf(-wt,-umin,c) );
+			const double evalDifRe = evalDif.real();
+			const double evalDifIm = evalDif.imag();
+			double deltaSin = -0.5/gamma/(1.+wt*wt) * ( -evalDifIm +   wt*evalDifRe -   -wt*(RooMath::erf(-umax) - RooMath::erf(-umin)) ) ;
+			return deltaSin;
+		}
+		else
+		{
+			double real_tlow=tlow;
+			if( tlow < 0. ) real_tlow = 0. ;
+			const double deltaM_tlow=deltaM*real_tlow;
+			const double gamma_deltaM = gamma*deltaM;
+			const double deltaM_thigh=deltaM*thigh;
+			return ( ( exp(-gamma*real_tlow) * (gamma*sin(deltaM_tlow) + deltaM*cos(deltaM_tlow)) )
+			        -( exp(-gamma*thigh) * (gamma*sin(deltaM_thigh) + deltaM*cos(deltaM_thigh)) )
+			       ) / ( gamma_deltaM * gamma_deltaM );
+		}
+	}
+	int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool mass_dependent = true)
+	{
+		(void)PDF; // TODO hopefully the config is stored here
+		// Implementation of the NIKHEF method for calculating the acceptance corefficients using Legendre polynomials and real valued spherical harmonics.
+		cout << "Calculating acceptance coefficients" << endl;
+		PhaseSpaceBoundary* boundary = dataSet->GetBoundary();
+		const int l_max = mass_dependent ? 2 : 0; // mKK
+		const int i_max(2); // cos(theta_1)
+		const int k_max(2); // phi
+		const int j_max(2); // cos(theta_2)
+		LegendreMomentShape lms; // All of the legwork is done in this class. Avoids duplicating lines of code.
+		lms.SetMax(l_max+1, i_max+1, k_max+1, j_max+1);
+		lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2");
+		lms.Save("LegendreMoments.root");
 #ifdef __RAPIDFIT_USE_GSL
-      for ( int l = 0; l < l_max+1; l++ )
-      {
-        for ( int i = 0; i < i_max+1; i++ )
-        {
-          for ( int k = 0; k < k_max+1; k++ )
-          {
-            for ( int j = 0; j < j_max+1; j++ ) // must have l >= k
-            {
-              if (j < k) continue;
-              Q_l  = gsl_sf_legendre_Pl     (l,    mKK);
-              P_i  = gsl_sf_legendre_Pl     (i,    cosPsi);
-              // only consider case where k >= 0
-              // these are the real valued spherical harmonics
-              if ( k == 0 ) Y_jk =           gsl_sf_legendre_sphPlm (j, k, cosTheta);
-              else          Y_jk = sqrt(2) * gsl_sf_legendre_sphPlm (j, k, cosTheta) * cos(k*phi);
-              //returnValue +=                pcoeff[             (i  * (k_max+1) + k) * (j_max+1) + j]*(      P_i * Y_jk);
-              returnValue +=                pcoeff[((l*(i_max+1) + i) * (k_max+1) + k) * (j_max+1) + j]*(Q_l * P_i * Y_jk);
-              //cout << i << k << j << " " << (i*(k_max+1)+k)*(j_max+1)+j << " " << pcoeff[(i*(k_max+1)+k)*(j_max+1)+j]/num << endl;
-            }
-          }
-        }
-      }
+		// Now sample the acceptance surface so that we can make projections to check that it looks sensible
+		TNtuple * tree = new TNtuple("tuple", "tuple", "mKK:phi:ctheta_1:ctheta_2:weight");
+		gsl_qrng * q = NULL;
+		try
+		{
+			q = gsl_qrng_alloc( gsl_qrng_sobol, 4);
+		}
+		catch(...)
+		{
+			cerr << "can't allocate random numbers for integration" << endl;
+			exit(123);
+		}
+		unsigned int nSample(500000);
+		vector<double> minima = {lms.mKK_min,-M_PI,-1,-1};
+		vector<double> maxima = {lms.mKK_max,+M_PI,+1,+1};
+		for ( int i = 0; i < (int)nSample; i++ )
+		{
+			double* point = new double[4];
+			double mKK, phi, ctheta_1, ctheta_2, weight;
+			vector<double*> point_mapped = {&mKK, &phi, &ctheta_1, &ctheta_2}; // So these can be looped over
+			gsl_qrng_get( q, point );
+			for ( int j = 0; j < 4; j++ )
+			{
+				*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
+			}
+			weight = lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
+			tree->Fill(mKK, phi, ctheta_1, ctheta_2, weight);
+			delete point;
+		}
+		TFile * acceptance_file = TFile::Open("sampled_LegendreMomentShape.root","RECREATE");
+		tree->Write();
+		acceptance_file->Close();
+		delete tree;
+		delete acceptance_file;
 #else
-      cerr << "Can't do this without GSL" << endl;
-      exit(0);
+		cout << "Can't do this without GSL!" << endl;
+		exit(0);
 #endif
-      return returnValue/num;
-    }
-    double * pcoeff;
-    int l_max;
-    int i_max;
-    int k_max;
-    int j_max;
-    int num;
-  };
+		return 1.;
+	}
 
-
-  int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool mass_dependent = true, bool weight_with_PDF = true)
-  {
-    // This tries to implement the NIKHEF method for calculating the
-    // acceptance corefficients using Legendre polynomials and real
-    // valued spherical harmonics.
-    cout << "Calculating acceptance coefficients" << endl;
-    RapidFitIntegrator * rapidInt = new RapidFitIntegrator( PDF, true, true);
-    rapidInt->SetFixedIntegralPoints(10000);
-    PhaseSpaceBoundary * boundary = dataSet->GetBoundary();
-    
-    const int l_max = mass_dependent ? 2 : 0; // mKK
-    const int i_max(2); // cos(theta_1)
-    const int k_max(2); // phi
-    const int j_max(2); // cos(theta_2)
-    
-    double c[l_max+1][i_max+1][k_max+1][j_max+1];
-    double c_sq[l_max+1][i_max+1][k_max+1][j_max+1];
-    for ( int l = 0; l < l_max + 1; l++ )
-      for ( int i = 0; i < i_max + 1; i++ )
-        for ( int k = 0; k < k_max + 1; k++ )
-          for ( int j = 0; j < j_max + 1; j++ )
-          {
-            c[l][i][k][j] = 0.;
-            c_sq[l][i][k][j] = 0.;
-          }
-    double Q_l(0.);
-    double P_i(0.);
-    double Y_jk(0.);
-
-    int numEvents = dataSet->GetDataNumber();
-
-    double * minima = new double[4];
-    double * maxima = new double[4];
-    minima[0] = -1.;
-    minima[1] = -M_PI;
-    minima[2] = -1.;
-    minima[3] = boundary->GetConstraint("mKK")->GetMinimum();
-    maxima[0] = 1.;
-    maxima[1] = M_PI;
-    maxima[2] = 1.;
-    maxima[3] = boundary->GetConstraint("mKK")->GetMaximum();
-    // Sum the inverse PDF values over the accepted events
-    // These histograms will be used for drawing the acceptance
-    TH1D * cosThetaAcc = new TH1D("cosThetaAcc", "ctheta_1", 20, minima[0], maxima[0]);
-    TH1D * phiAcc      = new TH1D("phiAcc", "phi", 20, minima[1], maxima[1]);
-    TH1D * cosPsiAcc   = new TH1D("cosPsiAcc", "ctheta_2", 20, minima[2], maxima[2]);
-    TH1D * mKKAcc      = new TH1D("mKKAcc", "mKK", 35, minima[3], maxima[3]);
-    cosThetaAcc->Sumw2();
-    phiAcc->Sumw2();
-    cosPsiAcc->Sumw2();
-    mKKAcc->Sumw2();
-    TH1D * cosThetaAccProj = new TH1D("cosThetaAccProj", "ctheta_1", 20, minima[0], maxima[0]);
-    TH1D * phiAccProj      = new TH1D("phiAccProj", "phi", 20, minima[1], maxima[1]);
-    TH1D * cosPsiAccProj   = new TH1D("cosPsiAccProj", "ctheta_2", 20, minima[2], maxima[2]);
-    TH1D * mKKAccProj      = new TH1D("mKKAccProj", "mKKAcc", 35, minima[3], maxima[3]);
-
-    double mKK(0.);
-    double mKK_mapped(0.);
-    double cosTheta(0.);
-    double phi(0.);
-    double cosPsi(0.);
-    double val(1.);
-    double coeff(0.);
-    for (int e = 0; e < numEvents; e++)
-    {
-      if (e % 1000 == 0)
-        cout << "Event # " << e << "\t\t" << setprecision(4) << 100.*(double)e/(double)numEvents << "\% Complete\b\b\b\b\b\b\b\r\r\r\r\r\r\r\r\r\r\r";
-      DataPoint * event = dataSet->GetDataPoint(e);
-
-      // for the Bd2JpsiK* mass-angular analysis in helicity basis
-      cosTheta = event->GetObservable("ctheta_1")->GetValue();
-      phi      = event->GetObservable("phi")->GetValue();
-      cosPsi   = event->GetObservable("ctheta_2")->GetValue();
-      if(mass_dependent)
-      {
-        mKK      = event->GetObservable("mKK")->GetValue();
-        mKK_mapped = (mKK - minima[3])/(maxima[3]-minima[3])*2.+ (-1);
-      }
-      const double mK  = 0.493677;
-      const double mBs  = 5.36677;
-      const double mPhi= 1.019461;
-      if(weight_with_PDF)
-      {
-        double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
-        double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
-        val = p1_st*p3;
-      }
-      else
-        val = 1.0;
-      cosThetaAcc->Fill(cosTheta,1/val);
-      phiAcc->Fill(phi,1/val);
-      cosPsiAcc->Fill(cosPsi,1/val);
-      mKKAcc->Fill(mKK,1/val);
-#ifdef __RAPIDFIT_USE_GSL
-      for ( int l = 0; l < l_max + 1; l++ )
-        for ( int i = 0; i < i_max + 1; i++ )
-          for ( int k = 0; k < k_max + 1; k++ )
-            for ( int j = 0; j < j_max + 1; j++ ) // must have j >= k
-            {
-              if (j < k) continue;
-              Q_l  = gsl_sf_legendre_Pl     (l,    mKK_mapped);
-              P_i  = gsl_sf_legendre_Pl     (i,    cosPsi);
-              Y_jk = gsl_sf_legendre_sphPlm (j, k, cosTheta);
-              if( k != 0)
-                Y_jk *= sqrt(2) * cos(k*phi);
-              coeff = ((2*l + 1)/2.)*((2*i + 1)/2.)*(P_i * Y_jk * Q_l)/val;
-              c[l][i][k][j] += coeff;
-              c_sq[l][i][k][j] += coeff*coeff;
-            }
-#endif
-    }
-    cout << endl;
-// Save the coefficients to a file
-    TTree* outputTree = new TTree("LegendreMomentsTree","");
-    char branchtitle[20];
-    sprintf(branchtitle,"c[%d][%d][%d][%d]/D",l_max+1,i_max+1,k_max+1,j_max+1);
-    outputTree->Branch("c",c,branchtitle);
-    outputTree->Branch("mKK_min",&minima[3],"mKK_min/D");
-    outputTree->Branch("mKK_max",&maxima[3],"mKK_max/D");
-    double error(0.);
-    double signif(0.);
-    char branchname[5];
-    double threshold = 2;
-    if(threshold<1) threshold=1;
-    for ( int l = 0; l < l_max + 1; l++ )
-    {
-      for ( int i = 0; i < i_max + 1; i++ )
-      {
-        for ( int k = 0; k < k_max + 1; k++ )
-        {
-          for ( int j = 0; j < j_max + 1; j++ )
-          {
-            if (j < k) continue;
-            error = sqrt(1./numEvents/numEvents * ( c_sq[l][i][k][j] - c[l][i][k][j]*c[l][i][k][j]/numEvents) );
-            if (std::isnan(error)) error = 0.;
-            signif = error > 1e-20 ? fabs(c[l][i][k][j]/numEvents)/error : 1000;
-            if ( signif <= threshold && signif > 1)
-            {
-              printf("// rejected: c[%d][%d][%d][%d] = %f ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
-            }
-            if ( signif > threshold )
-            {
-              printf("c[%d][%d][%d][%d] = %f;// ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
-              c[l][i][k][j]/=numEvents;
-            }
-            else
-            {
-              c[l][i][k][j] = 0.;
-            }
-            sprintf(branchname,"c%d%d%d%d",l,i,k,j);
-            outputTree->Branch(branchname,&c[l][i][k][j],((string)branchname+"/D").c_str());
-          }
-        }
-      }
-    }
-    outputTree->Fill();
-    outputTree->SaveAs("LegendreMoments.root");
-#ifdef __RAPIDFIT_USE_GSL
-    // Now sample the acceptance surface so that we can make projections to check that it looks sensible
-    AccParam * param = new AccParam(&c[0][0][0][0], i_max, j_max, k_max, l_max, numEvents);
-    TNtuple * tree = new TNtuple("tuple", "tuple", "ctheta_1:phi:ctheta_2:mKK:weight");
-    gsl_qrng * q = NULL;
-    try
-    {
-      q = gsl_qrng_alloc( gsl_qrng_sobol, 4);
-    }
-    catch(...)
-    {
-      cout << "can't allocate random numbers for integration" << endl;
-      exit(123);
-    }
-    double weight(0.);
-    unsigned int nSample(500000);
-    for ( int i = 0; i < (int)nSample; i++ )
-    {
-      double * point = new double[4];
-      double * point_mapped = new double[4];
-      double mKK_range(0.);
-      gsl_qrng_get( q, point );
-      for ( int j = 0; j < 4; j++ )
-      {
-        point_mapped[j] = point[j]*(maxima[j]-minima[j])+minima[j];
-        if ( j > 2 ) {
-          point_mapped[j] = point[j]*2 + (-1.);
-          mKK_range  = point[j]*(maxima[j]-minima[j]) + minima[j];
-        }
-      }
-      //cout << point_mapped[0] << " " << point_mapped[1] << " " << point_mapped[2] << " " << point_mapped[3] << " " << mKK_range << endl;
-      weight = param->parameterisation( point_mapped , NULL);
-      tree->Fill( (Float_t)point_mapped[0], (Float_t)point_mapped[1], (Float_t)point_mapped[2], (Float_t)mKK_range, (Float_t)weight);
-      delete point;
-      delete point_mapped;
-    }
-    tree->Draw("ctheta_1>>cosThetaAccProj","weight");
-    tree->Draw("phi>>phiAccProj","weight");
-    tree->Draw("ctheta_2>>cosPsiAccProj","weight");
-    tree->Draw("mKK>>mKKAccProj","weight");
-    string filename = weight_with_PDF ? "acceptance" : "background";
-    TFile * acceptance_file = TFile::Open(("sampled_"+filename+".root").c_str(),"RECREATE");
-    tree->Write();
-    acceptance_file->Close();
-    delete tree;
-    delete acceptance_file;
-#else
-    cout << "Can't do this without GSL!" << endl;
-    exit(0);
-#endif
-    std::cout << cosThetaAccProj->Integral() << " " << numEvents << std::endl;
-    // Normalise the histograms for drawing
-    cosThetaAccProj->Scale(cosThetaAcc->Integral()/cosThetaAccProj->Integral());
-    phiAccProj     ->Scale(phiAcc->Integral()/phiAccProj->Integral());
-    cosPsiAccProj  ->Scale(cosPsiAcc->Integral()/cosPsiAccProj->Integral());
-    mKKAccProj     ->Scale(mKKAcc->Integral()/mKKAccProj->Integral());
-    // Make some plots
-    gStyle->SetOptStat(0);
-    TCanvas * canvas = new TCanvas("acc_can");
-    canvas->Divide( 2, 2, (Float_t)0.01, (Float_t)0.01, 0 );
-    canvas->cd(1);
-    mKKAcc->SetLineColor(1);
-    mKKAcc->Draw();
-    mKKAcc->SetMinimum(0);
-    mKKAccProj->Draw("HIST SAME C");
-    canvas->cd(2);
-    phiAcc->SetLineColor(1);
-    phiAcc->Draw();
-    phiAcc->SetMinimum(0);
-    phiAccProj->Draw("HIST SAME C");
-    canvas->cd(3);
-    cosThetaAcc->SetLineColor(1);
-    cosThetaAcc->Draw();
-    cosThetaAcc->SetMinimum(0);
-    cosThetaAccProj->Draw("HIST SAME C");
-    canvas->cd(4);
-    cosPsiAcc->SetLineColor(1);
-    cosPsiAcc->Draw();
-    cosPsiAcc->SetMinimum(0);
-    cosPsiAccProj->Draw("HIST SAME C");
-    canvas->SaveAs((filename+".root").c_str());
-    canvas->SaveAs((filename+".pdf").c_str());
-    return 1.;
-  }
-
-
-  double Exp_Wrapper( vector<double> input )
-  {
-    return Exp( input[0], input[1], input[2] );
-  }
-
-  double ExpInt_Wrapper( vector<double> input )
-  {
-    return ExpInt( input[0], input[1], input[2], input[3] );
-  }
-
-  double Exp_betaAcceptance_Wrapper( vector<double> input )
-  {
-    return Exp_betaAcceptance( input[0], input[1], input[2], input[3] );
-  }
-
-  double ExpInt_betaAcceptance_Wrapper( vector<double> input )
-  {
-    return ExpInt_betaAcceptance( input[0], input[1], input[2], input[3], input[4] );
-  }
-
-  double ExpCosh_Wrapper( vector<double> input )
-  {
-    return ExpCosh( input[0], input[1], input[2], input[3] );
-  }
-
-  double ExpCoshInt_Wrapper( vector<double> input )
-  {
-    return ExpCoshInt( input[0], input[1], input[2], input[3], input[4] );
-  }
-
-  double ExpSinh_Wrapper( vector<double> input )
-  {
-    return ExpSinh( input[0], input[1], input[2], input[3] );
-  }
-
-  double ExpSinhInt_Wrapper( vector<double> input )
-  {
-    return ExpSinhInt( input[0], input[1], input[2], input[3], input[4] );
-  }
-
-  double ExpCos_Wrapper( vector<double> input )
-  {
-    return ExpCos( input[0], input[1], input[2], input[3] );
-  }
-
-  double ExpCosInt_Wrapper( vector<double> input )
-  {
-    return ExpCosInt( input[0], input[1], input[2], input[3], input[4] );
-  }
-
-  double ExpSin_Wrapper( vector<double> input )
-  {
-    return ExpSin( input[0], input[1], input[2], input[3] );
-  }
-
-  double ExpSinInt_Wrapper( vector<double> input )
-  {
-    return ExpSinInt( input[0], input[1], input[2], input[3], input[4] );
-  }
-
-  double expErfInt_Wrapper( vector<double> input )
-  {
-    return expErfInt( input[0], input[1], input[2] );
-  }
-
+	double Exp_Wrapper( vector<double> input )
+	{
+		return Exp( input[0], input[1], input[2] );
+	}
+	double ExpInt_Wrapper( vector<double> input )
+	{
+		return ExpInt( input[0], input[1], input[2], input[3] );
+	}
+	double Exp_betaAcceptance_Wrapper( vector<double> input )
+	{
+		return Exp_betaAcceptance( input[0], input[1], input[2], input[3] );
+	}
+	double ExpInt_betaAcceptance_Wrapper( vector<double> input )
+	{
+		return ExpInt_betaAcceptance( input[0], input[1], input[2], input[3], input[4] );
+	}
+	double ExpCosh_Wrapper( vector<double> input )
+	{
+		return ExpCosh( input[0], input[1], input[2], input[3] );
+	}
+	double ExpCoshInt_Wrapper( vector<double> input )
+	{
+		return ExpCoshInt( input[0], input[1], input[2], input[3], input[4] );
+	}
+	double ExpSinh_Wrapper( vector<double> input )
+	{
+		return ExpSinh( input[0], input[1], input[2], input[3] );
+	}
+	double ExpSinhInt_Wrapper( vector<double> input )
+	{
+		return ExpSinhInt( input[0], input[1], input[2], input[3], input[4] );
+	}
+	double ExpCos_Wrapper( vector<double> input )
+	{
+		return ExpCos( input[0], input[1], input[2], input[3] );
+	}
+	double ExpCosInt_Wrapper( vector<double> input )
+	{
+		return ExpCosInt( input[0], input[1], input[2], input[3], input[4] );
+	}
+	double ExpSin_Wrapper( vector<double> input )
+	{
+		return ExpSin( input[0], input[1], input[2], input[3] );
+	}
+	double ExpSinInt_Wrapper( vector<double> input )
+	{
+		return ExpSinInt( input[0], input[1], input[2], input[3], input[4] );
+	}
+	double expErfInt_Wrapper( vector<double> input )
+	{
+		return expErfInt( input[0], input[1], input[2] );
+	}
 }
-
 
