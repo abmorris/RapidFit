@@ -156,15 +156,17 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, PhaseSpaceBoundary* bounda
 			for ( int k = 0; k < k_max; k++ )
 				for ( int j = 0; j < j_max; j++ )
 				{
-					if(abs(c[l][i][k][j]) < 1e-12) continue;
+					if(std::fabs(c[l][i][k][j]) < 1e-12)
+					{
+						c[l][i][k][j] = 0.;
+						continue;
+					}
 					double error = sqrt(1./numEvents/numEvents * ( c_sq[l][i][k][j] - c[l][i][k][j]*c[l][i][k][j]/numEvents) );
-					if (std::isnan(error))
-						error = 0.;
-					double signif = error > 1e-20 ? fabs(c[l][i][k][j]/numEvents)/error : 1000;
+					double signif = std::fabs(c[l][i][k][j]/numEvents)/error;
 					if ( signif > threshold )
 					{
 						printf("c[%d][%d][%d][%d] = %f;// ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
-						c[l][i][k][j]/=numEvents;
+						c[l][i][k][j] /= numEvents;
 					}
 					else
 						c[l][i][k][j] = 0.;
@@ -180,7 +182,10 @@ double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, do
 	double result = 0;
 	double mKK_mapped = (mKK - mKK_min) / (mKK_max - mKK_min)*2 - 1;
 	if(abs(mKK_mapped) > 1)
+	{
+		cerr << "LegendreMomentShape::Evaluate Warning: value of mass " << mKK << " is outside limits (" << mKK_min << "," << mKK_max << ")" << endl;
 		return 0;
+	}
 	for(auto coeff : coeffs)
 		result += coeff.val*Moment(coeff.l, coeff.i, coeff.k, coeff.j, mKK_mapped, phi, ctheta_1, ctheta_2);
 	return result;
@@ -220,13 +225,14 @@ void LegendreMomentShape::deletecoefficients(double**** c)
 }
 void LegendreMomentShape::storecoefficients(double**** c)
 {
+	cout << "Storing coefficients" << endl;
 	// Create vector of non-zero coefficients after reading from tree
 	for ( int l = 0; l < l_max; l++ )
 		for ( int i = 0; i < i_max; i++ )
 			for ( int k = 0; k < k_max; k++ )
 				for ( int j = 0; j < j_max; j++ )
 				{
-					if(abs(c[l][i][k][j]) < 1e-12)
+					if(std::fabs(c[l][i][k][j]) < 1e-12)
 						continue;
 					coefficient coeff;
 					coeff.l = l;

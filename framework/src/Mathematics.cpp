@@ -589,9 +589,27 @@ namespace Mathematics
 		lms.SetMax(l_max+1, i_max+1, k_max+1, j_max+1);
 		lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2");
 		lms.Save("LegendreMoments.root");
-#ifdef __RAPIDFIT_USE_GSL
+		TNtuple * dataacctree = new TNtuple("dataacctuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
+		const double mK  = 0.493677; // TODO: read these from config somehow
+		const double mBs  = 5.36677;
+		const double mPhi= 1.019461;
+		int numEvents = dataSet->GetDataNumber();
+		for (int e = 0; e < numEvents; e++)
+		{
+			// Retrieve the data point
+			DataPoint * event = dataSet->GetDataPoint(e);
+			double phi        = event->GetObservable("phi")->GetValue();
+			double ctheta_1   = event->GetObservable("ctheta_1")->GetValue();
+			double ctheta_2   = event->GetObservable("ctheta_2")->GetValue();
+			double mKK        = event->GetObservable("mKK")->GetValue();
+			// Calculate phase space element
+			double p1_st  = DPHelpers::daughterMomentum(mKK, mK, mK);
+			double p3     = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
+			double val    = p1_st*p3;
+			dataacctree->Fill(mKK, phi, ctheta_1, ctheta_2, 1./val);
+		}
 		// Now sample the acceptance surface so that we can make projections to check that it looks sensible
-		TNtuple * tree = new TNtuple("tuple", "tuple", "mKK:phi:ctheta_1:ctheta_2:weight");
+		TNtuple * sampledtree = new TNtuple("sampledtuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
 		gsl_qrng * q = NULL;
 		try
 		{
@@ -616,18 +634,16 @@ namespace Mathematics
 				*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
 			}
 			weight = lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
-			tree->Fill((float)mKK, (float)phi, (float)ctheta_1, (float)ctheta_2, (float)weight);
+			sampledtree->Fill(mKK, phi, ctheta_1, ctheta_2, weight);
 			delete point;
 		}
 		TFile * acceptance_file = TFile::Open("sampled_LegendreMomentShape.root","RECREATE");
-		tree->Write();
+		sampledtree->Write();
+		dataacctree->Write();
 		acceptance_file->Close();
-		delete tree;
+		delete sampledtree;
+		delete dataacctree;
 		delete acceptance_file;
-#else
-		cout << "Can't do this without GSL!" << endl;
-		exit(0);
-#endif
 		return 1.;
 	}
 
