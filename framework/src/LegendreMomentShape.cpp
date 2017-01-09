@@ -60,13 +60,13 @@ void LegendreMomentShape::Open(string filename)
 	tree->SetBranchAddress("mKK_max",&mKK_max);
 	string limbranchtitle = tree->GetBranch("c")->GetTitle();
 	// Read the index maxima from the name of the branch
+	size_t found = 0;
 	for(int* maximum: {&l_max, &i_max, &k_max, &j_max})
 	{
-		size_t found = limbranchtitle.find('[',found+1);
+		found = limbranchtitle.find('[',found+1);
 		limbranchtitle.find(']',found);
 		*maximum = atoi(limbranchtitle.substr(found+1,1).c_str());
 	}
-	cout << "Compare " << limbranchtitle << " to " << "c[" << l_max << "][" << i_max << "][" << k_max << "][" << j_max << "]" << endl;
 	double**** c = newcoefficients();
 		// Set up the 4D array and prepare to read from the tree
 	char branchtitle[10]; // the letter "c" + four 2-digit numbers + 1 for luck
