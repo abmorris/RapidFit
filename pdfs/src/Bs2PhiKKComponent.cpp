@@ -7,9 +7,6 @@
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
 #include "DPNonresonant.hh"
-#include "DPBarrierL0.hh"
-#include "DPBarrierL1.hh"
-#include "DPBarrierL2.hh"
 #include "DPHelpers.hh"
 #include "DPWignerFunctionJ0.hh"
 #include "DPWignerFunctionJ1.hh"
@@ -36,7 +33,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	, fixedamplitudes(false)
 	, fixedlineshape(false)
 	, fixedphimass(false)
-	, m0_eff(0.)
 	, init(false)
 {
 	// Barrier factors
@@ -44,6 +40,8 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	std::string RKK_str = config->getConfigurationValue("RKK");
 	RBs = std::atof(RBs_str.c_str());
 	RKK = std::atof(RKK_str.c_str());
+	Bsbarrier = DPBarrierFactor(  0,RBs);
+	KKbarrier = DPBarrierFactor(JKK,RKK);
 	// Component scale factor
 	fraction = PhysPar(config,KKname+"_fraction");
 	// KK resonance parameters
@@ -105,25 +103,20 @@ void Bs2PhiKKComponent::Initialise()
 	else
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
 	// Build the barrier factor and Wigner function objects
-	Bsbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RBs));
 	wignerPhi = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
 	switch (JKK)
 	{
 		case 0:
-			KKbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RKK));
 			wignerKK  = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
 			break;
 		case 1:
-			KKbarrier = std::unique_ptr<DPBarrierL1>(new DPBarrierL1(RKK));
 			wignerKK  = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
 			break;
 		case 2:
-			KKbarrier = std::unique_ptr<DPBarrierL2>(new DPBarrierL2(RKK));
 			wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
 			break;
 		default:
-			std::cerr << "Bs2PhiKKComponent WARNING: Do not know which barrier factor to use." << std::endl;
-			KKbarrier = std::unique_ptr<DPBarrierL0>(new DPBarrierL0(RKK));
+			std::cerr << "Bs2PhiKKComponent WARNING: Do not know which wigner function to use." << std::endl;
 			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This shouldn't happen
 			break;
 	}
@@ -147,7 +140,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	, fixedlineshape(other.fixedlineshape)
 	, fixedamplitudes(other.fixedamplitudes)
 	, fixedphimass(other.fixedphimass)
-	, m0_eff(other.m0_eff)
 	, init(other.init)
 {
 	Initialise();
@@ -156,19 +148,19 @@ Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
 }
 // Get the corresponding helicity amplitude for a given value of helicity, instead of using array indices
-std::complex<double> Bs2PhiKKComponent::A(int lambda)
+std::complex<double> Bs2PhiKKComponent::A(const int lambda) const
 {
 	if(abs(lambda) > helicities.back()) return std::complex<double>(0, 0); //safety
 	int i = lambda + helicities.back();
 	return Ahel[i];
 }
 // Angular part of the amplitude
-std::complex<double> Bs2PhiKKComponent::F(int lambda, double Phi, double ctheta_1, double ctheta_2)
+std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, const double ctheta_1, const double ctheta_2) const
 {
 	return wignerPhi->function(ctheta_1, lambda, 0) * wignerKK->function(ctheta_2, lambda, 0) * std::polar<double>(1, lambda*Phi);
 }
 // Orbital and barrier factor
-double Bs2PhiKKComponent::OFBF(double mKK)
+double Bs2PhiKKComponent::OFBF(const double mKK) const
 {
 	if(mKK < 2*mK) return 0;
 	if(lineshape=="NR")
@@ -176,12 +168,9 @@ double Bs2PhiKKComponent::OFBF(double mKK)
 	// Orbital factor
 	// Masses
 	double Mres = KKpars[0].value;
-	if(!fixedphimass)
-	{
-		double m_min  = mK + mK;
-		double m_max  = mBs - mphi;
-		m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
-	}
+	double m_min  = mK + mK;
+	double m_max  = mBs - mphi;
+	double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
 	// Momenta
 	double pBs  = DPHelpers::daughterMomentum(mBs,  mphi, mKK   );
 	double pKK  = DPHelpers::daughterMomentum(mKK,  mK,   mK    );
@@ -190,12 +179,12 @@ double Bs2PhiKKComponent::OFBF(double mKK)
 	double orbitalFactor = //std::pow(pBs/mBs,   0)* // == 1 so don't bother
 	                       std::pow(pKK/mKK, JKK);
 	// Barrier factors
-	double barrierFactor = Bsbarrier->barrier(pBs0, pBs)*
-	                       KKbarrier->barrier(pKK0, pKK);
+	double barrierFactor = Bsbarrier.barrier(pBs0, pBs)*
+	                       KKbarrier.barrier(pKK0, pKK);
 	return orbitalFactor * barrierFactor;
 }
 // The full amplitude
-std::complex<double> Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2)
+std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2) const
 {
 	// Angular part
 	std::complex<double> angularPart(0, 0);
@@ -207,7 +196,7 @@ std::complex<double> Bs2PhiKKComponent::Amplitude(double mKK, double phi, double
 	return fraction.value * KKLineShape->massShape(mKK) * angularPart * OFBF(mKK);
 }
 // The full amplitude with an option
-std::complex<double> Bs2PhiKKComponent::Amplitude(double mKK, double phi, double ctheta_1, double ctheta_2, std::string option)
+std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2, const std::string option) const
 {
 	// Angular part
 	std::complex<double> angularPart(0, 0);
@@ -328,9 +317,9 @@ void Bs2PhiKKComponent::UpdateLineshape()
 		respars.push_back(KKpars[1].value); // gpipi
 		respars.push_back(KKpars[1].value*KKpars[2].value); // gKK = gpipi*Rg
 	}
-	KKLineShape->setParameters(&respars[0]);
+	KKLineShape->setParameters(respars);
 }
-vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters()
+vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
 	for(auto set: {{fraction},magsqs,phases,KKpars})

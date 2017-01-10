@@ -1,18 +1,14 @@
 #ifndef DP_MASS_SHAPE
 #define DP_MASS_SHAPE
-
 #include <complex>
-#include <iostream>
-
+#include <vector>
 class DPMassShape
 {
 	public:
 		DPMassShape() {};
-		DPMassShape( const DPMassShape& ) {};
-		virtual ~DPMassShape() {};
-		virtual std::complex<double> massShape(double m) = 0;
-		virtual void setResonanceParameters(double mass, double sigma) = 0;
-		virtual void setParameters(double* pars) = 0;
+		DPMassShape(const DPMassShape&) {};
+		~DPMassShape() {};
+		virtual std::complex<double> massShape(const double m) const = 0;
+		virtual void setParameters(const std::vector<double>& pars) = 0;
 };
-
 #endif

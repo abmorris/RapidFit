@@ -24,9 +24,9 @@ class Bs2PhiKKSignal : public BasePDF
 		double Normalisation(PhaseSpaceBoundary*);
 		bool SetPhysicsParameters(ParameterSet*);
 		// Extra stuff
-		double EvaluateComponent( DataPoint*, ComponentRef* );
+		double EvaluateComponent(DataPoint*, ComponentRef* );
 		std::vector<std::string> PDFComponents();
-	protected:
+	private:
 		std::vector<Bs2PhiKKComponent> components;
 		// K+K− mass and helicity angles
 		double        mKK    , ctheta_1    , ctheta_2    , phi    ;
@@ -43,19 +43,18 @@ class Bs2PhiKKSignal : public BasePDF
 		std::unique_ptr<LegendreMomentShape> acc_m;
 		std::shared_ptr<NDHist_Adaptive> acc_h;
 		double acceptance; // Evaluate during ReadDataPoint()
-	private:
 		// Calculation
-		double TotalDecayRate();
-		double ComponentDecayRate(Bs2PhiKKComponent&); // For plotting individual components
-		double ComponentDecayRate(Bs2PhiKKComponent&, std::string); // Pass option "odd" or "even"
-		double TimeIntegratedDecayRate(std::complex<double>,std::complex<double>);
+		double TotalDecayRate() const;
+		double ComponentDecayRate(const Bs2PhiKKComponent&) const; // For plotting individual components
+		double ComponentDecayRate(const Bs2PhiKKComponent&, const std::string) const; // Pass option "odd" or "even"
+		double TimeIntegratedDecayRate(const std::complex<double>, const std::complex<double>) const;
 		void ReadDataPoint(DataPoint*);
-		double p1stp3();
+		double p1stp3() const;
 		void CalculateAcceptance();
 		// Stuff to do on creation
 		void Initialise();
 		void MakePrototypes();
-		Bs2PhiKKComponent ParseComponent(PDFConfigurator*, std::string, std::string);
+		Bs2PhiKKComponent ParseComponent(PDFConfigurator*, std::string, std::string) const;
 };
 #endif
 

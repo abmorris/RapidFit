@@ -104,7 +104,7 @@ void Bs2PhiKKSignal::Initialise()
 }
 /*****************************************************************************/
 // Build a component object from a passed option
-Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::string phiname, std::string option)
+Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::string phiname, std::string option) const
 {
 	// Syntax: <resonance name>(<spin>,<lineshape>)
 	// - the list is space-delimited: no extra spaces, please!
@@ -210,7 +210,7 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 	phi+=M_PI;
 }
 /*****************************************************************************/
-double Bs2PhiKKSignal::TotalDecayRate()
+double Bs2PhiKKSignal::TotalDecayRate() const
 {
 	map<bool,std::complex<double>> TotalAmp;
 	for(auto anti : {false,true})
@@ -221,15 +221,15 @@ double Bs2PhiKKSignal::TotalDecayRate()
 	}
 	return TimeIntegratedDecayRate(TotalAmp[false],TotalAmp[true]);
 }
-double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp)
+double Bs2PhiKKSignal::ComponentDecayRate(const Bs2PhiKKComponent& comp) const
 {
 	return ComponentDecayRate(comp,"");
 }
-double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp, std::string option)
+double Bs2PhiKKSignal::ComponentDecayRate(const Bs2PhiKKComponent& comp, const std::string option) const
 {
 	return TimeIntegratedDecayRate(comp.Amplitude(mKK, phi, ctheta_1, ctheta_2, option),comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2, option));
 }
-double Bs2PhiKKSignal::TimeIntegratedDecayRate(std::complex<double> A, std::complex<double> Abar)
+double Bs2PhiKKSignal::TimeIntegratedDecayRate(const std::complex<double> A, const std::complex<double> Abar) const
 {
 	double GH = (2-dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
 	double GL = (2+dGsGs.value); // Actually Γ/2ΓL
@@ -250,7 +250,7 @@ void Bs2PhiKKSignal::CalculateAcceptance()
 	acceptance = acceptance > 0 ? acceptance : 1e-12;
 }
 /*****************************************************************************/
-double Bs2PhiKKSignal::p1stp3()
+double Bs2PhiKKSignal::p1stp3() const
 {
 	const double mK   = Bs2PhiKKComponent::mK;
 	const double mBs  = Bs2PhiKKComponent::mBs;

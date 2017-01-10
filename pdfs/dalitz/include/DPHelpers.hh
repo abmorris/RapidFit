@@ -2,6 +2,6 @@
 #define DPHELPERS_HH
 namespace DPHelpers
 {
-	double daughterMomentum(double mR, double m1, double m2);
+	double daughterMomentum(const double mR, const double m1, const double m2);
 };
 #endif

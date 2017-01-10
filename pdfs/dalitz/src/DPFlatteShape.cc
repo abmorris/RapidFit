@@ -1,6 +1,6 @@
 #include "DPFlatteShape.hh"
 #include <complex>
-DPFlatteShape::DPFlatteShape(double in_mean, double in_g0, double in_m0a, double in_m0b, double in_g1, double in_m1a, double in_m1b) : 
+DPFlatteShape::DPFlatteShape(const double in_mean, const double in_g0, const double in_m0a, const double in_m0b, const double in_g1, const double in_m1a, const double in_m1b) :
 	  mean(in_mean)
 	, g0(in_g0) 
 	, m0a(in_m0a)
@@ -10,8 +10,8 @@ DPFlatteShape::DPFlatteShape(double in_mean, double in_g0, double in_m0a, double
 	, m1b(in_m1b)
 {
 }
-DPFlatteShape::DPFlatteShape(const DPFlatteShape& other) : 
-	  DPMassShape(other)
+
+DPFlatteShape::DPFlatteShape(const DPFlatteShape& other) : DPMassShape(other)
 	, mean(other.mean)
 	, g0(other.g0)
 	, m0a(other.m0a)
@@ -21,10 +21,8 @@ DPFlatteShape::DPFlatteShape(const DPFlatteShape& other) :
 	, m1b(other.m1b)
 {
 }
-DPFlatteShape::~DPFlatteShape()
-{
-}
-std::complex<double> DPFlatteShape::massShape(double x)
+
+std::complex<double> DPFlatteShape::massShape(const double x) const
 {
 	if (g0<0 || g1<0)
 		return std::complex<double>(0,0);
@@ -46,22 +44,14 @@ std::complex<double> DPFlatteShape::massShape(double x)
 	return T;
 }
 
-void DPFlatteShape::setParameters(double* pars)
+void DPFlatteShape::setParameters(const std::vector<double>& pars)
 {
 	setResonanceParameters(pars[0],pars[1],pars[2]);
 }
 
-void DPFlatteShape::setResonanceParameters(double in_mean, double in_g0, double in_g1)
+void DPFlatteShape::setResonanceParameters(const double in_mean, const double in_g0, const double in_g1)
 {
 	mean=in_mean;
 	g0=in_g0;
 	g1=in_g1;
 }
-
-void DPFlatteShape::setResonanceParameters(double n, double o)
-{
-	(void)n;
-	(void)o;
-	return;
-}
-

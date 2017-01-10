@@ -1,10 +1,4 @@
 #include "DPLassShape.hh"
-#include "DPBarrierL0.hh"
-#include "DPBarrierL1.hh"
-#include "DPBarrierL2.hh"
-#include "DPBarrierL3.hh"
-#include "DPBarrierL4.hh"
-#include "DPBarrierL5.hh"
 #include "DPHelpers.hh"
 #include <iostream>
 
@@ -16,14 +10,14 @@ DPLassShape::DPLassShape(double mRR, double gammaRR, int L, double mm1, double m
 	,LR(L)
 	,m1(mm1)
 	,m2(mm2)
-	,R(RR)
 	,a(aa)
 	,r(rr)
 {
-	Init();
+	barrier = DPBarrierFactor(LR,RR);
+	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
 }
 
-DPLassShape::DPLassShape( const DPLassShape& other ) : DPMassShape( other )
+DPLassShape::DPLassShape(const DPLassShape& other) : DPMassShape(other)
 	,mR(other.mR)
 	,gammaR(other.gammaR)
 	,LR(other.LR)
@@ -31,40 +25,12 @@ DPLassShape::DPLassShape( const DPLassShape& other ) : DPMassShape( other )
 	,m2(other.m2)
 	,a(other.a)
 	,r(other.r)
-	,R(other.R)
+	,barrier(other.barrier)
+	,pR0(other.pR0)
 {
-	Init();
 }
 
-void DPLassShape::Init()
-{
-	switch (LR)
-	{
-		case 0: barrier=new DPBarrierL0(R);
-		        break;
-		case 1: barrier=new DPBarrierL1(R);
-		        break;
-		case 2: barrier=new DPBarrierL2(R);
-		        break;
-		case 3: barrier=new DPBarrierL3(R);
-		        break;
-		case 4: barrier=new DPBarrierL4(R);
-		        break;
-		case 5: barrier=new DPBarrierL5(R);
-		        break;
-		default: std::cerr<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
-		         barrier=new DPBarrierL0(R);
-		         break;
-	}
-	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
-}
-
-DPLassShape::~DPLassShape()
-{
-	 delete barrier;
-}
-
-std::complex<double> DPLassShape::massShape(double m)
+std::complex<double> DPLassShape::massShape(const double m) const
 {
 // Calculate delta_R
 	double tanDeltaR=mR*gamma(m)/(mR*mR-m*m);
@@ -94,20 +60,20 @@ std::complex<double> DPLassShape::massShape(double m)
 	return result;
 }
 
-double DPLassShape::gamma(double m)
+double DPLassShape::gamma(const double m) const
 {
 	double pp=DPHelpers::daughterMomentum(m,m1,m2);  // momentum of daughter at the actual mass
-	double bb=barrier->barrier(pR0,pp);  // Barrier factor
+	double bb=barrier.barrier(pR0,pp);  // Barrier factor
 	double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
 	return gg;
 }
 
-void DPLassShape::setParameters(double* pars)
+void DPLassShape::setParameters(const std::vector<double>& pars)
 {
 	setResonanceParameters(pars[0],pars[1]);
 	return;
 }
-void DPLassShape::setResonanceParameters(double a_lass, double r_lass)
+void DPLassShape::setResonanceParameters(const double a_lass, const double r_lass)
 {
 	a = a_lass;
 	r = r_lass;

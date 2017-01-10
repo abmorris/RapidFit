@@ -32,15 +32,15 @@ class Bs2PhiKKComponent
 		Bs2PhiKKComponent(PDFConfigurator*, std::string, std::string, int, std::string); // config, phi name, resonance name, spin
 		Bs2PhiKKComponent(const Bs2PhiKKComponent&);
 		~Bs2PhiKKComponent();
-		std::string GetName() {return KKname;}
+		std::string GetName() const {return KKname;}
 		bool SetPhysicsParameters(ParameterSet* pars); // Update all the parameters
-		std::vector<ObservableRef> GetPhysicsParameters();
-		std::complex<double> Amplitude(double, double, double, double); // KK_M, Phi_angle, cos_theta1, cos_theta2
-		std::complex<double> Amplitude(double, double, double, double, std::string);
+		std::vector<ObservableRef> GetPhysicsParameters() const;
+		std::complex<double> Amplitude(const double, const double, const double, const double) const; // KK_M, Phi_angle, cos_theta1, cos_theta2
+		std::complex<double> Amplitude(const double, const double, const double, const double, const std::string) const;
 		static double mBs;
 		static double mK;
 		static double mpi;
-	protected:
+	private:
 		// Floatable parameters
 		PhysPar fraction; // Unnormalised variable to control the relative contribution of each resonance. Do not use at the fit fraction!!
 		std::vector<std::complex<double>> Ahel;  // Helicity amplitude(s)
@@ -62,23 +62,21 @@ class Bs2PhiKKComponent
 		bool fixedamplitudes; // Save some time updating parameters
 		bool fixedlineshape;
 		bool fixedphimass;
-		double m0_eff;
 		bool init; // Have we had our first SetPhysicsParameters?
-		// Resonance lineshape function for the mass-dependent part
-		std::unique_ptr<DPMassShape> KKLineShape {};
-	private:
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateLineshape();
-		std::complex<double> A(int); // Polarisation amplitude coefficients
-		std::complex<double> F(int, double, double, double); // Angular distribution: helicity, phi, costheta1, costheta2
-		double OFBF(double); // Product of orbital and barrier factors
+		std::complex<double> A(const int) const; // Polarisation amplitude coefficients
+		std::complex<double> F(const int, const double, const double, const double) const; // Angular distribution: helicity, phi, costheta1, costheta2
+		double OFBF(const double) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
 		std::unique_ptr<DPWignerFunction> wignerKK {};
 		std::unique_ptr<DPWignerFunction> wignerPhi {};
 		// Blatt-Weisskopf barrier penetration factors
-		std::unique_ptr<DPBarrierFactor> Bsbarrier {};
-		std::unique_ptr<DPBarrierFactor> KKbarrier {};
+		DPBarrierFactor Bsbarrier;
+		DPBarrierFactor KKbarrier;
+		// Resonance lineshape function for the mass-dependent part
+		std::unique_ptr<DPMassShape> KKLineShape {};
 };
 #endif
 

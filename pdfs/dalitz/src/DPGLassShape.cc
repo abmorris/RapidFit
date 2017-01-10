@@ -1,10 +1,4 @@
 #include "DPGLassShape.hh"
-#include "DPBarrierL0.hh"
-#include "DPBarrierL1.hh"
-#include "DPBarrierL2.hh"
-#include "DPBarrierL3.hh"
-#include "DPBarrierL4.hh"
-#include "DPBarrierL5.hh"
 #include "DPHelpers.hh"
 #include <iostream>
 
@@ -18,15 +12,15 @@ DPGLassShape::DPGLassShape(double mRR, double gammaRR, int L, double mm1, double
 	,m2(mm2)
 	,a(aa)
 	,r(rr)
-	,R(RR)
 	,fraction(0.5)
 	,phaseR(0)
 	,phaseB(0)
 {
-	Init();
+	barrier = DPBarrierFactor(LR,RR);
+	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
 }
 
-DPGLassShape::DPGLassShape( const DPGLassShape& other ) : DPMassShape( other )
+DPGLassShape::DPGLassShape(const DPGLassShape& other) : DPMassShape(other)
 	,mR(other.mR)
 	,gammaR(other.gammaR)
 	,LR(other.LR)
@@ -34,43 +28,15 @@ DPGLassShape::DPGLassShape( const DPGLassShape& other ) : DPMassShape( other )
 	,m2(other.m2)
 	,a(other.a)
 	,r(other.r)
-	,R(other.R)
+	,barrier(other.barrier)
+	,pR0(other.pR0)
 	,fraction(other.fraction)
 	,phaseR(other.phaseR)
 	,phaseB(other.phaseB)
 {
-	Init();
 }
 
-void DPGLassShape::Init()
-{
-	switch (LR)
-	{
-		case 0: barrier=new DPBarrierL0(R);
-		        break;
-		case 1: barrier=new DPBarrierL1(R);
-		        break;
-		case 2: barrier=new DPBarrierL2(R);
-		        break;
-		case 3: barrier=new DPBarrierL3(R);
-		        break;
-		case 4: barrier=new DPBarrierL4(R);
-		        break;
-		case 5: barrier=new DPBarrierL5(R);
-		        break;
-		default: std::cerr<<"WARNING: Do not know which barrier factor to use.  Using L=0 and you should check what are you doing.\n";
-		         barrier=new DPBarrierL0(R);
-		         break;
-	}
-	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
-}
-
-DPGLassShape::~DPGLassShape()
-{
-	delete barrier;
-}
-
-std::complex<double> DPGLassShape::massShape(double m)
+std::complex<double> DPGLassShape::massShape(const double m) const
 {
 // Calculate delta_R
 	double tanDeltaR=mR*gamma(m)/(mR*mR-m*m);
@@ -100,14 +66,14 @@ std::complex<double> DPGLassShape::massShape(double m)
 	return result;
 }
 
-double DPGLassShape::gamma(double m)
+double DPGLassShape::gamma(const double m) const
 {
 	double pp=DPHelpers::daughterMomentum(m,m1,m2);
-	double bb=barrier->barrier(pR0,pp);  // Barrier factor
+	double bb=barrier.barrier(pR0,pp);  // Barrier factor
 	double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
 	return gg;
 }
-void DPGLassShape::setParameters(double* pars)
+void DPGLassShape::setParameters(const std::vector<double>& pars)
 {
 	mR=pars[0];
 	gammaR=pars[1];
