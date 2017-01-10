@@ -104,7 +104,7 @@ void Bs2PhiKKComponent::Initialise()
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
 	// Build the barrier factor and Wigner function objects
 	wignerPhi = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
-	switch (JKK)
+	switch (JKK) // I hate this but I'd rather it just worked...
 	{
 		case 0:
 			wignerKK  = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
@@ -116,8 +116,7 @@ void Bs2PhiKKComponent::Initialise()
 			wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
 			break;
 		default:
-			std::cerr << "Bs2PhiKKComponent WARNING: Do not know which wigner function to use." << std::endl;
-			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This shouldn't happen
+			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
 			break;
 	}
 	UpdateAmplitudes();
@@ -159,6 +158,18 @@ std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, co
 {
 	return wignerPhi->function(ctheta_1, lambda, 0) * wignerKK->function(ctheta_2, lambda, 0) * std::polar<double>(1, lambda*Phi);
 }
+std::complex<double> Bs2PhiKKComponent::AngularPart(const int index, const double phi, const double ctheta_1, const double ctheta_2)
+{
+	if(helicities.empty()) return std::complex<double>(1, 0); // Must be non-resonant
+	if(EvalCache[index].empty())
+		for(int lambda : helicities)
+			EvalCache[index].push_back(F(lambda, phi, ctheta_1, ctheta_2));
+	if(EvalCache[index].size() != Ahel.size()) throw std::out_of_range("The EvalCache and Ahel vectors in Bs2PhiKKComponent must be of equal sizes.");
+	std::complex<double> angularPart(0, 0);
+	for(unsigned i = 0; i < Ahel.size(); i++)
+		angularPart += Ahel[i] * EvalCache[index][i];
+	return angularPart;
+}
 // Orbital and barrier factor
 double Bs2PhiKKComponent::OFBF(const double mKK) const
 {
@@ -183,24 +194,21 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	                       KKbarrier.barrier(pKK0, pKK);
 	return orbitalFactor * barrierFactor;
 }
-// The full amplitude
-std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2) const
+// The full amplitude. Must be quick
+std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double mKK, const double phi, const double ctheta_1, const double ctheta_2)
 {
-	// Angular part
-	std::complex<double> angularPart(0, 0);
-	for(int lambda : helicities)
-		angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
-	if(helicities.size()==0)
-		angularPart = std::complex<double>(1,0);
 	// Result
-	return fraction.value * KKLineShape->massShape(mKK) * angularPart * OFBF(mKK);
+	return fraction.value * KKLineShape->massShape(mKK) * AngularPart(index, phi, ctheta_1, ctheta_2) * OFBF(mKK);
 }
-// The full amplitude with an option
-std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2, const std::string option) const
+// The full amplitude with an option. This can be slow
+std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double mKK, const double phi, const double ctheta_1, const double ctheta_2, const std::string option)
 {
+	if(option == "") return Amplitude(index, mKK, phi, ctheta_1, ctheta_2); // Just do the quick one if no option
 	// Angular part
 	std::complex<double> angularPart(0, 0);
-	if(option.find("odd") != std::string::npos || option.find("even") != std::string::npos)
+	if(helicities.empty())
+		angularPart = std::complex<double>(1, 0);
+	else if(option.find("odd") != std::string::npos || option.find("even") != std::string::npos)
 	{
 		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
 		std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
@@ -216,10 +224,7 @@ std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double
 			angularPart += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
 	}
 	else // assume full amplitude, don't thow an error
-		for(int lambda : helicities)
-			angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
-	if(helicities.size()==0)
-		angularPart = std::complex<double>(1,0);
+		angularPart = AngularPart(index, phi, ctheta_1, ctheta_2);
 	// Result
 	return fraction.value * KKLineShape->massShape(mKK) * angularPart * OFBF(mKK);
 }

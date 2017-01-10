@@ -28,6 +28,7 @@ class Bs2PhiKKSignal : public BasePDF
 		std::vector<std::string> PDFComponents();
 	private:
 		std::vector<Bs2PhiKKComponent> components;
+		int index; // Current datapoint index for caching
 		// K+K− mass and helicity angles
 		double        mKK    , ctheta_1    , ctheta_2    , phi    ;
 		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
@@ -45,8 +46,8 @@ class Bs2PhiKKSignal : public BasePDF
 		double acceptance; // Evaluate during ReadDataPoint()
 		// Calculation
 		double TotalDecayRate() const;
-		double ComponentDecayRate(const Bs2PhiKKComponent&) const; // For plotting individual components
-		double ComponentDecayRate(const Bs2PhiKKComponent&, const std::string) const; // Pass option "odd" or "even"
+		double ComponentDecayRate(Bs2PhiKKComponent&) const; // For plotting individual components
+		double ComponentDecayRate(Bs2PhiKKComponent&, const std::string) const; // Pass option "odd" or "even"
 		double TimeIntegratedDecayRate(const std::complex<double>, const std::complex<double>) const;
 		void ReadDataPoint(DataPoint*);
 		double p1stp3() const;

@@ -22,6 +22,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 	, phi     (0.)
 	, ctheta_1(0.)
 	, ctheta_2(0.)
+	, index(0)
 	// Dependent variable names
 	, mKKName     (config->getName("mKK"     ))
 	, phiName     (config->getName("phi"     ))
@@ -68,6 +69,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) :
 	, phi     (copy.phi     )
 	, ctheta_1(copy.ctheta_1)
 	, ctheta_2(copy.ctheta_2)
+	, index   (copy.index   )
 	// Dependent variable names
 	, mKKName     (copy.mKKName     )
 	, phiName     (copy.phiName     )
@@ -199,6 +201,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 {
 	// Get values from the datapoint
+	index     = measurement->GetDiscreteIndex();
 	mKK       = measurement->GetObservable(mKKName     )->GetValue();
 	phi       = measurement->GetObservable(phiName     )->GetValue();
 	ctheta_1  = measurement->GetObservable(ctheta_1Name)->GetValue();
@@ -217,17 +220,17 @@ double Bs2PhiKKSignal::TotalDecayRate() const
 	{
 		TotalAmp[anti] = std::complex<double>(0,0);
 		for(auto comp : components)
-			TotalAmp[anti] += anti ? comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2) : comp.Amplitude(mKK, phi, ctheta_1, ctheta_2);
+			TotalAmp[anti] += anti ? comp.Amplitude(index, mKK, -phi, -ctheta_1, -ctheta_2) : comp.Amplitude(index, mKK, phi, ctheta_1, ctheta_2);
 	}
 	return TimeIntegratedDecayRate(TotalAmp[false],TotalAmp[true]);
 }
-double Bs2PhiKKSignal::ComponentDecayRate(const Bs2PhiKKComponent& comp) const
+double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp) const
 {
 	return ComponentDecayRate(comp,"");
 }
-double Bs2PhiKKSignal::ComponentDecayRate(const Bs2PhiKKComponent& comp, const std::string option) const
+double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp, const std::string option) const
 {
-	return TimeIntegratedDecayRate(comp.Amplitude(mKK, phi, ctheta_1, ctheta_2, option),comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2, option));
+	return TimeIntegratedDecayRate(comp.Amplitude(index, mKK, phi, ctheta_1, ctheta_2, option),comp.Amplitude(index, mKK, -phi, -ctheta_1, -ctheta_2, option));
 }
 double Bs2PhiKKSignal::TimeIntegratedDecayRate(const std::complex<double> A, const std::complex<double> Abar) const
 {

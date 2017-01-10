@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <map>
 // RapidFit
 #include "PDFConfigurator.h"
 #include "ParameterSet.h"
@@ -35,8 +36,8 @@ class Bs2PhiKKComponent
 		std::string GetName() const {return KKname;}
 		bool SetPhysicsParameters(ParameterSet* pars); // Update all the parameters
 		std::vector<ObservableRef> GetPhysicsParameters() const;
-		std::complex<double> Amplitude(const double, const double, const double, const double) const; // KK_M, Phi_angle, cos_theta1, cos_theta2
-		std::complex<double> Amplitude(const double, const double, const double, const double, const std::string) const;
+		std::complex<double> Amplitude(const int, const double, const double, const double, const double); // KK_M, Phi_angle, cos_theta1, cos_theta2
+		std::complex<double> Amplitude(const int, const double, const double, const double, const double, const std::string);
 		static double mBs;
 		static double mK;
 		static double mpi;
@@ -68,6 +69,8 @@ class Bs2PhiKKComponent
 		void UpdateLineshape();
 		std::complex<double> A(const int) const; // Polarisation amplitude coefficients
 		std::complex<double> F(const int, const double, const double, const double) const; // Angular distribution: helicity, phi, costheta1, costheta2
+		std::map<int, std::vector<std::complex<double>>> EvalCache;
+		std::complex<double> AngularPart(const int, const double, const double, const double); // index, phi, costheta1, costheta2
 		double OFBF(const double) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
 		std::unique_ptr<DPWignerFunction> wignerKK {};
