@@ -55,14 +55,15 @@ void LegendreMomentShape::Open(string filename)
 		return;
 	}
 	TTree* tree = (TTree*)file->Get("LegendreMomentsTree");
-	if(tree == (TTree*)0x0) throw std::runtime_error("LegendreMomentsTree not found");
+	if(tree == nullptr) throw std::runtime_error("LegendreMomentsTree not found");
 	tree->SetBranchAddress("mKK_min",&mKK_min);
 	tree->SetBranchAddress("mKK_max",&mKK_max);
 	string limbranchtitle = tree->GetBranch("c")->GetTitle();
 	// Read the index maxima from the name of the branch
+	size_t found = 0;
 	for(int* maximum: {&l_max, &i_max, &k_max, &j_max})
 	{
-		size_t found = limbranchtitle.find('[',found+1);
+		found = limbranchtitle.find('[',found+1);
 		limbranchtitle.find(']',found);
 		*maximum = atoi(limbranchtitle.substr(found+1,1).c_str());
 	}
@@ -81,6 +82,11 @@ void LegendreMomentShape::Open(string filename)
 	tree->GetEntry(0);
 	storecoefficients(c);
 	deletecoefficients(c);
+	if(coeffs.size() == 0)
+	{
+		cerr << "No coefficients found. Defaulting to uniform shape." << endl;
+		return;
+	}
 	printcoefficients();
 	delete tree;
 	delete file;
@@ -91,7 +97,7 @@ void LegendreMomentShape::Save(string filename)
 	TTree* outputTree = new TTree("LegendreMomentsTree","");
 	char branchtitle[20];
 	double**** c = newcoefficients();
-	sprintf(branchtitle,"c[%d][%d][%d][%d]/D",l_max+1,i_max+1,k_max+1,j_max+1);
+	sprintf(branchtitle,"c[%d][%d][%d][%d]/D",l_max,i_max,k_max,j_max);
 	outputTree->Branch("c",c,branchtitle);
 	outputTree->Branch("mKK_min",&mKK_min,"mKK_min/D");
 	outputTree->Branch("mKK_max",&mKK_max,"mKK_max/D");
@@ -149,7 +155,7 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, PhaseSpaceBoundary* bounda
 					}
 	}
 	// Accept or reject the coefficients
-	double threshold = 2; // TODO: read from config
+	double threshold = 3; // TODO: read from config
 	cout << "Keeping coefficients more significant than " << threshold << "σ" << endl;
 	for ( int l = 0; l < l_max; l++ )
 		for ( int i = 0; i < i_max; i++ )
@@ -232,7 +238,7 @@ void LegendreMomentShape::storecoefficients(double**** c)
 			for ( int k = 0; k < k_max; k++ )
 				for ( int j = 0; j < j_max; j++ )
 				{
-					if(std::fabs(c[l][i][k][j]) < 1e-12)
+					if(std::abs(c[l][i][k][j]) < 1e-12)
 						continue;
 					coefficient coeff;
 					coeff.l = l;
