@@ -23,7 +23,7 @@ struct PhysPar
 	PhysPar(PDFConfigurator* config, std::string _name) : name(config->getName(_name)), value(0) {}
 	PhysPar(PDFConfigurator* config, std::string _name, double _value) : name(config->getName(_name)), value(_value) {}
 	PhysPar(const PhysPar& other) : value(other.value), name(other.name) {}
-	bool Update(ParameterSet* pars);
+	void Update(const ParameterSet* pars) {value = pars->GetPhysicsParameter(name)->GetValue();}
 	double value;
 	ObservableRef name;
 };
@@ -34,7 +34,7 @@ class Bs2PhiKKComponent
 		Bs2PhiKKComponent(const Bs2PhiKKComponent&);
 		~Bs2PhiKKComponent();
 		std::string GetName() const {return KKname;}
-		bool SetPhysicsParameters(ParameterSet* pars); // Update all the parameters
+		void SetPhysicsParameters(ParameterSet* pars); // Update all the parameters
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		std::complex<double> Amplitude(const int, const double, const double, const double, const double); // KK_M, Phi_angle, cos_theta1, cos_theta2
 		std::complex<double> Amplitude(const int, const double, const double, const double, const double, const std::string);

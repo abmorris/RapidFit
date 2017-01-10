@@ -12,14 +12,6 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 
-bool PhysPar::Update(ParameterSet* pars)
-{
-	double newvalue = pars->GetPhysicsParameter(name)->GetValue();
-	bool updated(value == newvalue);
-	value = newvalue;
-	return updated;
-}
-
 double Bs2PhiKKComponent::mBs  = 5.36677;
 double Bs2PhiKKComponent::mK   = 0.493677;
 double Bs2PhiKKComponent::mpi  = 0.139570;
@@ -140,6 +132,7 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	, fixedamplitudes(other.fixedamplitudes)
 	, fixedphimass(other.fixedphimass)
 	, init(other.init)
+	, EvalCache(other.EvalCache)
 {
 	Initialise();
 }
@@ -228,11 +221,9 @@ std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double 
 	// Result
 	return fraction.value * KKLineShape->massShape(mKK) * angularPart * OFBF(mKK);
 }
-bool Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
+void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
-	bool component_unchanged(true);
 	// Update everything from the parameter set
-	component_unchanged = fraction.Update(fitpars);
 	if(!fixedphimass)
 	{
 		mphi = fitpars->GetPhysicsParameter(phiMassname)->GetValue();
@@ -264,48 +255,34 @@ bool Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		}
 		UpdateLineshape(); // Make sure this is called the first time
 		init = true;
-		return false;
 	}
 	if(!fixedamplitudes)
 	{
-		bool unchanged(true);
-		for(auto& par: magsqs) unchanged *= par.Update(fitpars);
-		for(auto& par: phases) unchanged *= par.Update(fitpars);
-		if(!unchanged) UpdateAmplitudes();
-		component_unchanged *= unchanged;
+		for(auto& par: magsqs) par.Update(fitpars);
+		for(auto& par: phases) par.Update(fitpars);
+		UpdateAmplitudes();
 	}
 	if(!fixedlineshape)
 	{
-		bool unchanged(true);
-		for(auto& par: KKpars) unchanged *= par.Update(fitpars);
-		if(!unchanged) UpdateLineshape();
-		component_unchanged *= unchanged;
+		for(auto& par: KKpars) par.Update(fitpars);
+		UpdateLineshape();
 	}
-	return component_unchanged;
 }
 void Bs2PhiKKComponent::UpdateAmplitudes()
 {
 	// Update the helicity amplitudes
-	switch(helicities.size())
+	if(helicities.size() == 1)
+		Ahel[0] = std::polar<double>(1.0,phases[0].value);
+	else if(helicities.size() == 3)
 	{
-		case 0:
-			break;
-		case 1:
-			Ahel[0] = std::polar<double>(1.0,phases[0].value);
-			break;
-		case 3:
-			{ // new scope here because we need to declare temporary variables
-				std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
-				std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
-				Ahel[0] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
-				Ahel[1] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
-				Ahel[2] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
-			}
-			break;
-		default:
-			throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
-			break;
+		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
+		std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
+		Ahel[0] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
+		Ahel[1] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
+		Ahel[2] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
 	}
+	else
+			throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
 }
 void Bs2PhiKKComponent::UpdateLineshape()
 {
