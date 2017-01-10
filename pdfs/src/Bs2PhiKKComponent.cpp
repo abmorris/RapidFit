@@ -154,13 +154,21 @@ std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, co
 std::complex<double> Bs2PhiKKComponent::AngularPart(const int index, const double phi, const double ctheta_1, const double ctheta_2)
 {
 	if(helicities.empty()) return std::complex<double>(1, 0); // Must be non-resonant
-	if(EvalCache[index].empty())
-		for(int lambda : helicities)
-			EvalCache[index].push_back(F(lambda, phi, ctheta_1, ctheta_2));
-	if(EvalCache[index].size() != Ahel.size()) throw std::out_of_range("The EvalCache and Ahel vectors in Bs2PhiKKComponent must be of equal sizes.");
 	std::complex<double> angularPart(0, 0);
-	for(unsigned i = 0; i < Ahel.size(); i++)
-		angularPart += Ahel[i] * EvalCache[index][i];
+	if(index != -1)
+	{
+		if(EvalCache[index].empty())
+			for(int lambda : helicities)
+				EvalCache[index].push_back(F(lambda, phi, ctheta_1, ctheta_2));
+		if(EvalCache[index].size() != Ahel.size()) throw std::out_of_range("The EvalCache and Ahel vectors in Bs2PhiKKComponent must be of equal sizes.");
+		for(unsigned i = 0; i < Ahel.size(); i++)
+			angularPart += Ahel[i] * EvalCache[index][i];
+	}
+	else
+	{
+		for(int lambda : helicities)
+			angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
+	}
 	return angularPart;
 }
 // Orbital and barrier factor
@@ -185,7 +193,9 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs0, pBs)*
 	                       KKbarrier.barrier(pKK0, pKK);
-	return orbitalFactor * barrierFactor;
+	double returnVal = orbitalFactor * barrierFactor;
+	if(returnVal < 1e-20) std::cerr << "Bs2PhiKKComponent::OFBF WARNING: return value very small" << std::endl;
+	return returnVal;
 }
 // The full amplitude. Must be quick
 std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double mKK, const double phi, const double ctheta_1, const double ctheta_2)
@@ -224,6 +234,7 @@ std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double 
 void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	// Update everything from the parameter set
+	fraction.Update(fitpars);
 	if(!fixedphimass)
 	{
 		mphi = fitpars->GetPhysicsParameter(phiMassname)->GetValue();

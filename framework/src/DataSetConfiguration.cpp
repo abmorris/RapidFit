@@ -516,6 +516,7 @@ IDataSet * DataSetConfiguration::LoadRootFileIntoMemory( string this_fileName, s
 	for( ; (numberOfDataPointsRead < numberOfEventsAfterCut) && (numberOfDataPointsAdded < numberEventsToRead) ; ++numberOfDataPointsRead )
 	{
 		DataPoint* point = new DataPoint( observableNames );
+		point->SetDiscreteIndex(numberOfDataPointsAdded);
 		for(int obsIndex = 0; obsIndex < numberOfObservables; ++obsIndex )
 		{
 			string name = observableNames[unsigned(obsIndex)];
