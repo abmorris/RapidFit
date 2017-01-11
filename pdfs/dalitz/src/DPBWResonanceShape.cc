@@ -19,6 +19,7 @@ DPBWResonanceShape::DPBWResonanceShape( const DPBWResonanceShape& other ) : DPMa
 	,LR(other.LR)
 	,m1(other.m1)
 	,m2(other.m2)
+	,pR0(other.pR0)
 	,barrier(other.barrier)
 {
 }
