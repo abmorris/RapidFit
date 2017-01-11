@@ -1,10 +1,12 @@
 #ifndef __BS2PHIKKCOMPONENT_H__
 #define __BS2PHIKKCOMPONENT_H__
 // Std
+#include <iostream>
 #include <complex>
 #include <string>
 #include <vector>
 #include <memory>
+#include <array>
 // RapidFit
 #include "PDFConfigurator.h"
 #include "ParameterSet.h"
@@ -17,12 +19,14 @@ class Bs2PhiKKComponent
 	public:
 		Bs2PhiKKComponent(PDFConfigurator*, std::string, std::string, int, std::string); // config, phi name, resonance name, spin
 		Bs2PhiKKComponent(const Bs2PhiKKComponent&);
+		Bs2PhiKKComponent(Bs2PhiKKComponent&&);
 		~Bs2PhiKKComponent();
 		std::string GetName() const {return KKname;}
-		bool SetPhysicsParameters(ParameterSet* pars); // Update all the parameters. Return whether any have been modified
+		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
-		std::complex<double> Amplitude(const double, const double, const double, const double) const; // KK_M, Phi_angle, cos_theta1, cos_theta2
-		std::complex<double> Amplitude(const double, const double, const double, const double, const std::string) const; // Same but with an option "even" or "odd"
+		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays
+		std::array<std::complex<double>,2> Amplitude(const std::array<double,4>&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
+		std::array<std::complex<double>,2> Amplitude(const std::array<double,4>&, const std::string) const; // Same but with an option "even" or "odd"
 		static double mBs;
 		static double mK;
 		static double mpi;
@@ -36,7 +40,9 @@ class Bs2PhiKKComponent
 			PhysPar(PDFConfigurator* config, std::string _name) : name(config->getName(_name)), value(0) {}
 			PhysPar(PDFConfigurator* config, std::string _name, double _value) : name(config->getName(_name)), value(_value) {}
 			PhysPar(const PhysPar& other) : value(other.value), name(other.name) {}
-			bool Update(const ParameterSet* pars);
+			PhysPar(PhysPar&& other): value(std::move(other.value)), name(std::move(other.name)) {}
+			PhysPar& operator=(const Bs2PhiKKComponent::PhysPar& other) {name = other.name;return *this;}
+			void Update(const ParameterSet* pars) {value = pars->GetPhysicsParameter(name)->GetValue();}
 			double value;
 			ObservableRef name;
 		};
@@ -71,13 +77,13 @@ class Bs2PhiKKComponent
 		std::complex<double> AngularPart(const double, const double, const double) const; // index, phi, costheta1, costheta2
 		double OFBF(const double) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
-		std::unique_ptr<DPWignerFunction> wignerKK {};
-		std::unique_ptr<DPWignerFunction> wignerPhi {};
+		std::shared_ptr<DPWignerFunction> wignerKK {};
+		std::shared_ptr<DPWignerFunction> wignerPhi {};
 		// Blatt-Weisskopf barrier penetration factors
 		DPBarrierFactor Bsbarrier;
 		DPBarrierFactor KKbarrier;
 		// Resonance lineshape function for the mass-dependent part
-		std::unique_ptr<DPMassShape> KKLineShape {};
+		std::shared_ptr<DPMassShape> KKLineShape {};
 };
 #endif
 

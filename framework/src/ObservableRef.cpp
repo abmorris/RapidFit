@@ -31,6 +31,10 @@ ObservableRef::ObservableRef( const ObservableRef& input ) :
 	Observable_Name( input.Observable_Name ), Observable_Index( input.Observable_Index ), externID(0)
 {
 }
+ObservableRef::ObservableRef( ObservableRef&& input ) :
+	Observable_Name( std::move(input.Observable_Name) ), Observable_Index( std::move(input.Observable_Index) ), externID(0)
+{
+}
 
 ObservableRef::~ObservableRef()
 {

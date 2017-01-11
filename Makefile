@@ -1,7 +1,7 @@
 # $Id: Makefile,v 1.30 2009/11/11 17:18:14 gcowan Exp $
 SHELL=/bin/bash
 UNAME=$(shell uname -s )
-CC=g++
+CC=g++ -fdiagnostics-color=always
 
 # Location of compiled "common" libraries from ssh://git@gitlab.cern.ch:7999/admorris/common.git
 COMMONDIR  = $(PWD)/../common

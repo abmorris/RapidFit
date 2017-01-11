@@ -2,6 +2,7 @@
 #define __LEGENDREMOMENTSHAPE_H__
 #include <vector>
 #include <string>
+#include <array>
 #include "IDataSet.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -25,6 +26,7 @@ class LegendreMomentShape
 			j_max = _j_max;
 		}
 		static double Moment(const int,const int,const int,const int,const double,const double,const double,const double); // l, i, k, j, mass_mapped, phi, cosθ1, cosθ2
+		double Evaluate(const std::array<double,4>&) const;
 		double Evaluate(const double,const double,const double,const double) const; // mass, phi, cosθ1, cosθ2
 		double mKK_min;
 		double mKK_max;

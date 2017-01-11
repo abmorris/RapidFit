@@ -16,17 +16,6 @@ double Bs2PhiKKComponent::mBs  = 5.36677;
 double Bs2PhiKKComponent::mK   = 0.493677;
 double Bs2PhiKKComponent::mpi  = 0.139570;
 
-// Update the value and return whether or not it has changed
-bool Bs2PhiKKComponent::PhysPar::Update(const ParameterSet* pars)
-{
-	PhysicsParameter* par = pars->GetPhysicsParameter(name);
-	double newvalue = par->GetValue();
-	double stepsize = par->GetStepSize();
-	bool unchanged(std::abs(value-newvalue)<stepsize);
-	value = newvalue;
-	return unchanged;
-}
-
 // Constructor
 Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phiname, std::string _KKname, int _JKK, std::string _lineshape) :
 	  phiMassname(config->getName(_phiname+"_mass"))
@@ -87,7 +76,8 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 			phases.push_back(PhysPar(config,KKname+"_deltapara"));
 			break;
 		default:
-			throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
+			std::cerr << "Bs2PhiKKComponent can't handle this many helicities: " << n << std::endl;
+			std::exit(-1);
 			break;
 	}
 	// Make the helicity amplitude vector
@@ -146,6 +136,27 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 {
 	Initialise();
 }
+Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
+	// Floatable parameters
+	  fraction(std::move(other.fraction))
+	, Ahel(std::move(other.Ahel))
+	, helicities(std::move(other.helicities))
+	, magsqs(std::move(other.magsqs))
+	, phases(std::move(other.phases))
+	, mphi(std::move(other.mphi))
+	, KKpars(std::move(other.KKpars))
+	// Fixed parameters
+	, phiMassname(std::move(other.phiMassname))
+	, KKname(std::move(other.KKname))
+	, JKK(std::move(other.JKK))
+	, lineshape(std::move(other.lineshape))
+	, fixedlineshape(std::move(other.fixedlineshape))
+	, fixedamplitudes(std::move(other.fixedamplitudes))
+	, fixedphimass(std::move(other.fixedphimass))
+	, init(std::move(other.init))
+{
+	Initialise();
+}
 Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
 }
@@ -192,47 +203,52 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	double barrierFactor = Bsbarrier.barrier(pBs0, pBs)*
 	                       KKbarrier.barrier(pKK0, pKK);
 	double returnVal = orbitalFactor * barrierFactor;
-	if(returnVal < 1e-20) std::cerr << "Bs2PhiKKComponent::OFBF WARNING: return value very small" << std::endl;
+	if(returnVal < 1e-20) std::cerr << "Bs2PhiKKComponent::OFBF WARNING: return value very small: " << returnVal << std::endl;
 	return returnVal;
 }
 // The full amplitude.
-std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2) const
+std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array<double,4>& datapoint) const
 {
-	// Result
-	return fraction.value * KKLineShape->massShape(mKK) * AngularPart(phi, ctheta_1, ctheta_2) * OFBF(mKK);
+	double mKK = datapoint[0];
+	double phi = datapoint[1];
+	double ctheta_1 = datapoint[2];
+	double ctheta_2 = datapoint[3];
+	std::array<std::complex<double>,2> angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
+	std::complex<double> massPart = fraction.value * KKLineShape->massShape(mKK) * OFBF(mKK);
+	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
-std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2, const std::string option) const
+std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array<double,4>& datapoint, const std::string option) const
 {
-	if(option == "") return Amplitude(mKK, phi, ctheta_1, ctheta_2); // Just do the quick one if no option
+	if(helicities.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos ) return Amplitude(datapoint);
+	double mKK = datapoint[0];
+	double phi = datapoint[1];
+	double ctheta_1 = datapoint[2];
+	double ctheta_2 = datapoint[3];
 	// Angular part
-	std::complex<double> angularPart(0, 0);
-	if(helicities.empty())
-		angularPart = std::complex<double>(1, 0);
-	else if(option.find("odd") != std::string::npos || option.find("even") != std::string::npos)
+	std::array<std::complex<double>,2> angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
+	std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
+	std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
+	// Temporary helicity amplitudes
+	std::vector<std::complex<double>> HelAmp;
+	// CP-odd component
+	if(option.find("odd") != std::string::npos)
+		HelAmp = {-Aperp/sqrt(2.), std::complex<double>(0, 0), Aperp/sqrt(2.)};
+	// CP-even component
+	else
+		HelAmp = {Apara/sqrt(2.), A(0), Apara/sqrt(2.)};
+	for(int lambda : helicities)
 	{
-		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
-		std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
-		// Temporary helicity amplitudes
-		std::vector<std::complex<double>> HelAmp;
-		// CP-odd component
-		if(option.find("odd") != std::string::npos)
-			HelAmp = {-Aperp/sqrt(2.), std::complex<double>(0, 0), Aperp/sqrt(2.)};
-		// CP-even component
-		else
-			HelAmp = {Apara/sqrt(2.), A(0), Apara/sqrt(2.)};
-		for(int lambda : helicities)
-			angularPart += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
+		angularPart[false] += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
+		angularPart[true] += HelAmp[lambda + helicities.back()] * F(lambda, -phi, -ctheta_1, -ctheta_2);
 	}
-	else // assume full amplitude, don't thow an error
-		angularPart = AngularPart(phi, ctheta_1, ctheta_2);
 	// Result
-	return fraction.value * KKLineShape->massShape(mKK) * angularPart * OFBF(mKK);
+	std::complex<double> massPart = fraction.value * KKLineShape->massShape(mKK) * OFBF(mKK);
+	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // Update everything from the parameter set
-bool Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
+void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
-	bool unchanged(true);
 	if(!fixedphimass)
 	{
 		mphi = fitpars->GetPhysicsParameter(phiMassname)->GetValue();
@@ -263,25 +279,20 @@ bool Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		}
 		UpdateLineshape(); // Make sure this is called the first time
 		init = true;
-		return false; // The cache hasn't been evaluated yet
+		return;
 	}
-	unchanged *= fraction.Update(fitpars);
-	bool ampunchanged(true);
+	fraction.Update(fitpars);
 	if(!fixedamplitudes)
 	{
-		for(auto& par: magsqs) ampunchanged *= par.Update(fitpars);
-		for(auto& par: phases) ampunchanged *= par.Update(fitpars);
-		if(!ampunchanged) UpdateAmplitudes();
+		for(auto& par: magsqs) par.Update(fitpars);
+		for(auto& par: phases) par.Update(fitpars);
+		UpdateAmplitudes();
 	}
-	unchanged *= ampunchanged;
-	bool resunchanged(true);
 	if(!fixedlineshape)
 	{
-		for(auto& par: KKpars) resunchanged *= par.Update(fitpars);
-		if(!resunchanged) UpdateLineshape();
+		for(auto& par: KKpars) par.Update(fitpars);
+		UpdateLineshape();
 	}
-	unchanged *= resunchanged;
-	return unchanged;
 }
 void Bs2PhiKKComponent::UpdateAmplitudes()
 {
@@ -299,7 +310,10 @@ void Bs2PhiKKComponent::UpdateAmplitudes()
 		Ahel[2] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
 	}
 	else
-		throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
+	{
+		std::cerr << "Bs2PhiKKComponent can't handle this many helicities: " << helicities.size() << std::endl;
+		std::exit(-1);
+	}
 }
 void Bs2PhiKKComponent::UpdateLineshape()
 {
@@ -321,8 +335,8 @@ void Bs2PhiKKComponent::UpdateLineshape()
 vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(auto set: {{fraction},magsqs,phases,KKpars})
-		for(auto par: set)
+	for(const auto& set: {{fraction},magsqs,phases,KKpars})
+		for(const auto& par: set)
 			parameters.push_back(par.name);
 	return parameters;
 }

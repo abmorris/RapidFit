@@ -184,6 +184,10 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 	deletecoefficients(c_sq);
 	init = false;
 }
+double LegendreMomentShape::Evaluate(const std::array<double,4>& datapoint) const
+{
+	return Evaluate(datapoint[0],datapoint[1],datapoint[2],datapoint[3]);
+}
 double LegendreMomentShape::Evaluate(const double mKK, const double phi, const double ctheta_1, const double ctheta_2) const
 {
 	if(init) return 1;

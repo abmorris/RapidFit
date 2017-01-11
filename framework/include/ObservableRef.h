@@ -21,6 +21,7 @@ class ObservableRef
 		 * @brief Copy Constructor
 		 */
 		ObservableRef( const ObservableRef& );
+		ObservableRef( ObservableRef&& );
 
 		/*!
 		 * @brief Copy By Assignment

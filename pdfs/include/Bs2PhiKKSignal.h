@@ -28,16 +28,9 @@ class Bs2PhiKKSignal : public BasePDF
 		double EvaluateComponent(DataPoint*, ComponentRef* );
 		std::vector<std::string> PDFComponents();
 	private:
-		struct ComponentCache
-		{
-			std::map<int,std::pair<std::complex<double>,std::complex<double>>> point;
-			bool valid;
-		};
 		std::vector<Bs2PhiKKComponent> components;
-		std::map<std::string,ComponentCache> EvalCache;
 		int index; // Current datapoint index for caching
 		// K+K− mass and helicity angles
-		double        mKK    , ctheta_1    , ctheta_2    , phi    ;
 		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
 		// Bs width splitting
 		Bs2PhiKKComponent::PhysPar dGsGs;
@@ -50,16 +43,14 @@ class Bs2PhiKKSignal : public BasePDF
 		// Acceptance objects
 		std::unique_ptr<LegendreMomentShape> acc_m;
 		std::shared_ptr<NDHist_Adaptive> acc_h;
-		double acceptance; // Evaluate during ReadDataPoint()
 		// Calculation
-		double TotalDecayRate();
-		double ComponentDecayRate(const Bs2PhiKKComponent&) const; // For plotting individual components
-		double ComponentDecayRate(const Bs2PhiKKComponent&, const std::string) const; // Pass option "odd" or "even"
-		double TimeIntegratedDecayRate(std::pair<std::complex<double>,std::complex<double>>) const;
-		double TimeIntegratedDecayRate(const std::complex<double>, const std::complex<double>) const;
-		void ReadDataPoint(DataPoint*);
-		double p1stp3() const;
-		void CalculateAcceptance();
+		double TotalMsq(const std::array<double,4>&) const;
+		double ComponentMsq(const Bs2PhiKKComponent&, const std::array<double,4>&) const; // For plotting individual components
+		double ComponentMsq(const Bs2PhiKKComponent&, const std::array<double,4>&, const std::string) const; // Pass option "odd" or "even"
+		double TimeIntegratedMsq(const std::array<std::complex<double>,2>&) const;
+		std::array<double,4> ReadDataPoint(DataPoint*) const;
+		double p1stp3(const double&) const;
+		double Acceptance(const std::array<double,4>&) const;
 		// Stuff to do on creation
 		void Initialise();
 		void MakePrototypes();
