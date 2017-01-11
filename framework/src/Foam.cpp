@@ -422,6 +422,7 @@ int Foam::GenerateData( int DataAmount )
 
 		delete[] generatedEvent;
 		//	Store the event
+		temporaryDataPoint->SetDiscreteIndex(dataIndex);
 		newDataSet->AddDataPoint(temporaryDataPoint);
 	}
 

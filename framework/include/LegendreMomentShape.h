@@ -14,37 +14,36 @@ class LegendreMomentShape
 		LegendreMomentShape(string); // Immediately call Open() on the passed string
 		LegendreMomentShape(const LegendreMomentShape&);
 		~LegendreMomentShape();
-		void Open(string); // Load the coefficients from a file
-		void Save(string); // Save generated coefficients to a file
-		void Generate(IDataSet*, PhaseSpaceBoundary*, string, string, string, string); // strings are variable names: mass, phi, cosθ1, cosθ2
-		void SetMax(double _l_max, double _i_max, double _k_max, double _j_max) // Only needed when generating coefficients; loaded from file otherwise
+		void Open(const string); // Load the coefficients from a file
+		void Save(const string); // Save generated coefficients to a file
+		void Generate(IDataSet*, const PhaseSpaceBoundary*, const string, const string, const string, const string); // strings are variable names: mass, phi, cosθ1, cosθ2
+		void SetMax(const double _l_max, const double _i_max, const double _k_max, const double _j_max) // Only needed when generating coefficients; loaded from file otherwise
 		{
 			l_max = _l_max;
 			i_max = _i_max;
 			k_max = _k_max;
 			j_max = _j_max;
 		}
-		static double Moment(int,int,int,int,double,double,double,double); // l, i, k, j, mass_mapped, phi, cosθ1, cosθ2
-		double Evaluate(double,double,double,double); // mass, phi, cosθ1, cosθ2
+		static double Moment(const int,const int,const int,const int,const double,const double,const double,const double); // l, i, k, j, mass_mapped, phi, cosθ1, cosθ2
+		double Evaluate(const double,const double,const double,const double) const; // mass, phi, cosθ1, cosθ2
 		double mKK_min;
 		double mKK_max;
-	protected:
+	private:
 		struct coefficient
 		{
 			int l,i,j,k;
 			double val;
-			void print()
+			void print() const
 			{
 				printf("c[%d][%d][%d][%d] = %f\n", l, i, k, j, val);
 			}
 		};
 		vector<coefficient> coeffs;
 		bool init;
-	private:
-		double**** newcoefficients();
-		void deletecoefficients(double****);
+		double**** newcoefficients() const;
+		void deletecoefficients(double****) const;
 		void storecoefficients(double****);
-		void printcoefficients();
+		void printcoefficients() const;
 		int l_max;
 		int i_max;
 		int k_max;

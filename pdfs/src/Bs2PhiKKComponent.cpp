@@ -16,6 +16,17 @@ double Bs2PhiKKComponent::mBs  = 5.36677;
 double Bs2PhiKKComponent::mK   = 0.493677;
 double Bs2PhiKKComponent::mpi  = 0.139570;
 
+// Update the value and return whether or not it has changed
+bool Bs2PhiKKComponent::PhysPar::Update(const ParameterSet* pars)
+{
+	PhysicsParameter* par = pars->GetPhysicsParameter(name);
+	double newvalue = par->GetValue();
+	double stepsize = par->GetStepSize();
+	bool unchanged(std::abs(value-newvalue)<stepsize);
+	value = newvalue;
+	return unchanged;
+}
+
 // Constructor
 Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phiname, std::string _KKname, int _JKK, std::string _lineshape) :
 	  phiMassname(config->getName(_phiname+"_mass"))
@@ -132,7 +143,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	, fixedamplitudes(other.fixedamplitudes)
 	, fixedphimass(other.fixedphimass)
 	, init(other.init)
-	, EvalCache(other.EvalCache)
 {
 	Initialise();
 }
@@ -151,24 +161,12 @@ std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, co
 {
 	return wignerPhi->function(ctheta_1, lambda, 0) * wignerKK->function(ctheta_2, lambda, 0) * std::polar<double>(1, lambda*Phi);
 }
-std::complex<double> Bs2PhiKKComponent::AngularPart(const int index, const double phi, const double ctheta_1, const double ctheta_2)
+std::complex<double> Bs2PhiKKComponent::AngularPart(const double phi, const double ctheta_1, const double ctheta_2) const
 {
-	if(helicities.empty()) return std::complex<double>(1, 0); // Must be non-resonant
 	std::complex<double> angularPart(0, 0);
-	if(index != -1)
-	{
-		if(EvalCache[index].empty())
-			for(int lambda : helicities)
-				EvalCache[index].push_back(F(lambda, phi, ctheta_1, ctheta_2));
-		if(EvalCache[index].size() != Ahel.size()) throw std::out_of_range("The EvalCache and Ahel vectors in Bs2PhiKKComponent must be of equal sizes.");
-		for(unsigned i = 0; i < Ahel.size(); i++)
-			angularPart += Ahel[i] * EvalCache[index][i];
-	}
-	else
-	{
-		for(int lambda : helicities)
-			angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
-	}
+	if(helicities.empty()) return std::complex<double>(1, 0); // Must be non-resonant
+	for(int lambda : helicities)
+		angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
 	return angularPart;
 }
 // Orbital and barrier factor
@@ -197,16 +195,16 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	if(returnVal < 1e-20) std::cerr << "Bs2PhiKKComponent::OFBF WARNING: return value very small" << std::endl;
 	return returnVal;
 }
-// The full amplitude. Must be quick
-std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double mKK, const double phi, const double ctheta_1, const double ctheta_2)
+// The full amplitude.
+std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2) const
 {
 	// Result
-	return fraction.value * KKLineShape->massShape(mKK) * AngularPart(index, phi, ctheta_1, ctheta_2) * OFBF(mKK);
+	return fraction.value * KKLineShape->massShape(mKK) * AngularPart(phi, ctheta_1, ctheta_2) * OFBF(mKK);
 }
-// The full amplitude with an option. This can be slow
-std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double mKK, const double phi, const double ctheta_1, const double ctheta_2, const std::string option)
+// The full amplitude with an option.
+std::complex<double> Bs2PhiKKComponent::Amplitude(const double mKK, const double phi, const double ctheta_1, const double ctheta_2, const std::string option) const
 {
-	if(option == "") return Amplitude(index, mKK, phi, ctheta_1, ctheta_2); // Just do the quick one if no option
+	if(option == "") return Amplitude(mKK, phi, ctheta_1, ctheta_2); // Just do the quick one if no option
 	// Angular part
 	std::complex<double> angularPart(0, 0);
 	if(helicities.empty())
@@ -227,14 +225,14 @@ std::complex<double> Bs2PhiKKComponent::Amplitude(const int index, const double 
 			angularPart += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
 	}
 	else // assume full amplitude, don't thow an error
-		angularPart = AngularPart(index, phi, ctheta_1, ctheta_2);
+		angularPart = AngularPart(phi, ctheta_1, ctheta_2);
 	// Result
 	return fraction.value * KKLineShape->massShape(mKK) * angularPart * OFBF(mKK);
 }
-void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
+// Update everything from the parameter set
+bool Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
-	// Update everything from the parameter set
-	fraction.Update(fitpars);
+	bool unchanged(true);
 	if(!fixedphimass)
 	{
 		mphi = fitpars->GetPhysicsParameter(phiMassname)->GetValue();
@@ -243,7 +241,6 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 	if(!init)
 	{
 		fixedphimass = fitpars->GetPhysicsParameter(phiMassname)->isFixed();
-		OFBF(mphi);
 		// Check if we can skip updating the amplitudes
 		fixedamplitudes = true;
 		for(auto& par: magsqs)
@@ -266,23 +263,32 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		}
 		UpdateLineshape(); // Make sure this is called the first time
 		init = true;
+		return false; // The cache hasn't been evaluated yet
 	}
+	unchanged *= fraction.Update(fitpars);
+	bool ampunchanged(true);
 	if(!fixedamplitudes)
 	{
-		for(auto& par: magsqs) par.Update(fitpars);
-		for(auto& par: phases) par.Update(fitpars);
-		UpdateAmplitudes();
+		for(auto& par: magsqs) ampunchanged *= par.Update(fitpars);
+		for(auto& par: phases) ampunchanged *= par.Update(fitpars);
+		if(!ampunchanged) UpdateAmplitudes();
 	}
+	unchanged *= ampunchanged;
+	bool resunchanged(true);
 	if(!fixedlineshape)
 	{
-		for(auto& par: KKpars) par.Update(fitpars);
-		UpdateLineshape();
+		for(auto& par: KKpars) resunchanged *= par.Update(fitpars);
+		if(!resunchanged) UpdateLineshape();
 	}
+	unchanged *= resunchanged;
+	return unchanged;
 }
 void Bs2PhiKKComponent::UpdateAmplitudes()
 {
 	// Update the helicity amplitudes
-	if(helicities.size() == 1)
+	if(helicities.empty())
+		return;
+	else if(helicities.size() == 1)
 		Ahel[0] = std::polar<double>(1.0,phases[0].value);
 	else if(helicities.size() == 3)
 	{
@@ -293,7 +299,7 @@ void Bs2PhiKKComponent::UpdateAmplitudes()
 		Ahel[2] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
 	}
 	else
-			throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
+		throw std::range_error("Bs2PhiKKComponent can't handle this many helicities");
 }
 void Bs2PhiKKComponent::UpdateLineshape()
 {

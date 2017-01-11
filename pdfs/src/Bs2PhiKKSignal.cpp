@@ -33,8 +33,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
-	phimass = PhysPar(config,phiname+"_mass");
-	dGsGs = PhysPar(config,"dGsGs");
+	phimass = Bs2PhiKKComponent::PhysPar(config,phiname+"_mass");
+	dGsGs = Bs2PhiKKComponent::PhysPar(config,"dGsGs");
 	std::vector<std::string> reslist = StringProcessing::SplitString( config->getConfigurationValue("resonances"), ' ' );
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
 	std::cout << "┃ Component\t│ Spin\t│ Lineshape\t┃\n";
@@ -136,7 +136,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Resonance parameters
 	parameterNames.push_back(dGsGs.name);
 	parameterNames.push_back(phimass.name);
-	for(auto comp: components)
+	for(const auto& comp: components)
 		for(std::string par: comp.GetPhysicsParameters())
 			if(par!=phimass.name.Name()) parameterNames.push_back(par);
 	allParameters = *( new ParameterSet(parameterNames) );
@@ -149,7 +149,7 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	dGsGs.Update(&allParameters);
 	phimass.Update(&allParameters);
 	for(auto& comp: components)
-		comp.SetPhysicsParameters(&allParameters);
+		EvalCache[comp.GetName()].valid = comp.SetPhysicsParameters(&allParameters);
 	return isOK;
 }
 /*****************************************************************************/
@@ -176,12 +176,12 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	if(compName=="interference")
 	{
 		evalRes = TotalDecayRate();
-		for(auto comp : components)
+		for(const auto& comp : components)
 			evalRes -= ComponentDecayRate(comp);
 	}
 	else
 	{
-		for(auto comp: components)
+		for(const auto& comp: components)
 			if(compName.find(comp.GetName()) != std::string::npos)
 				evalRes = ComponentDecayRate(comp, compName);
 		// If none of the component names matched, assume total PDF
@@ -213,24 +213,30 @@ void Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement)
 	phi+=M_PI;
 }
 /*****************************************************************************/
-double Bs2PhiKKSignal::TotalDecayRate() const
+double Bs2PhiKKSignal::TotalDecayRate()
 {
-	map<bool,std::complex<double>> TotalAmp;
-	for(auto anti : {false,true})
+	std::pair<std::complex<double>,std::complex<double>> TotalAmp(std::complex<double>(0, 0), std::complex<double>(0, 0));
+	for(const auto& comp : components)
 	{
-		TotalAmp[anti] = std::complex<double>(0,0);
-		for(auto comp : components)
-			TotalAmp[anti] += anti ? comp.Amplitude(index, mKK, -phi, -ctheta_1, -ctheta_2) : comp.Amplitude(index, mKK, phi, ctheta_1, ctheta_2);
+		string name = comp.GetName();
+//		if(!EvalCache[name].valid)
+			EvalCache[name].point[index] = std::make_pair(comp.Amplitude(mKK, phi, ctheta_1, ctheta_2),comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2));
+		TotalAmp.first += EvalCache[name].point[index].first;
+		TotalAmp.second += EvalCache[name].point[index].second;
 	}
-	return TimeIntegratedDecayRate(TotalAmp[false],TotalAmp[true]);
+	return TimeIntegratedDecayRate(TotalAmp);
 }
-double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp) const
+double Bs2PhiKKSignal::ComponentDecayRate(const Bs2PhiKKComponent& comp) const
 {
 	return ComponentDecayRate(comp,"");
 }
-double Bs2PhiKKSignal::ComponentDecayRate(Bs2PhiKKComponent& comp, const std::string option) const
+double Bs2PhiKKSignal::ComponentDecayRate(const Bs2PhiKKComponent& comp, const std::string option) const
 {
-	return TimeIntegratedDecayRate(comp.Amplitude(index, mKK, phi, ctheta_1, ctheta_2, option),comp.Amplitude(index, mKK, -phi, -ctheta_1, -ctheta_2, option));
+	return TimeIntegratedDecayRate(comp.Amplitude(mKK, phi, ctheta_1, ctheta_2, option),comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2, option));
+}
+double Bs2PhiKKSignal::TimeIntegratedDecayRate(std::pair<std::complex<double>,std::complex<double>> Amp) const
+{
+	return TimeIntegratedDecayRate(std::get<false>(Amp),std::get<true>(Amp));
 }
 double Bs2PhiKKSignal::TimeIntegratedDecayRate(const std::complex<double> A, const std::complex<double> Abar) const
 {

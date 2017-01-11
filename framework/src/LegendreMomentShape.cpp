@@ -10,10 +10,12 @@
 using std::cout;
 using std::cerr;
 using std::endl;
-double LegendreMomentShape::Moment(int l, int i, int k, int j, double mKK_mapped, double phi, double ctheta_1, double ctheta_2)
+double LegendreMomentShape::Moment(const int l, const int i, const int k, const int j, const double mKK_mapped, const double phi, const double ctheta_1, const double ctheta_2)
 {
 	if(j < k)
 		return 0;
+	if(std::abs(mKK_mapped) > 1)
+		return 0; 
 	double Q_l  = gsl_sf_legendre_Pl     (l, mKK_mapped );
 	double P_i  = gsl_sf_legendre_Pl     (i, ctheta_2   );
 	double Y_jk = gsl_sf_legendre_sphPlm (j, k, ctheta_1);
@@ -39,7 +41,7 @@ LegendreMomentShape::LegendreMomentShape(const LegendreMomentShape& copy) :
 LegendreMomentShape::~LegendreMomentShape()
 {
 }
-void LegendreMomentShape::Open(string filename)
+void LegendreMomentShape::Open(const string filename)
 {
 	TFile* file;
 	if(!filename.empty())
@@ -92,7 +94,7 @@ void LegendreMomentShape::Open(string filename)
 	delete file;
 	init = false;
 }
-void LegendreMomentShape::Save(string filename)
+void LegendreMomentShape::Save(const string filename)
 {
 	TTree* outputTree = new TTree("LegendreMomentsTree","");
 	char branchtitle[20];
@@ -119,7 +121,7 @@ void LegendreMomentShape::Save(string filename)
 	outputTree->SaveAs(filename.c_str());
 	deletecoefficients(c);
 }
-void LegendreMomentShape::Generate(IDataSet* dataSet, PhaseSpaceBoundary* boundary, string mKKname, string phiname, string ctheta_1name, string ctheta_2name)
+void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* boundary, const string mKKname, const string phiname, const string ctheta_1name, const string ctheta_2name)
 {
 	double**** c    = newcoefficients();
 	double**** c_sq = newcoefficients(); // Used in caclulating the error
@@ -182,7 +184,7 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, PhaseSpaceBoundary* bounda
 	deletecoefficients(c_sq);
 	init = false;
 }
-double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, double ctheta_2)
+double LegendreMomentShape::Evaluate(const double mKK, const double phi, const double ctheta_1, const double ctheta_2) const
 {
 	if(init) return 1;
 	double result = 0;
@@ -196,7 +198,7 @@ double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, do
 		result += coeff.val*Moment(coeff.l, coeff.i, coeff.k, coeff.j, mKK_mapped, phi, ctheta_1, ctheta_2);
 	return result;
 }
-double**** LegendreMomentShape::newcoefficients()
+double**** LegendreMomentShape::newcoefficients() const
 {
 	double**** c = new double***[l_max];
 	for ( int l = 0; l < l_max; l++ )
@@ -215,7 +217,7 @@ double**** LegendreMomentShape::newcoefficients()
 	}
 	return c;
 }
-void LegendreMomentShape::deletecoefficients(double**** c)
+void LegendreMomentShape::deletecoefficients(double**** c) const
 {
 	for ( int l = 0; l < l_max; l++ )
 	{
@@ -249,7 +251,7 @@ void LegendreMomentShape::storecoefficients(double**** c)
 					coeffs.push_back(coeff);
 				}
 }
-void LegendreMomentShape::printcoefficients()
+void LegendreMomentShape::printcoefficients() const
 {
 	for(auto coeff : coeffs)
 		coeff.print();
