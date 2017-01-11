@@ -219,7 +219,7 @@ double Bs2PhiKKSignal::TotalDecayRate()
 	for(const auto& comp : components)
 	{
 		string name = comp.GetName();
-//		if(!EvalCache[name].valid)
+		if(!EvalCache[name].valid)
 			EvalCache[name].point[index] = std::make_pair(comp.Amplitude(mKK, phi, ctheta_1, ctheta_2),comp.Amplitude(mKK, -phi, -ctheta_1, -ctheta_2));
 		TotalAmp.first += EvalCache[name].point[index].first;
 		TotalAmp.second += EvalCache[name].point[index].second;
