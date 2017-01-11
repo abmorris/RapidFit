@@ -162,13 +162,13 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, PhaseSpaceBoundary* bounda
 			for ( int k = 0; k < k_max; k++ )
 				for ( int j = 0; j < j_max; j++ )
 				{
-					if(std::fabs(c[l][i][k][j]) < 1e-12)
+					if(std::abs(c[l][i][k][j]) < 1e-12)
 					{
 						c[l][i][k][j] = 0.;
 						continue;
 					}
 					double error = sqrt(1./numEvents/numEvents * ( c_sq[l][i][k][j] - c[l][i][k][j]*c[l][i][k][j]/numEvents) );
-					double signif = std::fabs(c[l][i][k][j]/numEvents)/error;
+					double signif = std::abs(c[l][i][k][j]/numEvents)/error;
 					if ( signif > threshold )
 					{
 						printf("c[%d][%d][%d][%d] = %f;// ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
@@ -187,11 +187,7 @@ double LegendreMomentShape::Evaluate(double mKK, double phi, double ctheta_1, do
 	if(init) return 1;
 	double result = 0;
 	double mKK_mapped = (mKK - mKK_min) / (mKK_max - mKK_min)*2 - 1;
-	if(abs(mKK_mapped) > 1)
-	{
-		cerr << "LegendreMomentShape::Evaluate Warning: value of mass " << mKK << " is outside limits (" << mKK_min << "," << mKK_max << ")" << endl;
-		return 0;
-	}
+	if(std::abs(mKK_mapped) > 1) return 0; // I could print a warning here, but it gets tedious when you just want a mass projection with sensibly-sized bins that includes the threshold
 	for(auto coeff : coeffs)
 		result += coeff.val*Moment(coeff.l, coeff.i, coeff.k, coeff.j, mKK_mapped, phi, ctheta_1, ctheta_2);
 	return result;
