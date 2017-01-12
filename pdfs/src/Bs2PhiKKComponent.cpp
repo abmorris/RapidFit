@@ -17,9 +17,8 @@ double Bs2PhiKKComponent::mK   = 0.493677;
 double Bs2PhiKKComponent::mpi  = 0.139570;
 
 // Constructor
-Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phiname, std::string _KKname, int _JKK, std::string _lineshape) :
+Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phiname, std::string KKname, int _JKK, std::string _lineshape) :
 	  phiMassname(config->getName(_phiname+"_mass"))
-	, KKname(_KKname)
 	, JKK(_JKK)
 	, lineshape(_lineshape)
 	, fixedamplitudes(false)
@@ -115,6 +114,7 @@ void Bs2PhiKKComponent::Initialise()
 	UpdateAmplitudes();
 	UpdateLineshape();
 }
+// Copy constructor
 Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	// Floatable parameters
 	  fraction(other.fraction)
@@ -126,7 +126,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	, KKpars(other.KKpars)
 	// Fixed parameters
 	, phiMassname(other.phiMassname)
-	, KKname(other.KKname)
 	, JKK(other.JKK)
 	, lineshape(other.lineshape)
 	, fixedlineshape(other.fixedlineshape)
@@ -136,6 +135,7 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 {
 	Initialise();
 }
+// Move constructor
 Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
 	// Floatable parameters
 	  fraction(std::move(other.fraction))
@@ -147,7 +147,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
 	, KKpars(std::move(other.KKpars))
 	// Fixed parameters
 	, phiMassname(std::move(other.phiMassname))
-	, KKname(std::move(other.KKname))
 	, JKK(std::move(other.JKK))
 	, lineshape(std::move(other.lineshape))
 	, fixedlineshape(std::move(other.fixedlineshape))
@@ -156,6 +155,50 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
 	, init(std::move(other.init))
 {
 	Initialise();
+}
+// Copy by assignment
+Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(const Bs2PhiKKComponent& other)
+{
+	// Floatable parameters
+	fraction = other.fraction;
+	Ahel = other.Ahel;
+	helicities = other.helicities;
+	magsqs = other.magsqs;
+	phases = other.phases;
+	mphi = other.mphi;
+	KKpars = other.KKpars;
+	// Fixed parameters
+	phiMassname = other.phiMassname;
+	JKK = other.JKK;
+	lineshape = other.lineshape;
+	fixedlineshape = other.fixedlineshape;
+	fixedamplitudes = other.fixedamplitudes;
+	fixedphimass = other.fixedphimass;
+	init = other.init;
+	Initialise();
+	return *this;
+}
+// Move by assignment
+Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(Bs2PhiKKComponent&& other)
+{
+	// Floatable parameters
+	fraction = std::move(other.fraction);
+	Ahel = std::move(other.Ahel);
+	helicities = std::move(other.helicities);
+	magsqs = std::move(other.magsqs);
+	phases = std::move(other.phases);
+	mphi = std::move(other.mphi);
+	KKpars = std::move(other.KKpars);
+	// Fixed parameters
+	phiMassname = std::move(other.phiMassname);
+	JKK = std::move(other.JKK);
+	lineshape = std::move(other.lineshape);
+	fixedlineshape = std::move(other.fixedlineshape);
+	fixedamplitudes = std::move(other.fixedamplitudes);
+	fixedphimass = std::move(other.fixedphimass);
+	init = std::move(other.init);
+	Initialise();
+	return *this;
 }
 Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
@@ -202,9 +245,7 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs0, pBs)*
 	                       KKbarrier.barrier(pKK0, pKK);
-	double returnVal = orbitalFactor * barrierFactor;
-	if(returnVal < 1e-20) std::cerr << "Bs2PhiKKComponent::OFBF WARNING: return value very small: " << returnVal << std::endl;
-	return returnVal;
+	return orbitalFactor * barrierFactor;
 }
 // The full amplitude.
 std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array<double,4>& datapoint) const

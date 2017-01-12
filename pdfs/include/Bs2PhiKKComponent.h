@@ -17,11 +17,13 @@
 class Bs2PhiKKComponent
 {
 	public:
+		Bs2PhiKKComponent() {}
 		Bs2PhiKKComponent(PDFConfigurator*, std::string, std::string, int, std::string); // config, phi name, resonance name, spin
 		Bs2PhiKKComponent(const Bs2PhiKKComponent&);
 		Bs2PhiKKComponent(Bs2PhiKKComponent&&);
 		~Bs2PhiKKComponent();
-		std::string GetName() const {return KKname;}
+		Bs2PhiKKComponent& operator=(const Bs2PhiKKComponent&);
+		Bs2PhiKKComponent& operator=(Bs2PhiKKComponent&&);
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays
@@ -42,6 +44,7 @@ class Bs2PhiKKComponent
 			PhysPar(const PhysPar& other) : value(other.value), name(other.name) {}
 			PhysPar(PhysPar&& other): value(std::move(other.value)), name(std::move(other.name)) {}
 			PhysPar& operator=(const Bs2PhiKKComponent::PhysPar& other) {name = other.name;return *this;}
+			PhysPar& operator=(Bs2PhiKKComponent::PhysPar&& other) {name = std::move(other.name);return *this;}
 			void Update(const ParameterSet* pars) {value = pars->GetPhysicsParameter(name)->GetValue();}
 			double value;
 			ObservableRef name;
@@ -64,7 +67,6 @@ class Bs2PhiKKComponent
 		double RKK; // KK barrier factor radius
 		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"
 		ObservableRef phiMassname; // The name decides which set of PhysicsParameters it will look for in the RapidFit XML
-		std::string KKname;
 		bool fixedamplitudes; // Save some time updating parameters
 		bool fixedlineshape;
 		bool fixedphimass;

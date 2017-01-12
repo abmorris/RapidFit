@@ -28,7 +28,7 @@ class Bs2PhiKKSignal : public BasePDF
 		double EvaluateComponent(DataPoint*, ComponentRef* );
 		std::vector<std::string> PDFComponents();
 	private:
-		std::vector<Bs2PhiKKComponent> components;
+		std::map<std::string,Bs2PhiKKComponent> components;
 		int index; // Current datapoint index for caching
 		// K+K− mass and helicity angles
 		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
@@ -37,7 +37,6 @@ class Bs2PhiKKSignal : public BasePDF
 		// phi(1020) mass
 		Bs2PhiKKComponent::PhysPar phimass;
 		// Options
-		std::vector<std::string> componentnames; // List of components to be drawn
 		bool acceptance_moments; // Use Legendre moments for acceptance
 		bool acceptance_histogram; // Use adaptively-binned histogram for acceptance
 		// Acceptance objects

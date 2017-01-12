@@ -29,20 +29,16 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 	std::string phiname = config->getConfigurationValue("phiname");
 	phimass = Bs2PhiKKComponent::PhysPar(config,phiname+"_mass");
 	dGsGs = Bs2PhiKKComponent::PhysPar(config,"dGsGs");
-	std::vector<std::string> reslist = StringProcessing::SplitString( config->getConfigurationValue("resonances"), ' ' );
+	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
 	std::cout << "┃ Component\t│ Spin\t│ Lineshape\t┃\n";
 	std::cout << "┠───────────────┼───────┼───────────────┨\n";
-	for(auto name: reslist)
+	for(const auto& name: reslist)
 	{
 		if(name=="") continue;
-		Bs2PhiKKComponent comp = std::move(ParseComponent(config,phiname,name));
-		components.push_back(comp);
-		componentnames.push_back(name);
+		components[name] = ParseComponent(config,phiname,name);
 	}
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
-	if(componentnames.size() > 1)
-		componentnames.push_back("interference");
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
 	else if(acceptance_histogram)
 	{
@@ -69,7 +65,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) 
 	// PDF components
 	,components(copy.components)
 	// Plotting components
-	,componentnames(copy.componentnames)
 	// Options
 	,acceptance_moments(copy.acceptance_moments)
 	,acceptance_histogram(copy.acceptance_histogram)
@@ -106,7 +101,7 @@ Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::s
 	int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
 	std::string lineshape = option.substr(option.find(',')+1,2);
 	std::cout << "┃ " << KKname << "\t│    " << JKK << "\t│ " << lineshape << " shape \t┃\n";
-	return std::move(Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape));
+	return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -124,7 +119,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 	parameterNames.push_back(dGsGs.name);
 	parameterNames.push_back(phimass.name);
 	for(const auto& comp: components)
-		for(std::string par: comp.GetPhysicsParameters())
+		for(std::string par: comp.second.GetPhysicsParameters())
 			if(par!=phimass.name.Name()) parameterNames.push_back(par);
 //	allParameters = *( new ParameterSet(parameterNames) );
 	allParameters = ParameterSet(parameterNames);
@@ -137,7 +132,7 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	dGsGs.Update(&allParameters);
 	phimass.Update(&allParameters);
 	for(auto& comp: components)
-		comp.SetPhysicsParameters(&allParameters);
+		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
 }
 /*****************************************************************************/
@@ -145,10 +140,12 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 {
 	// Avoid redundant plotting for single-component PDFs
-	if(componentnames.size()>1)
-		return componentnames;
-	else
-		return {};
+	std::vector<std::string> componentnames;
+	for(const auto& comp : components)
+		componentnames.push_back(comp.first);
+	if(components.size()>1)
+		componentnames.push_back("interference");
+	return componentnames;
 }
 /*****************************************************************************/
 // Evaluate a single component
@@ -159,25 +156,18 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 		return Evaluate(measurement);
 	const std::array<double,4> datapoint = ReadDataPoint(measurement);
 	// Evaluate the PDF at this point
-	double MatrixElementSquared = -1; // Important that this initalises to negative value
+	double MatrixElementSquared;
 	if(compName=="interference")
 	{
 		MatrixElementSquared = TotalMsq(datapoint);
 		for(const auto& comp : components)
-			MatrixElementSquared -= TimeIntegratedMsq(comp.Amplitude(datapoint));
+			MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(datapoint));
 	}
 	else
-	{
-		for(const auto& comp: components)
-			if(compName.find(comp.GetName()) != std::string::npos)
-				MatrixElementSquared = TimeIntegratedMsq(comp.Amplitude(datapoint, compName));
-		// If none of the component names matched, assume total PDF
-		if(MatrixElementSquared<0) return Evaluate(measurement);
-	}
+		MatrixElementSquared = TimeIntegratedMsq(components[compName].Amplitude(datapoint, compName)); // The name can also contain an option like "odd" or "even"
 	double jacobian = p1stp3(datapoint[0]);
 	double acceptance = Acceptance(datapoint);
-	double returnVal = MatrixElementSquared * jacobian * acceptance;
-	return returnVal;
+	return MatrixElementSquared * jacobian * acceptance;
 }
 /*****************************************************************************/
 // Calculate the function value
@@ -187,8 +177,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 	double MatrixElementSquared = TotalMsq(datapoint);
 	double jacobian = p1stp3(datapoint[0]);
 	double acceptance = Acceptance(datapoint);
-	double returnVal = MatrixElementSquared * jacobian * acceptance;
-	return returnVal;
+	return MatrixElementSquared * jacobian * acceptance;
 }
 /*****************************************************************************/
 std::array<double,4> Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
@@ -198,9 +187,6 @@ std::array<double,4> Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
 	double phi       = measurement->GetObservable(phiName     )->GetValue();
 	double ctheta_1  = measurement->GetObservable(ctheta_1Name)->GetValue();
 	double ctheta_2  = measurement->GetObservable(ctheta_2Name)->GetValue();
-	// Check if the datapoint makes sense
-	if(std::abs(phi) > M_PI || std::abs(ctheta_1) > 1 || std::abs(ctheta_2) > 1)
-		std::cerr << "Datapoint outside phasespace!" << std::endl;
 	phi+=M_PI;
 	return {mKK, phi, ctheta_1, ctheta_2};
 }
@@ -210,7 +196,7 @@ double Bs2PhiKKSignal::TotalMsq(const std::array<double,4>& datapoint) const
 	std::array<std::complex<double>,2> TotalAmp = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	for(const auto& comp : components)
 	{
-		std::array<std::complex<double>,2> CompAmp = comp.Amplitude(datapoint);
+		std::array<std::complex<double>,2> CompAmp = comp.second.Amplitude(datapoint);
 		TotalAmp[false] += CompAmp[false];
 		TotalAmp[true] += CompAmp[true];
 	}
@@ -222,10 +208,7 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const std::array<std::complex<double>,2
 	double GL = (2+dGsGs.value); // Actually Γ/2ΓL
 	double termone = (std::norm(Amp[false]) + std::norm(Amp[true]))*(1./GL + 1./GH);
 	double termtwo = 2*std::real(Amp[true]*std::conj(Amp[false]))*(1./GL - 1./GH);
-	if(!std::isnan(termone) && !std::isnan(termtwo))
-		return termone + termtwo;
-	else
-		return 0;
+	return termone + termtwo;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::Acceptance(const std::array<double,4>& datapoint) const
@@ -235,7 +218,7 @@ double Bs2PhiKKSignal::Acceptance(const std::array<double,4>& datapoint) const
 		acceptance = acc_m->Evaluate(datapoint);
 	else if(acceptance_histogram)
 		acceptance = acc_h->Eval(std::vector<double>(datapoint.begin(),datapoint.end()));
-	return std::isnan(acceptance) ? 0 : acceptance;
+	return acceptance;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
@@ -246,7 +229,7 @@ double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
 	double pB = DPHelpers::daughterMomentum(mBs, mKK, mPhi);
 	double pRpB = pR * pB;
-	return std::isnan(pRpB) ? 0 : pRpB; // Protect against divide-by-zero
+	return pRpB;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::Normalisation(PhaseSpaceBoundary* boundary)
