@@ -140,11 +140,11 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 {
 	// Avoid redundant plotting for single-component PDFs
+	if(components.size() == 1) return {};
 	std::vector<std::string> componentnames;
 	for(const auto& comp : components)
 		componentnames.push_back(comp.first);
-	if(components.size()>1)
-		componentnames.push_back("interference");
+	componentnames.push_back("interference");
 	return componentnames;
 }
 /*****************************************************************************/
@@ -207,7 +207,7 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const std::array<std::complex<double>,2
 	double GH = (2-dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
 	double GL = (2+dGsGs.value); // Actually Γ/2ΓL
 	double termone = (std::norm(Amp[false]) + std::norm(Amp[true]))*(1./GL + 1./GH);
-	double termtwo = 2*std::real(Amp[true]*std::conj(Amp[false]))*(1./GL - 1./GH);
+	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false]))*(1./GL - 1./GH);
 	return termone + termtwo;
 }
 /*****************************************************************************/
@@ -224,6 +224,7 @@ double Bs2PhiKKSignal::Acceptance(const std::array<double,4>& datapoint) const
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
 	const double mK   = Bs2PhiKKComponent::mK;
+	if(mKK < 2*mK) return 0;
 	const double mBs  = Bs2PhiKKComponent::mBs;
 	const double mPhi = phimass.value;
 	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);

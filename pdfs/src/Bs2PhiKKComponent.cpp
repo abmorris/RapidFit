@@ -18,12 +18,12 @@ double Bs2PhiKKComponent::mpi  = 0.139570;
 
 // Constructor
 Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phiname, std::string KKname, int _JKK, std::string _lineshape) :
-	  phiMassname(config->getName(_phiname+"_mass"))
+	  phimass(PhysPar(config,_phiname+"_mass"))
+	, fraction(PhysPar(config,KKname+"_fraction"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
 	, fixedamplitudes(false)
 	, fixedlineshape(false)
-	, fixedphimass(false)
 	, init(false)
 {
 	// Barrier factors
@@ -33,8 +33,6 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	RKK = std::atof(RKK_str.c_str());
 	Bsbarrier = DPBarrierFactor(  0,RBs);
 	KKbarrier = DPBarrierFactor(JKK,RKK);
-	// Component scale factor
-	fraction = PhysPar(config,KKname+"_fraction");
 	// KK resonance parameters
 	// Breit Wigner
 	if(lineshape=="BW")
@@ -56,6 +54,7 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	}
 	// Helicity amplitude observables
 	int lambda_max = std::min(1, _JKK); // Maximum helicity
+	std::vector<int> helicities;
 	if(lineshape!="NR")
 		for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
@@ -80,8 +79,8 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 			break;
 	}
 	// Make the helicity amplitude vector
-	while(Ahel.size() < n)
-		Ahel.push_back(std::polar<double>(sqrt(1. / (double)n), 0));
+	for(const auto& lambda: helicities)
+		Ahel[lambda] = std::polar<double>(sqrt(1. / (double)n), 0);
 	Initialise();
 }
 void Bs2PhiKKComponent::Initialise()
@@ -119,18 +118,15 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	// Floatable parameters
 	  fraction(other.fraction)
 	, Ahel(other.Ahel)
-	, helicities(other.helicities)
 	, magsqs(other.magsqs)
 	, phases(other.phases)
-	, mphi(other.mphi)
+	, phimass(other.phimass)
 	, KKpars(other.KKpars)
 	// Fixed parameters
-	, phiMassname(other.phiMassname)
 	, JKK(other.JKK)
 	, lineshape(other.lineshape)
 	, fixedlineshape(other.fixedlineshape)
 	, fixedamplitudes(other.fixedamplitudes)
-	, fixedphimass(other.fixedphimass)
 	, init(other.init)
 {
 	Initialise();
@@ -140,18 +136,15 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
 	// Floatable parameters
 	  fraction(std::move(other.fraction))
 	, Ahel(std::move(other.Ahel))
-	, helicities(std::move(other.helicities))
 	, magsqs(std::move(other.magsqs))
 	, phases(std::move(other.phases))
-	, mphi(std::move(other.mphi))
+	, phimass(std::move(other.phimass))
 	, KKpars(std::move(other.KKpars))
 	// Fixed parameters
-	, phiMassname(std::move(other.phiMassname))
 	, JKK(std::move(other.JKK))
 	, lineshape(std::move(other.lineshape))
 	, fixedlineshape(std::move(other.fixedlineshape))
 	, fixedamplitudes(std::move(other.fixedamplitudes))
-	, fixedphimass(std::move(other.fixedphimass))
 	, init(std::move(other.init))
 {
 	Initialise();
@@ -162,18 +155,15 @@ Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(const Bs2PhiKKComponent& other)
 	// Floatable parameters
 	fraction = other.fraction;
 	Ahel = other.Ahel;
-	helicities = other.helicities;
 	magsqs = other.magsqs;
 	phases = other.phases;
-	mphi = other.mphi;
+	phimass = other.phimass;
 	KKpars = other.KKpars;
 	// Fixed parameters
-	phiMassname = other.phiMassname;
 	JKK = other.JKK;
 	lineshape = other.lineshape;
 	fixedlineshape = other.fixedlineshape;
 	fixedamplitudes = other.fixedamplitudes;
-	fixedphimass = other.fixedphimass;
 	init = other.init;
 	Initialise();
 	return *this;
@@ -184,31 +174,21 @@ Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(Bs2PhiKKComponent&& other)
 	// Floatable parameters
 	fraction = std::move(other.fraction);
 	Ahel = std::move(other.Ahel);
-	helicities = std::move(other.helicities);
 	magsqs = std::move(other.magsqs);
 	phases = std::move(other.phases);
-	mphi = std::move(other.mphi);
+	phimass = std::move(other.phimass);
 	KKpars = std::move(other.KKpars);
 	// Fixed parameters
-	phiMassname = std::move(other.phiMassname);
 	JKK = std::move(other.JKK);
 	lineshape = std::move(other.lineshape);
 	fixedlineshape = std::move(other.fixedlineshape);
 	fixedamplitudes = std::move(other.fixedamplitudes);
-	fixedphimass = std::move(other.fixedphimass);
 	init = std::move(other.init);
 	Initialise();
 	return *this;
 }
 Bs2PhiKKComponent::~Bs2PhiKKComponent()
 {
-}
-// Get the corresponding helicity amplitude for a given value of helicity, instead of using array indices
-std::complex<double> Bs2PhiKKComponent::A(const int lambda) const
-{
-	if(abs(lambda) > helicities.back()) return std::complex<double>(0, 0); //safety
-	int i = lambda + helicities.back();
-	return Ahel[i];
 }
 // Angular part of the amplitude
 std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, const double ctheta_1, const double ctheta_2) const
@@ -218,9 +198,12 @@ std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, co
 std::complex<double> Bs2PhiKKComponent::AngularPart(const double phi, const double ctheta_1, const double ctheta_2) const
 {
 	std::complex<double> angularPart(0, 0);
-	if(helicities.empty()) return std::complex<double>(1, 0); // Must be non-resonant
-	for(int lambda : helicities)
-		angularPart += A(lambda) * F(lambda, phi, ctheta_1, ctheta_2);
+	if(Ahel.empty()) return std::complex<double>(1, 0); // Must be non-resonant
+	for(const auto& A : Ahel)
+	{
+		int lambda = A.first;
+		angularPart += A.second * F(lambda, phi, ctheta_1, ctheta_2);
+	}
 	return angularPart;
 }
 // Orbital and barrier factor
@@ -232,6 +215,7 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	// Orbital factor
 	// Masses
 	double Mres = KKpars[0].value;
+	double mphi = phimass.value;
 	double m_min  = mK + mK;
 	double m_max  = mBs - mphi;
 	double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
@@ -261,7 +245,7 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 // The full amplitude with an option.
 std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array<double,4>& datapoint, const std::string option) const
 {
-	if(helicities.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos ) return Amplitude(datapoint);
+	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos ) return Amplitude(datapoint);
 	double mKK = datapoint[0];
 	double phi = datapoint[1];
 	double ctheta_1 = datapoint[2];
@@ -277,11 +261,12 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 		HelAmp = {-Aperp/sqrt(2.), std::complex<double>(0, 0), Aperp/sqrt(2.)};
 	// CP-even component
 	else
-		HelAmp = {Apara/sqrt(2.), A(0), Apara/sqrt(2.)};
-	for(int lambda : helicities)
+		HelAmp = {Apara/sqrt(2.), Ahel.at(0), Apara/sqrt(2.)};
+	for(const auto& A : Ahel)
 	{
-		angularPart[false] += HelAmp[lambda + helicities.back()] * F(lambda, phi, ctheta_1, ctheta_2);
-		angularPart[true] += HelAmp[lambda + helicities.back()] * F(lambda, -phi, -ctheta_1, -ctheta_2);
+		int lambda = A.first;
+		angularPart[false] += HelAmp[lambda+1] * F(lambda, phi, ctheta_1, ctheta_2);
+		angularPart[true] += HelAmp[lambda+1] * F(lambda, -phi, -ctheta_1, -ctheta_2);
 	}
 	// Result
 	std::complex<double> massPart = fraction.value * KKLineShape->massShape(mKK) * OFBF(mKK);
@@ -290,14 +275,11 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 // Update everything from the parameter set
 void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
-	if(!fixedphimass)
-	{
-		mphi = fitpars->GetPhysicsParameter(phiMassname)->GetValue();
-	}
+	fraction.Update(fitpars);
+	phimass.Update(fitpars);
 	// If this is the first time, then see if the parameters for the amplitudes or lineshape are fixed
 	if(!init)
 	{
-		fixedphimass = fitpars->GetPhysicsParameter(phiMassname)->isFixed();
 		// Check if we can skip updating the amplitudes
 		fixedamplitudes = true;
 		for(auto& par: magsqs)
@@ -322,7 +304,6 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		init = true;
 		return;
 	}
-	fraction.Update(fitpars);
 	if(!fixedamplitudes)
 	{
 		for(auto& par: magsqs) par.Update(fitpars);
@@ -338,21 +319,21 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 void Bs2PhiKKComponent::UpdateAmplitudes()
 {
 	// Update the helicity amplitudes
-	if(helicities.empty())
+	if(Ahel.empty())
 		return;
-	else if(helicities.size() == 1)
+	else if(Ahel.size() == 1)
 		Ahel[0] = std::polar<double>(1.0,phases[0].value);
-	else if(helicities.size() == 3)
+	else if(Ahel.size() == 3)
 	{
 		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
 		std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
-		Ahel[0] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
-		Ahel[1] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
-		Ahel[2] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
+		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
+		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
+		Ahel[+1] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
 	}
 	else
 	{
-		std::cerr << "Bs2PhiKKComponent can't handle this many helicities: " << helicities.size() << std::endl;
+		std::cerr << "Bs2PhiKKComponent can't handle this many helicities: " << Ahel.size() << std::endl;
 		std::exit(-1);
 	}
 }
@@ -376,7 +357,7 @@ void Bs2PhiKKComponent::UpdateLineshape()
 vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(const auto& set: {{fraction},magsqs,phases,KKpars})
+	for(const auto& set: {{fraction,phimass},magsqs,phases,KKpars})
 		for(const auto& par: set)
 			parameters.push_back(par.name);
 	return parameters;
