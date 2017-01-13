@@ -26,8 +26,8 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	// Barrier factors
 	std::string RBs_str = config->getConfigurationValue("RBs");
 	std::string RKK_str = config->getConfigurationValue("RKK");
-	RBs = std::atof(RBs_str.c_str());
-	RKK = std::atof(RKK_str.c_str());
+	RBs = std::stod(RBs_str);
+	RKK = std::stod(RKK_str);
 	if(std::isnan(RBs)) std::cerr << "\tBs barrier factor radius is nan" << std::endl;
 	if(std::isnan(RKK)) std::cerr << "\tKK barrier factor radius is nan" << std::endl;
 	Bsbarrier = DPBarrierFactor(  0,RBs);

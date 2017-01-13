@@ -1539,7 +1539,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 			 *
 			 * I don't implicitly trust this, however I don't have a better solution to calculate a sensible error at the time of writing
 			 */
-			double pull_err = 1.;
+			double pull_err = 0;//1.;
 
 			if( pull >= DBL_MAX || data_err < 1E-10 )	pull = 0.;
 			if( fabs(data_y) < 1E-10 ) pull_err = 0.;
