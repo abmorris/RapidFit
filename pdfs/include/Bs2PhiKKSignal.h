@@ -28,8 +28,8 @@ class Bs2PhiKKSignal : public BasePDF
 		double EvaluateComponent(DataPoint*, ComponentRef* );
 		std::vector<std::string> PDFComponents();
 	private:
-		std::map<std::string,Bs2PhiKKComponent> components;
-		int index; // Current datapoint index for caching
+		std::map<std::string,Bs2PhiKKComponent> components; // Iterable list of amplitude components
+		std::vector<std::string> componentnames; // List of names for plotting purposes only
 		// K+K− mass and helicity angles
 		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
 		// Bs width splitting

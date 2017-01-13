@@ -46,7 +46,7 @@ class Bs2PhiKKComponent
 			PhysPar(PhysPar&& other): value(std::move(other.value)), name(std::move(other.name)) {}
 			PhysPar& operator=(const Bs2PhiKKComponent::PhysPar& other) {name = other.name;return *this;}
 			PhysPar& operator=(Bs2PhiKKComponent::PhysPar&& other) {name = std::move(other.name);return *this;}
-			void Update(const ParameterSet* pars) {value = pars->GetPhysicsParameter(name)->GetValue();}
+			void Update(const ParameterSet* pars) {value = pars->GetPhysicsParameter(name)->GetValue(); if(std::isnan(value)) std::cerr << name.Name() << " has been given a nan value!" << std::endl; }
 			double value;
 			ObservableRef name;
 		};
@@ -66,9 +66,6 @@ class Bs2PhiKKComponent
 		double RBs; // Bs barrier factor radius
 		double RKK; // KK barrier factor radius
 		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"
-		bool fixedamplitudes; // Save some time updating parameters
-		bool fixedlineshape;
-		bool init; // Have we had our first SetPhysicsParameters?
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateLineshape();

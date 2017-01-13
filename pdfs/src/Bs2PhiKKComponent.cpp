@@ -22,15 +22,14 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	, fraction(PhysPar(config,KKname+"_fraction"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
-	, fixedamplitudes(false)
-	, fixedlineshape(false)
-	, init(false)
 {
 	// Barrier factors
 	std::string RBs_str = config->getConfigurationValue("RBs");
 	std::string RKK_str = config->getConfigurationValue("RKK");
 	RBs = std::atof(RBs_str.c_str());
 	RKK = std::atof(RKK_str.c_str());
+	if(std::isnan(RBs)) std::cerr << "\tBs barrier factor radius is nan" << std::endl;
+	if(std::isnan(RKK)) std::cerr << "\tKK barrier factor radius is nan" << std::endl;
 	Bsbarrier = DPBarrierFactor(  0,RBs);
 	KKbarrier = DPBarrierFactor(JKK,RKK);
 	// KK resonance parameters
@@ -124,10 +123,12 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
 	, KKpars(other.KKpars)
 	// Fixed parameters
 	, JKK(other.JKK)
+	, RKK(other.RKK)
+	// DP objects
+	, Bsbarrier(other.Bsbarrier)
+	, KKbarrier(other.KKbarrier)
+	// Options
 	, lineshape(other.lineshape)
-	, fixedlineshape(other.fixedlineshape)
-	, fixedamplitudes(other.fixedamplitudes)
-	, init(other.init)
 {
 	Initialise();
 }
@@ -142,10 +143,12 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
 	, KKpars(std::move(other.KKpars))
 	// Fixed parameters
 	, JKK(std::move(other.JKK))
+	, RKK(std::move(other.RKK))
+	// DP objects
+	, Bsbarrier(std::move(other.Bsbarrier))
+	, KKbarrier(std::move(other.KKbarrier))
+	// Options
 	, lineshape(std::move(other.lineshape))
-	, fixedlineshape(std::move(other.fixedlineshape))
-	, fixedamplitudes(std::move(other.fixedamplitudes))
-	, init(std::move(other.init))
 {
 	Initialise();
 }
@@ -161,10 +164,12 @@ Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(const Bs2PhiKKComponent& other)
 	KKpars = other.KKpars;
 	// Fixed parameters
 	JKK = other.JKK;
+	RKK = other.RKK;
+	// DP objects
+	Bsbarrier = other.Bsbarrier;
+	KKbarrier = other.KKbarrier;
+	// Options
 	lineshape = other.lineshape;
-	fixedlineshape = other.fixedlineshape;
-	fixedamplitudes = other.fixedamplitudes;
-	init = other.init;
 	Initialise();
 	return *this;
 }
@@ -180,10 +185,12 @@ Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(Bs2PhiKKComponent&& other)
 	KKpars = std::move(other.KKpars);
 	// Fixed parameters
 	JKK = std::move(other.JKK);
+	RKK = std::move(other.RKK);
+	// DP objects
+	Bsbarrier = std::move(other.Bsbarrier);
+	KKbarrier = std::move(other.KKbarrier);
+	// Options
 	lineshape = std::move(other.lineshape);
-	fixedlineshape = std::move(other.fixedlineshape);
-	fixedamplitudes = std::move(other.fixedamplitudes);
-	init = std::move(other.init);
 	Initialise();
 	return *this;
 }
@@ -193,7 +200,11 @@ Bs2PhiKKComponent::~Bs2PhiKKComponent()
 // Angular part of the amplitude
 std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, const double ctheta_1, const double ctheta_2) const
 {
-	return wignerPhi->function(ctheta_1, lambda, 0) * wignerKK->function(ctheta_2, lambda, 0) * std::polar<double>(1, lambda*Phi);
+	const double d_phi = wignerPhi->function(ctheta_1, lambda, 0);
+	const double d_KK = wignerKK->function(ctheta_2, lambda, 0);
+	if(std::isnan(d_phi)) std::cerr << "\tWigner function for the phi evaluates to nan" << std::endl;
+	if(std::isnan(d_phi)) std::cerr << "\tWigner function for the KK resonance evaluates to nan" << std::endl;
+	return d_phi * d_KK * std::polar<double>(1, lambda*Phi);
 }
 std::complex<double> Bs2PhiKKComponent::AngularPart(const double phi, const double ctheta_1, const double ctheta_2) const
 {
@@ -202,6 +213,7 @@ std::complex<double> Bs2PhiKKComponent::AngularPart(const double phi, const doub
 	for(const auto& A : Ahel)
 	{
 		int lambda = A.first;
+		if(std::isnan(A.second.real()) || std::isnan(A.second.imag())) std::cerr << "\tA(" << lambda << ") is " << A.second << std::endl;
 		angularPart += A.second * F(lambda, phi, ctheta_1, ctheta_2);
 	}
 	return angularPart;
@@ -229,6 +241,8 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs0, pBs)*
 	                       KKbarrier.barrier(pKK0, pKK);
+	if(std::isnan(orbitalFactor)) std::cerr << "\tOrbital factor evaluates to nan" << std::endl;
+	if(std::isnan(barrierFactor)) std::cerr << "\tBarrier factor evaluates to nan" << std::endl;
 	return orbitalFactor * barrierFactor;
 }
 // The full amplitude.
@@ -239,7 +253,10 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 	double ctheta_1 = datapoint[2];
 	double ctheta_2 = datapoint[3];
 	std::array<std::complex<double>,2> angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
-	std::complex<double> massPart = fraction.value * KKLineShape->massShape(mKK) * OFBF(mKK);
+	std::complex<double> massPart = KKLineShape->massShape(mKK);
+	if(std::isnan(fraction.value)) std::cerr << "\tFraction is nan" << std::endl;
+	if(std::isnan(massPart.real()) || std::isnan(massPart.imag())) std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
+	massPart *= fraction.value * OFBF(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
@@ -268,8 +285,10 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 		angularPart[false] += HelAmp[lambda+1] * F(lambda, phi, ctheta_1, ctheta_2);
 		angularPart[true] += HelAmp[lambda+1] * F(lambda, -phi, -ctheta_1, -ctheta_2);
 	}
-	// Result
-	std::complex<double> massPart = fraction.value * KKLineShape->massShape(mKK) * OFBF(mKK);
+	std::complex<double> massPart = KKLineShape->massShape(mKK);
+	if(std::isnan(fraction.value)) std::cerr << "\tFraction is nan" << std::endl;
+	if(std::isnan(massPart.real()) || std::isnan(massPart.imag())) std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
+	massPart *= fraction.value * OFBF(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // Update everything from the parameter set
@@ -277,44 +296,11 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	fraction.Update(fitpars);
 	phimass.Update(fitpars);
-	// If this is the first time, then see if the parameters for the amplitudes or lineshape are fixed
-	if(!init)
-	{
-		// Check if we can skip updating the amplitudes
-		fixedamplitudes = true;
-		for(auto& par: magsqs)
-		{
-			par.Update(fitpars);
-			fixedamplitudes *= fitpars->GetPhysicsParameter(par.name)->isFixed();;
-		}
-		for(auto& par: phases)
-		{
-			par.Update(fitpars);
-			fixedamplitudes *= fitpars->GetPhysicsParameter(par.name)->isFixed();;
-		}
-		UpdateAmplitudes(); // Make sure this is called the first time
-		// Check if we can skip updating the lineshape
-		fixedlineshape = true;
-		for(auto& par: KKpars)
-		{
-			par.Update(fitpars);
-			fixedlineshape *= fitpars->GetPhysicsParameter(par.name)->isFixed();;
-		}
-		UpdateLineshape(); // Make sure this is called the first time
-		init = true;
-		return;
-	}
-	if(!fixedamplitudes)
-	{
-		for(auto& par: magsqs) par.Update(fitpars);
-		for(auto& par: phases) par.Update(fitpars);
-		UpdateAmplitudes();
-	}
-	if(!fixedlineshape)
-	{
-		for(auto& par: KKpars) par.Update(fitpars);
-		UpdateLineshape();
-	}
+	for(auto& par: magsqs) par.Update(fitpars);
+	for(auto& par: phases) par.Update(fitpars);
+	for(auto& par: KKpars) par.Update(fitpars);
+	UpdateAmplitudes();
+	UpdateLineshape();
 }
 void Bs2PhiKKComponent::UpdateAmplitudes()
 {
@@ -326,7 +312,9 @@ void Bs2PhiKKComponent::UpdateAmplitudes()
 	else if(Ahel.size() == 3)
 	{
 		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
-		std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
+		double Apara_mag = sqrt(1. - magsqs[0].value - magsqs[1].value);
+		if(std::isnan(Apara_mag)) Apara_mag = 0; // Not ideal. Try to set an external constraint function to avoid this
+		std::complex<double> Apara = std::polar(Apara_mag,phases[2].value);
 		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
 		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
 		Ahel[+1] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)

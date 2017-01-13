@@ -37,7 +37,9 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 	{
 		if(name=="") continue;
 		components[name] = ParseComponent(config,phiname,name);
+		componentnames.push_back(name);
 	}
+	if(components.size() > 1) componentnames.push_back("interference");
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
 	else if(acceptance_histogram)
@@ -64,6 +66,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) 
 	,phimass(copy.phimass)
 	// PDF components
 	,components(copy.components)
+	,componentnames(copy.componentnames)
 	// Plotting components
 	// Options
 	,acceptance_moments(copy.acceptance_moments)
@@ -141,10 +144,6 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 {
 	// Avoid redundant plotting for single-component PDFs
 	if(components.size() == 1) return {};
-	std::vector<std::string> componentnames;
-	for(const auto& comp : components)
-		componentnames.push_back(comp.first);
-	componentnames.push_back("interference");
 	return componentnames;
 }
 /*****************************************************************************/
@@ -183,10 +182,10 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 std::array<double,4> Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
-	double mKK       = measurement->GetObservable(mKKName     )->GetValue();
-	double phi       = measurement->GetObservable(phiName     )->GetValue();
-	double ctheta_1  = measurement->GetObservable(ctheta_1Name)->GetValue();
-	double ctheta_2  = measurement->GetObservable(ctheta_2Name)->GetValue();
+	double mKK      = measurement->GetObservable(mKKName     )->GetValue();
+	double phi      = measurement->GetObservable(phiName     )->GetValue();
+	double ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
+	double ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
 	phi+=M_PI;
 	return {mKK, phi, ctheta_1, ctheta_2};
 }
@@ -197,6 +196,7 @@ double Bs2PhiKKSignal::TotalMsq(const std::array<double,4>& datapoint) const
 	for(const auto& comp : components)
 	{
 		std::array<std::complex<double>,2> CompAmp = comp.second.Amplitude(datapoint);
+		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag())){ std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl; std::exit(1);}
 		TotalAmp[false] += CompAmp[false];
 		TotalAmp[true] += CompAmp[true];
 	}
@@ -204,10 +204,10 @@ double Bs2PhiKKSignal::TotalMsq(const std::array<double,4>& datapoint) const
 }
 double Bs2PhiKKSignal::TimeIntegratedMsq(const std::array<std::complex<double>,2>& Amp) const
 {
-	double GH = (2-dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
-	double GL = (2+dGsGs.value); // Actually Γ/2ΓL
-	double termone = (std::norm(Amp[false]) + std::norm(Amp[true]))*(1./GL + 1./GH);
-	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false]))*(1./GL - 1./GH);
+	double GH = (2 - dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
+	double GL = (2 + dGsGs.value); // Actually Γ/2ΓL
+	double termone = (std::norm(Amp[false]) + std::norm(Amp[true])) * (1./GL + 1./GH);
+	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false])) * (1./GL - 1./GH);
 	return termone + termtwo;
 }
 /*****************************************************************************/
@@ -217,7 +217,13 @@ double Bs2PhiKKSignal::Acceptance(const std::array<double,4>& datapoint) const
 	if(acceptance_moments)
 		acceptance = acc_m->Evaluate(datapoint);
 	else if(acceptance_histogram)
-		acceptance = acc_h->Eval(std::vector<double>(datapoint.begin(),datapoint.end()));
+	{
+		std::vector<double> absdatapoint;
+		for(const auto& val: datapoint)
+			absdatapoint.push_back(std::abs(val));
+		acceptance = acc_h->Eval(absdatapoint);
+	}
+	if(std::isnan(acceptance)) std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;
 }
 /*****************************************************************************/
@@ -230,6 +236,7 @@ double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
 	double pB = DPHelpers::daughterMomentum(mBs, mKK, mPhi);
 	double pRpB = pR * pB;
+	if(std::isnan(pRpB)) std::cerr << "p1stp3 evaluates to nan" << std::endl;
 	return pRpB;
 }
 /*****************************************************************************/

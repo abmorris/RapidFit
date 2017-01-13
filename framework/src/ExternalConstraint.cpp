@@ -208,14 +208,14 @@ double ExternalConstraint::GetChi2() const
 	}
 	else if( name == "ATOTAL" )
 	{
-            double Aperpsq = internalParameterSet->GetPhysicsParameter( "Aperp_sq" )->GetValue();
-            double Azerosq = internalParameterSet->GetPhysicsParameter( "Azero_sq" )->GetValue();
-            // double Assq =  internalParameterSet->GetPhysicsParameter(AsName)->GetValue();
-            double excess = ( value - Aperpsq - Azerosq); //-Assq) ;
-            double penalty=0.;
-            if (excess >= 0) penalty = 0;
-            else penalty = ( excess * excess ) / ( error*error );
-            returnable += penalty;
+		double Aperpsq = internalParameterSet->GetPhysicsParameter( "Aperp_sq" )->GetValue();
+		double Azerosq = internalParameterSet->GetPhysicsParameter( "Azero_sq" )->GetValue();
+		// double Assq =  internalParameterSet->GetPhysicsParameter(AsName)->GetValue();
+		double excess = ( value - Aperpsq - Azerosq); //-Assq) ;
+		double penalty=0.;
+		if (excess >= 0) penalty = 0;
+		else penalty = ( excess * excess ) / ( error*error );
+		returnable += penalty;
 	}
 	else
 	{

@@ -37,6 +37,9 @@ double DPBWResonanceShape::gamma(const double m) const
 	double pp=DPHelpers::daughterMomentum(m,m1,m2);;  // momentum of daughter at the actual mass
 	double bb=barrier.barrier(pR0,pp);  // Barrier factor
 	double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
+	if(std::isnan(pp)) std::cerr << "\t\tDaughter momentum is nan" << std::endl;
+	if(std::isnan(bb)) std::cerr << "\t\tBarrier factor is nan" << std::endl;
+	if(std::isnan(gg)) std::cerr << "\t\tMass-dependent width is nan" << std::endl;
 	return gg;
 }
 

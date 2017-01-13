@@ -1,13 +1,13 @@
 #include "DPBarrierFactor.hh"
 #include <iostream>
 #include <cmath>
-DPBarrierFactor::DPBarrierFactor()
+DPBarrierFactor::DPBarrierFactor() : radius(3.1)
 {
 	function = &DPBarrierFactor::FunctionL0;
-	radius = 1;
 }
 DPBarrierFactor::DPBarrierFactor(unsigned spin, double _radius) : radius(_radius)
 {
+	if(std::isnan(radius)) std::cerr << "\t\tDPBarrier radius is nan " << std::endl;
 	switch(spin)
 	{
 		case 0:
@@ -51,6 +51,7 @@ double DPBarrierFactor::barrier(const double p0, const double p) const
 	double z  = p*p*radius*radius;
 	double z0 = p0*p0*radius*radius;
 	double factor = function(z0)/function(z);
+	if(std::isnan(factor)) std::cerr << "\t\t\tB(" << p << ", " << p0 << " | " << radius << ") = nan" << std::endl;
 	return factor;
 }
 
