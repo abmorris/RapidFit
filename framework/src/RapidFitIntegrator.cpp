@@ -938,7 +938,7 @@ double RapidFitIntegrator::PseudoRandomNumberIntegralThreaded( IPDF* functionToW
 #endif
 }
 
-double RapidFitIntegrator::MultiDimentionIntegral( IPDF* functionToWrap, AdaptiveIntegratorMultiDim* multiDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
+double RapidFitIntegrator::MultiDimensionIntegral( IPDF* functionToWrap, AdaptiveIntegratorMultiDim* multiDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
 		ComponentRef* componentIndex, vector<string> doIntegrate, vector<string> dontIntegrate )
 {
 	//Make arrays of the observable ranges to integrate over
@@ -1133,7 +1133,7 @@ double RapidFitIntegrator::DoNumericalIntegral( const DataPoint * NewDataPoint, 
 				if( !pseudoRandomIntegration )
 				{
 					pthread_mutex_lock( &multi_dim_lock );
-					numericalIntegral += this->MultiDimentionIntegral( functionToWrap, multiDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
+					numericalIntegral += this->MultiDimensionIntegral( functionToWrap, multiDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
 					pthread_mutex_unlock( &multi_dim_lock );
 				}
 				else
@@ -1165,7 +1165,7 @@ double RapidFitIntegrator::DoNumericalIntegral( const DataPoint * NewDataPoint, 
 						else
 						{
 							pthread_mutex_lock( &multi_dim_lock );
-							numericalIntegral = this->MultiDimentionIntegral( functionToWrap, multiDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
+							numericalIntegral = this->MultiDimensionIntegral( functionToWrap, multiDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
 							pthread_mutex_unlock( &multi_dim_lock );
 						}
 						this->SetUseGSLIntegrator( false );

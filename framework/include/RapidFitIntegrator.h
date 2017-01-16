@@ -325,7 +325,7 @@ class RapidFitIntegrator
 		 *
 		 * @return This Should return a double > 0 unless there has been an error
 		 */
-		static double MultiDimentionIntegral( IPDF* functionToWrap, AdaptiveIntegratorMultiDim* thisIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
+		static double MultiDimensionIntegral( IPDF* functionToWrap, AdaptiveIntegratorMultiDim* thisIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
 				ComponentRef* componentIndex, vector<string> doIntegrate, vector<string> dontIntegrate );
 
 		/*!
