@@ -27,11 +27,11 @@
 
 using std::vector;
 using std::string;
+TMinuit* currentMinuitInstance;
 
 class MinuitWrapper : public IMinimiser
 {
 	public:
-		static std::shared_ptr<TMinuit> currentMinuitInstance;
 		//MinuitWrapper();
 		MinuitWrapper( int, int=0 );
 		~MinuitWrapper();
