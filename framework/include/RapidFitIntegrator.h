@@ -319,7 +319,7 @@ class RapidFitIntegrator
 				vector<string> doIntegrate, vector<string> doNotIntegrate, unsigned int num_threads=4, unsigned int GSLFixedPoints=10000 );
 
 		/*!
-		 * @brief This is the Interface to The MuliDimentional Integral class within ROOT
+		 * @brief This is the Interface to The MuliDimensional Integral class within ROOT
 		 *
 		 * This has been moved to be a static double in order to test which object weren't thread safe in an easier way
 		 *
@@ -335,7 +335,7 @@ class RapidFitIntegrator
 		 *
 		 * @return This Should return a double > 0 unless there has been an error
 		 */
-		static double OneDimentionIntegral( IPDF* functionToWrap, IntegratorOneDim * oneDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
+		static double OneDimensionIntegral( IPDF* functionToWrap, IntegratorOneDim * oneDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
 				ComponentRef* componentIndex, vector<string> doIntegrate, vector<string> dontIntegrate );
 
 		/*!
@@ -360,7 +360,7 @@ class RapidFitIntegrator
 		IPDF * functionToWrap;
 
 		/*!
-		 * @brief Internal MultiDimentional Integrator Instance
+		 * @brief Internal MultiDimensional Integrator Instance
 		 */
 		AdaptiveIntegratorMultiDim * multiDimensionIntegrator;
 

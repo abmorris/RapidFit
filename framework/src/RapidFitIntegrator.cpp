@@ -375,7 +375,7 @@ void RapidFitIntegrator::SetPDF( IPDF* input )
 }
 
 /*
-   double RapidFitIntegrator::OneDimentionIntegral( IPDF* functionToWrap, IntegratorOneDim * oneDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
+   double RapidFitIntegrator::OneDimensionIntegral( IPDF* functionToWrap, IntegratorOneDim * oneDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
    ComponentRef* componentIndex, vector<string> doIntegrate, vector<string> dontIntegrate, DebugClass* debug )
    {
    NewDataPoint->Print();
@@ -429,7 +429,7 @@ delete quickFunction;
 return output;
 }*/
 
-double RapidFitIntegrator::OneDimentionIntegral( IPDF* functionToWrap, IntegratorOneDim * oneDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
+double RapidFitIntegrator::OneDimensionIntegral( IPDF* functionToWrap, IntegratorOneDim * oneDimensionIntegrator, const DataPoint * NewDataPoint, const PhaseSpaceBoundary * NewBoundary,
 		ComponentRef* componentIndex, vector<string> doIntegrate, vector<string> dontIntegrate )
 {
 	//NewDataPoint->Print();
@@ -1120,7 +1120,7 @@ double RapidFitIntegrator::DoNumericalIntegral( const DataPoint * NewDataPoint, 
 					cout << "RapidFitIntegrator: One Dimensional Integral" << endl;
 				}
 				pthread_mutex_lock( &one_dim_lock );
-				numericalIntegral += this->OneDimentionIntegral( functionToWrap, oneDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
+				numericalIntegral += this->OneDimensionIntegral( functionToWrap, oneDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
 				//cout << "ret: " << numericalIntegral << endl;
 				pthread_mutex_unlock( &one_dim_lock );
 			}
@@ -1159,7 +1159,7 @@ double RapidFitIntegrator::DoNumericalIntegral( const DataPoint * NewDataPoint, 
 						if( doIntegrate.size() == 1 )
 						{
 							pthread_mutex_lock( &one_dim_lock );
-							numericalIntegral = this->OneDimentionIntegral( functionToWrap, oneDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
+							numericalIntegral = this->OneDimensionIntegral( functionToWrap, oneDimensionIntegrator, *dataPoint_i, NewBoundary, componentIndex, doIntegrate, dontIntegrate );
 							pthread_mutex_unlock( &one_dim_lock );
 						}
 						else
