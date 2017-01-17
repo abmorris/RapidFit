@@ -16,8 +16,8 @@ DPGLassShape::DPGLassShape(double mRR, double gammaRR, int L, double mm1, double
 	,phaseR(0)
 	,phaseB(0)
 {
-	barrier = DPBarrierFactor(LR,RR);
 	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
+	barrier = DPBarrierFactor(LR,RR,pR0);
 }
 
 DPGLassShape::DPGLassShape(const DPGLassShape& other) : DPMassShape(other)
@@ -69,8 +69,8 @@ std::complex<double> DPGLassShape::massShape(const double m) const
 double DPGLassShape::gamma(const double m) const
 {
 	double pp=DPHelpers::daughterMomentum(m,m1,m2);
-	double bb=barrier.barrier(pR0,pp);  // Barrier factor
-	double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
+	double bb=barrier.barrier_sq(pp);  // Barrier factor
+	double gg=gammaR*mR/m*bb*std::pow(pp/pR0,2*LR+1);
 	return gg;
 }
 void DPGLassShape::setParameters(const std::vector<double>& pars)

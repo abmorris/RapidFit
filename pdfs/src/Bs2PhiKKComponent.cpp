@@ -24,14 +24,10 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	, lineshape(_lineshape)
 {
 	// Barrier factors
-	std::string RBs_str = config->getConfigurationValue("RBs");
-	std::string RKK_str = config->getConfigurationValue("RKK");
-	RBs = std::stod(RBs_str);
-	RKK = std::stod(RKK_str);
-	if(std::isnan(RBs)) std::cerr << "\tBs barrier factor radius is nan" << std::endl;
-	if(std::isnan(RKK)) std::cerr << "\tKK barrier factor radius is nan" << std::endl;
-	Bsbarrier = DPBarrierFactor(  0,RBs);
-	KKbarrier = DPBarrierFactor(JKK,RKK);
+	BsBFradius = PhysPar(config,"BsBFradius");
+	KKBFradius = PhysPar(config,"KKBFradius");
+	Bsbarrier = DPBarrierFactor(  0,1.0,0);
+	KKbarrier = DPBarrierFactor(JKK,3.0,0);
 	// KK resonance parameters
 	// Breit Wigner
 	if(lineshape=="BW")
@@ -82,11 +78,57 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 		Ahel[lambda] = std::polar<double>(sqrt(1. / (double)n), 0);
 	Initialise();
 }
+// Copy constructor
+Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
+	// Floatable parameters
+	  fraction(other.fraction)
+	, Ahel(other.Ahel)
+	, magsqs(other.magsqs)
+	, phases(other.phases)
+	, phimass(other.phimass)
+	, KKpars(other.KKpars)
+	, BsBFradius(other.BsBFradius)
+	, KKBFradius(other.KKBFradius)
+	// Fixed parameters
+	, JKK(other.JKK)
+	// DP objects
+	, Bsbarrier(other.Bsbarrier)
+	, KKbarrier(other.KKbarrier)
+	// Options
+	, lineshape(other.lineshape)
+{
+	Initialise();
+}
+// Copy by assignment
+Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(const Bs2PhiKKComponent& other)
+{
+	// Floatable parameters
+	fraction = other.fraction;
+	Ahel = other.Ahel;
+	magsqs = other.magsqs;
+	phases = other.phases;
+	phimass = other.phimass;
+	KKpars = other.KKpars;
+	BsBFradius = other.BsBFradius;
+	KKBFradius = other.KKBFradius;
+	// Fixed parameters
+	JKK = other.JKK;
+	// DP objects
+	Bsbarrier = other.Bsbarrier;
+	KKbarrier = other.KKbarrier;
+	// Options
+	lineshape = other.lineshape;
+	Initialise();
+	return *this;
+}
+Bs2PhiKKComponent::~Bs2PhiKKComponent()
+{
+}
 void Bs2PhiKKComponent::Initialise()
 {
 	// Breit Wigner
 	if(lineshape=="BW")
-		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[2].value, JKK, mK, mK, RKK));
+		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[2].value, JKK, mK, mK, KKBFradius.value));
 	// Flatte
 	else if(lineshape=="FT")
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, mpi, mpi, KKpars[1].value*KKpars[2].value, mK, mK));
@@ -111,91 +153,6 @@ void Bs2PhiKKComponent::Initialise()
 	}
 	UpdateAmplitudes();
 	UpdateLineshape();
-}
-// Copy constructor
-Bs2PhiKKComponent::Bs2PhiKKComponent(const Bs2PhiKKComponent& other) :
-	// Floatable parameters
-	  fraction(other.fraction)
-	, Ahel(other.Ahel)
-	, magsqs(other.magsqs)
-	, phases(other.phases)
-	, phimass(other.phimass)
-	, KKpars(other.KKpars)
-	// Fixed parameters
-	, JKK(other.JKK)
-	, RKK(other.RKK)
-	// DP objects
-	, Bsbarrier(other.Bsbarrier)
-	, KKbarrier(other.KKbarrier)
-	// Options
-	, lineshape(other.lineshape)
-{
-	Initialise();
-}
-// Move constructor
-Bs2PhiKKComponent::Bs2PhiKKComponent(Bs2PhiKKComponent&& other) :
-	// Floatable parameters
-	  fraction(std::move(other.fraction))
-	, Ahel(std::move(other.Ahel))
-	, magsqs(std::move(other.magsqs))
-	, phases(std::move(other.phases))
-	, phimass(std::move(other.phimass))
-	, KKpars(std::move(other.KKpars))
-	// Fixed parameters
-	, JKK(std::move(other.JKK))
-	, RKK(std::move(other.RKK))
-	// DP objects
-	, Bsbarrier(std::move(other.Bsbarrier))
-	, KKbarrier(std::move(other.KKbarrier))
-	// Options
-	, lineshape(std::move(other.lineshape))
-{
-	Initialise();
-}
-// Copy by assignment
-Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(const Bs2PhiKKComponent& other)
-{
-	// Floatable parameters
-	fraction = other.fraction;
-	Ahel = other.Ahel;
-	magsqs = other.magsqs;
-	phases = other.phases;
-	phimass = other.phimass;
-	KKpars = other.KKpars;
-	// Fixed parameters
-	JKK = other.JKK;
-	RKK = other.RKK;
-	// DP objects
-	Bsbarrier = other.Bsbarrier;
-	KKbarrier = other.KKbarrier;
-	// Options
-	lineshape = other.lineshape;
-	Initialise();
-	return *this;
-}
-// Move by assignment
-Bs2PhiKKComponent& Bs2PhiKKComponent::operator=(Bs2PhiKKComponent&& other)
-{
-	// Floatable parameters
-	fraction = std::move(other.fraction);
-	Ahel = std::move(other.Ahel);
-	magsqs = std::move(other.magsqs);
-	phases = std::move(other.phases);
-	phimass = std::move(other.phimass);
-	KKpars = std::move(other.KKpars);
-	// Fixed parameters
-	JKK = std::move(other.JKK);
-	RKK = std::move(other.RKK);
-	// DP objects
-	Bsbarrier = std::move(other.Bsbarrier);
-	KKbarrier = std::move(other.KKbarrier);
-	// Options
-	lineshape = std::move(other.lineshape);
-	Initialise();
-	return *this;
-}
-Bs2PhiKKComponent::~Bs2PhiKKComponent()
-{
 }
 // Angular part of the amplitude
 std::complex<double> Bs2PhiKKComponent::F(const int lambda, const double Phi, const double ctheta_1, const double ctheta_2) const
@@ -226,21 +183,15 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 		return 1;
 	// Orbital factor
 	// Masses
-	double Mres = KKpars[0].value;
 	double mphi = phimass.value;
-	double m_min  = mK + mK;
-	double m_max  = mBs - mphi;
-	double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
 	// Momenta
 	double pBs  = DPHelpers::daughterMomentum(mBs,  mphi, mKK   );
 	double pKK  = DPHelpers::daughterMomentum(mKK,  mK,   mK    );
-	double pBs0 = DPHelpers::daughterMomentum(mBs,  mphi, m0_eff);
-	double pKK0 = DPHelpers::daughterMomentum(Mres, mK,   mK    );
 	double orbitalFactor = //std::pow(pBs/mBs,   0)* // == 1 so don't bother
 	                       std::pow(pKK/mKK, JKK);
 	// Barrier factors
-	double barrierFactor = Bsbarrier.barrier(pBs0, pBs)*
-	                       KKbarrier.barrier(pKK0, pKK);
+	double barrierFactor = Bsbarrier.barrier(pBs)*
+	                       KKbarrier.barrier(pKK);
 	if(std::isnan(orbitalFactor)) std::cerr << "\tOrbital factor evaluates to nan" << std::endl;
 	if(std::isnan(barrierFactor)) std::cerr << "\tBarrier factor evaluates to nan" << std::endl;
 	return orbitalFactor * barrierFactor;
@@ -294,11 +245,15 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 // Update everything from the parameter set
 void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
+	// Update the parameters objects first
 	fraction.Update(fitpars);
 	phimass.Update(fitpars);
+	KKBFradius.Update(fitpars);
+	BsBFradius.Update(fitpars);
 	for(auto& par: magsqs) par.Update(fitpars);
 	for(auto& par: phases) par.Update(fitpars);
 	for(auto& par: KKpars) par.Update(fitpars);
+	UpdateBarriers();
 	UpdateAmplitudes();
 	UpdateLineshape();
 }
@@ -333,6 +288,7 @@ void Bs2PhiKKComponent::UpdateLineshape()
 	{
 		respars.push_back(KKpars[0].value); // mass
 		respars.push_back(KKpars[1].value); // width
+		respars.push_back(KKBFradius.value); // barrier factor radius
 	}
 	else if(lineshape == "FT")
 	{
@@ -342,10 +298,23 @@ void Bs2PhiKKComponent::UpdateLineshape()
 	}
 	KKLineShape->setParameters(respars);
 }
+void Bs2PhiKKComponent::UpdateBarriers()
+{
+	if(lineshape == "NR") return;
+	double mphi = phimass.value;
+	double Mres = KKpars[0].value;
+	double m_min  = mK + mK;
+	double m_max  = mBs - mphi;
+	double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
+	double pBs0 = DPHelpers::daughterMomentum(mBs,  mphi, m0_eff);
+	double pKK0 = DPHelpers::daughterMomentum(Mres, mK,   mK    );
+	Bsbarrier.setparameters(BsBFradius.value,pBs0);
+	KKbarrier.setparameters(KKBFradius.value,pKK0);
+}
 vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(const auto& set: {{fraction,phimass},magsqs,phases,KKpars})
+	for(const auto& set: {{fraction,phimass,BsBFradius,KKBFradius},magsqs,phases,KKpars})
 		for(const auto& par: set)
 			parameters.push_back(par.name);
 	return parameters;

@@ -9,8 +9,8 @@ DPBWResonanceShape::DPBWResonanceShape(double mRR, double gammaRR, int L, double
 	,m1(mm1)
 	,m2(mm2)
 {
-	barrier = DPBarrierFactor(LR,RR);
 	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
+	barrier = DPBarrierFactor(LR,RR,pR0);
 }
 
 DPBWResonanceShape::DPBWResonanceShape( const DPBWResonanceShape& other ) : DPMassShape(other)
@@ -26,8 +26,9 @@ DPBWResonanceShape::DPBWResonanceShape( const DPBWResonanceShape& other ) : DPMa
 
 std::complex<double> DPBWResonanceShape::massShape(const double m) const
 {
+	double width = gamma(m);
 	std::complex<double> result(1,0);
-	std::complex<double> denominator(mR*mR-m*m,-mR*gamma(m));
+	std::complex<double> denominator(mR*mR-m*m,-mR*width);
 	result/=denominator;
 	return result;
 }
@@ -35,23 +36,25 @@ std::complex<double> DPBWResonanceShape::massShape(const double m) const
 double DPBWResonanceShape::gamma(const double m) const
 {
 	double pp=DPHelpers::daughterMomentum(m,m1,m2);;  // momentum of daughter at the actual mass
-	double bb=barrier.barrier(pR0,pp);  // Barrier factor
-	double gg=gammaR*mR/m*bb*bb*std::pow(pp/pR0,2*LR+1);
+	double bb=barrier.barrier_sq(pp);  // Barrier factor
+	double gg=gammaR*(mR/m)*bb*std::pow(pp/pR0,2*LR+1);
 	if(std::isnan(pp)) std::cerr << "\t\tDaughter momentum is nan" << std::endl;
 	if(std::isnan(bb)) std::cerr << "\t\tBarrier factor is nan" << std::endl;
 	if(std::isnan(gg)) std::cerr << "\t\tMass-dependent width is nan" << std::endl;
+	if(LR!=barrier.getspin()) std::cerr << "\t\tStored spin of resonance and barrier factor do not match" << std::endl;
 	return gg;
 }
 
 void DPBWResonanceShape::setParameters(const std::vector<double>& pars)
 {
 	setResonanceParameters(pars[0],pars[1]);
+	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
+	barrier.setparameters(pars[2],pR0);
 }
 
 void DPBWResonanceShape::setResonanceParameters(const double mass, const double sigma )
 {
 	mR = mass;
 	gammaR = sigma;
-	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
 }
 

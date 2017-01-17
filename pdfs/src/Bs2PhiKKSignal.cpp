@@ -123,8 +123,11 @@ void Bs2PhiKKSignal::MakePrototypes()
 	parameterNames.push_back(phimass.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
-			if(par!=phimass.name.Name()) parameterNames.push_back(par);
-//	allParameters = *( new ParameterSet(parameterNames) );
+			parameterNames.push_back(par);
+	std::sort(parameterNames.begin(),parameterNames.end());
+	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
+	for(const auto& name: parameterNames)
+		std::cout << name << std::endl;
 	allParameters = ParameterSet(parameterNames);
 }
 /*****************************************************************************/
