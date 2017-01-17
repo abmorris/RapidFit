@@ -738,7 +738,7 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>* >* >* X_values
 
 			this->WriteBranch( raw_data, "Value", real_raw_data );
 
-			raw_data->Write( "", TObject::kOverwrite );
+			//raw_data->Write( "", TObject::kOverwrite );
 
 			delete real_raw_data;
 
