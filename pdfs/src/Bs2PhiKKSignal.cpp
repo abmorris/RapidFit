@@ -12,6 +12,8 @@
 #include "StringProcessing.h"
 #include "PDFConfigurator.h"
 #include "DPHelpers.hh"
+// GSL
+#include <gsl/gsl_randist.h>
 
 PDF_CREATOR( Bs2PhiKKSignal )
 /*****************************************************************************/
@@ -167,19 +169,39 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	}
 	else
 		MatrixElementSquared = TimeIntegratedMsq(components[compName].Amplitude(datapoint, compName)); // The name can also contain an option like "odd" or "even"
-	double jacobian = p1stp3(datapoint[0]);
-	double acceptance = Acceptance(datapoint);
-	return MatrixElementSquared * jacobian * acceptance;
+	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
 /*****************************************************************************/
-// Calculate the function value
+// Evaluate the entire PDF
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	const std::array<double,4> datapoint = ReadDataPoint(measurement);
-	double MatrixElementSquared = TotalMsq(datapoint);
-	double jacobian = p1stp3(datapoint[0]);
-	double acceptance = Acceptance(datapoint);
-	return MatrixElementSquared * jacobian * acceptance;
+
+	const double res1 = 0.677e-3;
+	const double res2 = 1.9e-3;
+	const double frac = 0.92;
+	const double resolution = frac*res1+(1-frac)*res2;
+	const int nsteps = 20;
+	const int nsigma = 3;
+	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKKComponent::mK)
+	{
+		double Msq_conv = 0.;
+		const double stepsize = 2.*nsigma*resolution/nsteps;
+		// Integrate over range −nσ to +nσ
+		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
+		{
+			Msq_conv += (frac*gsl_ran_gaussian_pdf(x,res1)+(1-frac)*gsl_ran_gaussian_pdf(x,res2)) * TotalMsq({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]}); // FML
+		}
+		return Evaluate_Base(Msq_conv, datapoint);
+	}
+	else
+		return Evaluate_Base(TotalMsq(datapoint),datapoint);
+}
+/*****************************************************************************/
+// The stuff common to both Evaluate() and EvaluateComponent()
+double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const std::array<double,4>& datapoint) const
+{
+	return MatrixElementSquared * p1stp3(datapoint[0]) * Acceptance(datapoint);
 }
 /*****************************************************************************/
 std::array<double,4> Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const

@@ -47,6 +47,7 @@ class Bs2PhiKKSignal : public BasePDF
 		double ComponentMsq(const Bs2PhiKKComponent&, const std::array<double,4>&) const; // For plotting individual components
 		double ComponentMsq(const Bs2PhiKKComponent&, const std::array<double,4>&, const std::string) const; // Pass option "odd" or "even"
 		double TimeIntegratedMsq(const std::array<std::complex<double>,2>&) const;
+		double Evaluate_Base(const double, const std::array<double,4>&) const;
 		std::array<double,4> ReadDataPoint(DataPoint*) const;
 		double p1stp3(const double&) const;
 		double Acceptance(const std::array<double,4>&) const;
