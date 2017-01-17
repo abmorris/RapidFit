@@ -216,7 +216,6 @@ void MinuitWrapper::CallHesse()
 //Use Migrad to minimise the given function
 void MinuitWrapper::Minimise()
 {
-	currentMinuitInstance = minuit;
 	int errorFlag = 0;
 	double* arguments = new double[2];// = {0.0, 0.0};
 	vector<string> allNames = function->GetParameterSet()->GetAllNames();
@@ -260,8 +259,8 @@ void MinuitWrapper::Minimise()
 	arguments[0] = maxSteps;//MAXIMUM_MINIMISATION_STEPS
 	arguments[1] = bestTolerance;//FINAL_GRADIENT_TOLERANCE;
 
-        time_t timeNow;
-        time(&timeNow);
+	time_t timeNow;
+	time(&timeNow);
 
 	//	Now Do the minimisation
 	string HesseOnly("HesseOnly");
@@ -273,14 +272,14 @@ void MinuitWrapper::Minimise()
 	//arguments[0] = maxSteps;
 	//minuit->mnexcm("IMPROVE", arguments, 2, errorFlag);
 
-        //Get the fit status
-        double minimumValue = 0.0;
-        double fedm = 0.0;
-        double errdef = 0.0;
-        int variableParameters = 0;
-        int parameterNumber = 0;
-        int fitStatus = 0;
-        minuit->mnstat( minimumValue, fedm, errdef, variableParameters, parameterNumber, fitStatus );
+	//Get the fit status
+	double minimumValue = 0.0;
+	double fedm = 0.0;
+	double errdef = 0.0;
+	int variableParameters = 0;
+	int parameterNumber = 0;
+	int fitStatus = 0;
+	minuit->mnstat( minimumValue, fedm, errdef, variableParameters, parameterNumber, fitStatus );
 
 	//int preHesseStatus = fitStatus;
 
@@ -550,7 +549,6 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 	//}
 
 	ParameterSet* test = function->GetParameterSet();
-	bool wasNULL = LastSet == NULL;
 	if( LastSet == NULL )
 	{
 		LastSet = new ParameterSet( *test );
@@ -581,30 +579,8 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 		throw(-99999);
 	}
 
-	double min, edm, errdef;
-	int mnpar, nparx, stat;
-	currentMinuitInstance->mnstat( min, edm, errdef, mnpar, nparx, stat );
-
-	cout << "Call: " << left << setw(5) << function->GetCallNum() << " NLL: " << setprecision(6) << setw(8) << fval << " minNLL: " << setprecision(6) << setw(8) << min;
-	cout << " EDM: " << setprecision(6) << setw(8) << edm;
-	cout << " Status: " << setw(1) << stat << setw(3) << " ";
-
 	LastSet->UpdatePhysicsParameters( (double*)xval, npar );
 
-	if( !wasNULL )
-	{
-		if( !thisTry.empty() )
-		{
-			cout << " deltaMin: "  << setprecision(4) << setw(12) << fval-min;
-			cout << " Trying: ";
-			cout << " " << thisTry[0] << " = " << setprecision(6) << setw(12) << LastSet->GetPhysicsParameter( thisTry[0] )->GetBlindedValue();
-			cout << setw(4) << " ";
-		}
-	}
-
-	cout <<  "\r" << flush;
-
-	//delete test2;
 }
 
 //Return the result of minimisation

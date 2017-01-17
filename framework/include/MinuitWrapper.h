@@ -27,7 +27,6 @@
 
 using std::vector;
 using std::string;
-TMinuit* currentMinuitInstance;
 
 class MinuitWrapper : public IMinimiser
 {
@@ -64,11 +63,11 @@ class MinuitWrapper : public IMinimiser
 		//	Uncopyable!
 		MinuitWrapper ( const MinuitWrapper& );
 		MinuitWrapper& operator = ( const MinuitWrapper& );
-		static void Function( Int_t&, Double_t*, Double_t&, Double_t*, Int_t );
+		static void Function( Int_t&, Double_t*, Double_t&, Double_t*, Int_t);
 		static IFitFunction * function;
 		static ParameterSet* LastSet;
 
-		TMinuit * minuit;
+		TMinuit* minuit;
 		FitResult * fitResult;
 		vector< pair< string, string > > contours;
 		int print_verbosity;
