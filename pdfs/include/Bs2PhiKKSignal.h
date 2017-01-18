@@ -12,7 +12,6 @@
 #include "Bs2PhiKKComponent.h"
 #include "LegendreMomentShape.h"
 #include "NDHist_Adaptive.h"
-
 class Bs2PhiKKSignal : public BasePDF
 {
 	public:
@@ -28,6 +27,7 @@ class Bs2PhiKKSignal : public BasePDF
 		double EvaluateComponent(DataPoint*, ComponentRef* );
 		std::vector<std::string> PDFComponents();
 	private:
+		typedef double (Bs2PhiKKSignal::*MsqFunc_t)(const Bs2PhiKKComponent::datapoint_t&, const std::string&) const;
 		std::map<std::string,Bs2PhiKKComponent> components; // Iterable list of amplitude components
 		std::vector<std::string> componentnames; // List of names for plotting purposes only
 		// K+K− mass and helicity angles
@@ -36,21 +36,27 @@ class Bs2PhiKKSignal : public BasePDF
 		Bs2PhiKKComponent::PhysPar dGsGs;
 		// phi(1020) mass
 		Bs2PhiKKComponent::PhysPar phimass;
+		// mass resolution parameters
+		std::map<std::string,double> mKKrespars;
+		bool convolve;
 		// Options
 		bool acceptance_moments; // Use Legendre moments for acceptance
 		bool acceptance_histogram; // Use adaptively-binned histogram for acceptance
 		// Acceptance objects
 		std::unique_ptr<LegendreMomentShape> acc_m;
 		std::shared_ptr<NDHist_Adaptive> acc_h;
-		// Calculation
-		double TotalMsq(const std::array<double,4>&) const;
-		double ComponentMsq(const Bs2PhiKKComponent&, const std::array<double,4>&) const; // For plotting individual components
-		double ComponentMsq(const Bs2PhiKKComponent&, const std::array<double,4>&, const std::string) const; // Pass option "odd" or "even"
-		double TimeIntegratedMsq(const std::array<std::complex<double>,2>&) const;
-		double Evaluate_Base(const double, const std::array<double,4>&) const;
-		std::array<double,4> ReadDataPoint(DataPoint*) const;
+		// Calculation of the matrix element
+		double TimeIntegratedMsq(const Bs2PhiKKComponent::amplitude_t&) const; // Receive a complex amplitude and turn it into a |M|²
+		double TotalMsq(const Bs2PhiKKComponent::datapoint_t&, const std::string& dummy = "") const; // Calculate the total |M|². An MsqFunc_t object can point to this
+		double ComponentMsq(const Bs2PhiKKComponent::datapoint_t&, const std::string&) const; // Calculate the |M|² of a single component. An MsqFunc_t object can point to this
+		double InterferenceMsq(const Bs2PhiKKComponent::datapoint_t&, const std::string& dummy = "") const; // Calculate the difference between the total |M|² and the sum of individual |M|²s. An MsqFunc_t object can point to this
+		double Convolve(MsqFunc_t, const Bs2PhiKKComponent::datapoint_t&, const std::string&) const; // Take one of the three above functions and convolve it with a double Gaussian for m(KK) resolution
+		// Turn the matrix element into the PDF
+		double Evaluate_Base(const double, const Bs2PhiKKComponent::datapoint_t&) const;
 		double p1stp3(const double&) const;
-		double Acceptance(const std::array<double,4>&) const;
+		double Acceptance(const Bs2PhiKKComponent::datapoint_t&) const;
+		// Retrieve an array of doubles from a RapidFit Datapoint object
+		Bs2PhiKKComponent::datapoint_t ReadDataPoint(DataPoint*) const;
 		// Stuff to do on creation
 		void Initialise();
 		void MakePrototypes();

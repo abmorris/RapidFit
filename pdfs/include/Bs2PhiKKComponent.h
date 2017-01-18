@@ -26,8 +26,10 @@ class Bs2PhiKKComponent
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays
-		std::array<std::complex<double>,2> Amplitude(const std::array<double,4>&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
-		std::array<std::complex<double>,2> Amplitude(const std::array<double,4>&, const std::string) const; // Same but with an option "even" or "odd"
+		typedef std::array<double,4> datapoint_t;
+		typedef std::array<std::complex<double>,2> amplitude_t;
+		amplitude_t Amplitude(const datapoint_t&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
+		amplitude_t Amplitude(const datapoint_t&, const std::string) const; // Same but with an option "even" or "odd"
 		static double mBs;
 		static double mK;
 		static double mpi;

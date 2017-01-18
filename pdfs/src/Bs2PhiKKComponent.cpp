@@ -197,13 +197,13 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	return orbitalFactor * barrierFactor;
 }
 // The full amplitude.
-std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array<double,4>& datapoint) const
+Bs2PhiKKComponent::amplitude_t Bs2PhiKKComponent::Amplitude(const datapoint_t& datapoint) const
 {
 	double mKK = datapoint[0];
 	double phi = datapoint[1];
 	double ctheta_1 = datapoint[2];
 	double ctheta_2 = datapoint[3];
-	std::array<std::complex<double>,2> angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
+	amplitude_t angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
 	std::complex<double> massPart = KKLineShape->massShape(mKK);
 	if(std::isnan(fraction.value)) std::cerr << "\tFraction is nan" << std::endl;
 	if(std::isnan(massPart.real()) || std::isnan(massPart.imag())) std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
@@ -211,7 +211,7 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
-std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array<double,4>& datapoint, const std::string option) const
+Bs2PhiKKComponent::amplitude_t Bs2PhiKKComponent::Amplitude(const datapoint_t& datapoint, const std::string option) const
 {
 	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos ) return Amplitude(datapoint);
 	double mKK = datapoint[0];
@@ -219,7 +219,7 @@ std::array<std::complex<double>,2> Bs2PhiKKComponent::Amplitude(const std::array
 	double ctheta_1 = datapoint[2];
 	double ctheta_2 = datapoint[3];
 	// Angular part
-	std::array<std::complex<double>,2> angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
+	amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
 	std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
 	// Temporary helicity amplitudes

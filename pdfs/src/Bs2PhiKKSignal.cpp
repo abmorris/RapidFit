@@ -20,17 +20,21 @@ PDF_CREATOR( Bs2PhiKKSignal )
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 	// Dependent variable names
-	 mKKName     (config->getName("mKK"     ))
-	,phiName     (config->getName("phi"     ))
+	 mKKName(config->getName("mKK"))
+	,phiName(config->getName("phi"))
 	,ctheta_1Name(config->getName("ctheta_1"))
 	,ctheta_2Name(config->getName("ctheta_2"))
 	,acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
 	,acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
+	,convolve(config->isTrue("convolve"))
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
 	phimass = Bs2PhiKKComponent::PhysPar(config,phiname+"_mass");
 	dGsGs = Bs2PhiKKComponent::PhysPar(config,"dGsGs");
+	if(convolve)
+		for(std::string name: {"sigma1","sigma2","frac","nsteps","nsigma"})
+			mKKrespars[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
 	std::cout << "┃ Component\t│ Spin\t│ Lineshape\t┃\n";
@@ -58,14 +62,16 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 // Copy constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) copy)
 	// Dependent variable names
-	,mKKName     (copy.mKKName     )
-	,phiName     (copy.phiName     )
+	,mKKName(copy.mKKName)
+	,phiName(copy.phiName)
 	,ctheta_1Name(copy.ctheta_1Name)
 	,ctheta_2Name(copy.ctheta_2Name)
 	// Width splitting
 	,dGsGs(copy.dGsGs)
 	// Phi mass
 	,phimass(copy.phimass)
+	// mass resolution parameters
+	,mKKrespars(copy.mKKrespars)
 	// PDF components
 	,components(copy.components)
 	,componentnames(copy.componentnames)
@@ -73,6 +79,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) 
 	// Options
 	,acceptance_moments(copy.acceptance_moments)
 	,acceptance_histogram(copy.acceptance_histogram)
+	,convolve(copy.convolve)
 {
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
 	else if(acceptance_histogram) acc_h = copy.acc_h;
@@ -114,8 +121,8 @@ void Bs2PhiKKSignal::MakePrototypes()
 {
 	// Make the DataPoint prototype
 	// The ordering here matters. It has to be the same as the XML file, apparently.
-	allObservables.push_back(mKKName     );
-	allObservables.push_back(phiName     );
+	allObservables.push_back(mKKName);
+	allObservables.push_back(phiName);
 	allObservables.push_back(ctheta_1Name);
 	allObservables.push_back(ctheta_2Name);
 	// Make the parameter set
@@ -128,8 +135,6 @@ void Bs2PhiKKSignal::MakePrototypes()
 			parameterNames.push_back(par);
 	std::sort(parameterNames.begin(),parameterNames.end());
 	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
-	for(const auto& name: parameterNames)
-		std::cout << name << std::endl;
 	allParameters = ParameterSet(parameterNames);
 }
 /*****************************************************************************/
@@ -158,53 +163,29 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	std::string compName = component->getComponentName();
 	if(compName=="0") // should quicken things up slightly?
 		return Evaluate(measurement);
-	const std::array<double,4> datapoint = ReadDataPoint(measurement);
+	const Bs2PhiKKComponent::datapoint_t datapoint = ReadDataPoint(measurement);
 	// Evaluate the PDF at this point
 	double MatrixElementSquared;
 	if(compName=="interference")
-	{
-		MatrixElementSquared = TotalMsq(datapoint);
-		for(const auto& comp : components)
-			MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(datapoint));
-	}
+		MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::InterferenceMsq,datapoint,"") : InterferenceMsq(datapoint);
 	else
-		MatrixElementSquared = TimeIntegratedMsq(components[compName].Amplitude(datapoint, compName)); // The name can also contain an option like "odd" or "even"
+		MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::ComponentMsq,datapoint,compName) : ComponentMsq(datapoint,compName);
 	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
-/*****************************************************************************/
 // Evaluate the entire PDF
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
-	const std::array<double,4> datapoint = ReadDataPoint(measurement);
-
-	const double res1 = 0.677e-3;
-	const double res2 = 1.9e-3;
-	const double frac = 0.92;
-	const double resolution = frac*res1+(1-frac)*res2;
-	const int nsteps = 20;
-	const int nsigma = 3;
-	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKKComponent::mK)
-	{
-		double Msq_conv = 0.;
-		const double stepsize = 2.*nsigma*resolution/nsteps;
-		// Integrate over range −nσ to +nσ
-		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-		{
-			Msq_conv += (frac*gsl_ran_gaussian_pdf(x,res1)+(1-frac)*gsl_ran_gaussian_pdf(x,res2)) * TotalMsq({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]}); // FML
-		}
-		return Evaluate_Base(Msq_conv, datapoint);
-	}
-	else
-		return Evaluate_Base(TotalMsq(datapoint),datapoint);
+	const Bs2PhiKKComponent::datapoint_t datapoint = ReadDataPoint(measurement);
+	double MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,"") : TotalMsq(datapoint);
+	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
-/*****************************************************************************/
 // The stuff common to both Evaluate() and EvaluateComponent()
-double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const std::array<double,4>& datapoint) const
+double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKKComponent::datapoint_t& datapoint) const
 {
 	return MatrixElementSquared * p1stp3(datapoint[0]) * Acceptance(datapoint);
 }
 /*****************************************************************************/
-std::array<double,4> Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
+Bs2PhiKKComponent::datapoint_t Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
 	double mKK      = measurement->GetObservable(mKKName     )->GetValue();
@@ -214,20 +195,37 @@ std::array<double,4> Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
 	phi+=M_PI;
 	return {mKK, phi, ctheta_1, ctheta_2};
 }
-/*****************************************************************************/
-double Bs2PhiKKSignal::TotalMsq(const std::array<double,4>& datapoint) const
+/*Calculate matrix elements***************************************************/
+// Total |M|²: coherent sum of all amplitudes
+double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& dummy) const
 {
-	std::array<std::complex<double>,2> TotalAmp = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
+	(void)dummy;
+	Bs2PhiKKComponent::amplitude_t TotalAmp = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	for(const auto& comp : components)
 	{
-		std::array<std::complex<double>,2> CompAmp = comp.second.Amplitude(datapoint);
+		Bs2PhiKKComponent::amplitude_t CompAmp = comp.second.Amplitude(datapoint);
 		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag())){ std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl; std::exit(1);}
 		TotalAmp[false] += CompAmp[false];
 		TotalAmp[true] += CompAmp[true];
 	}
 	return TimeIntegratedMsq(TotalAmp);
 }
-double Bs2PhiKKSignal::TimeIntegratedMsq(const std::array<std::complex<double>,2>& Amp) const
+// Single-component |M|²
+double Bs2PhiKKSignal::ComponentMsq(const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& compName) const
+{
+	return TimeIntegratedMsq(components.at(compName).Amplitude(datapoint, compName));
+}
+// Interference |M|²: difference between incoherent and coherent sums of components
+double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& dummy) const
+{
+	(void)dummy;
+	double MatrixElementSquared = TotalMsq(datapoint);
+		for(const auto& comp : components)
+			MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(datapoint));
+	return MatrixElementSquared;
+}
+// Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
+double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKKComponent::amplitude_t& Amp) const
 {
 	double GH = (2 - dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
 	double GL = (2 + dGsGs.value); // Actually Γ/2ΓL
@@ -235,8 +233,30 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const std::array<std::complex<double>,2
 	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false])) * (1./GL - 1./GH);
 	return termone + termtwo;
 }
-/*****************************************************************************/
-double Bs2PhiKKSignal::Acceptance(const std::array<double,4>& datapoint) const
+// Convolution of the matrix element function with a Gaussian... the slow integral way
+double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& compName) const
+{
+	const double res1 = mKKrespars.at("sigma1");
+	const double res2 = mKKrespars.at("sigma2");
+	const double frac = mKKrespars.at("frac");
+	const double nsigma = mKKrespars.at("nsigma");
+	const int nsteps = mKKrespars.at("nsteps");
+	const double resolution = frac*res1+(1-frac)*res2;
+	// Can't do this if we're too close to threshold: it starts returning nan
+	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKKComponent::mK)
+	{
+		double Msq_conv = 0.;
+		const double stepsize = 2.*nsigma*resolution/nsteps;
+		// Integrate over range −nσ to +nσ
+		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
+			Msq_conv += (frac*gsl_ran_gaussian_pdf(x,res1)+(1-frac)*gsl_ran_gaussian_pdf(x,res2)) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize; // FML
+		return Msq_conv;
+	}
+	else
+		return (this->*EvaluateMsq)(datapoint,compName);
+}
+/*Stuff that factors out of the time integral*********************************/
+double Bs2PhiKKSignal::Acceptance(const Bs2PhiKKComponent::datapoint_t& datapoint) const
 {
 	double acceptance;
 	if(acceptance_moments)
@@ -251,7 +271,6 @@ double Bs2PhiKKSignal::Acceptance(const std::array<double,4>& datapoint) const
 	if(std::isnan(acceptance)) std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;
 }
-/*****************************************************************************/
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
 	const double mK   = Bs2PhiKKComponent::mK;
