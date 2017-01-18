@@ -6,18 +6,16 @@
 #include "IDataSet.h"
 #include "TFile.h"
 #include "TTree.h"
-using std::string;
-using std::vector;
 class LegendreMomentShape
 {
 	public:
 		LegendreMomentShape(); // Declare without coefficients (e.g. if you want to call Generate() or Open() later)
-		LegendreMomentShape(string); // Immediately call Open() on the passed string
+		LegendreMomentShape(std::string); // Immediately call Open() on the passed string
 		LegendreMomentShape(const LegendreMomentShape&);
 		~LegendreMomentShape();
-		void Open(const string); // Load the coefficients from a file
-		void Save(const string); // Save generated coefficients to a file
-		void Generate(IDataSet*, const PhaseSpaceBoundary*, const string, const string, const string, const string); // strings are variable names: mass, phi, cosθ1, cosθ2
+		void Open(const std::string); // Load the coefficients from a file
+		void Save(const std::string); // Save generated coefficients to a file
+		void Generate(IDataSet*, const PhaseSpaceBoundary*, const std::string, const std::string, const std::string, const std::string); // strings are variable names: mass, phi, cosθ1, cosθ2
 		void SetMax(const double _l_max, const double _i_max, const double _k_max, const double _j_max) // Only needed when generating coefficients; loaded from file otherwise
 		{
 			l_max = _l_max;
@@ -40,7 +38,7 @@ class LegendreMomentShape
 				printf("c[%d][%d][%d][%d] = %f\n", l, i, k, j, val);
 			}
 		};
-		vector<coefficient> coeffs;
+		std::vector<coefficient> coeffs;
 		bool init;
 		double**** newcoefficients() const;
 		void deletecoefficients(double****) const;

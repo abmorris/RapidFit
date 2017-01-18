@@ -5,11 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
-#include <vector>
 #include "TBranch.h"
-using std::cout;
-using std::cerr;
-using std::endl;
 double LegendreMomentShape::Moment(const int l, const int i, const int k, const int j, const double mKK_mapped, const double phi, const double ctheta_1, const double ctheta_2)
 {
 	if(j < k)
@@ -26,7 +22,7 @@ double LegendreMomentShape::Moment(const int l, const int i, const int k, const 
 LegendreMomentShape::LegendreMomentShape() : init(true), copied(false)
 {
 }
-LegendreMomentShape::LegendreMomentShape(string filename) : init(true), copied(false)
+LegendreMomentShape::LegendreMomentShape(std::string filename) : init(true), copied(false)
 {
 	Open(filename);
 }
@@ -41,18 +37,18 @@ LegendreMomentShape::LegendreMomentShape(const LegendreMomentShape& copy) :
 LegendreMomentShape::~LegendreMomentShape()
 {
 }
-void LegendreMomentShape::Open(const string filename)
+void LegendreMomentShape::Open(const std::string filename)
 {
 	TFile* file;
 	if(!filename.empty())
 	{
-		cout << "Opening " << filename << endl;
+		std::cout << "Opening " << filename << std::endl;
 		file = TFile::Open(filename.c_str());
 	}
 	else return;
 	if(file->IsZombie())
 	{
-		cerr << "No file found. Defaulting to uniform shape." << endl;
+		std::cerr << "No file found. Defaulting to uniform shape." << std::endl;
 		delete file;
 		return;
 	}
@@ -60,7 +56,7 @@ void LegendreMomentShape::Open(const string filename)
 	if(tree == nullptr) throw std::runtime_error("LegendreMomentsTree not found");
 	tree->SetBranchAddress("mKK_min",&mKK_min);
 	tree->SetBranchAddress("mKK_max",&mKK_max);
-	string limbranchtitle = tree->GetBranch("c")->GetTitle();
+	std::string limbranchtitle = tree->GetBranch("c")->GetTitle();
 	// Read the index maxima from the name of the branch
 	size_t found = 0;
 	for(int* maximum: {&l_max, &i_max, &k_max, &j_max})
@@ -86,7 +82,7 @@ void LegendreMomentShape::Open(const string filename)
 	deletecoefficients(c);
 	if(coeffs.size() == 0)
 	{
-		cerr << "No coefficients found. Defaulting to uniform shape." << endl;
+		std::cerr << "No coefficients found. Defaulting to uniform shape." << std::endl;
 		return;
 	}
 	printcoefficients();
@@ -94,7 +90,7 @@ void LegendreMomentShape::Open(const string filename)
 	delete file;
 	init = false;
 }
-void LegendreMomentShape::Save(const string filename)
+void LegendreMomentShape::Save(const std::string filename)
 {
 	TTree* outputTree = new TTree("LegendreMomentsTree","");
 	char branchtitle[20];
@@ -111,7 +107,7 @@ void LegendreMomentShape::Save(const string filename)
 				{
 					char branchname[5];
 					sprintf(branchname,"c%d%d%d%d",l,i,k,j);
-					outputTree->Branch(branchname,&c[l][i][k][j],((string)branchname+"/D").c_str());
+					outputTree->Branch(branchname,&c[l][i][k][j],((std::string)branchname+"/D").c_str());
 				}
 	// Pass the non-zero coefficients
 	for(auto coeff: coeffs)
@@ -121,7 +117,7 @@ void LegendreMomentShape::Save(const string filename)
 	outputTree->SaveAs(filename.c_str());
 	deletecoefficients(c);
 }
-void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* boundary, const string mKKname, const string phiname, const string ctheta_1name, const string ctheta_2name)
+void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* boundary, const std::string mKKname, const std::string phiname, const std::string ctheta_1name, const std::string ctheta_2name)
 {
 	double**** c    = newcoefficients();
 	double**** c_sq = newcoefficients(); // Used in caclulating the error
@@ -132,7 +128,7 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 	const double mPhi= 1.019461;
 	int numEvents = dataSet->GetDataNumber();
 	// Calculate the coefficients by summing over the dataset
-	cout << "Sum over " << numEvents << " events" << endl;
+	std::cout << "Sum over " << numEvents << " events" << std::endl;
 	for (int e = 0; e < numEvents; e++)
 	{
 		// Retrieve the data point
@@ -158,7 +154,7 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 	}
 	// Accept or reject the coefficients
 	double threshold = 3; // TODO: read from config
-	cout << "Keeping coefficients more significant than " << threshold << "σ" << endl;
+	std::cout << "Keeping coefficients more significant than " << threshold << "σ" << std::endl;
 	for ( int l = 0; l < l_max; l++ )
 		for ( int i = 0; i < i_max; i++ )
 			for ( int k = 0; k < k_max; k++ )
@@ -233,8 +229,8 @@ void LegendreMomentShape::deletecoefficients(double**** c) const
 }
 void LegendreMomentShape::storecoefficients(double**** c)
 {
-	cout << "Storing coefficients" << endl;
-	// Create vector of non-zero coefficients after reading from tree
+	std::cout << "Storing coefficients" << std::endl;
+	// Create std::vector of non-zero coefficients after reading from tree
 	for ( int l = 0; l < l_max; l++ )
 		for ( int i = 0; i < i_max; i++ )
 			for ( int k = 0; k < k_max; k++ )
