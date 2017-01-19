@@ -83,7 +83,11 @@ void Minuit2Wrapper::Minimise()
 {
 	function->SetSigma(nSigma);
 
-	cout << "Minuit2 Starting Fit" << endl;
+	time_t timeNow, startfit, endfit;
+	time(&timeNow);
+	time(&startfit);
+
+	cout << "Minuit2 Starting Fit" << "\t\t" << ctime( &timeNow ) << endl;
 
 	//Minimise the wrapped function
 	MnMigrad mig( *function, *( function->GetMnUserParameters() ), (unsigned)Quality );//MINUIT_QUALITY );
@@ -110,8 +114,6 @@ void Minuit2Wrapper::Minimise()
 		fitStatus = 3;
 	}
 
-	//Output time information
-	time_t timeNow;
 	time(&timeNow);
 
 	cout << endl << "Minuit2 MnMigrad finished:\tStatus: " << fitStatus << "\t\t" << ctime( &timeNow ) << endl;
@@ -217,6 +219,12 @@ void Minuit2Wrapper::Minimise()
 	}
 
 	cout << endl << "Minuit2 finished:\tStatus: " << fitStatus << "\t\t" << ctime( &timeNow ) << endl;
+
+	time(&endfit);
+	time_t duration = (endfit-startfit);
+	int ncalls = RapidFunction->GetCallNum();
+	cout << ncalls << " calls in " << duration << " s (" << duration/(double)ncalls << " s per call)" << endl << endl;
+
 
 	//Make a set of the fitted parameters
 	const MnUserParameters * minimisedParameters = &(minimum->UserParameters());
