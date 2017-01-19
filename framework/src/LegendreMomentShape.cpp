@@ -153,7 +153,7 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 					}
 	}
 	// Accept or reject the coefficients
-	double threshold = 3; // TODO: read from config
+	double threshold = 4; // TODO: read from config
 	std::cout << "Keeping coefficients more significant than " << threshold << "σ" << std::endl;
 	for ( int l = 0; l < l_max; l++ )
 		for ( int i = 0; i < i_max; i++ )
