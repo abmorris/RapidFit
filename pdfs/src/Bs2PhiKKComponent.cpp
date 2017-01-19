@@ -24,10 +24,13 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	, lineshape(_lineshape)
 {
 	// Barrier factors
-	BsBFradius = PhysPar(config,"BsBFradius");
-	KKBFradius = PhysPar(config,"KKBFradius");
-	Bsbarrier = DPBarrierFactor(  0,1.0,0);
-	KKbarrier = DPBarrierFactor(JKK,3.0,0);
+	if(lineshape != "NR")
+	{
+		BsBFradius = PhysPar(config,"BsBFradius");
+		KKBFradius = PhysPar(config,"KKBFradius");
+		Bsbarrier = DPBarrierFactor(  0,1.0,0);
+		KKbarrier = DPBarrierFactor(JKK,3.0,0);
+	}
 	// KK resonance parameters
 	// Breit Wigner
 	if(lineshape=="BW")
@@ -248,8 +251,11 @@ void Bs2PhiKKComponent::SetPhysicsParameters(ParameterSet* fitpars)
 	// Update the parameters objects first
 	fraction.Update(fitpars);
 	phimass.Update(fitpars);
-	KKBFradius.Update(fitpars);
-	BsBFradius.Update(fitpars);
+	if(lineshape != "NR")
+	{
+		KKBFradius.Update(fitpars);
+		BsBFradius.Update(fitpars);
+	}
 	for(auto& par: magsqs) par.Update(fitpars);
 	for(auto& par: phases) par.Update(fitpars);
 	for(auto& par: KKpars) par.Update(fitpars);
@@ -314,8 +320,12 @@ void Bs2PhiKKComponent::UpdateBarriers()
 vector<ObservableRef> Bs2PhiKKComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(const auto& set: {{fraction,phimass,BsBFradius,KKBFradius},magsqs,phases,KKpars})
+	for(const auto& set: {{fraction,phimass},magsqs,phases,KKpars})
 		for(const auto& par: set)
+			parameters.push_back(par.name);
+	// Add barrier factors if this is a resonant component
+	if(lineshape != "NR")
+		for(const auto& par: {BsBFradius,KKBFradius})
 			parameters.push_back(par.name);
 	return parameters;
 }
