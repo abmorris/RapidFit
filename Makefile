@@ -4,11 +4,11 @@ UNAME=$(shell uname -s )
 CC=g++ -fdiagnostics-color=always
 
 # Location of compiled "common" libraries from ssh://git@gitlab.cern.ch:7999/admorris/common.git
-COMMONDIR  = $(PWD)/../common
+COMMONDIR  = common
 COMHDRDIR  = $(COMMONDIR)/include
 COMLIBDIR  = $(COMMONDIR)/lib
 COMLIBS   := $(shell find $(COMLIBDIR) -name '*.so')
-COMLIBFLAGS = -L$(COMLIBDIR) $(patsubst $(COMLIBDIR)/lib%.so, -l%, $(COMLIBS))
+COMLIBFLAGS = -L$(COMLIBDIR) $(shell make -sC $(COMMONDIR) libflags)
 
 #		Include Root files as system headers as they're NOT standards complient and we do not want to waste time fixing them!
 #		ROOT has some broken backwards compatability for OSX so won't claim to be a set of system headers
@@ -89,8 +89,13 @@ CXXFLAGSUTIL = $(CXXFLAGS_BASE) -I$(INCUTILS) $(ROOTCFLAGS) -Iframework/include
 
 LINKFLAGS += $(USE_GSL) $(LINKGSL) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(COMLIBFLAGS) -Wl,-rpath,$(COMLIBDIR):$(ROOTLIBDIR)
 
+.PHONY : all clean utils extra lib $(COMMONDIR)
+
 #	Default build command when someone asks for 'make'
 all : $(EXEDIR)/fitting
+
+$(COMMONDIR) :
+	make -C $@
 
 $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRDALITZEXT)
 	@echo "Building $@"
@@ -109,7 +114,7 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(HDREXT)
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 #	Main Build of RapidFit Binary
-$(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
+$(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o $(COMMONDIR)
 	@echo "Linking $@"
 	@$(CXX) $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 	chmod +t $(EXEDIR)/fitting
@@ -117,6 +122,7 @@ $(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 #	Cleanup
 clean :
 	$(RM) $(EXEDIR)/* $(OBJDIR)/* $(OBJPDFDIR)/* $(OBJDALITZDIR)/* $(OBJUTILDIR)/* $(LIBDIR)/*
+	make -C $(COMMONDIR) clean
 
 #	Binaries sharing LOTS of useful code for processing/outputting results
 SHARED_UTIL_LIBS=$(OBJDIR)/StringProcessing.o $(OBJUTILDIR)/TTree_Processing.o $(OBJUTILDIR)/Mathematics.o  $(OBJUTILDIR)/ROOT_File_Processing.o $(OBJUTILDIR)/Histo_Processing.o $(OBJDIR)/EdStyle.o $(OBJUTILDIR)/StringOperations.o  $(OBJUTILDIR)/Template_Functions.o $(OBJUTILDIR)/RapidFit_Output_File.o $(OBJUTILDIR)/XMLUtilFunctions.o $(OBJUTILDIR)/utilsDict.o $(OBJUTILDIR)/RapidLL.o $(OBJUTILDIR)/Rapid2DLL.o $(OBJUTILDIR)/Toy_Study.o $(OBJUTILDIR)/print.o
