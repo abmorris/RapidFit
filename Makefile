@@ -4,10 +4,10 @@ UNAME=$(shell uname -s )
 CC=g++ -fdiagnostics-color=always
 
 # Location of compiled "common" libraries from ssh://git@gitlab.cern.ch:7999/admorris/common.git
-COMMONDIR  = common
+COMMONDIR  = $(PWD)/common
 COMHDRDIR  = $(COMMONDIR)/include
 COMLIBDIR  = $(COMMONDIR)/lib
-COMLIBS   := $(shell find $(COMLIBDIR) -name '*.so')
+COMHDRS   := $(shell find $(COMHDRDIR) -name '*.h')
 COMLIBFLAGS = -L$(COMLIBDIR) $(shell make -sC $(COMMONDIR) libflags)
 
 #		Include Root files as system headers as they're NOT standards complient and we do not want to waste time fixing them!
@@ -92,7 +92,7 @@ LINKFLAGS += $(USE_GSL) $(LINKGSL) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(COMLIBFLAGS) 
 .PHONY : all clean utils extra lib $(COMMONDIR)
 
 #	Default build command when someone asks for 'make'
-all : $(EXEDIR)/fitting
+all : $(EXEDIR)/fitting $(COMMONDIR)
 
 $(COMMONDIR) :
 	make -C $@
@@ -101,7 +101,7 @@ $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRD
 	@echo "Building $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
-$(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT) $(DALITZOBJS)
+$(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT) $(DALITZOBJS) $(COMHDRS)
 	@echo "Building $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
@@ -114,7 +114,7 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(HDREXT)
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 #	Main Build of RapidFit Binary
-$(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o $(COMMONDIR)
+$(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o | $(COMMONDIR)
 	@echo "Linking $@"
 	@$(CXX) $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 	chmod +t $(EXEDIR)/fitting

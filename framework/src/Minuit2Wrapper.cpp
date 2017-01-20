@@ -20,6 +20,7 @@
 #include "StringProcessing.h"
 //	System Headers
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <ctime>
 
