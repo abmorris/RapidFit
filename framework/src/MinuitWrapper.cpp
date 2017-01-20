@@ -289,7 +289,7 @@ void MinuitWrapper::Minimise()
 	time_t duration = (endfit-startfit);
 	int ncalls = function->GetCallNum();
 	cout << "\nFinal NLL: " << setprecision(15) << minimumValue << "\t\tStatus: " << fitStatus << "\t\t" << ctime(&timeNow) << endl << endl;
-	cout << ncalls << " calls in " << duration << " s (" << duration/(double)ncalls << " s per call)" << endl << endl;
+	cout << ncalls << " calls in " << duration << " s (" << std::setprecision(3) << duration/(double)ncalls << " s per call)" << endl << endl;
 
 	string NoHesse("NoHesse");
 	if( StringProcessing::VectorContains( &Options, &NoHesse ) == -1 )

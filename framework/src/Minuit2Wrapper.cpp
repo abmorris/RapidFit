@@ -223,7 +223,7 @@ void Minuit2Wrapper::Minimise()
 	time(&endfit);
 	time_t duration = (endfit-startfit);
 	int ncalls = RapidFunction->GetCallNum();
-	cout << ncalls << " calls in " << duration << " s (" << duration/(double)ncalls << " s per call)" << endl << endl;
+	cout << ncalls << " calls in " << duration << " s (" << std::setprecision(3) << duration/(double)ncalls << " s per call)" << endl << endl;
 
 
 	//Make a set of the fitted parameters
