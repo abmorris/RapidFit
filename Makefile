@@ -4,7 +4,7 @@ UNAME=$(shell uname -s )
 CC=g++ -fdiagnostics-color=always
 
 # Location of compiled "common" libraries from ssh://git@gitlab.cern.ch:7999/admorris/common.git
-COMMONDIR  = common
+COMMONDIR  = $(PWD)/common
 COMHDRDIR  = $(COMMONDIR)/include
 COMLIBDIR  = $(COMMONDIR)/lib
 COMLIBS   := $(shell find $(COMLIBDIR) -name '*.so')
