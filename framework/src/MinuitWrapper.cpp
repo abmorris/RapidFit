@@ -585,6 +585,8 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 	}
 
 	LastSet->UpdatePhysicsParameters( (double*)xval, npar );
+	int ncalls = function->GetCallNum();
+	if(ncalls%100 == 0) cout << "Call " << ncalls << "\r" << flush;
 
 }
 
