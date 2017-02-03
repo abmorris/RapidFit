@@ -505,7 +505,7 @@ void OutputConfiguration::OutputCompProjections( FitResult* TheResult )
 		TString filename( "RapidFit_Component_Projections_" ); filename.Append( (*projection_i)->observableName ); filename.Append( "_" );
 		filename.Append( StringProcessing::TimeString() );
 		filename.Append( ".root" );
-		TFile* output_file = new TFile( filename, "UPDATE" );
+		TFile* output_file = TFile::Open( filename, "UPDATE" );
 
 		vector< pair<double,double> > chi2_results;
 

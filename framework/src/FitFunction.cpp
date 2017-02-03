@@ -78,7 +78,7 @@ FitFunction::~FitFunction()
 void FitFunction::SetupTrace( const TString FileName, const int inputTraceNum )
 {
 	//	Create the output file
-	Fit_File = new TFile( FileName, "UPDATE" );
+	Fit_File = TFile::Open( FileName, "UPDATE" );
 	traceNum = inputTraceNum;
 }
 
