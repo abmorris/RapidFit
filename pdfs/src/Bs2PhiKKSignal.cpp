@@ -274,9 +274,9 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKKComponent::datapoint_t& datapoin
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
 	const double mK   = Bs2PhiKKComponent::mK;
-	if(mKK < 2*mK) return 0;
 	const double mBs  = Bs2PhiKKComponent::mBs;
 	const double mPhi = phimass.value;
+	if(mKK < 2*mK || mKK > mBs-mPhi) return 0;
 	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
 	double pB = DPHelpers::daughterMomentum(mBs, mKK, mPhi);
 	double pRpB = pR * pB;
