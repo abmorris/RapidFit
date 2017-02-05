@@ -581,10 +581,10 @@ namespace Mathematics
 		// Implementation of the NIKHEF method for calculating the acceptance corefficients using Legendre polynomials and real valued spherical harmonics.
 		cout << "Calculating acceptance coefficients" << endl;
 		PhaseSpaceBoundary* boundary = dataSet->GetBoundary();
-		const int l_max = mass_dependent ? 10 : 0; // mKK
-		const int i_max(10); // cos(theta_1)
-		const int k_max(10); // phi
-		const int j_max(10); // cos(theta_2)
+		const int l_max = mass_dependent ? 6 : 0; // mKK
+		const int i_max(6); // cos(theta_1)
+		const int k_max(6); // phi
+		const int j_max(6); // cos(theta_2)
 		LegendreMomentShape lms; // All of the legwork is done in this class. Avoids duplicating lines of code.
 		lms.SetMax(l_max+1, i_max+1, k_max+1, j_max+1);
 		lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2");
