@@ -873,7 +873,7 @@ int PerformMainFit( RapidFitConfiguration* config )
 		//double pvalue = GoodnessOfFit::gofLoop( xmlFile, theMinimiser, theFunction, argumentParameterSet, CommandLineParam, nData );
 		double pvalue = GoodnessOfFit::fitDataCalculatePvalue( config->xmlFile, config->theMinimiser, config->theFunction, config->argumentParameterSet, config->GlobalResult );
 		pvalueHist->Fill( pvalue );
-		TFile * outputFile = new TFile("pvalues.root", "RECREATE");
+		TFile * outputFile = TFile::Open("pvalues.root", "RECREATE");
 		pvalueHist->Write();
 		outputFile->Write();
 		outputFile->Close();
@@ -988,7 +988,7 @@ int testComponentPlot( RapidFitConfiguration* config )
 	quickData->SetPhysicsParameters( config->xmlFile->GetFitParameters() );
 	IDataSet * quickDataSet = quickData->GetDataSet();
 	if( config->observableName.empty() ) config->observableName = "time";
-	TFile* testFile = new TFile( "testFile.root", "UPDATE" );
+	TFile* testFile = TFile::Open( "testFile.root", "UPDATE" );
 	ComponentPlotter * testPlotter = new ComponentPlotter( quickData->GetPDF(), quickDataSet, "testPDF", testFile, config->observableName );
 	testPlotter->ProjectObservable();
 	delete testPlotter;

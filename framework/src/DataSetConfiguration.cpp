@@ -373,7 +373,7 @@ IDataSet * DataSetConfiguration::LoadRootFileIntoMemory( string this_fileName, s
 	vector<string> observableNames = DataBoundary->GetAllNames();
 	int numberOfObservables = int(observableNames.size());
 
-	TFile * inputFile = new TFile( this_fileName.c_str(), "READ" );
+	TFile * inputFile = TFile::Open( this_fileName.c_str(), "READ" );
 	TTree * ntuple = (TTree*)inputFile->Get( ntuplePath.c_str() );
 	if( ntuple == NULL )
 	{

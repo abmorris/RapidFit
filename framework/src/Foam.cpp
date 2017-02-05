@@ -164,7 +164,7 @@ void Foam::Init()
 			RootName.Append(".root");
 
 			cout << "FOAM NOT Cached, Generating Foam:\t" << Name << endl;
-			MC_Cache = new TFile( RootName, "RECREATE" );
+			MC_Cache = TFile::Open( RootName, "RECREATE" );
 			MC_Cache->Write( "", TObject::kOverwrite );
 			/*
 			if( debug != NULL )
@@ -249,7 +249,7 @@ void Foam::Init()
 				RootName.Append(".root");
 
 				cout << "FOAM NOT Cached, Generating Foam:\t" << Name << endl;
-				MC_Cache = new TFile( RootName, "RECREATE" );
+				MC_Cache = TFile::Open( RootName, "RECREATE" );
 				MC_Cache->Write( "", TObject::kOverwrite );
 				//Initialise Foam
 				foamGenerator = new TFoam( Name );
@@ -278,7 +278,7 @@ void Foam::Init()
 			}
 			else
 			{
-				MC_Cache = new TFile( RootName, "READ" );
+				MC_Cache = TFile::Open( RootName, "READ" );
 				//gDirectory->ls();
 				//Cached_Files.back()->Map();
 				//Cached_Files.back()->ShowStreamerInfo();

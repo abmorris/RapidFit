@@ -439,7 +439,7 @@ namespace GoodnessOfFit
 	    string fileName = ResultFormatter::GetOutputFolder();	
 	    fileName.append("/tvalues.root");
 	    	
-            TFile * outputFile = new TFile(fileName.c_str(), "RECREATE");
+            TFile * outputFile = TFile::Open(fileName.c_str(), "RECREATE");
             TNtuple * ntuple = new TNtuple("tvalues", "tvalues", "T:Tdata:pvalue");
             for ( int i = 0; i < nPerm; i++ ) ntuple->Fill(Tvalues[i], T, pvalue);
             ntuple->Write();

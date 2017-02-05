@@ -67,7 +67,7 @@ namespace JackKnife
 		int nData = dataset->Yield();	
                 string fileName = ResultFormatter::GetOutputFolder();
                 fileName.append("/jackknife.root");         
-		TFile * outputFile = new TFile("jackknife.root", "RECREATE");	
+		TFile * outputFile = TFile::Open("jackknife.root", "RECREATE");	
                 TNtuple * jack = new TNtuple("jack", "jackknifed - nominal", "diff_jackknifed_nominal:reco_time:true_time");
 
 		double reco_time = 0.;

@@ -85,7 +85,7 @@ void ResultFormatter::MakeRootDataFile( string FullFileName, vector<IDataSet*> O
 		*/
 
 		//Make the file and NTuple
-		TFile * rootFile = new TFile( FileName.c_str(), "RECREATE" );
+		TFile * rootFile = TFile::Open( FileName.c_str(), "RECREATE" );
 
 		TTree* dataTree = new TTree( "dataNTuple", "All data" );
 
@@ -160,7 +160,7 @@ void ResultFormatter::PlotFitContours( FitResult * OutputData, string contourFil
 	}
 
 	string name = contourFileName;// + ".root";
-	TFile * contourFile = new TFile( name.c_str(), "RECREATE");
+	TFile * contourFile = TFile::Open( name.c_str(), "RECREATE");
 	int colours[3] = {2,3,4};
 	TString confs[3] = {"68.0","90.0","95.0"};
 
@@ -1043,7 +1043,7 @@ void ResultFormatter::AddBranch( TTree* inputTree, const string& BranchName, con
 //Make pull plots from the output of a toy study
 void ResultFormatter::WriteFlatNtuple( const string FileName, const FitResultVector* ToyResult, const vector<string> inputXML, const vector<string> runtimeArgs, const string XMLForProjections, const string XMLForToys )
 {
-	TFile * rootFile = new TFile( FileName.c_str(), "RECREATE" );
+	TFile * rootFile = TFile::Open( FileName.c_str(), "RECREATE" );
 	rootFile->SetCompressionLevel( 9 );
 
 	//cout << "Storing Fit Result Vector" << endl;
@@ -1255,7 +1255,7 @@ void ResultFormatter::WriteFlatNtuple( const string FileName, const FitResultVec
 //Make pull plots from the output of a toy study
 void ResultFormatter::SeparateParameterPullPlots( string FileName, FitResultVector* ToyResult )
 {
-	TFile * rootFile = new TFile( FileName.c_str(), "RECREATE" );
+	TFile * rootFile = TFile::Open( FileName.c_str(), "RECREATE" );
 	string header = "value:error:pull";
 	vector<string> allNames = ToyResult->GetAllNames();
 	Float_t valueErrorPull[3];
