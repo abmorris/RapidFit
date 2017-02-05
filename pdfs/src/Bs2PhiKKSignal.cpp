@@ -30,6 +30,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
+	thraccscale = Bs2PhiKKComponent::PhysPar(config,"thraccscale");
 	phimass = Bs2PhiKKComponent::PhysPar(config,phiname+"_mass");
 	dGsGs = Bs2PhiKKComponent::PhysPar(config,"dGsGs");
 	if(convolve)
@@ -70,6 +71,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) 
 	,dGsGs(copy.dGsGs)
 	// Phi mass
 	,phimass(copy.phimass)
+	// threshold acceptance scale
+	,thraccscale(copy.thraccscale)
 	// mass resolution parameters
 	,mKKrespars(copy.mKKrespars)
 	// PDF components
@@ -130,6 +133,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Resonance parameters
 	parameterNames.push_back(dGsGs.name);
 	parameterNames.push_back(phimass.name);
+	parameterNames.push_back(thraccscale.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
@@ -144,6 +148,7 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
 	dGsGs.Update(&allParameters);
 	phimass.Update(&allParameters);
+	thraccscale.Update(&allParameters);
 	for(auto& comp: components)
 		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
@@ -260,7 +265,12 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKKComponent::datapoint_t& datapoin
 {
 	double acceptance;
 	if(acceptance_moments)
+	{
 		acceptance = acc_m->Evaluate(datapoint);
+		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKKComponent::mK));
+//		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKKComponent::mK));
+//		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKKComponent::mK))*2.0/M_PI;
+	}
 	else if(acceptance_histogram)
 	{
 		std::vector<double> absdatapoint;

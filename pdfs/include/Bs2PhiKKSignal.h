@@ -36,6 +36,8 @@ class Bs2PhiKKSignal : public BasePDF
 		Bs2PhiKKComponent::PhysPar dGsGs;
 		// phi(1020) mass
 		Bs2PhiKKComponent::PhysPar phimass;
+		// threshold mass acceptance
+		Bs2PhiKKComponent::PhysPar thraccscale;
 		// mass resolution parameters
 		std::map<std::string,double> mKKrespars;
 		bool convolve;
