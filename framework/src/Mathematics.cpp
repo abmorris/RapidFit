@@ -633,7 +633,7 @@ namespace Mathematics
 			{
 				*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
 			}
-			weight = lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
+			weight = std::erf(186*(mKK)-2*mK)*lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
 			sampledtree->Fill(mKK, phi, ctheta_1, ctheta_2, weight);
 			delete point;
 		}
