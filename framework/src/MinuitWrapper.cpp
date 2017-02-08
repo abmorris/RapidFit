@@ -298,6 +298,8 @@ void MinuitWrapper::Minimise()
 		this->CallHesse();
 	}
 
+	minuit->mnstat( minimumValue, fedm, errdef, variableParameters, parameterNumber, fitStatus );
+
 	string MinosOption("MinosErrors");
 	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 || fitStatus == 2)
 	{
