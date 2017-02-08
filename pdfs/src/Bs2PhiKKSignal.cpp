@@ -27,6 +27,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 	,acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
 	,acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
 	,convolve(config->isTrue("convolve"))
+	,outofrange(false)
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
@@ -83,6 +84,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) 
 	,acceptance_moments(copy.acceptance_moments)
 	,acceptance_histogram(copy.acceptance_histogram)
 	,convolve(copy.convolve)
+	// Status
+	,outofrange(copy.outofrange)
 {
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
 	else if(acceptance_histogram) acc_h = copy.acc_h;
@@ -145,12 +148,22 @@ void Bs2PhiKKSignal::MakePrototypes()
 // Set the physics parameters
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
+	outofrange = false;
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
 	dGsGs.Update(&allParameters);
 	phimass.Update(&allParameters);
 	thraccscale.Update(&allParameters);
 	for(auto& comp: components)
-		comp.second.SetPhysicsParameters(&allParameters);
+	{
+		try
+		{
+			comp.second.SetPhysicsParameters(&allParameters);
+		}
+		catch(...)
+		{
+			outofrange = true;
+		}
+	}
 	return isOK;
 }
 /*****************************************************************************/
@@ -180,6 +193,8 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 // Evaluate the entire PDF
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
+	if(outofrange)
+		return 1e-100;
 	const Bs2PhiKKComponent::datapoint_t datapoint = ReadDataPoint(measurement);
 	double MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,"") : TotalMsq(datapoint);
 	return Evaluate_Base(MatrixElementSquared, datapoint);

@@ -44,6 +44,8 @@ class Bs2PhiKKSignal : public BasePDF
 		// Options
 		bool acceptance_moments; // Use Legendre moments for acceptance
 		bool acceptance_histogram; // Use adaptively-binned histogram for acceptance
+		// Status flag
+		bool outofrange;
 		// Acceptance objects
 		std::unique_ptr<LegendreMomentShape> acc_m;
 		std::shared_ptr<NDHist_Adaptive> acc_h;

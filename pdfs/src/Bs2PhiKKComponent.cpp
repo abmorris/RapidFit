@@ -274,7 +274,11 @@ void Bs2PhiKKComponent::UpdateAmplitudes()
 	{
 		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
 		double Apara_mag = sqrt(1. - magsqs[0].value - magsqs[1].value);
-		if(std::isnan(Apara_mag)) Apara_mag = 0; // Not ideal. Try to set an external constraint function to avoid this
+		if(std::isnan(Apara_mag))
+		{
+			Apara_mag = 0;
+			throw std::out_of_range("sum of |A|² > 1");
+		}
 		std::complex<double> Apara = std::polar(Apara_mag,phases[2].value);
 		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
 		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
