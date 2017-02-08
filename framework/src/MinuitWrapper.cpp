@@ -299,7 +299,7 @@ void MinuitWrapper::Minimise()
 	}
 
 	string MinosOption("MinosErrors");
-	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 )
+	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 || fitStatus == 2)
 	{
 		vector<string> allFreeNames = function->GetParameterSet()->GetAllFloatNames();
 		for( unsigned int i=0; i< Options.size(); ++i )
