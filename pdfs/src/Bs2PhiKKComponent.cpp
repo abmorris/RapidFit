@@ -187,17 +187,18 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	// Orbital factor
 	// Masses
 	double mphi = phimass.value;
+	double mKK0 = KKpars[0].value;
 	// Momenta
 	double pBs  = DPHelpers::daughterMomentum(mBs,  mphi, mKK   );
 	double pKK  = DPHelpers::daughterMomentum(mKK,  mK,   mK    );
 	double orbitalFactor = //std::pow(pBs/mBs,   0)* // == 1 so don't bother
-	                       std::pow(pKK/mKK, JKK);
+	                       std::pow(pKK/mKK0, JKK);
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs)*
 	                       KKbarrier.barrier(pKK);
 	if(std::isnan(orbitalFactor)) std::cerr << "\tOrbital factor evaluates to nan" << std::endl;
 	if(std::isnan(barrierFactor)) std::cerr << "\tBarrier factor evaluates to nan" << std::endl;
-	return orbitalFactor * barrierFactor;
+	return barrierFactor;
 }
 // The full amplitude.
 Bs2PhiKKComponent::amplitude_t Bs2PhiKKComponent::Amplitude(const datapoint_t& datapoint) const
