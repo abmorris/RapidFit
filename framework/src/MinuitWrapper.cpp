@@ -301,7 +301,7 @@ void MinuitWrapper::Minimise()
 	minuit->mnstat( minimumValue, fedm, errdef, variableParameters, parameterNumber, fitStatus );
 
 	string MinosOption("MinosErrors");
-	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 || fitStatus == 2)
+	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 || fitStatus != 3)
 	{
 		vector<string> allFreeNames = function->GetParameterSet()->GetAllFloatNames();
 		for( unsigned int i=0; i< Options.size(); ++i )
