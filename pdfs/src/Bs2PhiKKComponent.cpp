@@ -198,7 +198,7 @@ double Bs2PhiKKComponent::OFBF(const double mKK) const
 	                       KKbarrier.barrier(pKK);
 	if(std::isnan(orbitalFactor)) std::cerr << "\tOrbital factor evaluates to nan" << std::endl;
 	if(std::isnan(barrierFactor)) std::cerr << "\tBarrier factor evaluates to nan" << std::endl;
-	return barrierFactor;
+	return orbitalFactor*barrierFactor;
 }
 // The full amplitude.
 Bs2PhiKKComponent::amplitude_t Bs2PhiKKComponent::Amplitude(const datapoint_t& datapoint) const
