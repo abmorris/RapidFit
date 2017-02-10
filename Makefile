@@ -98,19 +98,19 @@ $(COMMONDIR) :
 	make -C $@
 
 $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRDALITZEXT)
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 $(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT) $(DALITZOBJS) $(COMHDRS)
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 $(OBJUTILDIR)/%.o : $(UTILSSRC)/%.$(UTILSSRCEXT) $(INCUTILS)/%.$(HDREXT)
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGSUTIL) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(HDREXT)
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
 #	Main Build of RapidFit Binary
@@ -187,7 +187,7 @@ utils:	$(LIBDIR)/libUtils.so $(EXEDIR)/print $(EXEDIR)/RapidPlot $(EXEDIR)/Rapid
 
 extra:	$(EXEDIR)/Per-Event $(EXEDIR)/lifetime_tool $(EXEDIR)/weighted $(EXEDIR)/ApplyWeights $(EXEDIR)/Compare $(EXEDIR)/tupleDiff $(EXEDIR)/AngularDist $(EXEDIR)/plotDists
 
-#	For building RapidFit as a library to use within CINT which makes life easier on the grid... (supposedly)
+#	For Compiling RapidFit as a library to use within CINT which makes life easier on the grid... (supposedly)
 #	make lib
 
 lib: $(LIBDIR)/libRapidRun.so
@@ -201,12 +201,12 @@ $(OBJDIR)/rapidfit_dict.cpp: framework/include/RapidRun.h framework/include/Link
 
 #	Compile the class that root has generated for us which is the linker interface to root	(i.e. dictionaries & such)
 $(OBJDIR)/rapidfit_dict.o: $(OBJDIR)/rapidfit_dict.cpp
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) -o $@ -I. -c $<
 
 #	Class which has a dictionary generated for it, think of this as the equivalent to int main() in a CINT-y Universe
 $(OBJDIR)/RapidRun.o: $(SRCDIR)/RapidRun.cpp
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 #	Finally, Compile RapidFit as a library making use of the existing binaries for other classes
@@ -215,11 +215,11 @@ $(LIBDIR)/libRapidRun.so: $(OBJDIR)/RapidRun.o $(OBJS) $(PDFOBJS) $(DALITZOBJS) 
 	@$(CXX) -shared $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
 
 $(OBJUTILDIR)/utilsDict.cpp: $(UTILHEADERS) $(INCUTILS)/LinkDef.h
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@rootcint -f $(OBJUTILDIR)/utilsDict.cpp -c -I"$(PWD)" $^
 
 $(OBJUTILDIR)/utilsDict.o: $(OBJUTILDIR)/utilsDict.cpp
-	@echo "Building $@"
+	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGSUTIL) -o $@ -I"$(PWD)" -c $<
 
 #	This is the Utils library which exposes a LOT of pre-written useful functions to the user
