@@ -1,5 +1,5 @@
 #include "Bs2PhiKKBackgroundComponent.h"
-
+// Constructor
 Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config, std::string name, std::string _type)
 	: fraction(Bs2PhiKK::PhysPar(config,name+"_fraction"))
 	, type(_type)
@@ -20,6 +20,7 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 		shapepars.push_back(Bs2PhiKK::PhysPar(config,name+"_M"));
 	}
 }
+// Copy constructor
 Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroundComponent& other)
 	: fraction(other.fraction)
 	, type(other.type)

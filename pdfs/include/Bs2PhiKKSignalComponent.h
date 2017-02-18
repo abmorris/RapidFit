@@ -1,5 +1,5 @@
-#ifndef __Bs2PhiKKSignalComponent_H__
-#define __Bs2PhiKKSignalComponent_H__
+#ifndef Bs2PhiKKSignalComponent_H
+#define Bs2PhiKKSignalComponent_H
 // Std
 #include <vector>
 #include <memory>

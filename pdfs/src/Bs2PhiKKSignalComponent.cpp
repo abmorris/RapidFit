@@ -118,6 +118,7 @@ Bs2PhiKKSignalComponent& Bs2PhiKKSignalComponent::operator=(const Bs2PhiKKSignal
 	Initialise();
 	return *this;
 }
+/*****************************************************************************/
 void Bs2PhiKKSignalComponent::Initialise()
 {
 	// Breit Wigner
@@ -148,6 +149,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 	UpdateAmplitudes();
 	UpdateLineshape();
 }
+/*****************************************************************************/
 // Angular part of the amplitude
 std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const double Phi, const double ctheta_1, const double ctheta_2) const
 {
@@ -237,6 +239,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 	massPart *= fraction.value * OFBF(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
+/*****************************************************************************/
 // Update everything from the parameter set
 void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {

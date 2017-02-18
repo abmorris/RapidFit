@@ -1,9 +1,9 @@
-#ifndef __Bs2PhiKKHelpers_H__
-#define __Bs2PhiKKHelpers_H__
-#include <complex>
+#ifndef Bs2PhiKKHelpers_H
+#define Bs2PhiKKHelpers_H
 #include <array>
-#include <string>
+#include <complex>
 #include <iostream>
+#include <string>
 #include "PDFConfigurator.h"
 #include "ParameterSet.h"
 

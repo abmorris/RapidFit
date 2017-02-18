@@ -1,5 +1,5 @@
-#ifndef __Bs2PhiKKBackgroundComponent_H__
-#define __Bs2PhiKKBackgroundComponent_H__
+#ifndef Bs2PhiKKBackgroundComponent_H
+#define Bs2PhiKKBackgroundComponent_H
 // Std
 #include <vector>
 #include <memory>
