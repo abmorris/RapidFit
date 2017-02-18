@@ -1,7 +1,6 @@
 #ifndef __Bs2PhiKKSignalComponent_H__
 #define __Bs2PhiKKSignalComponent_H__
 // Std
-#include <string>
 #include <vector>
 #include <memory>
 #include <map>
@@ -17,7 +16,7 @@ class Bs2PhiKKSignalComponent
 		Bs2PhiKKSignalComponent() {}
 		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, std::string, int, std::string); // config, phi name, resonance name, spin
 		Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent&);
-		~Bs2PhiKKSignalComponent();
+		~Bs2PhiKKSignalComponent() {}
 		Bs2PhiKKSignalComponent& operator=(const Bs2PhiKKSignalComponent&);
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;

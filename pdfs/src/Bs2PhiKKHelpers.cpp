@@ -10,3 +10,4 @@ void Bs2PhiKK::PhysPar::Update(const ParameterSet* pars)
 	if(std::isnan(value))
 		std::cerr << name.Name() << " has been given a nan value!" << std::endl;
 }
+

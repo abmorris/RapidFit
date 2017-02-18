@@ -10,6 +10,8 @@
 // C++
 #include <string>
 // Self
+#include "Bs2PhiKKHelpers.h"
+#include "Bs2PhiKKBackgroundComponent.h"
 #include "LegendreMomentShape.h"
 
 class Bs2PhiKKBackground : public BasePDF
@@ -18,28 +20,23 @@ class Bs2PhiKKBackground : public BasePDF
 		// *structors
 		Bs2PhiKKBackground(PDFConfigurator*);
 		Bs2PhiKKBackground(const Bs2PhiKKBackground&);
-		~Bs2PhiKKBackground();
+		~Bs2PhiKKBackground() {}
 		// Required methods
 		double Evaluate(DataPoint*);
-		double EvaluateComponent(DataPoint*,ComponentRef*);
 		double Normalisation(PhaseSpaceBoundary*);
 		bool SetPhysicsParameters(ParameterSet*);
-		vector<string> GetDoNotIntegrateList();
-		vector<string> PDFComponents();
-	protected:
-		// Shape parameters
-		double        A,     B,     C,     M;
-		ObservableRef AName, BName, CName, MName;
-		// K+K− mass and helicity angles
-		double        mKK,     ctheta_1,     ctheta_2,     phi;
-		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
-		// Acceptance object
-		LegendreMomentShape* shape;
+		// Extra stuff
+		double EvaluateComponent(DataPoint*, ComponentRef* );
+		std::vector<std::string> PDFComponents();
 	private:
-		string filename;
+		std::map<std::string,Bs2PhiKKBackgroundComponent> components; // Iterable list of amplitude components
+		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName; // Datapoint stuff: K+K− mass and helicity angles
+		// Retrieve an array of doubles from a RapidFit Datapoint object
+		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const;
 		// Stuff to do on creation
 		void Initialise();
 		void MakePrototypes();
+		Bs2PhiKKBackgroundComponent ParseComponent(PDFConfigurator*, std::string) const;
 };
 #endif
 

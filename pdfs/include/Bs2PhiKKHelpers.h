@@ -2,6 +2,7 @@
 #define __Bs2PhiKKHelpers_H__
 #include <complex>
 #include <array>
+#include <string>
 #include <iostream>
 #include "PDFConfigurator.h"
 #include "ParameterSet.h"

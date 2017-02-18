@@ -17,7 +17,7 @@ class Bs2PhiKKSignal : public BasePDF
 		// *structors
 		Bs2PhiKKSignal(PDFConfigurator*);
 		Bs2PhiKKSignal(const Bs2PhiKKSignal&);
-		~Bs2PhiKKSignal();
+		~Bs2PhiKKSignal() {}
 		// Required methods
 		double Evaluate(DataPoint*);
 		double Normalisation(PhaseSpaceBoundary*);

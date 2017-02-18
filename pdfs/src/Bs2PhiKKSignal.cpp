@@ -18,9 +18,9 @@
 PDF_CREATOR( Bs2PhiKKSignal )
 /*****************************************************************************/
 // Constructor
-Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
+Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config)
 	// Dependent variable names
-	 mKKName(config->getName("mKK"))
+	:mKKName(config->getName("mKK"))
 	,phiName(config->getName("phi"))
 	,ctheta_1Name(config->getName("ctheta_1"))
 	,ctheta_2Name(config->getName("ctheta_2"))
@@ -39,7 +39,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 			mKKrespars[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
-	std::cout << "┃ Component\t│ Spin\t│ Lineshape\t┃\n";
+	std::cout << "┃ Component     │ Spin  │ Lineshape     ┃\n";
 	std::cout << "┠───────────────┼───────┼───────────────┨\n";
 	for(const auto& name: reslist)
 	{
@@ -62,7 +62,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 }
 /*****************************************************************************/
 // Copy constructor
-Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) copy)
+Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
+	:BasePDF( (BasePDF) copy)
 	// Dependent variable names
 	,mKKName(copy.mKKName)
 	,phiName(copy.phiName)
@@ -90,11 +91,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy) : BasePDF( (BasePDF) 
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
 	else if(acceptance_histogram) acc_h = copy.acc_h;
 	Initialise();
-}
-/*****************************************************************************/
-// Destructor
-Bs2PhiKKSignal::~Bs2PhiKKSignal()
-{
 }
 /*****************************************************************************/
 // Code common to the constructors

@@ -1,7 +1,6 @@
 // Self
 #include "Bs2PhiKKSignalComponent.h"
 // Std Libraries
-#include <iostream>
 #include <stdexcept>
 // RapidFit Dalitz Plot Libraries
 #include "DPBWResonanceShape.hh"
@@ -12,8 +11,8 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 // Constructor
-Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string _phiname, std::string KKname, int _JKK, std::string _lineshape) :
-	  phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
+Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string _phiname, std::string KKname, int _JKK, std::string _lineshape)
+	: phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
 	, fraction(Bs2PhiKK::PhysPar(config,KKname+"_fraction"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
@@ -77,9 +76,9 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	Initialise();
 }
 // Copy constructor
-Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& other) :
+Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& other)
 	// Floatable parameters
-	  fraction(other.fraction)
+	: fraction(other.fraction)
 	, Ahel(other.Ahel)
 	, magsqs(other.magsqs)
 	, phases(other.phases)
@@ -118,9 +117,6 @@ Bs2PhiKKSignalComponent& Bs2PhiKKSignalComponent::operator=(const Bs2PhiKKSignal
 	lineshape = other.lineshape;
 	Initialise();
 	return *this;
-}
-Bs2PhiKKSignalComponent::~Bs2PhiKKSignalComponent()
-{
 }
 void Bs2PhiKKSignalComponent::Initialise()
 {
