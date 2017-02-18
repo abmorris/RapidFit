@@ -1,17 +1,13 @@
-// Self
-#include "Bs2PhiKKSignal.h"
 // Std Libraries
-#include <iostream>
 #include <stdexcept>
-#include <complex>
 // ROOT Libraries
-#include "TKey.h"
 #include "TFile.h"
 #include "TTree.h"
 // RapidFit
-#include "StringProcessing.h"
-#include "PDFConfigurator.h"
+#include "Bs2PhiKKSignal.h"
 #include "DPHelpers.hh"
+#include "PDFConfigurator.h"
+#include "StringProcessing.h"
 // GSL
 #include <gsl/gsl_randist.h>
 

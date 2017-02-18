@@ -65,7 +65,6 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
 		massPart = val > 0 ? val : 0;
 	}
-	
 	double angularPart = angulardistribution.Evaluate(datapoint);
 	return massPart * angularPart;
 }

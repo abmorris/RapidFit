@@ -1,8 +1,11 @@
+// Std
+#include <algorithm>
+// RapidFit
 #include "Bs2PhiKKBackground.h"
 #include "StringProcessing.h"
-#include <algorithm>
-PDF_CREATOR( Bs2PhiKKBackground )
 
+PDF_CREATOR( Bs2PhiKKBackground )
+/*****************************************************************************/
 // Constructor
 Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config)
 	// Dependent variable names

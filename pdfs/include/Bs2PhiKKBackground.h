@@ -7,9 +7,6 @@
 #ifdef __CINT__
 #include "framework/include/BasePDF.h"
 #endif
-// C++
-#include <string>
-// Self
 #include "Bs2PhiKKHelpers.h"
 #include "Bs2PhiKKBackgroundComponent.h"
 #include "LegendreMomentShape.h"

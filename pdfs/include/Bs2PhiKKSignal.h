@@ -11,6 +11,7 @@
 #include "Bs2PhiKKSignalComponent.h"
 #include "LegendreMomentShape.h"
 #include "NDHist_Adaptive.h"
+
 class Bs2PhiKKSignal : public BasePDF
 {
 	public:
