@@ -20,14 +20,14 @@ PDF_CREATOR( Bs2PhiKKSignal )
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config)
 	// Dependent variable names
-	:mKKName(config->getName("mKK"))
-	,phiName(config->getName("phi"))
-	,ctheta_1Name(config->getName("ctheta_1"))
-	,ctheta_2Name(config->getName("ctheta_2"))
-	,acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
-	,acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
-	,convolve(config->isTrue("convolve"))
-	,outofrange(false)
+	: mKKName(config->getName("mKK"))
+	, phiName(config->getName("phi"))
+	, ctheta_1Name(config->getName("ctheta_1"))
+	, ctheta_2Name(config->getName("ctheta_2"))
+	, acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
+	, acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
+	, convolve(config->isTrue("convolve"))
+	, outofrange(false)
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
@@ -63,30 +63,30 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config)
 /*****************************************************************************/
 // Copy constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
-	:BasePDF( (BasePDF) copy)
+	: BasePDF( (BasePDF) copy)
 	// Dependent variable names
-	,mKKName(copy.mKKName)
-	,phiName(copy.phiName)
-	,ctheta_1Name(copy.ctheta_1Name)
-	,ctheta_2Name(copy.ctheta_2Name)
+	, mKKName(copy.mKKName)
+	, phiName(copy.phiName)
+	, ctheta_1Name(copy.ctheta_1Name)
+	, ctheta_2Name(copy.ctheta_2Name)
 	// Width splitting
-	,dGsGs(copy.dGsGs)
+	, dGsGs(copy.dGsGs)
 	// Phi mass
-	,phimass(copy.phimass)
+	, phimass(copy.phimass)
 	// threshold acceptance scale
-	,thraccscale(copy.thraccscale)
+	, thraccscale(copy.thraccscale)
 	// mass resolution parameters
-	,mKKrespars(copy.mKKrespars)
+	, mKKrespars(copy.mKKrespars)
 	// PDF components
-	,components(copy.components)
-	,componentnames(copy.componentnames)
+	, components(copy.components)
 	// Plotting components
+	, componentnames(copy.componentnames)
 	// Options
-	,acceptance_moments(copy.acceptance_moments)
-	,acceptance_histogram(copy.acceptance_histogram)
-	,convolve(copy.convolve)
+	, acceptance_moments(copy.acceptance_moments)
+	, acceptance_histogram(copy.acceptance_histogram)
+	, convolve(copy.convolve)
 	// Status
-	,outofrange(copy.outofrange)
+	, outofrange(copy.outofrange)
 {
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
 	else if(acceptance_histogram) acc_h = copy.acc_h;

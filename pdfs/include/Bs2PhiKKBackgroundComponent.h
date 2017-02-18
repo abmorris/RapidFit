@@ -14,7 +14,6 @@ class Bs2PhiKKBackgroundComponent
 		Bs2PhiKKBackgroundComponent(PDFConfigurator*, std::string, std::string); // config, name, type
 		Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroundComponent&);
 		~Bs2PhiKKBackgroundComponent() {}
-/*		Bs2PhiKKBackgroundComponent& operator=(const Bs2PhiKKBackgroundComponent&);*/
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		double Evaluate(const Bs2PhiKK::datapoint_t&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}

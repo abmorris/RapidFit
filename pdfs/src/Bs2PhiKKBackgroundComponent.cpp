@@ -26,26 +26,39 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroun
 	, angulardistribution(other.angulardistribution)
 {
 }
-//Bs2PhiKKBackgroundComponent& Bs2PhiKKBackgroundComponent::operator=(const Bs2PhiKKBackgroundComponent& other)
-//{
-//	fraction = other.fraction;
-//	type = other.type;
-//	shapepars = other.shapepars;
-//	angulardistribution = other.angulardistribution;
-//	return *this;
-//}
 double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	double massPart(0);
-//	double result(0);
-//	double arg = mKK - M;
-//	if(arg <= 0) return 0;
-//	double ratio = mKK/M;
-//	double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
-//	result = val > 0 ? val : 0;
-//	result *= shape->Evaluate(mKK, phi, ctheta_1, ctheta_2);
-//	return result/231.634;
-	
+	double mKK = datapoint[0];
+	if(type == "peaking")
+	{
+		double mean  = shapepars[0].value;
+		double sigma = shapepars[1].value;
+		double alpha = shapepars[2].value;
+		if((mKK-mean)/sigma>-alpha)
+		{
+			massPart = std::exp(-std::pow(mKK-mean,2)/(2*sigma*sigma));
+		}
+		else
+		{
+			double n = shapepars[3].value;
+			double A = std::pow(n/std::abs(alpha),n) * std::exp(-alpha*alpha/2);
+			double B = n/std::abs(alpha) - std::abs(alpha);
+			massPart = A * std::pow(B - (mKK-mean)/sigma,-n);
+		}
+	}
+	else
+	{
+		double A = shapepars[0].value;
+		double B = shapepars[1].value;
+		double C = shapepars[2].value;
+		double M = shapepars[3].value;
+		double arg = mKK - M;
+		if(arg <= 0) return 0;
+		double ratio = mKK/M;
+		double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
+		massPart = val > 0 ? val : 0;
+	}
 	
 	double angularPart = angulardistribution.Evaluate(datapoint);
 	return massPart * angularPart;
