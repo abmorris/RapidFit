@@ -1,4 +1,5 @@
 #include "Bs2PhiKKBackgroundComponent.h"
+
 Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config, std::string name, std::string _type)
 	: fraction(Bs2PhiKK::PhysPar(config,name+"_fraction"))
 	, type(_type)
@@ -32,23 +33,27 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	double mKK = datapoint[0];
 	if(type == "peaking")
 	{
+		// Crystal Ball function
 		double mean  = shapepars[0].value;
 		double sigma = shapepars[1].value;
 		double alpha = shapepars[2].value;
-		if((mKK-mean)/sigma>-alpha)
+		double arg = (mKK-mean)/sigma;
+		if(arg > -alpha)
 		{
-			massPart = std::exp(-std::pow(mKK-mean,2)/(2*sigma*sigma));
+			massPart = std::exp(-arg*arg/2);
 		}
 		else
 		{
+			double absalpha = std::abs(alpha);
 			double n = shapepars[3].value;
-			double A = std::pow(n/std::abs(alpha),n) * std::exp(-alpha*alpha/2);
-			double B = n/std::abs(alpha) - std::abs(alpha);
-			massPart = A * std::pow(B - (mKK-mean)/sigma,-n);
+			double A = std::pow(n/absalpha,n) * std::exp(-alpha*alpha/2);
+			double B = n/absalpha - absalpha;
+			massPart = A * std::pow(B - arg,-n);
 		}
 	}
 	else
 	{
+		// Threshold function
 		double A = shapepars[0].value;
 		double B = shapepars[1].value;
 		double C = shapepars[2].value;
@@ -63,7 +68,6 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	double angularPart = angulardistribution.Evaluate(datapoint);
 	return massPart * angularPart;
 }
-// Update everything from the parameter set
 void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	fraction.Update(fitpars);
