@@ -31,9 +31,9 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) :
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
-	thraccscale = Bs2PhiKKComponent::PhysPar(config,"thraccscale");
-	phimass = Bs2PhiKKComponent::PhysPar(config,phiname+"_mass");
-	dGsGs = Bs2PhiKKComponent::PhysPar(config,"dGsGs");
+	thraccscale = Bs2PhiKK::PhysPar(config,"thraccscale");
+	phimass = Bs2PhiKK::PhysPar(config,phiname+"_mass");
+	dGsGs = Bs2PhiKK::PhysPar(config,"dGsGs");
 	if(convolve)
 		for(std::string name: {"sigma1","sigma2","frac","nsteps","nsigma"})
 			mKKrespars[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
@@ -102,24 +102,24 @@ void Bs2PhiKKSignal::Initialise()
 {
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
-	this->TurnCachingOff();
+//	this->TurnCachingOff();
 }
 /*****************************************************************************/
 // Build a component object from a passed option
-Bs2PhiKKComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::string phiname, std::string option) const
+Bs2PhiKKSignalComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::string phiname, std::string option) const
 {
 	// Syntax: <resonance name>(<spin>,<lineshape>)
 	// - the list is space-delimited: no extra spaces, please!
 	// - resonance name must be alphanumeric
 	// - spin must be a single digit 0, 1 or 2, or you have to implement the code for higher spins
 	// - lineshape name must be 2 capital letters
-	// - see Bs2PhiKKComponent.cpp for implemented lineshapes (BW, FT, NR... but more can be added)
+	// - see Bs2PhiKKSignalComponent.cpp for implemented lineshapes (BW, FT, NR... but more can be added)
 	// Example: "phi1020(1,BW)"
 	std::string KKname = option.substr(0,option.find('('));
 	int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
 	std::string lineshape = option.substr(option.find(',')+1,2);
 	std::cout << "┃ " << KKname << "\t│    " << JKK << "\t│ " << lineshape << " shape \t┃\n";
-	return Bs2PhiKKComponent(config, phiname, KKname, JKK, lineshape);
+	return Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -148,6 +148,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 // Set the physics parameters
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
+	UnsetCache();
 	outofrange = false;
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
 	dGsGs.Update(&allParameters);
@@ -181,7 +182,7 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	std::string compName = component->getComponentName();
 	if(compName=="0") // should quicken things up slightly?
 		return Evaluate(measurement);
-	const Bs2PhiKKComponent::datapoint_t datapoint = ReadDataPoint(measurement);
+	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
 	// Evaluate the PDF at this point
 	double MatrixElementSquared;
 	if(compName=="interference")
@@ -195,17 +196,17 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	if(outofrange)
 		return 1e-100;
-	const Bs2PhiKKComponent::datapoint_t datapoint = ReadDataPoint(measurement);
+	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
 	double MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,"") : TotalMsq(datapoint);
 	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
 // The stuff common to both Evaluate() and EvaluateComponent()
-double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKKComponent::datapoint_t& datapoint) const
+double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	return MatrixElementSquared * p1stp3(datapoint[0]) * Acceptance(datapoint);
 }
 /*****************************************************************************/
-Bs2PhiKKComponent::datapoint_t Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
+Bs2PhiKK::datapoint_t Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
 	double mKK      = measurement->GetObservable(mKKName     )->GetValue();
@@ -217,13 +218,13 @@ Bs2PhiKKComponent::datapoint_t Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurem
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes
-double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& dummy) const
+double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKK::datapoint_t& datapoint, const std::string& dummy) const
 {
 	(void)dummy;
-	Bs2PhiKKComponent::amplitude_t TotalAmp = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
+	Bs2PhiKK::amplitude_t TotalAmp = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	for(const auto& comp : components)
 	{
-		Bs2PhiKKComponent::amplitude_t CompAmp = comp.second.Amplitude(datapoint);
+		Bs2PhiKK::amplitude_t CompAmp = comp.second.Amplitude(datapoint);
 		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag())){ std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl; std::exit(1);}
 		TotalAmp[false] += CompAmp[false];
 		TotalAmp[true] += CompAmp[true];
@@ -231,12 +232,12 @@ double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKKComponent::datapoint_t& datapoint,
 	return TimeIntegratedMsq(TotalAmp);
 }
 // Single-component |M|²
-double Bs2PhiKKSignal::ComponentMsq(const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& compName) const
+double Bs2PhiKKSignal::ComponentMsq(const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
 {
 	return TimeIntegratedMsq(components.at(compName).Amplitude(datapoint, compName));
 }
 // Interference |M|²: difference between incoherent and coherent sums of components
-double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& dummy) const
+double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKK::datapoint_t& datapoint, const std::string& dummy) const
 {
 	(void)dummy;
 	double MatrixElementSquared = TotalMsq(datapoint);
@@ -245,7 +246,7 @@ double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKKComponent::datapoint_t& dat
 	return MatrixElementSquared;
 }
 // Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
-double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKKComponent::amplitude_t& Amp) const
+double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKK::amplitude_t& Amp) const
 {
 	double GH = (2 - dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
 	double GL = (2 + dGsGs.value); // Actually Γ/2ΓL
@@ -254,37 +255,35 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKKComponent::amplitude_t& A
 	return termone + termtwo;
 }
 // Convolution of the matrix element function with a Gaussian... the slow integral way
-double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKKComponent::datapoint_t& datapoint, const std::string& compName) const
+double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
 {
 	const double res1 = mKKrespars.at("sigma1");
-	const double res2 = mKKrespars.at("sigma2");
-	const double frac = mKKrespars.at("frac");
 	const double nsigma = mKKrespars.at("nsigma");
 	const int nsteps = mKKrespars.at("nsteps");
-	const double resolution = frac*res1+(1-frac)*res2;
+	const double resolution = res1 * sqrt((datapoint[0] - 2*Bs2PhiKK::mK)/(phimass.value - 2*Bs2PhiKK::mK));
 	// Can't do this if we're too close to threshold: it starts returning nan
-	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKKComponent::mK)
+	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
 	{
 		double Msq_conv = 0.;
 		const double stepsize = 2.*nsigma*resolution/nsteps;
 		// Integrate over range −nσ to +nσ
 		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-			Msq_conv += (frac*gsl_ran_gaussian_pdf(x,res1)+(1-frac)*gsl_ran_gaussian_pdf(x,res2)) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize; // FML
+			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize; // FML
 		return Msq_conv;
 	}
 	else
 		return (this->*EvaluateMsq)(datapoint,compName);
 }
 /*Stuff that factors out of the time integral*********************************/
-double Bs2PhiKKSignal::Acceptance(const Bs2PhiKKComponent::datapoint_t& datapoint) const
+double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	double acceptance;
 	if(acceptance_moments)
 	{
 		acceptance = acc_m->Evaluate(datapoint);
-		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKKComponent::mK));
-//		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKKComponent::mK));
-//		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKKComponent::mK))*2.0/M_PI;
+		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
+//		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
+//		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	else if(acceptance_histogram)
 	{
@@ -298,8 +297,8 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKKComponent::datapoint_t& datapoin
 }
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
-	const double mK   = Bs2PhiKKComponent::mK;
-	const double mBs  = Bs2PhiKKComponent::mBs;
+	const double mK   = Bs2PhiKK::mK;
+	const double mBs  = Bs2PhiKK::mBs;
 	const double mPhi = phimass.value;
 	if(mKK < 2*mK || mKK > mBs-mPhi) return 0;
 	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
