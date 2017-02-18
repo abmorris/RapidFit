@@ -27,6 +27,7 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroun
 	, angulardistribution(other.angulardistribution)
 {
 }
+/*****************************************************************************/
 double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	double massPart(0);
@@ -68,6 +69,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	double angularPart = angulardistribution.Evaluate(datapoint);
 	return massPart * angularPart;
 }
+/*****************************************************************************/
 void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	fraction.Update(fitpars);

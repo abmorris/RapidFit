@@ -132,3 +132,4 @@ double Bs2PhiKKBackground::Normalisation(PhaseSpaceBoundary* boundary)
 	(void)boundary;
 	return -1;
 }
+
