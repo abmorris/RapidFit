@@ -7,12 +7,7 @@
 PDF_CREATOR( Bs2PhiKKBackground )
 /*****************************************************************************/
 // Constructor
-Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config)
-	// Dependent variable names
-	: mKKName(config->getName("mKK"))
-	, phiName(config->getName("phi"))
-	, ctheta_1Name(config->getName("ctheta_1"))
-	, ctheta_2Name(config->getName("ctheta_2"))
+Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) : Bs2PhiKK(config)
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− background PDF\n\n";
 	std::vector<std::string> componentlist = StringProcessing::SplitString(config->getConfigurationValue("components"), ' ');
@@ -30,12 +25,8 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config)
 }
 // Copy constructor
 Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy)
-	: BasePDF( (BasePDF) copy)
-	// Dependent variable names
-	, mKKName(copy.mKKName)
-	, phiName(copy.phiName)
-	, ctheta_1Name(copy.ctheta_1Name)
-	, ctheta_2Name(copy.ctheta_2Name)
+	: BasePDF((BasePDF)copy)
+	, Bs2PhiKK((Bs2PhiKK)copy)
 	// PDF components
 	, components(copy.components)
 {
@@ -117,17 +108,6 @@ double Bs2PhiKKBackground::Evaluate(DataPoint* measurement)
 	for(const auto& comp : components)
 		totalshape+=comp.second.Evaluate(datapoint);
 	return totalshape;
-}
-/*****************************************************************************/
-Bs2PhiKK::datapoint_t Bs2PhiKKBackground::ReadDataPoint(DataPoint* measurement) const
-{
-	// Get values from the datapoint
-	double mKK      = measurement->GetObservable(mKKName     )->GetValue();
-	double phi      = measurement->GetObservable(phiName     )->GetValue();
-	double ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
-	double ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
-	phi+=M_PI;
-	return {mKK, phi, ctheta_1, ctheta_2};
 }
 /*****************************************************************************/
 double Bs2PhiKKBackground::Normalisation(PhaseSpaceBoundary* boundary)

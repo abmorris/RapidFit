@@ -10,6 +10,9 @@
 class Bs2PhiKK
 {
 	public:
+		Bs2PhiKK(PDFConfigurator*);
+		Bs2PhiKK(const Bs2PhiKK&);
+		~Bs2PhiKK() {}
 		static double mBs;
 		static double mK;
 		static double mpi;
@@ -29,6 +32,9 @@ class Bs2PhiKK
 			double value;
 			ObservableRef name;
 		};
+	protected:
+		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName; // Datapoint stuff: K+K− mass and helicity angles
+		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const;// Retrieve an array of doubles from a RapidFit Datapoint object
 };
 
 #endif

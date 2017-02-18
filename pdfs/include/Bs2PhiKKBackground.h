@@ -7,11 +7,10 @@
 #ifdef __CINT__
 #include "framework/include/BasePDF.h"
 #endif
-#include "Bs2PhiKKHelpers.h"
 #include "Bs2PhiKKBackgroundComponent.h"
 #include "LegendreMomentShape.h"
 
-class Bs2PhiKKBackground : public BasePDF
+class Bs2PhiKKBackground : public BasePDF, public Bs2PhiKK
 {
 	public:
 		// *structors
@@ -27,9 +26,6 @@ class Bs2PhiKKBackground : public BasePDF
 		std::vector<std::string> PDFComponents();
 	private:
 		std::map<std::string,Bs2PhiKKBackgroundComponent> components; // Iterable list of amplitude components
-		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName; // Datapoint stuff: K+K− mass and helicity angles
-		// Retrieve an array of doubles from a RapidFit Datapoint object
-		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const;
 		// Stuff to do on creation
 		void Initialise();
 		void MakePrototypes();

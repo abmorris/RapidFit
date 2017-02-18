@@ -14,12 +14,7 @@
 PDF_CREATOR( Bs2PhiKKSignal )
 /*****************************************************************************/
 // Constructor
-Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config)
-	// Dependent variable names
-	: mKKName(config->getName("mKK"))
-	, phiName(config->getName("phi"))
-	, ctheta_1Name(config->getName("ctheta_1"))
-	, ctheta_2Name(config->getName("ctheta_2"))
+Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
 	, acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
 	, convolve(config->isTrue("convolve"))
@@ -59,12 +54,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config)
 /*****************************************************************************/
 // Copy constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
-	: BasePDF( (BasePDF) copy)
-	// Dependent variable names
-	, mKKName(copy.mKKName)
-	, phiName(copy.phiName)
-	, ctheta_1Name(copy.ctheta_1Name)
-	, ctheta_2Name(copy.ctheta_2Name)
+	: BasePDF((BasePDF)copy)
+	, Bs2PhiKK((Bs2PhiKK)copy)
 	// Width splitting
 	, dGsGs(copy.dGsGs)
 	// Phi mass
@@ -196,17 +187,6 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	return MatrixElementSquared * p1stp3(datapoint[0]) * Acceptance(datapoint);
-}
-/*****************************************************************************/
-Bs2PhiKK::datapoint_t Bs2PhiKKSignal::ReadDataPoint(DataPoint* measurement) const
-{
-	// Get values from the datapoint
-	double mKK      = measurement->GetObservable(mKKName     )->GetValue();
-	double phi      = measurement->GetObservable(phiName     )->GetValue();
-	double ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
-	double ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
-	phi+=M_PI;
-	return {mKK, phi, ctheta_1, ctheta_2};
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes

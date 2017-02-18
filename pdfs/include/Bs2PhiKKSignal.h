@@ -7,12 +7,11 @@
 #ifdef __CINT__
 #include "framework/include/BasePDF.h"
 #endif
-#include "Bs2PhiKKHelpers.h"
 #include "Bs2PhiKKSignalComponent.h"
 #include "LegendreMomentShape.h"
 #include "NDHist_Adaptive.h"
 
-class Bs2PhiKKSignal : public BasePDF
+class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 {
 	public:
 		// *structors
@@ -30,8 +29,6 @@ class Bs2PhiKKSignal : public BasePDF
 		typedef double (Bs2PhiKKSignal::*MsqFunc_t)(const Bs2PhiKK::datapoint_t&, const std::string&) const;
 		std::map<std::string,Bs2PhiKKSignalComponent> components; // Iterable list of amplitude components
 		std::vector<std::string> componentnames; // List of names for plotting purposes only
-		// K+K− mass and helicity angles
-		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName;
 		// Bs width splitting
 		Bs2PhiKK::PhysPar dGsGs;
 		// phi(1020) mass
@@ -59,8 +56,6 @@ class Bs2PhiKKSignal : public BasePDF
 		double Evaluate_Base(const double, const Bs2PhiKK::datapoint_t&) const;
 		double p1stp3(const double&) const;
 		double Acceptance(const Bs2PhiKK::datapoint_t&) const;
-		// Retrieve an array of doubles from a RapidFit Datapoint object
-		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const;
 		// Stuff to do on creation
 		void Initialise();
 		void MakePrototypes();

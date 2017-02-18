@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 // RapidFit
-#include "Bs2PhiKKHelpers.h"
+#include "Bs2PhiKK.h"
 #include "LegendreMomentShape.h"
 
 class Bs2PhiKKBackgroundComponent

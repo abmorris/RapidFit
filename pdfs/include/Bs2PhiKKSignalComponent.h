@@ -5,7 +5,7 @@
 #include <memory>
 #include <map>
 // RapidFit
-#include "Bs2PhiKKHelpers.h"
+#include "Bs2PhiKK.h"
 #include "DPMassShape.hh"
 #include "DPBarrierFactor.hh"
 #include "DPWignerFunctionGeneral.hh"
