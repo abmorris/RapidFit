@@ -278,8 +278,8 @@ bool NormalisedSumPDF::SetPhysicsParameters( ParameterSet * NewParameterSet )
 		//Stupidity check
 		if ( newFractionValue > 1.0 || newFractionValue < 0.0 )
 		{
-			//cerr << "Requested impossible fraction: " << newFractionValue << endl;
-			//return false;
+			cerr << "Requested impossible fraction: " << newFractionValue << endl;
+			return false;
 		}
 		else
 		{
@@ -336,20 +336,6 @@ double NormalisedSumPDF::Evaluate( DataPoint* NewDataPoint )
 
 	double sum=termOne + termTwo;
 
-	/*
-	   if( std::isnan(sum) ||  sum <= 0. )
-	   {
-	   PDF_THREAD_LOCK
-
-	   cout << termOne*firstIntegral << "/" << firstIntegral << "\t+\t" << termTwo*secondIntegral << "/" << secondIntegral << endl;
-
-	   cout << firstPDF->GetLabel() << "\t\t\t\t\t" << secondPDF->GetLabel() << endl << endl;
-
-	   PDF_THREAD_UNLOCK
-	   throw(-653102);
-	   }
-	 */
-
 	//Return the sum
 	inEvaluate = false;
 	return sum;
@@ -376,17 +362,6 @@ double NormalisedSumPDF::EvaluateForNumericIntegral( DataPoint * NewDataPoint )
 		termOne = ( firstPDF->EvaluateForNumericIntegral( NewDataPoint ) * firstFraction ) / firstIntegral;
 		termTwo = ( secondPDF->EvaluateForNumericIntegral( NewDataPoint ) * ( 1 - firstFraction ) ) / secondIntegral;
 	}
-	//cout << "NSP numerical integrals " << firstIntegral << " , " << secondIntegral << endl;
-
-	/*
-	   if( std::isnan(termOne) || std::isnan(termTwo) )
-	   {
-	   PDF_THREAD_LOCK
-	   cout << termOne*firstIntegral << "/" << firstIntegral << "\t+\t" << termTwo*secondIntegral << "/" << secondIntegral << endl;
-	   cout << firstPDF->GetLabel() << "\t\t\t\t\t" << secondPDF->GetLabel() << endl << endl;
-	   PDF_THREAD_UNLOCK
-	   }
-	 */
 
 	//Return the sum
 	return termOne + termTwo;
@@ -426,15 +401,12 @@ double NormalisedSumPDF::EvaluateComponent( DataPoint* NewDataPoint, ComponentRe
 	string componentIndex = componentIndexObj->getComponentName();
 	int component_num = componentIndexObj->getComponentNumber();
 
-	//cout << endl << componentIndexObj->getComponentName() << endl;
-
 	if( component_num == -1 || componentIndexObj->getSubComponent() == NULL )
 	{
 		component_num = StringProcessing::GetNumberOnLeft( componentIndex );
 		componentIndexObj->setComponentNumber( component_num );
 		componentIndexObj->addSubComponent( StringProcessing::RemoveFirstNumber( componentIndex ) );
 	}
-	//cout << "Eval Component: " << component_num << "\tAsking for " << StringProcessing::RemoveFirstNumber( componentIndex ) << endl << endl;
 
 	double returnable_value = -1.;
 
@@ -474,9 +446,6 @@ double NormalisedSumPDF::EvaluateComponent( DataPoint* NewDataPoint, ComponentRe
 
 	termOne = ( termOne * firstFraction );
 	termTwo = ( termTwo * (1.-firstFraction) );
-
-
-	//cout << "NormSum:\t" << setw(3) << componentIndex << " : " << component_num << " : " << StringProcessing::RemoveFirstNumber( componentIndex ) << "\t\t" << termOne+termTwo << " _:_ " << termOne << " , " << termTwo << "\t" << firstIntegral << " , " << secondIntegral << "\t" << this->GetLabel() << endl;
 
 	returnable_value = termOne + termTwo;
 
