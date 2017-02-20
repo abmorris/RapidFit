@@ -31,7 +31,8 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroun
 /*****************************************************************************/
 double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double massPart(0);
+	double massPart(1.0);
+	/*
 	double mKK = datapoint[0];
 	if(type == "peaking")
 	{
@@ -66,6 +67,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
 		massPart = val > 0 ? val : 0;
 	}
+	*/
 	double angularPart = angulardistribution.Evaluate(datapoint);
 	return massPart * angularPart;
 }

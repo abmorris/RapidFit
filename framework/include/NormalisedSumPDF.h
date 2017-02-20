@@ -92,8 +92,8 @@ class NormalisedSumPDF : public BasePDF
 		NormalisedSumPDF& operator=(const NormalisedSumPDF&);
 		void MakePrototypes( PhaseSpaceBoundary* );
 
-		double GetFirstIntegral( DataPoint* );
-		double GetSecondIntegral( DataPoint* );
+		double firstIntegral;
+		double secondIntegral;
 
 		vector<string> prototypeDataPoint, prototypeParameterSet, doNotIntegrateList;
 		IPDF * firstPDF;
