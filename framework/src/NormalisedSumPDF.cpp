@@ -287,10 +287,6 @@ bool NormalisedSumPDF::SetPhysicsParameters( ParameterSet * NewParameterSet )
 			firstFraction = newFractionValue;
 			firstPDF->UpdatePhysicsParameters( NewParameterSet );
 			secondPDF->UpdatePhysicsParameters( NewParameterSet );
-			// Calculate and cache the integrals
-			DataPoint pdp(prototypeDataPoint);
-			firstIntegral = firstPDF->Integral( &pdp, integrationBoundary ) * firstIntegralCorrection;
-			secondIntegral = secondPDF->Integral( &pdp, integrationBoundary ) * secondIntegralCorrection;
 			bool output = allParameters.SetPhysicsParameters( NewParameterSet );
 			return output;
 		}
@@ -303,6 +299,10 @@ double NormalisedSumPDF::Normalisation( DataPoint* NewDataPoint, PhaseSpaceBound
 {
 	(void)NewDataPoint;
 	(void)NewBoundary;
+	// Calculate and cache the integrals
+	DataPoint pdp(prototypeDataPoint);
+	firstIntegral = firstPDF->Integral( &pdp, integrationBoundary ) * firstIntegralCorrection;
+	secondIntegral = secondPDF->Integral( &pdp, integrationBoundary ) * secondIntegralCorrection;
 	//The evaluate method already returns a normalised value
 	return 1.0;
 }
