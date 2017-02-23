@@ -26,20 +26,11 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 		KKbarrier = DPBarrierFactor(JKK,3.0,0);
 	}
 	// KK resonance parameters
-	// Breit Wigner
-	if(lineshape=="BW")
+	for(string KKpar: Bs2PhiKK::LineShapeParameterNames(KKname,lineshape))
 	{
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKname+"_mass"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKname+"_width"));
+		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKpar));
 	}
-	// Flatte
-	else if(lineshape=="FT")
-	{
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKname+"_mass")); 
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKname+"_gpipi"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKname+"_Rg"));
-	}
-	else if(lineshape!="NR")
+	if(KKpars.empty() && lineshape!="NR")
 	{
 		lineshape = "NR";
 		std::cerr << "Bs2PhiKKSignalComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << std::endl;
@@ -123,7 +114,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 {
 	// Breit Wigner
 	if(lineshape=="BW")
-		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[2].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKBFradius.value));
+		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
 	// Flatte
 	else if(lineshape=="FT")
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
@@ -147,7 +138,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 			break;
 	}
 	UpdateAmplitudes();
-	UpdateLineshape();
+	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
 // Angular part of the amplitude
@@ -256,7 +247,7 @@ void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 	for(auto& par: KKpars) par.Update(fitpars);
 	UpdateBarriers();
 	UpdateAmplitudes();
-	UpdateLineshape();
+	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 {
@@ -284,24 +275,6 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << Ahel.size() << std::endl;
 		std::exit(-1);
 	}
-}
-void Bs2PhiKKSignalComponent::UpdateLineshape()
-{
-	// Update the resonance line shape
-	vector<double> respars;
-	if(lineshape == "BW")
-	{
-		respars.push_back(KKpars[0].value); // mass
-		respars.push_back(KKpars[1].value); // width
-		respars.push_back(KKBFradius.value); // barrier factor radius
-	}
-	else if(lineshape == "FT")
-	{
-		respars.push_back(KKpars[0].value); // mass
-		respars.push_back(KKpars[1].value); // gpipi
-		respars.push_back(KKpars[1].value*KKpars[2].value); // gKK = gpipi*Rg
-	}
-	KKLineShape->setParameters(respars);
 }
 void Bs2PhiKKSignalComponent::UpdateBarriers()
 {

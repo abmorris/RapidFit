@@ -6,7 +6,6 @@
 #include <map>
 // RapidFit
 #include "Bs2PhiKK.h"
-#include "DPMassShape.hh"
 #include "DPBarrierFactor.hh"
 #include "DPWignerFunctionGeneral.hh"
 
@@ -41,7 +40,6 @@ class Bs2PhiKKSignalComponent
 		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"
 		void Initialise();
 		void UpdateAmplitudes();
-		void UpdateLineshape();
 		void UpdateBarriers();
 		std::complex<double> F(const int, const double, const double, const double) const; // Angular distribution: helicity, phi, costheta1, costheta2
 		std::complex<double> AngularPart(const double, const double, const double) const; // index, phi, costheta1, costheta2

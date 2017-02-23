@@ -166,6 +166,7 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	if(compName=="0") // should quicken things up slightly?
 		return Evaluate(measurement);
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) return 0;
 	// Evaluate the PDF at this point
 	double MatrixElementSquared;
 	if(compName=="interference")
@@ -180,6 +181,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 	if(outofrange)
 		return 1e-100;
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) return 0;
 	double MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,"") : TotalMsq(datapoint);
 	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
@@ -229,10 +231,9 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKK::amplitude_t& Amp) const
 // Convolution of the matrix element function with a Gaussian... the slow integral way
 double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
 {
-	const double res1 = mKKrespars.at("sigma1");
 	const double nsigma = mKKrespars.at("nsigma");
 	const int nsteps = mKKrespars.at("nsteps");
-	const double resolution = res1 * sqrt((datapoint[0] - 2*Bs2PhiKK::mK)/(phimass.value - 2*Bs2PhiKK::mK));
+	const double resolution = std::sqrt(1.63075e-05*(datapoint[0]-2*Bs2PhiKK::mK));
 	// Can't do this if we're too close to threshold: it starts returning nan
 	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
 	{
@@ -240,7 +241,7 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint
 		const double stepsize = 2.*nsigma*resolution/nsteps;
 		// Integrate over range −nσ to +nσ
 		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize; // FML
+			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize;
 		return Msq_conv;
 	}
 	else
@@ -272,7 +273,6 @@ double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 	const double mK   = Bs2PhiKK::mK;
 	const double mBs  = Bs2PhiKK::mBs;
 	const double mPhi = phimass.value;
-	if(mKK < 2*mK || mKK > mBs-mPhi) return 0;
 	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
 	double pB = DPHelpers::daughterMomentum(mBs, mKK, mPhi);
 	double pRpB = pR * pB;
