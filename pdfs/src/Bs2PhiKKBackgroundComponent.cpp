@@ -26,13 +26,14 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 	}
 	else if(type.find("resonant")!=std::string::npos)
 	{
-		std::regex pattern("resonant,[0-3],[A-Z][A-Z]");
+		std::regex pattern("resonant,([0-3]),([A-Z][A-Z])");
 		std::smatch result;
 		bool match = std::regex_match(type, result, pattern);
 		if(!match) std::cerr << "The option for this resonant background is malformed: " << type << std::endl;
-		JKK = std::stoi(result[0].str());
-		lineshape = result[1].str();
-		for(string par: Bs2PhiKK::LineShapeParameterNames(name,lineshape))
+		JKK = std::stoi(result[1].str());
+		lineshape = result[2].str();
+		string prefix = "combinatorial";
+		for(string par: Bs2PhiKK::LineShapeParameterNames(name.substr(name.find(prefix)+prefix.length()),lineshape))
 		{
 			KKpars.push_back(Bs2PhiKK::PhysPar(config,par));
 		}
@@ -77,6 +78,7 @@ void Bs2PhiKKBackgroundComponent::Initialise()
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
 	else if(lineshape=="NR")
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
+	else return; // Don't update the lineshape if it doesn't exist
 	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
@@ -130,7 +132,7 @@ void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
 	fraction.Update(fitpars);
 	for(auto& par: KKpars)
 		par.Update(fitpars);
-	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
+	if(!lineshape.empty()) Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 vector<ObservableRef> Bs2PhiKKBackgroundComponent::GetPhysicsParameters() const
 {
