@@ -26,8 +26,8 @@ LegendreMomentShape::LegendreMomentShape(std::string filename) : init(true), cop
 {
 	Open(filename);
 }
-LegendreMomentShape::LegendreMomentShape(const LegendreMomentShape& copy) :
-	  mKK_min(copy.mKK_min)
+LegendreMomentShape::LegendreMomentShape(const LegendreMomentShape& copy)
+	: mKK_min(copy.mKK_min)
 	, mKK_max(copy.mKK_max)
 	, coeffs(copy.coeffs)
 	, init(copy.init)
@@ -41,10 +41,7 @@ void LegendreMomentShape::Open(const std::string filename)
 {
 	TFile* file;
 	if(!filename.empty())
-	{
-		std::cout << "Opening " << filename << std::endl;
 		file = TFile::Open(filename.c_str());
-	}
 	else return;
 	if(file->IsZombie())
 	{
@@ -85,7 +82,6 @@ void LegendreMomentShape::Open(const std::string filename)
 		std::cerr << "No coefficients found. Defaulting to uniform shape." << std::endl;
 		return;
 	}
-	printcoefficients();
 	delete tree;
 	delete file;
 	init = false;
