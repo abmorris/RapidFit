@@ -225,7 +225,6 @@ void LegendreMomentShape::deletecoefficients(double**** c) const
 }
 void LegendreMomentShape::storecoefficients(double**** c)
 {
-	std::cout << "Storing coefficients" << std::endl;
 	// Create std::vector of non-zero coefficients after reading from tree
 	for ( int l = 0; l < l_max; l++ )
 		for ( int i = 0; i < i_max; i++ )
