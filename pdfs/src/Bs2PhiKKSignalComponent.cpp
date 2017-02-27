@@ -42,25 +42,28 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 		for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
 	long unsigned int n = helicities.size();
+	std::vector<std::string> phasesuffices;
+	std::vector<std::string> magsqsuffices;
 	switch(n)
 	{
 		case 0:
 			break;
 		case 1:
-			phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_deltazero"));
+			phasesuffices = {"deltazero"};
 			break;
 		case 3:
-			magsqs.push_back(Bs2PhiKK::PhysPar(config,KKname+"_Aperpsq"));
-			magsqs.push_back(Bs2PhiKK::PhysPar(config,KKname+"_Azerosq"));
-			phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_deltaperp"));
-			phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_deltazero"));
-			phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_deltapara"));
+			magsqsuffices = {"Aperpsq","Azerosq"};
+			phasesuffices = {"deltaperp","deltazero","deltapara"};
 			break;
 		default:
 			std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << n << std::endl;
 			std::exit(-1);
 			break;
 	}
+	for(std::string suffix: magsqsuffices)
+		magsqs.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
+	for(std::string suffix: phasesuffices)
+		phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
 	// Make the helicity amplitude vector
 	for(const auto& lambda: helicities)
 		Ahel[lambda] = std::polar<double>(sqrt(1. / (double)n), 0);
@@ -168,15 +171,12 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	if(mKK < 2*Bs2PhiKK::mK) return 0;
 	if(lineshape=="NR")
 		return 1;
-	// Orbital factor
-	// Masses
-	double mphi = phimass.value;
-	double mKK0 = KKpars[0].value;
 	// Momenta
-	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mphi, mKK);
+	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
 	double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
+	// Orbital factor
 	double orbitalFactor = //std::pow(pBs/mBs,   0)* // == 1 so don't bother
-	                       std::pow(pKK/mKK0, JKK);
+	                       std::pow(pKK/KKpars[0].value, JKK);
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs)*
 	                       KKbarrier.barrier(pKK);
@@ -242,9 +242,9 @@ void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		KKBFradius.Update(fitpars);
 		BsBFradius.Update(fitpars);
 	}
-	for(auto& par: magsqs) par.Update(fitpars);
-	for(auto& par: phases) par.Update(fitpars);
-	for(auto& par: KKpars) par.Update(fitpars);
+	for(auto* set: {&magsqs,&phases,&KKpars})
+		for(auto& par: *set)
+			par.Update(fitpars);
 	UpdateBarriers();
 	UpdateAmplitudes();
 	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
@@ -263,7 +263,7 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		if(std::isnan(Apara_mag))
 		{
 			Apara_mag = 0;
-			throw std::out_of_range("sum of |A|² > 1");
+			throw std::out_of_range("Σ|A|² > 1");
 		}
 		std::complex<double> Apara = std::polar(Apara_mag,phases[2].value);
 		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)

@@ -1,24 +1,19 @@
 #include "Bs2PhiKK.h"
 #include "DPHelpers.hh"
 
-double Bs2PhiKK::mBs  = 5.36677;
-double Bs2PhiKK::mK   = 0.493677;
-double Bs2PhiKK::mpi  = 0.139570;
-
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
-	// Dependent variable names
-	: mKKName(config->getName("mKK"))
-	, phiName(config->getName("phi"))
-	, ctheta_1Name(config->getName("ctheta_1"))
-	, ctheta_2Name(config->getName("ctheta_2"))
 {
+	// Dependent variable names
+	int i(0);
+	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2"})
+	{
+		ObservableNames[i] = config->getName(name);
+		i++;
+	}
 }
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
 	// Dependent variable names
-	: mKKName(copy.mKKName)
-	, phiName(copy.phiName)
-	, ctheta_1Name(copy.ctheta_1Name)
-	, ctheta_2Name(copy.ctheta_2Name)
+	: ObservableNames(copy.ObservableNames)
 {
 }
 void Bs2PhiKK::PhysPar::Update(const ParameterSet* pars)
@@ -27,15 +22,24 @@ void Bs2PhiKK::PhysPar::Update(const ParameterSet* pars)
 	if(std::isnan(value))
 		std::cerr << name.Name() << " has been given a nan value!" << std::endl;
 }
+void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
+{
+	// The ordering here matters. It has to be the same as the XML file, apparently.
+	for(auto name: ObservableNames)
+		allObservables.push_back(name.Name());
+}
 Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
-	double mKK      = measurement->GetObservable(mKKName     )->GetValue();
-	double phi      = measurement->GetObservable(phiName     )->GetValue();
-	double ctheta_1 = measurement->GetObservable(ctheta_1Name)->GetValue();
-	double ctheta_2 = measurement->GetObservable(ctheta_2Name)->GetValue();
-	phi+=M_PI;
-	return {mKK, phi, ctheta_1, ctheta_2};
+	datapoint_t dp = {0,0,0,0};
+	int i(0);
+	for(const auto& name: ObservableNames)
+	{
+		dp[i] = measurement->GetObservable(name)->GetValue();
+		i++;
+	}
+	dp[1]+=M_PI;
+	return dp;
 }
 
 bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)

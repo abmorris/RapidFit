@@ -35,9 +35,9 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		Bs2PhiKK::PhysPar phimass;
 		// threshold mass acceptance
 		Bs2PhiKK::PhysPar thraccscale;
-		// mass resolution parameters
-		std::map<std::string,double> mKKrespars;
-		bool convolve;
+		// mass resolution variables
+		Bs2PhiKK::PhysPar mKKres_sigmazero; // variable that parameterises the mass resolution
+		std::map<std::string,double> mKKresconfig; // configuration parameters
 		// Options
 		bool acceptance_moments; // Use Legendre moments for acceptance
 		bool acceptance_histogram; // Use adaptively-binned histogram for acceptance

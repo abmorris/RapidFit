@@ -20,7 +20,6 @@ class Bs2PhiKKBackgroundComponent
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		double Evaluate(const Bs2PhiKK::datapoint_t&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
 	private:
-		void Initialise();
 		// Floatable parameters
 		Bs2PhiKK::PhysPar fraction; // Unnormalised variable to control the relative contribution of each component. Do not use as the fit fraction!!
 		// Shape parameters for the mass-dependent part
@@ -32,6 +31,8 @@ class Bs2PhiKKBackgroundComponent
 		int JKK;
 		// LMS object for the angular part
 		LegendreMomentShape angulardistribution;
+		// Helper functions
+		void Initialise();
 };
 #endif
 

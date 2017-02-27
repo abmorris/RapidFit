@@ -11,19 +11,11 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 	, angulardistribution(LegendreMomentShape(config->getConfigurationValue(name+"_CoefficientsFile")))
 {
 	if(type == "peaking")
-	{
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_mean"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_sigma"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_alpha"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_n"));
-	}
+		for(std::string suffix: {"mean", "sigma", "alpha", "n"})
+			KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_"+suffix));
 	else if(type == "combinatorial")
-	{
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_A"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_B"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_C"));
-		KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_M"));
-	}
+		for(std::string suffix: {"A", "B", "C", "M"})
+			KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_"+suffix));
 	else if(type.find("resonant")!=std::string::npos)
 	{
 		std::regex pattern("resonant,([0-3]),([A-Z][A-Z])");
