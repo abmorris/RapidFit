@@ -7,6 +7,8 @@
 // RapidFit
 #include "Bs2PhiKK.h"
 #include "LegendreMomentShape.h"
+// common
+#include "NDHist_Fixed.h"
 
 class Bs2PhiKKBackgroundComponent
 {
@@ -25,10 +27,12 @@ class Bs2PhiKKBackgroundComponent
 		// Shape parameters for the mass-dependent part
 		std::string type;
 		std::vector<Bs2PhiKK::PhysPar> KKpars;
-		// Resonance lineshape function for the mass-dependent part
+		// Resonance lineshape function if the mass-dependent part is resonant
 		std::unique_ptr<DPMassShape> KKLineShape {};
 		std::string lineshape;
 		int JKK;
+		// Histogram object if the mass-dependent part is a histogram shape
+		NDHist_Fixed mKKhist; // This has to be a pointer in order to keep Evaluate() const. Both TH1::FindBin and TH1::Interpolate modify the object. Why ROOT, why?
 		// LMS object for the angular part
 		LegendreMomentShape angulardistribution;
 		// Helper functions

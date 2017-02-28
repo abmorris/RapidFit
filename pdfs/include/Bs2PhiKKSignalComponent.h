@@ -34,7 +34,6 @@ class Bs2PhiKKSignalComponent
 		std::map<int,std::complex<double>> Ahel; // Helicity amplitudes as complex numbers
 		// Resonance parameters
 		std::vector<Bs2PhiKK::PhysPar> KKpars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
-		// Fixed parameters
 		int Jphi; // Spin of the phi (P-wave, 1)
 		int JKK; // Spin of the KK resonance (0, 1 or 2)
 		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"

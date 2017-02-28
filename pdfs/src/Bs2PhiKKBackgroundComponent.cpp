@@ -3,6 +3,7 @@
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
 #include "DPNonresonant.hh"
+#include "TH1D.h"
 
 // Constructor
 Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config, std::string name, std::string _type)
@@ -26,15 +27,21 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 		lineshape = result[2].str();
 		string prefix = "combinatorial";
 		for(string par: Bs2PhiKK::LineShapeParameterNames(name.substr(name.find(prefix)+prefix.length()),lineshape))
-		{
 			KKpars.push_back(Bs2PhiKK::PhysPar(config,par));
-		}
 		if(KKpars.empty() && lineshape!="NR")
 		{
 			lineshape = "NR";
-			std::cerr << "Bs2PhiKKBackgroundComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << std::endl;
+			std::cerr << "Bs2PhiKKBackgroundComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant.\n";
 		}
 	}
+	else if(type == "histogram")
+	{
+		std::string histfilename = config->getConfigurationValue(name+"_HistFile");
+		std::unique_ptr<TFile> histfile(TFile::Open(histfilename.c_str()));
+		mKKhist = NDHist_Fixed(*(TH1D*)histfile->Get("mKKhist")); // Copy the histogram to the member object.
+	}
+	else
+		std::cerr << "Bs2PhiKKBackgroundComponent WARNING: unrecognised background type:" << type << ". This will be treated as flat in mass.\n";
 	Initialise();
 }
 // Copy constructor
@@ -44,6 +51,7 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroun
 	, lineshape(other.lineshape)
 	, JKK(other.JKK)
 	, KKpars(other.KKpars)
+	, mKKhist(other.mKKhist)
 	, angulardistribution(other.angulardistribution)
 {
 	Initialise();
@@ -111,10 +119,10 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
 		massPart = val > 0 ? val : 0;
 	}
+	else if(type == "histogram")
+		massPart = mKKhist.Eval({mKK});
 	else if(!lineshape.empty())
-	{
 		massPart = std::norm(KKLineShape->massShape(mKK));
-	}
 	double angularPart = angulardistribution.Evaluate(datapoint);
 	return massPart * angularPart;
 }
