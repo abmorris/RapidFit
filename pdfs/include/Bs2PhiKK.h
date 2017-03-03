@@ -4,8 +4,10 @@
 #include <complex>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "PDFConfigurator.h"
 #include "ParameterSet.h"
+#include "DPMassShape.hh"
 
 class Bs2PhiKK
 {
@@ -13,11 +15,14 @@ class Bs2PhiKK
 		Bs2PhiKK(PDFConfigurator*);
 		Bs2PhiKK(const Bs2PhiKK&);
 		~Bs2PhiKK() {}
-		static double mBs;
-		static double mK;
-		static double mpi;
-		typedef std::array<double,4> datapoint_t;
-		typedef std::array<std::complex<double>,2> amplitude_t;
+		// Fixed mass values
+		static constexpr double mBs = 5.36677;
+		static constexpr double mK = 0.493677;
+		static constexpr double mpi = 0.139570;
+		typedef std::array<double,4> datapoint_t; // Datapoint type
+		typedef std::array<std::complex<double>,2> amplitude_t; // Two complex amplitudes (B and B̅)
+		static std::vector<std::string> LineShapeParameterNames(std::string name, std::string shape); // Return the necessary parameter names given a lineshape name
+		static bool IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t&); // Return whether or not this datapoint makes sense
 		// Simplify the case where a value and a name correspond 1:1
 		struct PhysPar
 		{
@@ -32,9 +37,11 @@ class Bs2PhiKK
 			double value;
 			ObservableRef name;
 		};
+		static void UpdateLineshape(const std::string&, DPMassShape&, const std::vector<PhysPar>&); // Update the parameters of a resonance line shape
 	protected:
-		ObservableRef mKKName, ctheta_1Name, ctheta_2Name, phiName; // Datapoint stuff: K+K− mass and helicity angles
-		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const;// Retrieve an array of doubles from a RapidFit Datapoint object
+		void MakePrototypeDataPoint(std::vector<std::string>&); // Create a prototype datapoint to use in MakePrototypes() in the PDFs
+		std::array<ObservableRef,4> ObservableNames;// Datapoint stuff: K+K− mass and helicity angles
+		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const; // Retrieve an array of doubles from a RapidFit Datapoint object
 };
 
 #endif

@@ -6,7 +6,6 @@
 #include <map>
 // RapidFit
 #include "Bs2PhiKK.h"
-#include "DPMassShape.hh"
 #include "DPBarrierFactor.hh"
 #include "DPWignerFunctionGeneral.hh"
 
@@ -26,22 +25,21 @@ class Bs2PhiKKSignalComponent
 	private:
 		// Floatable parameters
 		Bs2PhiKK::PhysPar fraction; // Unnormalised variable to control the relative contribution of each resonance. Do not use as the fit fraction!!
-		Bs2PhiKK::PhysPar phimass; // For use when calculating the orbital factor. Assume the PDF has already declared the need for this
-		Bs2PhiKK::PhysPar BsBFradius; // Barrier factor radii
-		Bs2PhiKK::PhysPar KKBFradius;
-		std::map<int,std::complex<double>> Ahel;
+		Bs2PhiKK::PhysPar phimass; // For use when calculating the orbital factor
+		Bs2PhiKK::PhysPar BsBFradius; // Bs barrier factor radius
+		Bs2PhiKK::PhysPar KKBFradius; // KK barrier factor radius
 		// Polarisation amplitude components (perp, zero, para)
 		std::vector<Bs2PhiKK::PhysPar> magsqs; // Square of magnitudes: para will be calculated from the other two
 		std::vector<Bs2PhiKK::PhysPar> phases; // Phases
+		std::map<int,std::complex<double>> Ahel; // Helicity amplitudes as complex numbers
 		// Resonance parameters
 		std::vector<Bs2PhiKK::PhysPar> KKpars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
-		// Fixed parameters
 		int Jphi; // Spin of the phi (P-wave, 1)
 		int JKK; // Spin of the KK resonance (0, 1 or 2)
 		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"
+		// Helper functions
 		void Initialise();
 		void UpdateAmplitudes();
-		void UpdateLineshape();
 		void UpdateBarriers();
 		std::complex<double> F(const int, const double, const double, const double) const; // Angular distribution: helicity, phi, costheta1, costheta2
 		std::complex<double> AngularPart(const double, const double, const double) const; // index, phi, costheta1, costheta2

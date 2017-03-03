@@ -29,15 +29,13 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		typedef double (Bs2PhiKKSignal::*MsqFunc_t)(const Bs2PhiKK::datapoint_t&, const std::string&) const;
 		std::map<std::string,Bs2PhiKKSignalComponent> components; // Iterable list of amplitude components
 		std::vector<std::string> componentnames; // List of names for plotting purposes only
-		// Bs width splitting
-		Bs2PhiKK::PhysPar dGsGs;
-		// phi(1020) mass
-		Bs2PhiKK::PhysPar phimass;
-		// threshold mass acceptance
-		Bs2PhiKK::PhysPar thraccscale;
-		// mass resolution parameters
-		std::map<std::string,double> mKKrespars;
-		bool convolve;
+		// Parameters used outside the amplitude calculation
+		Bs2PhiKK::PhysPar dGsGs; // Bs width splitting
+		Bs2PhiKK::PhysPar phimass; // phi(1020) mass
+		Bs2PhiKK::PhysPar thraccscale; // threshold mass acceptance
+		// Mass resolution variables
+		Bs2PhiKK::PhysPar mKKres_sigmazero; // variable that parameterises the mass resolution
+		std::map<std::string,double> mKKresconfig; // configuration parameters
 		// Options
 		bool acceptance_moments; // Use Legendre moments for acceptance
 		bool acceptance_histogram; // Use adaptively-binned histogram for acceptance

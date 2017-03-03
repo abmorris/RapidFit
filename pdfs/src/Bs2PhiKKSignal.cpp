@@ -17,7 +17,6 @@ PDF_CREATOR( Bs2PhiKKSignal )
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
 	, acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
-	, convolve(config->isTrue("convolve"))
 	, outofrange(false)
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
@@ -25,9 +24,12 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	thraccscale = Bs2PhiKK::PhysPar(config,"thraccscale");
 	phimass = Bs2PhiKK::PhysPar(config,phiname+"_mass");
 	dGsGs = Bs2PhiKK::PhysPar(config,"dGsGs");
-	if(convolve)
-		for(std::string name: {"sigma1","sigma2","frac","nsteps","nsigma"})
-			mKKrespars[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
+	if(config->isTrue("convolve"))
+	{
+		for(std::string name: {"nsteps","nsigma"})
+			mKKresconfig[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
+		mKKres_sigmazero = Bs2PhiKK::PhysPar(config,"mKKres_sigmazero");
+	}
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
 	std::cout << "┃ Component     │ Spin  │ Lineshape     ┃\n";
@@ -63,7 +65,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	// threshold acceptance scale
 	, thraccscale(copy.thraccscale)
 	// mass resolution parameters
-	, mKKrespars(copy.mKKrespars)
+	, mKKres_sigmazero(copy.mKKres_sigmazero)
+	, mKKresconfig(copy.mKKresconfig)
 	// PDF components
 	, components(copy.components)
 	// Plotting components
@@ -71,7 +74,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	// Options
 	, acceptance_moments(copy.acceptance_moments)
 	, acceptance_histogram(copy.acceptance_histogram)
-	, convolve(copy.convolve)
 	// Status
 	, outofrange(copy.outofrange)
 {
@@ -108,24 +110,27 @@ Bs2PhiKKSignalComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, 
 // Make the data point and parameter set
 void Bs2PhiKKSignal::MakePrototypes()
 {
+	std::cout << "Bs2PhiKKSignal: making prototypes\n";
 	// Make the DataPoint prototype
-	// The ordering here matters. It has to be the same as the XML file, apparently.
-	allObservables.push_back(mKKName);
-	allObservables.push_back(phiName);
-	allObservables.push_back(ctheta_1Name);
-	allObservables.push_back(ctheta_2Name);
+	MakePrototypeDataPoint(allObservables);
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	parameterNames.push_back(dGsGs.name);
-	parameterNames.push_back(phimass.name);
-	parameterNames.push_back(thraccscale.name);
+	for(const auto& par: {dGsGs, phimass, thraccscale, mKKres_sigmazero})
+		parameterNames.push_back(par.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
 	std::sort(parameterNames.begin(),parameterNames.end());
 	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
 	allParameters = ParameterSet(parameterNames);
+}
+// List of components
+std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
+{
+	// Avoid redundant plotting for single-component PDFs
+	if(components.size() == 1) return {};
+	return componentnames;
 }
 /*****************************************************************************/
 // Set the physics parameters
@@ -134,9 +139,8 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	UnsetCache();
 	outofrange = false;
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	dGsGs.Update(&allParameters);
-	phimass.Update(&allParameters);
-	thraccscale.Update(&allParameters);
+	for(auto* par: {&dGsGs, &phimass, &thraccscale, &mKKres_sigmazero})
+		par->Update(&allParameters);
 	for(auto& comp: components)
 	{
 		try
@@ -150,37 +154,29 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	}
 	return isOK;
 }
-/*****************************************************************************/
-// List of components
-std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
-{
-	// Avoid redundant plotting for single-component PDFs
-	if(components.size() == 1) return {};
-	return componentnames;
-}
-/*****************************************************************************/
+/*Calculate the likelihood****************************************************/
 // Evaluate a single component
 double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* component)
 {
 	std::string compName = component->getComponentName();
-	if(compName=="0") // should quicken things up slightly?
-		return Evaluate(measurement);
+	// Verification
+	if(compName.find_first_not_of("0123456789") == string::npos) return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	// Evaluate the PDF at this point
-	double MatrixElementSquared;
-	if(compName=="interference")
-		MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::InterferenceMsq,datapoint,"") : InterferenceMsq(datapoint);
-	else
-		MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::ComponentMsq,datapoint,compName) : ComponentMsq(datapoint,compName);
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) return 1e-100; // Check if the point is above threshold and |cos(θ)| <= 1
+	// Evaluation
+	MsqFunc_t EvaluateMsq = compName=="interference"? &Bs2PhiKKSignal::InterferenceMsq : &Bs2PhiKKSignal::ComponentMsq; // Choose the function to calcualte the |M|²
+	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(datapoint,compName) : Convolve(EvaluateMsq,datapoint,compName); // Do the convolved or unconvolved |M|² calculation
 	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
 // Evaluate the entire PDF
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
-	if(outofrange)
-		return 1e-100;
+	// Verification
+	if(outofrange) return 1e-100; // Return a very small likelihood if the physics parameters were found to violate unitarity
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	double MatrixElementSquared = convolve? Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,"") : TotalMsq(datapoint);
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) return 1e-100;  // Check if the point is above threshold and |cos(θ)| <= 1
+	// Evaluation
+	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(datapoint) : Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,""); // Do the convolved or unconvolved |M|² calculation
 	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
 // The stuff common to both Evaluate() and EvaluateComponent()
@@ -229,18 +225,17 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKK::amplitude_t& Amp) const
 // Convolution of the matrix element function with a Gaussian... the slow integral way
 double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
 {
-	const double res1 = mKKrespars.at("sigma1");
-	const double nsigma = mKKrespars.at("nsigma");
-	const int nsteps = mKKrespars.at("nsteps");
-	const double resolution = res1 * sqrt((datapoint[0] - 2*Bs2PhiKK::mK)/(phimass.value - 2*Bs2PhiKK::mK));
-	// Can't do this if we're too close to threshold: it starts returning nan
+	const double nsigma = mKKresconfig.at("nsigma");
+	const int nsteps = mKKresconfig.at("nsteps");
+	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint[0]-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
+	// If the integration region goes below threshold, don't do the convolution
 	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
 	{
 		double Msq_conv = 0.;
 		const double stepsize = 2.*nsigma*resolution/nsteps;
 		// Integrate over range −nσ to +nσ
 		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize; // FML
+			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize;
 		return Msq_conv;
 	}
 	else
@@ -252,7 +247,9 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 	double acceptance;
 	if(acceptance_moments)
 	{
+		// Get the shape from stored Legendre moments
 		acceptance = acc_m->Evaluate(datapoint);
+		// Multiply by a switch-on function
 		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
 //		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
 //		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK))*2.0/M_PI;
@@ -269,12 +266,8 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 }
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
-	const double mK   = Bs2PhiKK::mK;
-	const double mBs  = Bs2PhiKK::mBs;
-	const double mPhi = phimass.value;
-	if(mKK < 2*mK || mKK > mBs-mPhi) return 0;
-	double pR = DPHelpers::daughterMomentum(mKK, mK,  mK);
-	double pB = DPHelpers::daughterMomentum(mBs, mKK, mPhi);
+	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
+	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, phimass.value);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB)) std::cerr << "p1stp3 evaluates to nan" << std::endl;
 	return pRpB;

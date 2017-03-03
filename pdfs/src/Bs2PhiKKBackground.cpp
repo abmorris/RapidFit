@@ -58,12 +58,9 @@ Bs2PhiKKBackgroundComponent Bs2PhiKKBackground::ParseComponent(PDFConfigurator* 
 /*****************************************************************************/
 void Bs2PhiKKBackground::MakePrototypes()
 {
+	std::cout << "Bs2PhiKKBackground: making prototypes\n";
 	// Make the DataPoint prototype
-	// The ordering here matters. It has to be the same as the XML file, apparently.
-	allObservables.push_back(mKKName);
-	allObservables.push_back(phiName);
-	allObservables.push_back(ctheta_1Name);
-	allObservables.push_back(ctheta_2Name);
+	MakePrototypeDataPoint(allObservables);
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	for(const auto& comp: components)
