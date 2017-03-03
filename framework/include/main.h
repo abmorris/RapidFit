@@ -104,7 +104,7 @@ int testComponentPlot( RapidFitConfiguration* config );
 
 int calculateFitFractions( RapidFitConfiguration* config );
 
-int calculateAcceptanceCoefficients( RapidFitConfiguration* config );
+int calculateAcceptanceCoefficients( RapidFitConfiguration* config, bool massdependent );
 
 int PerformToyStudy( RapidFitConfiguration* config );
 

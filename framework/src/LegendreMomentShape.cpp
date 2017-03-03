@@ -117,7 +117,7 @@ void LegendreMomentShape::Save(const std::string filename)
 	outputTree->SaveAs(filename.c_str());
 	deletecoefficients(c);
 }
-void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* boundary, const std::string mKKname, const std::string phiname, const std::string ctheta_1name, const std::string ctheta_2name)
+void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* boundary, const std::string mKKname, const std::string phiname, const std::string ctheta_1name, const std::string ctheta_2name, const bool mass_dependent)
 {
 	double**** c    = newcoefficients();
 	double**** c_sq = newcoefficients(); // Used in caclulating the error
@@ -138,10 +138,15 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 		double ctheta_2   = event->GetObservable(ctheta_2name)->GetValue();
 		double mKK        = event->GetObservable(mKKname)->GetValue();
 		double mKK_mapped = (mKK - mKK_min)/(mKK_max-mKK_min)*2.+ (-1);
-		// Calculate phase space element
-		double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
-		double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
-		double val = p1_st*p3;
+		double val = 1;
+		// If not "mass dependent" then calculate phase space element (for acceptance)
+		// Otherwise just keep it as 1 (for background)
+		if(!mass_dependent)
+		{
+			double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
+			double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
+			val = p1_st*p3;
+		}
 		for ( int l = 0; l < l_max; l++ )
 			for ( int i = 0; i < i_max; i++ )
 				for ( int k = 0; k < k_max; k++ )

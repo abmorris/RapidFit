@@ -196,7 +196,8 @@ int RapidFit( vector<string> input )
 	else if( thisConfig->testIntegratorFlag && thisConfig->configFileNameFlag) testIntegrator( thisConfig );
 
 	//	3)
-	else if( thisConfig->calculateAcceptanceCoefficients && thisConfig->configFileNameFlag ) calculateAcceptanceCoefficients( thisConfig );
+	else if( thisConfig->calculateAcceptanceCoefficients && thisConfig->configFileNameFlag ) calculateAcceptanceCoefficients( thisConfig, true );
+	else if( thisConfig->calculateBackgroundCoefficients && thisConfig->configFileNameFlag ) calculateAcceptanceCoefficients( thisConfig, false );
 	//	6)
 	else if( thisConfig->testComponentPlotFlag && thisConfig->configFileNameFlag && thisConfig->observableNameFlag ) testComponentPlot( thisConfig );
 
@@ -1061,14 +1062,14 @@ int calculateFitFractions( RapidFitConfiguration* config )
 	return 1;
 }
 
-int calculateAcceptanceCoefficients( RapidFitConfiguration* config )
+int calculateAcceptanceCoefficients( RapidFitConfiguration* config, bool massdependent )
 {
 	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
 	pdfAndData->SetPhysicsParameters( config->xmlFile->GetFitParameters() );
 	IDataSet * dataSet = pdfAndData->GetDataSet();
 	IPDF * pdf = pdfAndData->GetPDF();
 
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, true);
+	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, massdependent);
 }
 
 

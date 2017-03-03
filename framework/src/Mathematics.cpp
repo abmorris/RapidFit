@@ -587,7 +587,7 @@ namespace Mathematics
 		const int j_max(6); // cos(theta_2)
 		LegendreMomentShape lms; // All of the legwork is done in this class. Avoids duplicating lines of code.
 		lms.SetMax(l_max+1, i_max+1, k_max+1, j_max+1);
-		lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2");
+		lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2", mass_dependent);
 		lms.Save("LegendreMoments.root");
 		TNtuple * dataacctree = new TNtuple("dataacctuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
 		const double mK  = 0.493677; // TODO: read these from config somehow
@@ -603,9 +603,15 @@ namespace Mathematics
 			double ctheta_2   = event->GetObservable("ctheta_2")->GetValue();
 			double mKK        = event->GetObservable("mKK")->GetValue();
 			// Calculate phase space element
-			double p1_st  = DPHelpers::daughterMomentum(mKK, mK, mK);
-			double p3     = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
-			double val    = p1_st*p3;
+			double val = 1;
+			// If not "mass dependent" then calculate phase space element (for acceptance)
+			// Otherwise just keep it as 1 (for background)
+			if(!mass_dependent)
+			{
+				double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
+				double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
+				val = p1_st*p3;
+			}
 			dataacctree->Fill(mKK, phi, ctheta_1, ctheta_2, 1./val);
 		}
 		// Now sample the acceptance surface so that we can make projections to check that it looks sensible
