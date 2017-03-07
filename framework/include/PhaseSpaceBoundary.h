@@ -68,6 +68,9 @@ class PhaseSpaceBoundary
 
 		void ClearDiscreteCombinations();
 
+		bool operator==(const PhaseSpaceBoundary&) const;
+		bool operator!=(const PhaseSpaceBoundary&) const;
+
 	private:
 		PhaseSpaceBoundary& operator=(const PhaseSpaceBoundary&);
 		vector< IConstraint* > allConstraints;
