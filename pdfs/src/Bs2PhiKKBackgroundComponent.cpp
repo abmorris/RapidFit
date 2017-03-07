@@ -64,6 +64,7 @@ Bs2PhiKKBackgroundComponent& Bs2PhiKKBackgroundComponent::operator=(const Bs2Phi
 	lineshape = other.lineshape;
 	JKK = other.JKK;
 	KKpars = other.KKpars;
+	mKKhist = other.mKKhist;
 	angulardistribution = other.angulardistribution;
 	Initialise();
 	return *this;

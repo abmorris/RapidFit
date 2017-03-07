@@ -22,6 +22,7 @@
 #include "RooMath.h"
 //	RapidFit Headers
 #include "NegativeLogLikelihoodNumerical.h"
+#include "NormalisedSumPDF.h"
 #include "ClassLookUp.h"
 //	System Headers
 #include <stdlib.h>
@@ -57,6 +58,13 @@ double NegativeLogLikelihoodNumerical::EvaluateDataSet( IPDF * FittingPDF, IData
 	//	Have to provide a datapoint even though one is _not_ expected to be explicitly used for this fittting function
 	double this_integral = FittingPDF->GetPDFIntegrator()->Integral( TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary() );
 
+	if(FittingPDF->GetName()=="NormalisedSumPDF")
+	{
+		std::array<double,2> IntegralResult = static_cast<NormalisedSumPDF*>(FittingPDF)->GetCachedIntegrals(TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary());
+		for(auto PDF: stored_pdfs)
+			static_cast<NormalisedSumPDF*>(PDF)->SetCachedIntegrals(IntegralResult, TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary());
+	}
+
 	if( TotalDataSet->GetDataNumber() == 0 ) return 0.;
 
 	if( Threads <= 0 )
@@ -86,7 +94,6 @@ double NegativeLogLikelihoodNumerical::EvaluateDataSet( IPDF * FittingPDF, IData
 		fit_thread_data[threadnum].fittingPDF = stored_pdfs[((unsigned)number)*(unsigned)Threads + threadnum];
 		fit_thread_data[threadnum].useWeights = useWeights;					//	Defined in the fitfunction baseclass
 		fit_thread_data[threadnum].FitBoundary = StoredBoundary[(unsigned)Threads*((unsigned)number)+threadnum];
-		//fit_thread_data[threadnum].ResultIntegrator = StoredIntegrals[(unsigned)Threads*((unsigned)number)+threadnum];
 		fit_thread_data[threadnum].stored_integral = this_integral;
 		fit_thread_data[threadnum].dataPoint_Result = vector<double>();
 		fit_thread_data[threadnum].weightsSquared = weightsSquared;
@@ -154,7 +161,6 @@ void* NegativeLogLikelihoodNumerical::ThreadWork( void *input_data )
 	//TFile * file = TFile::Open("integral.root", "UPDATE");
 	//TNtuple * ntuple = new TNtuple("test_good","test", "value");
 	//TNtuple * ntuple = new TNtuple("integral","test", "integral");
-	//bool isnorm = thread_input->fittingPDF->GetName()=="NormalisedSum";
 	for( vector<DataPoint*>::iterator data_i=thread_input->dataSubSet.begin(); data_i != thread_input->dataSubSet.end(); ++data_i, ++num )
 	{
 		try

@@ -17,6 +17,7 @@
 #include "RapidFitIntegrator.h"
 #include "ComponentRef.h"
 //	System Headers
+#include <array>
 #include <vector>
 #include <string>
 #include <map>
@@ -24,6 +25,7 @@
 using std::vector;
 using std::string;
 using std::map;
+using std::array;
 
 class NormalisedSumPDF : public BasePDF
 {
@@ -76,6 +78,10 @@ class NormalisedSumPDF : public BasePDF
 		bool GetCachingEnabled() const;
 
 		void SetCachingEnabled( bool Input );
+
+		array<double,2> GetCachedIntegrals(DataPoint*, PhaseSpaceBoundary* ) const;
+
+		void SetCachedIntegrals(array<double,2>, DataPoint*, PhaseSpaceBoundary* );
 
 		string XML() const;
 
