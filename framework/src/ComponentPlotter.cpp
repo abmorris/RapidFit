@@ -31,7 +31,6 @@
 #include "PhaseSpaceBoundary.h"
 #include "ClassLookUp.h"
 #include "ComponentRef.h"
-#include "NormalisedSumPDF.h"
 #include "ObservableDiscreteConstraint.h"
 #include "RapidFitRandom.h"
 ///	System Headers
@@ -214,14 +213,12 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	{
 		if( !config->combination_names.empty() ) combinationDescriptions = config->combination_names;
 	}
-
 	// Hack to get the internal cached values for NormalisedSumPDF to work
 	if(plotPDF->GetName()=="NormalisedSumPDF")
 	{
 		for(auto combination: allCombinations)
 			plotPDF->GetPDFIntegrator()->Integral( combination, full_boundary );
 	}
-
 	for( unsigned int i=0; i< allCombinations.size(); ++i )
 	{
 		if( DebugClass::DebugThisClass( "ComponentPlotter" ) )
