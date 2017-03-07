@@ -190,6 +190,7 @@ void NormalisedSumPDF::ChangePhaseSpace( PhaseSpaceBoundary * InputBoundary )
 	this->MakePrototypes( InputBoundary );
 	firstPDF->ChangePhaseSpace( InputBoundary );
 	secondPDF->ChangePhaseSpace( InputBoundary );
+}
 
 //Assemble the vectors of parameter/observable names needed
 void NormalisedSumPDF::MakePrototypes( PhaseSpaceBoundary * InputBoundary )
@@ -254,7 +255,6 @@ void NormalisedSumPDF::MakePrototypes( PhaseSpaceBoundary * InputBoundary )
 		firstIntegral[DPindex] = 1.;
 		secondIntegral[DPindex] = 1.;
 	}
-}
 }
 
 //Destructor
