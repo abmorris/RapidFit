@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  *
- * Entry point for RapidFit (    ͡° ͜  ͡°    ) 
+ * Entry point for RapidFit (    ͡° ͜  ͡°    )
  *
  * @author Benjamin M Wynne bwynne@cern.ch
  * @author Robert Currie rcurrie@cern.ch

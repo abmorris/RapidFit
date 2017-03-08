@@ -1,8 +1,8 @@
 /* stackergen: Part of the simpletools package
  * (c) Conor Fitzpatrick, 2008
  *
- * If you find this program useful in whole or in part 
- * please cite this paper: 
+ * If you find this program useful in whole or in part
+ * please cite this paper:
  *
  * Feel free to send bugreports, feature requests, patches etc to:
  * conor.fitzpatrick@cern.ch
@@ -187,7 +187,7 @@ void scaleContours( TGraph * gc, double x_point, double y_point, double x_scale,
 	// y_point is actually for the x-axis...
 	double x_min = y_point;
 	double y_min = x_point;
-	// check which quadrant the global minimum is in	
+	// check which quadrant the global minimum is in
 	bool sm = false;
 	bool flipped = false;
 	if ( x_min > -1. && y_min > 0. ) sm = true;
@@ -199,7 +199,7 @@ void scaleContours( TGraph * gc, double x_point, double y_point, double x_scale,
 			x_min = TMath::Pi() - x_min - 2*TMath::Pi(); // also move by 2pi
 			y_min = -y_min;
 		}
-		radius = sqrt((x_min - x)*(x_min - x) + (y_min - y)*(y_min - y));	
+		radius = sqrt((x_min - x)*(x_min - x) + (y_min - y)*(y_min - y));
 		sinTheta = (y_min - y)/radius;
 		cosTheta = (x_min - x)/radius;
 		scale = sqrt( (x_scale * cosTheta)*(x_scale * cosTheta) + (y_scale * sinTheta)*(y_scale * sinTheta) );
@@ -225,7 +225,7 @@ TCanvas *makeConfCanvas(TH2* hist, TString labelname,UInt_t nconts, double* cont
 	double phi[1] = {-0.036};
 	double phiE[1] = {0.002};
 	double dg[1] = {0.087};
-	double dgE[1] = {0.021}; 
+	double dgE[1] = {0.021};
 	TGraphErrors* sm = new TGraphErrors( 1, phi, dg, phiE, dgE);
 	sm->SetMarkerStyle(21);
 	int TotalConts = contObjArr->GetSize();
@@ -247,13 +247,13 @@ TCanvas *makeConfCanvas(TH2* hist, TString labelname,UInt_t nconts, double* cont
 		for(int j = 0; j < contLevel->GetSize(); ++j){
 			curv = (TGraph*)contLevel->At(j);
 			gc = (TGraph*)curv->Clone();
-			scaleContours( gc, x_point, y_point, 1.08, 1.011 ); // If you want to scale the contours to include systematics 
-			if(pub){	
+			scaleContours( gc, x_point, y_point, 1.08, 1.011 ); // If you want to scale the contours to include systematics
+			if(pub){
 				gc->SetLineStyle(Style_t(i+1));
 			}else{
 				int c = 0;
 				int s = 0;
-				if ( i == 0 ) { c = 2; s = 1;} 
+				if ( i == 0 ) { c = 2; s = 1;}
 				if ( i == 1 ) { c = kViolet; s = 9;}
 				if ( i == 2 ) { c = 4; s = 2;}
 				gc->SetLineColor(Color_t(c));
@@ -414,11 +414,11 @@ int main(int argc, char *argv[]){
 
 
 	//The first entry in every file will be the data result floated globally
-	//Gen values will be -9999, 
+	//Gen values will be -9999,
 	//Par values will be floated
 	//Par errors !=0
-	//The second entry in every file is the data result fixed at the current gridpoint. 
-	//Gen values will be -9999, 
+	//The second entry in every file is the data result fixed at the current gridpoint.
+	//Gen values will be -9999,
 	//Par values will be set to the current gridpoint
 	//Par errors will be 0
 	//Entries 3-> Ntoyspersj+3 will be the fixed toy values
@@ -506,7 +506,7 @@ int main(int argc, char *argv[]){
 
 	double true_Z = allresults->CopyTree(datafixedstr)->GetMinimum("NLL");
 	//	Move values into vectors
-	
+
 	if( (true_Z-nlldatabest) < 0 )
 	{
 		//	I know this is comparing doubles exactly, however this is also doing maths in Loki... you be the judge
@@ -522,7 +522,7 @@ int main(int argc, char *argv[]){
 		cout << "\t\tWARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING\n"<<endl;
 		nlldatabest=(Float_t)true_Z;
 	}
-	
+
 	TString Condition(datafixedstr); Condition.Append("&&NLL==");	Condition+=nlldatabest;
 	TTree* new_best = allresults->CopyTree( Condition );
 	if( ( ( allresults->GetEntries() /2 ) - new_best->GetEntries()) == 0 )
@@ -711,7 +711,7 @@ int main(int argc, char *argv[]){
 	int numberOfToyEventsAfterCut = int(allresults->Draw(Plot_Str,all_toys_cut,"goff"));//	Draw without plotting
 	cout << "FOUND " << numberOfToyEventsAfterCut << " TOYS" << endl;
 
-	//Is this just an LLscan, or were toys for FC generated? 
+	//Is this just an LLscan, or were toys for FC generated?
 	if(numberOfToyEventsAfterCut > 0){hastoys = true;}
 
 	if(hastoys){
@@ -759,7 +759,7 @@ int main(int argc, char *argv[]){
 
 
 			if( numberOfFixedToys != numberOfFloatedToys ) {
-				//We've got serious problems! 
+				//We've got serious problems!
 				cout << "Different number of toy fits found for gridpoint " << param1gridpoints[i] << "," << param2gridpoints[i] << " (" << numberOfFixedToys << "," << numberOfFloatedToys << ") Can't continue!" << endl;
 				exit(1);
 			}
@@ -770,7 +770,7 @@ int main(int argc, char *argv[]){
 				UInt_t toyNLLsmaller = 0;
 				toysgridpoints.push_back((Float_t)numberOfFixedToys);
 				for(unsigned short int j = 0; j<numberOfFixedToys; ++j){
-					//THE LINE BELOW IS THE FELDMAN-COUSINS ORDERING METHOD USED BY CDF/HEIDELBERG: 
+					//THE LINE BELOW IS THE FELDMAN-COUSINS ORDERING METHOD USED BY CDF/HEIDELBERG:
 					//if the toyratio is smaller than the data ratio at this point, increment:
 					if((NLLtoyfixed[j]-NLLtoyfloat[j])<dataRatiogridpoints[i]){++toyNLLsmaller;}
 				}
@@ -784,9 +784,9 @@ int main(int argc, char *argv[]){
 
 		}
 	}
-	//We now have 4 vectors: The gridpoints in x,y and the conf. limits in z or the profile LL in z. We need to make TGraphs from these bad boys. 
+	//We now have 4 vectors: The gridpoints in x,y and the conf. limits in z or the profile LL in z. We need to make TGraphs from these bad boys.
 
-	//Copy vectors to arrays: 
+	//Copy vectors to arrays:
 	int npoints = int(param1gridpoints.size());
 	Double_t* p2points = new Double_t [npoints];
 	copy( param2gridpoints.begin(), param2gridpoints.end(),p2points);
@@ -796,7 +796,7 @@ int main(int argc, char *argv[]){
 	copy( dataRatiogridpoints.begin(), dataRatiogridpoints.end(),pllpoints);
 
 	int np = (int)sqrt((double)npoints);
-	//We get the data profile likelihood free, so let's plot it: 
+	//We get the data profile likelihood free, so let's plot it:
 	TGraph2D *pllgraph = new TGraph2D(npoints, p2points, p1points, pllpoints);
 	pllgraph->SetName("pllgraph");
 	pllgraph->SetNpx(np);
@@ -878,7 +878,7 @@ int main(int argc, char *argv[]){
 	pllpub->Print(outputdir+"/"+param1string+"_"+param2string+"_pll_pub.pdf");
 	pllpub->Print(outputdir+"/"+param1string+"_"+param2string+"_pll_pub.png");
 
-	// Now let's plot the feldman cousins in the same way: 
+	// Now let's plot the feldman cousins in the same way:
 	if(hastoys){
 		Double_t* clpoints = new Double_t [npoints];
 		copy( clgridpoints.begin(), clgridpoints.end(),clpoints);

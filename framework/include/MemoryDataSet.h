@@ -45,9 +45,9 @@ class MemoryDataSet : public IDataSet
 
 		void Clear();
 
-		/*!                      
+		/*!
 		 * @brief Returns an estimate of the total Yield
-		 */                      
+		 */
 		double Yield();
 		double YieldError();
 

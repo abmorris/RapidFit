@@ -399,7 +399,7 @@ void FeldmanCousinsAnalysis::DoFCAnalysis( TTree* input_tree, vector<string>& co
 	//	This Draw String gives the returned control parameters from the cut string
 	TString Grid_Draw_String = RapidFit_Output_File::Construct_Draw_String( controlled_parameter_name );
 
-	//	This Cut String returns only the fit results which are 
+	//	This Cut String returns only the fit results which are
 	TString Grid_Cut_String = RapidFit_Output_File::Construct_Cut_String( input_tree, controlled_parameter_name, true );
 
 	//	Output for the user
@@ -449,7 +449,7 @@ void FeldmanCousinsAnalysis::DoFCAnalysis( TTree* input_tree, vector<string>& co
 		cout << num.str() << setw(12);
 
 		//	Cut String to select only a SINGLE fit result for the LL at this point
-		TString data_cut = RapidFit_Output_File::Data_At_Grid_ij( controlled_parameter_name, *grid_i ); 
+		TString data_cut = RapidFit_Output_File::Data_At_Grid_ij( controlled_parameter_name, *grid_i );
 
 		//	Slect only toy Results which were generated at this grid point
 		//	By definition the _gen value is equal to the fit minima from the LL scan result at this point
@@ -682,7 +682,7 @@ void FeldmanCousinsAnalysis::DoFCAnalysis( TTree* input_tree, vector<string>& co
 		//TGraph* total_graph = new TGraph( total_th1 );
 		//TGraph* accepted_graph = new TGraph( acc_th1 ); accepted_graph->SetMarkerColor( 1 ); accepted_graph->SetLineColor( 1 );
 		//TGraph* rejected_graph = new TGraph( rej_th1 ); rejected_graph->SetMarkerColor( 2 ); rejected_graph->SetLineColor( 2 );
-	
+
 		TString TMulti_Name("TMultiGraph_"); TMulti_Name+=rand->Rndm();
                 string MultiStr( TMulti_Name.Data() );
                 replace( MultiStr.begin(), MultiStr.end(), '.', '_' );
@@ -1322,7 +1322,7 @@ double n = (x-(*Global_CV)[0])/(*Global_CV_err)[0];
 
 
 X_1_data.push_back( n*n );
-X_1_data2.push_back( n*n );		
+X_1_data2.push_back( n*n );
 if( x < (*Global_CV)[0] ) X_1_data.back() = -X_1_data.back();
 if( x < (*Global_CV)[0] ) X_1_data2.back() = -X_1_data2.back();
 

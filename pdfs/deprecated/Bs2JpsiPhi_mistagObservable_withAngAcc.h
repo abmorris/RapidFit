@@ -57,7 +57,7 @@ class Bs2JpsiPhi_mistagObservable_withAngAcc : public BasePDF
 
 		// These contain the strings that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		string timeName;		// proper time
 		string cosThetaName;	// cos of angle of mu+ wrt z-axis in Jpsi frame
 		string phiName;		// azimuthal angle of the mu+ in Jpsi frame
@@ -66,15 +66,15 @@ class Bs2JpsiPhi_mistagObservable_withAngAcc : public BasePDF
 		string tagName;		// B tag
 		string mistagName;		// B mistag
 		string angAccI1Name;		// Pre-calculated angular integrals including acceptance
-		string angAccI2Name;		// 
-		string angAccI3Name;		// 
-		string angAccI4Name;		// 
-		string angAccI5Name;		// 
-		string angAccI6Name;		// 
-	
+		string angAccI2Name;		//
+		string angAccI3Name;		//
+		string angAccI4Name;		//
+		string angAccI5Name;		//
+		string angAccI6Name;		//
+
 		void getPhysicsParameters( double&, double&, double&, double&, double&, double&, double&, double&, double&, double&);
 		void getAngularFunctions( double&, double&, double&, double&, double&, double&, DataPoint*);
-		
+
 		void getTimeDependentAmplitudes( double&, double&, double&, double&, double&, double&, DataPoint*, int);
 		void getTimeAmplitudeIntegrals(double&, double&, double&, double&, double&, double&, PhaseSpaceBoundary*, int);
 

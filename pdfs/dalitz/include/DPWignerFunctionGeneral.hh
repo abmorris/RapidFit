@@ -20,7 +20,7 @@ class DPWignerFunctionGeneral : public virtual DPWignerFunction
 
     static long factorials[20];
     static long fact(int n);
-   
+
     double j;
 };
 

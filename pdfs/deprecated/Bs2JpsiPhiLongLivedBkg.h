@@ -35,7 +35,7 @@ class Bs2JpsiPhiLongLivedBkg : public BasePDF
 
 		// These contain the strings that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		ObservableRef timeName;	// proper time
 		ObservableRef constraint_timeName;
 };

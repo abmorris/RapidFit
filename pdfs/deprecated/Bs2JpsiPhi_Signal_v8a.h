@@ -211,7 +211,7 @@ class Bs2JpsiPhi_Signal_v8a : public BasePDF
 		double _CC, _DD, _SS;
 
 		// This flag is somewhat outdated now that there is a ResolutionModel
-		// Kept for now as  aplaceholder as we will need other configuration to choose the model. 
+		// Kept for now as  aplaceholder as we will need other configuration to choose the model.
 		bool _useEventResolution;
 		inline bool useEventResolution() const {return _useEventResolution; }
 

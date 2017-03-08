@@ -55,7 +55,7 @@ class ObservableRef
 		/*!
 		 * @brief
 		 *
-		 * @return 
+		 * @return
 		 */
 		int GetIndex() const;
 

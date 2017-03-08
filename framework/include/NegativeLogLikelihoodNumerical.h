@@ -32,7 +32,7 @@ class NegativeLogLikelihoodNumerical : public FitFunction
 			//	and,
 			//	g++ complains that this is a good place for it...
 			//	let's keep em happy
-			//	
+			//
 			static void* ThreadWork( void* ) __attribute__ ((noreturn));
 		#else
 			static void* ThreadWork( void* );

@@ -26,7 +26,7 @@ def main():
     inputFile = ROOT.TFile(inputFileName)
     name = inputFileName.split(".")
     outputFileName = name[0] + "_RapidFit." + name[1]
-    outputFile = ROOT.TFile(outputFileName, "RECREATE")  
+    outputFile = ROOT.TFile(outputFileName, "RECREATE")
 
     inputNtuple = inputFile.Get(pathToNtuple)
 
@@ -41,7 +41,7 @@ def main():
        	name = leaf.GetName()
        	pyl.__setattr__(name,leaf)
 
-    # This list MUST be in the correct order, as defined by the 
+    # This list MUST be in the correct order, as defined by the
     # valueList lines in the loop below. It's not pretty, but it works.
     newBranches = [ "time"
 		  #, "cosTheta"
@@ -54,7 +54,7 @@ def main():
 		  , "residual"
 		  ]
 
-    outputNtupleStructure = ":".join(newBranches) 
+    outputNtupleStructure = ":".join(newBranches)
     outputNtuple = ROOT.TNtuple("ntuple","RapidFit", outputNtupleStructure);
 
     for event in range(inputNtuple.GetEntries()):
@@ -62,7 +62,7 @@ def main():
     	valueList = []
 
 	# ThetaTr, ThetaK, ThetaVtr are the names that the P2VVAngleCalculator
-	# in DaVinci gives to the angles theta, psi and phi respectively.	
+	# in DaVinci gives to the angles theta, psi and phi respectively.
 	'''
   	valueList.append( pyl.B_s_TAU.GetValue() )
 	valueList.append( math.cos( pyl.B_s_ThetaTr.GetValue() ))
@@ -77,10 +77,10 @@ def main():
 	valueList.append( pyl.B_s_MM.GetValue() )
 	valueList.append( pyl.B_s_TRUETAU.GetValue()*1000 )
 	valueList.append( pyl.B_s_TAU.GetValue()*1000 - pyl.B_s_TRUETAU.GetValue()*1000 )
-  
+
   	if pyl.B_s_TRUETAU.GetValue() < -0.2: continue
 	data = array("f", valueList)
-	outputNtuple.Fill(data)	
+	outputNtuple.Fill(data)
 
     inputFile.Close()
     outputFile.Write()

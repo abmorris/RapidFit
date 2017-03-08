@@ -123,7 +123,7 @@ Bs2Jpsifzero_Signal_v5a::Bs2Jpsifzero_Signal_v5a(PDFConfigurator* configurator) 
 	_usePunziMistag = configurator->isTrue( "UsePunziMistag" ) ;
 	//allowNegativeAsSq = configurator->isTrue( "AllowNegativeAsSq" ) ;
 	//_usePlotComponents = configurator->isTrue( "PlotComponents" ) ;
-	//_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ; 
+	//_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ;
 	//_fitDirectlyForApara = configurator->isTrue( "FitDirectlyForApara" );
 	DebugFlag_v5a = !configurator->hasConfigurationValue( "DEBUG", "False" );
 
@@ -137,7 +137,7 @@ Bs2Jpsifzero_Signal_v5a::Bs2Jpsifzero_Signal_v5a(PDFConfigurator* configurator) 
 		_offsetToGammaForBetaFactor = atof( offsetToGammaForBetaFactor.c_str() ) ;
 		cout << "Bs2JpsiPhi_Signal_v5:: Adding OffsetToGammaForBetaFactor = " << _offsetToGammaForBetaFactor << endl ;
 	}
-    
+
 	//...............................................
 	// Configure to use angular acceptance machinery
 /*	string angAccFile = configurator->getConfigurationValue( "AngularAcceptanceFile" ) ;
@@ -415,8 +415,8 @@ bool Bs2Jpsifzero_Signal_v5a::SetPhysicsParameters( ParameterSet* NewParameterSe
 	//{
 	//	cout << "Warning in Bs2Jpsifzero_Signal_v5a::SetPhysicsParameters: Azero_sq <0 or >1 but left as is" <<  endl ;
 	//}
-	//Aperp_sq = allParameters.GetPhysicsParameter( Aperp_sqName )->GetValue(); 
-	//if( (Aperp_sq < 0.) || (Aperp_sq > 1.)  ) 
+	//Aperp_sq = allParameters.GetPhysicsParameter( Aperp_sqName )->GetValue();
+	//if( (Aperp_sq < 0.) || (Aperp_sq > 1.)  )
 	//{
 	//	cout << "Warning in Bs2Jpsifzero_Signal_v5a::SetPhysicsParameters: Aperp_sq <0 or >1 but left as is" <<  endl;
 	//}
@@ -1209,7 +1209,7 @@ double Bs2Jpsifzero_Signal_v5a::diffXsec()
 	else
 	{
 		xsec =
-			
+
 			   A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) +
 			   AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) +
 			   AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +
@@ -1222,7 +1222,7 @@ double Bs2Jpsifzero_Signal_v5a::diffXsec()
 			   AS()*AP() * timeFactorReASAP(  ) * angleFactorReASAP( ) +
 			   AS()*AT() * timeFactorImASAT(  ) * angleFactorImASAT( ) +
 			   AS()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( ) ;
-			   
+
 
 			CachedA1 * timeFactorA0A0(  ) +
 			CachedA2 * timeFactorAPAP(  ) +
@@ -1415,7 +1415,7 @@ double Bs2Jpsifzero_Signal_v5a::diffXsecCompositeNorm1( int resolutionIndex )
 
 //.......................................................
 // New speed up method to Cache time integrals
-void Bs2Jpsifzero_Signal_v5a::CacheTimeIntegrals() 
+void Bs2Jpsifzero_Signal_v5a::CacheTimeIntegrals()
 {
 
 	// This need to know  (and be modified for)

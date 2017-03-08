@@ -267,7 +267,7 @@ void DoFCAnalysis( TTree* input_tree, vector<string>& controlled_parameter_name,
 	//	This Draw String gives the returned control parameters from the cut string
 	TString Grid_Draw_String = Construct_Draw_String( controlled_parameter_name );
 
-	//	This Cut String returns only the fit results which are 
+	//	This Cut String returns only the fit results which are
 	TString Grid_Cut_String = Construct_Cut_String( input_tree, controlled_parameter_name );
 
 	//	Output for the user
@@ -309,7 +309,7 @@ void DoFCAnalysis( TTree* input_tree, vector<string>& controlled_parameter_name,
 	for( ; grid_i != Grid_Coordinates.end(); ++grid_i )
 	{
 		//	Cut String to select only a SINGLE fit result for the LL at this point
-		TString data_cut = Grid_Cut_String + "&&" + Data_At_Grid_ij( controlled_parameter_name, *grid_i ); 
+		TString data_cut = Grid_Cut_String + "&&" + Data_At_Grid_ij( controlled_parameter_name, *grid_i );
 
 		//	Slect only toy Results which were generated at this grid point
 		//	By definition the _gen value is equal to the fit minima from the LL scan result at this point
@@ -381,7 +381,7 @@ void DoFCAnalysis( TTree* input_tree, vector<string>& controlled_parameter_name,
 			if( (*Fixed_Toy_As)[i] > 0.0001 && (*Free_Toy_As)[i] > 0.0001 )
 			{
 				if( fabs((*Free_Toy_dpa)[i]) < 6 && fabs((*Fixed_Toy_dpa)[i]) < 6 )
-				{	
+				{
 				if( fabs((*Free_Toy_dpe)[i]) < 6 && fabs((*Fixed_Toy_dpe)[i]) < 6 )
 				{
 				if( fabs((*Free_Toy_dsp)[i]) < 6. && fabs((*Fixed_Toy_dsp)[i]) < 6. )

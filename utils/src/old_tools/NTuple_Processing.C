@@ -558,11 +558,11 @@ vector<Double_t>* GetUnsortedData( TTree* input_tree, TString input_branch, TStr
 
 	TBranch* wanted_branch = temp_tree->
 
-	TString branch_type = 
+	TString branch_type =
 
 	for( int i=0; i != new_total; ++i )
 	{
-		
+
 	}
 
 }

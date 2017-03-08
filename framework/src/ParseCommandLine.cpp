@@ -647,12 +647,12 @@ int ParseCommandLine::ParseThisCommandLine( RapidFitConfiguration& config, vecto
 			if( argumentIndex + 1 < argv.size() )
 			{
 				++argumentIndex;
-				ResultFormatter::SetOutputFolder(argv[argumentIndex]);	
+				ResultFormatter::SetOutputFolder(argv[argumentIndex]);
 			}
 			else{
 				cerr << "Required to give output folder name" << endl;
 				return BAD_COMMAND_LINE_ARG;
-			}	
+			}
 		}
 
 		//	The Parameters beyond here are for setting boolean flags

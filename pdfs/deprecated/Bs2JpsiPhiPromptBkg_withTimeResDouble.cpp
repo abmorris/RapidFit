@@ -14,7 +14,7 @@
 PDF_CREATOR( Bs2JpsiPhiPromptBkg_withTimeResDouble );
 
 //Constructor
-Bs2JpsiPhiPromptBkg_withTimeResDouble::Bs2JpsiPhiPromptBkg_withTimeResDouble(PDFConfigurator* configurator) : 
+Bs2JpsiPhiPromptBkg_withTimeResDouble::Bs2JpsiPhiPromptBkg_withTimeResDouble(PDFConfigurator* configurator) :
 	// Physics parameters
 	  frac_sigmaPrName	( configurator->getName("frac_sigmaPr") )
         , sigmaPrName		( configurator->getName("sigmaPr") )
@@ -59,9 +59,9 @@ double Bs2JpsiPhiPromptBkg_withTimeResDouble::Evaluate(DataPoint * measurement)
 	double sigmaPr2 = allParameters.GetPhysicsParameter( sigmaPr2Name )->GetValue();
 	double timeNorm2 = 1./( sigmaPr2 * sqrt( 2.*TMath::Pi() ) );
 	double gauss2    = exp( -time*time / ( 2. * sigmaPr2 * sigmaPr2 ) );
-	
+
 	double frac = allParameters.GetPhysicsParameter( frac_sigmaPrName )->GetValue();
-	
+
 	return frac*(timeNorm * gauss) + (1. - frac)*(timeNorm2 * gauss2) ;
 }
 

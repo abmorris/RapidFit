@@ -18,7 +18,7 @@
    Canvas0.94720108201727271->SetBottomMargin(0.16);
    Canvas0.94720108201727271->SetFrameBorderMode(0);
    Canvas0.94720108201727271->SetFrameBorderMode(0);
-   
+
    TH1F *sigma_error0.28261780529282987 = new TH1F("sigma_error0.28261780529282987","Toy Study sigma error distribution",100,0.04,0.0498);
    sigma_error0.28261780529282987->SetBinContent(7,1);
    sigma_error0.28261780529282987->SetBinContent(8,1);
@@ -106,7 +106,7 @@
    sigma_error0.28261780529282987->SetBinContent(93,1);
    sigma_error0.28261780529282987->SetBinContent(94,1);
    sigma_error0.28261780529282987->SetEntries(100000);
-   
+
    TF1 *gammaf = new TF1("gammaf","[0]*TMath::GammaDist(x,([1]*[1])/([2]*[2]),0,([2]*[2])/[1])",0.04,0.0498);
    gammaf->SetFillColor(1);
    gammaf->SetFillStyle(0);
@@ -139,7 +139,7 @@
    gammaf->SetParError(2,2.177519e-06);
    gammaf->SetParLimits(2,0,0);
    sigma_error0.28261780529282987->GetListOfFunctions()->Add(gammaf);
-   
+
    TPaveStats *ptstats = new TPaveStats(0.45,0.65,0.9,0.9,"brNDC");
    ptstats->SetName("stats");
    ptstats->SetBorderSize(1);

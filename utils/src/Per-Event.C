@@ -243,7 +243,7 @@ int main( int argc, char* argv[] )
 	TCanvas* c2 = new TCanvas( "DiffTwoGraph", "DiffTwoGraph" );
 	PhisTwoGraph->Draw("EP9L");
 	c2->Update(); c2->Print("DiffPhisTwo.pdf");
-	
+
 	TCanvas* c3 = new TCanvas( "DiffGraph", "DiffGraph" );
 	PhisDiffGraph->Draw("EP9L");
 	c3->Update(); c3->Print("DiffGraph.pdf");

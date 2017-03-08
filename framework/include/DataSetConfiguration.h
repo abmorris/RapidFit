@@ -54,8 +54,8 @@ class DataSetConfiguration
 		 * @param cut           This is a cut to be applied on the DataSet, should be applied after it has been constructed.
 		 *                      ATM this does NOT serve any function, should this be removed from the interface?
 		 *
-		 * @param DataArguments    This is a list of arguments which have been passed to the DataSetConfiguraton class i.e. somefile.root                   
-                 *  
+		 * @param DataArguments    This is a list of arguments which have been passed to the DataSetConfiguraton class i.e. somefile.root
+                 *
                  * @param DataArgumentNames  This is a list of the corresponding names to each of the arguments which are passed to the constructor i.e. Filename
                  *
                  * @param DataPDF       This is the PDF to be used for generating the new DataSet
@@ -168,7 +168,7 @@ class DataSetConfiguration
 		 *
 		 * @param source           This is the Name of the DataSetGenerator that should be loaded
 		 *
-		 * @param internalBoundary 
+		 * @param internalBoundary
 		 *
 		 * @param numberEvents     This is the number of events requested to be constructed within the PhaseSpaceBoundary
 		 *

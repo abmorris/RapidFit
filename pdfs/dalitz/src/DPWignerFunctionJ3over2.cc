@@ -22,7 +22,7 @@ double DPWignerFunctionJ3over2::function(double cosTheta, double mm, double nn)
               break;
       case -3: return dp3p3(theta);
               break;
-    }    
+    }
   }
   else if ( m == -1 )
   {
@@ -36,7 +36,7 @@ double DPWignerFunctionJ3over2::function(double cosTheta, double mm, double nn)
               break;
       case -3: return dp3p1(theta);
               break;
-    }    
+    }
   }
   else if ( m == 1 )
   {
@@ -50,7 +50,7 @@ double DPWignerFunctionJ3over2::function(double cosTheta, double mm, double nn)
               break;
       case -3: return dp3m1(theta);
               break;
-    }    
+    }
   }
   else if ( m == 3 )
   {
@@ -64,7 +64,7 @@ double DPWignerFunctionJ3over2::function(double cosTheta, double mm, double nn)
               break;
       case -3: return dp3m3(theta);
               break;
-    }    
+    }
   }
 
   return -1000; // Give crazy number, alternatively we can exit or throw exception

@@ -40,9 +40,9 @@ int main(int argc, char** argv)
   DPTotalAmplitude calculator;
 
   // Open file with phase space decays and get tree from it
-  TFile* input=TFile::Open("../PhaseSpacePreparation/phsp_B0JpsiKspin1.root"); 
-  TTree* inputTree=(TTree*)input->Get("tree"); 
-  dataStruct infoToStore; 
+  TFile* input=TFile::Open("../PhaseSpacePreparation/phsp_B0JpsiKspin1.root");
+  TTree* inputTree=(TTree*)input->Get("tree");
+  dataStruct infoToStore;
   inputTree->SetBranchAddress("angles", (void*)&infoToStore);
 
   // Output tree
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     TLorentzVector pK;
     DPHelpers::calculateFinalStateMomenta(5.279, infoToStore.mKpi, 3.096,
           infoToStore.theta1,  infoToStore.theta2, infoToStore.phi,
-          infoToStore.mmp, infoToStore.mmm, infoToStore.mpi,                       
+          infoToStore.mmp, infoToStore.mmm, infoToStore.mpi,
           infoToStore.mK, pMuPlus, pMuMinus, pPi, pK);
     TLorentzVector pB(0,0,0,5.279);
     infoToStore.wt=DPHelpers::referenceAxisCosAngle(pB, pMuPlus, pMuMinus, pPi, pK);
@@ -74,5 +74,5 @@ int main(int argc, char** argv)
 
   tree->Write("tree");
   output->Close();
-  
+
 }

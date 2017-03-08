@@ -62,13 +62,13 @@ class IntegratorFunction : public IBaseFunctionMultiDim, public IBaseFunctionOne
 		 * This Constructor configures the class to be an interface between TFoam and the PDF
 		 *
 		 * @param InputPDF      This is the PDF that is used for (in this constructor) Integration   i.e. this is the PDF which is called for evaluate
-                 *                                                         
+                 *
                  * @param InputPoint    This is the DataPoint instance which governs which Discrete Combination this PDF is to be evaluated at. Can only ever do one at a time by definition
-                 *                                                         
+                 *
                  * @param doIntegrate   This is the names of all of the Observables which are being integrated over. The size of this vector is the number of dimentions that are being integrated over
-                 *                                                         
+                 *
                  * @param dontIntegrate This is the names of all of the Observables which are NOT being integrated over. The DataPoints will always contain the Central Value if this Observable was constrained over a Range
-                 *  
+                 *
 		 * @param min           This is the list of minimum values extracted from the PhaseSpace (This should probably be integrally generated, but it's redily available in the programs which call this constructor
 		 *
 		 * @param max           This is the list of maximum values extracted from the PhaseSpace (This should probably be integrally generated, but it's redily available in the programs which call this constructor
@@ -135,7 +135,7 @@ class IntegratorFunction : public IBaseFunctionMultiDim, public IBaseFunctionOne
 
 		/*!
 		 * @brief Return the density to Foam
-		 * 
+		 *
 		 * From the code the method has to translate the array provided here to be compatible with the array to pass to the operator() or DoEval methods
 		 *
 		 * The array here is an array of multiples which are defined between 0 and 1 and are the relative position in each dimension from the minimum(0) and maximum(1) of the Observable Range

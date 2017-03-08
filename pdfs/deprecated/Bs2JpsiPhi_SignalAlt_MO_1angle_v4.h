@@ -1,5 +1,5 @@
 // $Id: Bs2JpsiPhi_SignalAlt_MO_1angle_v4.h,v 1.1 2009/12/06  Pete Clarke Exp $
-/** @class Bs2JpsiPhi_SignalAlt_MO_1angle_v4 
+/** @class Bs2JpsiPhi_SignalAlt_MO_1angle_v4
  *
  *  Bs2JpsiPhi_SignalAlt series with mistag as observable
  *
@@ -38,11 +38,11 @@ class Bs2JpsiPhi_SignalAlt_MO_1angle_v4 : /*public BasePDF,*/  public Bs2JpsiPhi
 	private:
 
 		void MakePrototypes();
-	
-		double normalisationCacheUntagged ;
-	
 
-		
+		double normalisationCacheUntagged ;
+
+
+
 };
 
 #endif

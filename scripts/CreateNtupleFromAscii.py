@@ -24,8 +24,8 @@ def main():
     outputName = args[1]
 
     inputFile = open(inputName)
-    outputFile = ROOT.TFile( outputName, "RECREATE")  
- 
+    outputFile = ROOT.TFile( outputName, "RECREATE")
+
     data = inputFile.readlines()
     readFirstLine = False
 
@@ -53,11 +53,11 @@ def main():
 			obsValue = pi - phi if phi > 0 else -pi - phi
 		doubleList.append(obsValue)
         event = array('f', doubleList)
-	ntuple.Fill(event)	
-	if i >= 9999: 
+	ntuple.Fill(event)
+	if i >= 9999:
 		break
 	else:
-		i += 1		
+		i += 1
 
     inputFile.close()
     outputFile.Write()

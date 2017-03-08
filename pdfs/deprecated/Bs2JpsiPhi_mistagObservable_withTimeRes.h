@@ -36,7 +36,7 @@ class Bs2JpsiPhi_mistagObservable_withTimeRes : public BasePDF
 		double cachedv1, cachedv2;
 		double cachedAzero, cachedApara, cachedAperp, cachedsinDeltaPerpPara, cachedcosDeltaPerpPara, cachedsinDeltaPerp;
 		double cachedcosDeltaPerp, cachedcosDeltaPara, cachedsinPhis, cachedcosPhis;
-		double cachedExpCosh, cachedExpSinh, cachedExpCos, cachedExpSin;	
+		double cachedExpCosh, cachedExpSinh, cachedExpCos, cachedExpSin;
 		bool normalisationCacheValid, evaluationCacheValid;
 
 		// These contain the strings that correspond
@@ -58,7 +58,7 @@ class Bs2JpsiPhi_mistagObservable_withTimeRes : public BasePDF
         	string frac_time_res1Name;
 
 		// These contain the strings that correspond
-		// to the observable names that are used in the PDF. 
+		// to the observable names that are used in the PDF.
 		string timeName;	// proper time
 		string timeErrName;	// proper time
 		string cosThetaName;	// cos of angle of mu+ wrt z-axis in Jpsi frame
@@ -66,7 +66,7 @@ class Bs2JpsiPhi_mistagObservable_withTimeRes : public BasePDF
 		string cosPsiName;	// helicity angle between K+ and -ve Jpsi direction in phi rest frame
 		string tagName;		// B tag
 		string mistagName;	// B mistag
-	
+
 		void getPhysicsParameters( double&, double&, double&, double&, double&
 					 , double&, double&, double&, double&, double&
 					 , double&, double&, double&, double&, double&);
@@ -84,17 +84,17 @@ class Bs2JpsiPhi_mistagObservable_withTimeRes : public BasePDF
 		inline double getAzeroAparaInt(double, double, double, double, double, int, double);
 		inline double getAzeroAperpInt(double, double, double, double, double, int, double);
 
-		inline void getExpTrigIntegrals(double&, double&, double&, double&, double, 
-						double, double, double, double, double, 
+		inline void getExpTrigIntegrals(double&, double&, double&, double&, double,
+						double, double, double, double, double,
 						double, double, double, double);
 		inline void getErfPart(double, double, double, double, double, double, double, double&, double&, double&, double&);
 
-		// Need these for the analytic convolution of the propertime resolution	
+		// Need these for the analytic convolution of the propertime resolution
 		inline double ExpCosh(double, double, double, double, double, double, double, double);
 		inline double ExpSinh(double, double, double, double, double, double, double, double);
 		inline double ExpCos(double, double, double, double, double, double, double, double);
 		inline double ExpSin(double, double, double, double, double, double, double, double);
-		
+
 		// Helper functions for including the propertime resolution
 		inline double erfc(double, double, double, double, double, int);
 		inline double cerfRe(double, double, double, double, double);

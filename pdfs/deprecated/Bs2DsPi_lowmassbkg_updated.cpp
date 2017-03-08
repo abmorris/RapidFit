@@ -61,7 +61,7 @@ Bs2DsPi_lowmassbkg_updated::Bs2DsPi_lowmassbkg_updated(PDFConfigurator* configur
 		//Read in histo
 		TFile* f =  TFile::Open(fileName.c_str());
 		if( f == NULL ) exit(1) ;
-		histo = new TH1D(  *(    (TH1D*)f ->Get("hist")      )     ); //(fileName.c_str()))); 
+		histo = new TH1D(  *(    (TH1D*)f ->Get("hist")      )     ); //(fileName.c_str())));
 
 		xaxis = histo->GetXaxis();
 		xmin = xaxis->GetXmin();
@@ -170,18 +170,18 @@ double Bs2DsPi_lowmassbkg_updated::Normalisation(PhaseSpaceBoundary * boundary)
 	int nbin_high = nxbins;
 
 	bool c0 = (mlow>mhigh) ;
-	bool c1 = (mhigh>histo_max) || (mlow<histo_min) ;	
+	bool c1 = (mhigh>histo_max) || (mlow<histo_min) ;
 	if ( c0 || c1  )
 	{
 		cerr << "Mass boundaries aren't withing the background histogram range in Bs2DsPi_lowmassbkg_updated" << endl;
 		exit(1) ;
 	}
 
-	for( nbin_low=1; nbin_low <= nxbins; ++nbin_low ) {		
+	for( nbin_low=1; nbin_low <= nxbins; ++nbin_low ) {
 		if( histo->GetXaxis()->GetBinLowEdge(nbin_low)  > mlow ) break ;
 	}
 	nbin_low--;
-	for( nbin_high=nxbins; nbin_high >= 1; --nbin_high ) {		
+	for( nbin_high=nxbins; nbin_high >= 1; --nbin_high ) {
 		if( histo->GetXaxis()->GetBinUpEdge(nbin_high)  < mhigh ) break ;
 	}
 	nbin_high++;
@@ -202,8 +202,8 @@ double Bs2DsPi_lowmassbkg_updated::Normalisation(PhaseSpaceBoundary * boundary)
 	//cout << "number of bins " << nxbins << endl;
 	//cout << "sum of bins looped " << sum << endl;
 	//cout << "histo range " << histo_range << endl;
-	//cout << "bin_width " << bin_width << endl;	
-	//cout << "total number enteries in histo " << total_num_entries << endl;	
+	//cout << "bin_width " << bin_width << endl;
+	//cout << "total number enteries in histo " << total_num_entries << endl;
 
 
 	//cout << "end normalisation " << endl;

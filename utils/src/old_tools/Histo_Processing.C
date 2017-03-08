@@ -659,7 +659,7 @@ void Plot_Styled_Contour( TH2* input_hist, int cont_num, double* input_conts, do
 		//	Lots of Contours
 		if( i == 1 )
 		{
-			input_hist->SetContour(40);	
+			input_hist->SetContour(40);
 		}
 
 
@@ -752,14 +752,14 @@ void Plot_Styled_Contour( TH2* input_hist, int cont_num, double* input_conts, do
 
 //	Plot 2 canvased on top of each other
 //	This allows for 2 sets of contours (of equal number) to be chosen for each dataset
-//	
+//
 //	TODO:	Allow for the Legend to be customised, easy step just takes time to code up
 //
 //	This adopts the namescheme to plot a FC scan atop a 2DLL plot but is generically written enough to allow 2 group TH2 objects to be placed atop each other
 //
 void Plot_Both( TH2* pllhist, TH2* FC_Plot, int nconts, double* fcconts, double *llconts, double* confs, TString outputdir, TString Legend_Name_1, TString Legend_Name_2 )
 {
-	TCanvas* Temp_1 = new TCanvas("Temp","Temp",1680,1050);  
+	TCanvas* Temp_1 = new TCanvas("Temp","Temp",1680,1050);
 
 	TList* contLevel = NULL;
 	TGraph* Line     = NULL;
@@ -1018,7 +1018,7 @@ TH2D* FC_TOYS( TTree* input_tree, TString Fit_Cut_String, TString param1, TStrin
 			Double_t Ratio = NLL_Local_Best - NLL_Global_Best;
 			for( j = 0; j < Fixed_Toy_Num; ++j){
 
-				//THE LINE BELOW IS THE FELDMAN-COUSINS ORDERING METHOD USED BY CDF/HEIDELBERG: 
+				//THE LINE BELOW IS THE FELDMAN-COUSINS ORDERING METHOD USED BY CDF/HEIDELBERG:
 				//if the toyratio is smaller than the data ratio at this point, increment:
 				if ( (Fixed_Toys_NLL[(unsigned)j]-Floated_Toys_NLL[(unsigned)j]) < Ratio )
 				{
@@ -1243,9 +1243,9 @@ TGraph* LL_Plot( TTree* input_TTree, TString Cut_String, double Global_Best_NLL,
 
 
 //  The gamma distribution coded up in root is the more general form of that found on wikipedia (there's a surprise)
-//  
+//
 //  Using the root definition:                                  wiki:
-//                              gamma = mean^2 / sigma^2                k     = mu^2 / sigma^2  
+//                              gamma = mean^2 / sigma^2                k     = mu^2 / sigma^2
 //                              beta  = sigma^2 / mean                  theta = sigma^2 / mu
 //
 //              For:            mu == 0                         The 2 conditions above are ONLY valid for this condition

@@ -1,8 +1,8 @@
 /* stackergen: Part of the simpletools package
  * (c) Conor Fitzpatrick, 2008
  *
- * If you find this program useful in whole or in part 
- * please cite this paper: 
+ * If you find this program useful in whole or in part
+ * please cite this paper:
  *
  * Feel free to send bugreports, feature requests, patches etc to:
  * conor.fitzpatrick@cern.ch
@@ -94,8 +94,8 @@ TPaveText* addLHCbLabel(TString footer){
 	TPaveText * label = new TPaveText(0.14, 0.73, 0.14, 0.88,"BRNDC");
 	//TPaveText * label = new TPaveText(0.12, 0.58, 0.12, 0.43,"BRNDC");
 	label->SetFillStyle(0);
-	label->SetBorderSize(0);     
-	label->SetTextAlign(11);          
+	label->SetBorderSize(0);
+	label->SetTextAlign(11);
 	label->SetTextSize((Float_t)0.04);
 
 	TText * labeltext = 0;
@@ -160,7 +160,7 @@ TCanvas *makeConfCanvas(TH2* hist, TString labelname,UInt_t nconts, double* cont
 		for(int j =0; j<contLevel->GetSize(); j++){
 			curv = (TGraph*)contLevel->At(j);
 			gc = (TGraph*)curv->Clone();
-			if(pub){	
+			if(pub){
 				gc->SetLineStyle((Style_t)(i+1));
 			}else{
 				gc->SetLineColor((Color_t)(i+2));
@@ -307,11 +307,11 @@ int main(int argc, char *argv[]){
 
 
 	//The first entry in every file will be the data result floated globally
-	//Gen values will be -9999, 
+	//Gen values will be -9999,
 	//Par values will be floated
 	//Par errors !=0
-	//The second entry in every file is the data result fixed at the current gridpoint. 
-	//Gen values will be -9999, 
+	//The second entry in every file is the data result fixed at the current gridpoint.
+	//Gen values will be -9999,
 	//Par values will be set to the current gridpoint
 	//Par errors will be 0
 	//Entries 3-> Ntoyspersj+3 will be the fixed toy values
@@ -410,7 +410,7 @@ int main(int argc, char *argv[]){
 		paramtemp->Print(outputdir+"/"+param1string+"_"+param2string+"_"+all_parameters[i]+"_llvals.pdf");
 		paramtemp->Print(outputdir+"/"+param1string+"_"+param2string+"_"+all_parameters[i]+"_llvals.png");
 		}
-	}	
+	}
 
 	delete datafixed;
 	bool hastoys = false;
@@ -421,7 +421,7 @@ int main(int argc, char *argv[]){
 
 	TTree* toys = allresults->CopyTree(isatoy);
 	cout << "FOUND " << toys->GetEntries() << " TOYS" << endl;
-	//Is this just an LLscan, or were toys for FC generated? 
+	//Is this just an LLscan, or were toys for FC generated?
 	if(toys->GetEntries() != 0){hastoys = true;}
 	if(hastoys){
 		//Find the toys generated at the previously discovered gridpoints
@@ -451,30 +451,30 @@ int main(int argc, char *argv[]){
 
 
 			if(goodfixedtoystot != goodfloatedtoystot){
-				//We've got serious problems! 
+				//We've got serious problems!
 				cout << "Different number of toy fits found for gridpoint " << param1gridpoints[i] << "," << param2gridpoints[i] << " (" << fixedtoystot << "," << floatedtoystot << ") Can't continue!" << endl;
 
 				exit(1);
 			}
 			if(goodfixedtoystot != 0){
 				//Loop over the toys, pulling out the NLL ratio
-				goodfloatedtoys->SetBranchAddress(NLLstr,&NLLtoyfloat);	
+				goodfloatedtoys->SetBranchAddress(NLLstr,&NLLtoyfloat);
 				goodfixedtoys->SetBranchAddress(NLLstr,&NLLtoyfixed);
 				UInt_t toyNLLsmaller = 0;
 
 				goodtoysgridpoints.push_back((Float_t)goodfixedtoystot);
 				toysgridpoints.push_back((Float_t)fixedtoystot);
 				for(UInt_t j = 0; j<goodfixedtoystot; j++){
-					goodfloatedtoys->GetEntry(j);	
-					goodfixedtoys->GetEntry(j);	
-					//THE LINE BELOW IS THE FELDMAN-COUSINS ORDERING METHOD USED BY CDF/HEIDELBERG: 
+					goodfloatedtoys->GetEntry(j);
+					goodfixedtoys->GetEntry(j);
+					//THE LINE BELOW IS THE FELDMAN-COUSINS ORDERING METHOD USED BY CDF/HEIDELBERG:
 					//if the toyratio is smaller than the data ratio at this point, increment:
 					if((NLLtoyfixed-NLLtoyfloat)<dataRatiogridpoints[i]){toyNLLsmaller++;}
 				}
 				//The C.L. is the percentage of toys that were smaller
 				double cl = ((Double_t)toyNLLsmaller/(Double_t)goodfixedtoystot);
 				clgridpoints.push_back((float)cl);
-			}else{ 
+			}else{
 				cout << param1gridpoints[i] << " " << param2gridpoints[i] << " WARNING: Found no toys here. " << endl;
 				clgridpoints.push_back(-9999.0);
 			}
@@ -486,9 +486,9 @@ int main(int argc, char *argv[]){
 		}
 	}
 	delete toys;
-	//We now have 4 vectors: The gridpoints in x,y and the conf. limits in z or the profile LL in z. We need to make TGraphs from these bad boys. 
+	//We now have 4 vectors: The gridpoints in x,y and the conf. limits in z or the profile LL in z. We need to make TGraphs from these bad boys.
 
-	//Copy vectors to arrays: 
+	//Copy vectors to arrays:
 
 	//Double_t* p2points = new Double_t [npoints];
 	//copy( param2gridpoints.begin(), param2gridpoints.end(),p2points);
@@ -497,7 +497,7 @@ int main(int argc, char *argv[]){
 	Double_t* pllpoints = new Double_t [npoints];
 	copy( dataRatiogridpoints.begin(), dataRatiogridpoints.end(),pllpoints);
 
-	//We get the data profile likelihood free, so let's plot it: 
+	//We get the data profile likelihood free, so let's plot it:
 	TGraph2D *pllgraph = new TGraph2D(npoints, p2points, p1points, pllpoints);
 	pllgraph->SetName("pllgraph");
 	pllgraph->SetNpx(np);
@@ -528,7 +528,7 @@ int main(int argc, char *argv[]){
 	pllpub->Print(outputdir+"/"+param1string+"_"+param2string+"_pll_pub.pdf");
 	pllpub->Print(outputdir+"/"+param1string+"_"+param2string+"_pll_pub.png");
 
-	// Now let's plot the feldman cousins in the same way: 
+	// Now let's plot the feldman cousins in the same way:
 	if(hastoys){
 		Double_t* clpoints = new Double_t [npoints];
 		copy( clgridpoints.begin(), clgridpoints.end(),clpoints);

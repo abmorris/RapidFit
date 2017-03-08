@@ -29,7 +29,7 @@ class Bs2JpsiPhiLongLivedBkg_withTimeRes : public BasePDF
 		void MakePrototypes();
 		bool SetPhysicsParameters(ParameterSet*);
 		double buildPDFnumerator();
-		double buildPDFdenominator();		
+		double buildPDFdenominator();
 
 		// Physics parameters
 		ObservableRef tauLL1Name;		// decay constant 1
@@ -47,7 +47,7 @@ class Bs2JpsiPhiLongLivedBkg_withTimeRes : public BasePDF
 		double tauLL1;
 		double tauLL2;
 		double f_LL1;
-		double sigmaLL; // This is the member variable used in the "builder" functions 
+		double sigmaLL; // This is the member variable used in the "builder" functions
 		double sigmaLL1; // These are the physics parameters varied in the fit and passed from the XML;
 		double sigmaLL2;
                 double timeResLL1Frac;

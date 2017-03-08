@@ -3,7 +3,7 @@
  *
  * @brief Code to carry out blinding
  *
- * @author Pete Clarke 
+ * @author Pete Clarke
 */
 
 #pragma once
@@ -24,7 +24,7 @@ class Blinder
 	public:
 		/*!
 		 * @brief Function to unblind a blinded value
-		 * 
+		 *
 		 * @param blindValue   Blinded Value
 		 *
 		 * @param blindString  Blinding String as defined in the XML
@@ -40,7 +40,7 @@ class Blinder
 		 *
 		 * @param scale        Blinding Scale as defined in the XML
 		 */
-		static double getBlindOffset( const char * blindString, double scale );	
+		static double getBlindOffset( const char * blindString, double scale );
 };
 
 #endif

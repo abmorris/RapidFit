@@ -14,7 +14,7 @@
 #include "RooMath.h"
 
 //Constructor
-Bs2JpsiPhi_mistagObservable_withTimeRes::Bs2JpsiPhi_mistagObservable_withTimeRes() : 
+Bs2JpsiPhi_mistagObservable_withTimeRes::Bs2JpsiPhi_mistagObservable_withTimeRes() :
 	// Physics parameters (will be fitted for)
 	  gammaName     ( "gamma" )
 	, deltaGammaName( "deltaGamma" )
@@ -40,7 +40,7 @@ Bs2JpsiPhi_mistagObservable_withTimeRes::Bs2JpsiPhi_mistagObservable_withTimeRes
 	// Tagging (input to the fit, these could also be fit for)
 	, tagName	( "tag" )
 	, mistagName	( "mistag" )
-	
+
 	, normalisationCacheValid(false)
 	, evaluationCacheValid(false)
 {
@@ -112,7 +112,7 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::Evaluate(DataPoint * measurement
 {
 	// The angular functions f1->f6 as defined in roadmap Table 1.
 	double f1, f2, f3, f4, f5, f6;
-	getAngularFunctions( f1, f2, f3, f4, f5, f6, measurement );	
+	getAngularFunctions( f1, f2, f3, f4, f5, f6, measurement );
 
 	// The time dependent amplitudes as defined in roadmap Eqns 48 -> 59
 	// First for the B
@@ -131,8 +131,8 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::Evaluate(DataPoint * measurement
 
 	// Now need to know the tag and the mistag
     	int q = (int)measurement->GetObservable( tagName )->GetValue();
-    	double omega = measurement->GetObservable( mistagName )->GetValue();	
-  	
+    	double omega = measurement->GetObservable( mistagName )->GetValue();
+
 	double epsilon[3];
   	epsilon[0] = omega;
   	epsilon[1] = 0.5;
@@ -141,24 +141,24 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::Evaluate(DataPoint * measurement
   	double w2  = 1.0 - w1;
 
 	//cout << "angles " << f1 << " " << f2 << " " << f3 << " " << f4 << " " << f5 << " " << f6 << endl;
-	
+
   	//W+
   	double v1 = f1 * AzeroAzeroB
               + f2 * AparaAparaB
               + f3 * AperpAperpB
               + f4 * ImAparaAperpB
               + f5 * ReAzeroAparaB
-              + f6 * ImAzeroAperpB; 
-  
+              + f6 * ImAzeroAperpB;
+
   	//W-
   	double v2 = f1 * AzeroAzeroBbar
               + f2 * AparaAparaBbar
               + f3 * AperpAperpBbar
               + f4 * ImAparaAperpBbar
               + f5 * ReAzeroAparaBbar
-              + f6 * ImAzeroAperpBbar;  
- 
-	//cout << "Evaluate " << w1*v1 + w2*v2 << endl; 
+              + f6 * ImAzeroAperpBbar;
+
+	//cout << "Evaluate " << w1*v1 + w2*v2 << endl;
   	return ( w1*v1 + w2*v2 );
 }
 
@@ -167,8 +167,8 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::Normalisation(DataPoint * measur
 {
 	// Now need to know the tag and the mistag
     	int q = (int)measurement->GetObservable( tagName )->GetValue();
-    	double omega = measurement->GetObservable( mistagName )->GetValue();	
-    	double timeErr = measurement->GetObservable( timeErrName )->GetValue();	
+    	double omega = measurement->GetObservable( mistagName )->GetValue();
+    	double timeErr = measurement->GetObservable( timeErrName )->GetValue();
 
 	double epsilon[3];
   	epsilon[0] = omega;
@@ -204,16 +204,16 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::Normalisation(DataPoint * measur
 							  , -1
 							  , timeErr);
 
-		//cout << AzeroAzeroIntB << " " << AparaAparaIntB << " " << AperpAperpIntB << endl;	
-		//cout << AzeroAzeroIntBbar << " " << AparaAparaIntBbar << " " << AperpAperpIntBbar << endl;	
-		cachedv1 = AzeroAzeroIntB + AparaAparaIntB + AperpAperpIntB 
+		//cout << AzeroAzeroIntB << " " << AparaAparaIntB << " " << AperpAperpIntB << endl;
+		//cout << AzeroAzeroIntBbar << " " << AparaAparaIntBbar << " " << AperpAperpIntBbar << endl;
+		cachedv1 = AzeroAzeroIntB + AparaAparaIntB + AperpAperpIntB
 			 + 0.*(AparaAperpIntB + AzeroAparaIntB + AzeroAperpIntB);
 		cachedv2 = AzeroAzeroIntBbar + AparaAparaIntBbar + AperpAperpIntBbar;
 			 + 0.*(AparaAperpIntBbar + AzeroAparaIntBbar + AzeroAperpIntBbar);
 
 		normalisationCacheValid = true;
 	}
-	//cout << "Normalisation\t" << w1*cachedv1 + w2*cachedv2 << endl;	
+	//cout << "Normalisation\t" << w1*cachedv1 + w2*cachedv2 << endl;
 	return ( w1*cachedv1 + w2*cachedv2 );
 }
 
@@ -239,12 +239,12 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getAngularFunctions( double & f1
 	double sin2Theta = 2.*sinTheta*cosTheta;
 	double sin2Psi	 = 2.*sinPsi*cosPsi;
 	double sin2Phi	 = 2.*sinPhi*cosPhi;
-	 
-	double norm = 9./32./TMath::Pi(); 
+
+	double norm = 9./32./TMath::Pi();
 	//this is  1/factor that drops out when you integrate over the angles
 	// i.e., int(2*cospsi*cospsi*(1-(1-costh*costh)*cos(phi)*cos(phi)),cospsi=-1..1, costh=-1..1,phi=-Pi..Pi);
 	// same factor for f1, f2, f3. The remaining terms f4, f5, f6 give 0
-	// int(-(1-cospsi*cospsi)*2*sqrt(1-costh*costh)*costh*sin(phi),cospsi=-1..1, costh=-1..1,phi=-Pi..Pi); 
+	// int(-(1-cospsi*cospsi)*2*sqrt(1-costh*costh)*costh*sin(phi),cospsi=-1..1, costh=-1..1,phi=-Pi..Pi);
 	f1 =  2.* cosPsi*cosPsi * ( 1. - sinTheta*sinTheta * cosPhi*cosPhi ) * norm;
 	f2 =      sinPsi*sinPsi * ( 1. - sinTheta*sinTheta * sinPhi*sinPhi ) * norm;
 	f3 =      sinPsi*sinPsi * sinTheta*sinTheta * norm;
@@ -266,7 +266,7 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeDependentAmplitudes(  doubl
 	// Observable
 	double time = measurement->GetObservable( timeName )->GetValue();
 	double timeErr = measurement->GetObservable( timeErrName )->GetValue();
-        
+
 	// Physics parameters (the stuff you want to extract from the physics model by plugging in the experimental measurements)
 	double gamma, deltaGamma, deltaMs, Phi_s;
 	double Azero_sq, Apara_sq, Aperp_sq;
@@ -280,7 +280,7 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeDependentAmplitudes(  doubl
 			    , mean_time_res1, sigma_time_res1
 			    , mean_time_res2, sigma_time_res2
 			    , frac_time_res1);
-	
+
 	//cout << "inputs; gamma " << gamma << " deltaMs " << deltaMs << " " << mean_time_res1 << " " << mean_time_res2 << " " << sigma_time_res1 << " " << sigma_time_res2 << " frac_time_res " << frac_time_res1<< " " <<  time << " " << timeErr << endl;
 
 	double gammaL =  gamma + deltaGamma/2.;
@@ -292,13 +292,13 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeDependentAmplitudes(  doubl
 		cachedAzero = sqrt( Azero_sq );
 		cachedApara = sqrt( Apara_sq );
 		cachedAperp = sqrt( Aperp_sq );
-	
+
 		cachedsinDeltaPerpPara	= sin( delta_perp - delta_para );
 		cachedcosDeltaPerpPara	= cos( delta_perp - delta_para );
 		cachedsinDeltaPerp	= sin( delta_perp );
 		cachedcosDeltaPerp	= cos( delta_perp );
 		cachedcosDeltaPara	= cos( delta_para );
-	
+
 		cachedsinPhis = sin( Phi_s );
 		cachedcosPhis = cos( Phi_s );
 		evaluationCacheValid = true;
@@ -327,7 +327,7 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeDependentAmplitudes(  doubl
         	cachedExpSin = ExpSin( gamma, deltaMs
                               , mean_time_res1*timeErr, sigma_time_res1*timeErr
                               , mean_time_res2*timeErr, sigma_time_res2*timeErr
-                              , frac_time_res1, time ); 
+                              , frac_time_res1, time );
 		if (isnan(cachedExpCosh) || isnan(cachedExpSinh) || isnan(cachedExpCos) || isnan(cachedExpSin)){
 		cout << "inputs; gamma " << gamma << " deltaGamma " << deltaGamma << " deltaMs " << deltaMs << " " << mean_time_res1 << " " << mean_time_res2 << " " << sigma_time_res1 << " " << sigma_time_res2 << " frac_time_res " << frac_time_res1<< " " <<  time << " " << timeErr << endl;
 		cout << "ExpTrig " << cachedExpCosh << " " << cachedExpSinh << " " << cachedExpCos << " " << cachedExpSin << endl;
@@ -335,17 +335,17 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeDependentAmplitudes(  doubl
 		}
 	}
 
-	AzeroAzero = Azero_sq * ( cachedExpCosh - cachedcosPhis * cachedExpSinh + Btype * cachedsinPhis * cachedExpSin ); 
-	AparaApara = Apara_sq * ( cachedExpCosh - cachedcosPhis * cachedExpSinh + Btype * cachedsinPhis * cachedExpSin ); 
-	AperpAperp = Aperp_sq * ( cachedExpCosh + cachedcosPhis * cachedExpSinh - Btype * cachedsinPhis * cachedExpSin ); 
-	        
+	AzeroAzero = Azero_sq * ( cachedExpCosh - cachedcosPhis * cachedExpSinh + Btype * cachedsinPhis * cachedExpSin );
+	AparaApara = Apara_sq * ( cachedExpCosh - cachedcosPhis * cachedExpSinh + Btype * cachedsinPhis * cachedExpSin );
+	AperpAperp = Aperp_sq * ( cachedExpCosh + cachedcosPhis * cachedExpSinh - Btype * cachedsinPhis * cachedExpSin );
+
 	ImAparaAperp = cachedApara*cachedAperp * ( - cachedcosDeltaPerpPara * cachedsinPhis * cachedExpSinh
                                                + Btype * cachedsinDeltaPerpPara * cachedExpCos
                                                - Btype * cachedcosDeltaPerpPara * cachedcosPhis * cachedExpSin );
-	       	
+
 	ReAzeroApara = cachedAzero*cachedApara * cachedcosDeltaPara * ( cachedExpCosh - cachedcosPhis * cachedExpSinh
                                                + Btype * cachedsinPhis * cachedExpSin );
-        	
+
 	ImAzeroAperp = cachedAzero*cachedAperp * ( - cachedcosDeltaPerp * cachedsinPhis * cachedExpSinh
                                                + Btype * cachedsinDeltaPerp * cachedExpCos
                                                - Btype * cachedcosDeltaPerp * cachedcosPhis * cachedExpSin );
@@ -379,7 +379,7 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeAmplitudeIntegrals( double 
 		tlow = timeBound->GetMinimum();
 		thigh = timeBound->GetMaximum();
 	}
-	
+
 	// Physics parameters
         double gamma, deltaGamma, deltaMs, Phi_s;
         double Azero_sq, Apara_sq, Aperp_sq;
@@ -393,14 +393,14 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getTimeAmplitudeIntegrals( double 
                             , mean_time_res1, sigma_time_res1
                             , mean_time_res2, sigma_time_res2
         		    , frac_time_res1);
-	
+
 	double AparaAperp = sqrt(Apara_sq)*sqrt(Aperp_sq);
 	double AzeroApara = sqrt(Azero_sq)*sqrt(Apara_sq);
 	double AzeroAperp = sqrt(Azero_sq)*sqrt(Aperp_sq);
 
 	double gammaH = gamma - 0.5*deltaGamma;
 	double gammaL = gamma + 0.5*deltaGamma;
-	
+
 	double tauH   = 1. / gammaH;
 	double tauL   = 1. / gammaL;
 	///double tauBar = 1. / gamma;
@@ -438,7 +438,7 @@ inline double Bs2JpsiPhi_mistagObservable_withTimeRes::getAzeroAzeroInt( double 
 							    , double phis
 							    , int Btype)
 {
-        double v = expCosh_integral - cos(phis) * expSinh_integral 
+        double v = expCosh_integral - cos(phis) * expSinh_integral
 		 + sin(phis) * expSin_integral * Btype;
 
         return AzeroAzero * v;
@@ -463,7 +463,7 @@ inline double Bs2JpsiPhi_mistagObservable_withTimeRes::getAperpAperpInt( double 
                                                             , double expSin_integral
                                                             , double phis
                                                             , int Btype)
-{       
+{
         double v = expCosh_integral + cos(phis) * expSinh_integral
                  + sin(phis)*expSin_integral * Btype;
 
@@ -482,7 +482,7 @@ inline double Bs2JpsiPhi_mistagObservable_withTimeRes::getAparaAperpInt( double 
         double v = -cos( delta_perp - delta_para ) * sin(phis) * expSinh_integral
         	 +  sin( delta_perp - delta_para ) * expCos_integral * Btype;
         	 -  cos( delta_perp - delta_para ) * cos(phis) * expSin_integral * Btype;
-	
+
 	return AparaAperp * v;
 }
 
@@ -531,22 +531,22 @@ inline void Bs2JpsiPhi_mistagObservable_withTimeRes::getExpTrigIntegrals(
 	, double sigma_time_res1
 	, double sigma_time_res2
 	, double frac_time_res1
-)	
+)
 {
 	double deltaCosh1 = 0.;
 	double deltaSinh1 = 0.;
 	double deltaCos1 = 0.;
 	double deltaSin1 = 0.;
 	getErfPart( t_low, t_high, mean_time_res1, sigma_time_res1, tauL, tauH
-		  , deltaM, deltaCosh1, deltaSinh1, deltaCos1, deltaSin1); 
-	
+		  , deltaM, deltaCosh1, deltaSinh1, deltaCos1, deltaSin1);
+
 	double deltaCosh2 = 0.;
 	double deltaSinh2 = 0.;
 	double deltaCos2 = 0.;
 	double deltaSin2 = 0.;
 	getErfPart( t_low, t_high, mean_time_res2, sigma_time_res2, tauL, tauH
-		  , deltaM, deltaCosh2, deltaSinh2, deltaCos2, deltaSin2); 
-	
+		  , deltaM, deltaCosh2, deltaSinh2, deltaCos2, deltaSin2);
+
 	expCosh_integral  = deltaCosh1 * frac_time_res1;
 	expCosh_integral += deltaCosh2 * (1. - frac_time_res1);
 	expSinh_integral  = deltaSinh1 * frac_time_res1;
@@ -570,7 +570,7 @@ inline void Bs2JpsiPhi_mistagObservable_withTimeRes::getErfPart(   double t_low
 						      , double & deltaSinh
 						      , double & deltaCos
 						      , double & deltaSin )
-							
+
 {
 	double tau = 2. / ( 1./tau_L + 1./tau_H);
 	double deltaExpH = 0.;
@@ -620,7 +620,7 @@ void Bs2JpsiPhi_mistagObservable_withTimeRes::getPhysicsParameters( double & gam
 					, double & Azero_sq
 					, double & Apara_sq
 					, double & Aperp_sq
-					, double & delta_zero 
+					, double & delta_zero
 					, double & delta_para
 					, double & delta_perp
 					, double & mean_time_res1
@@ -669,10 +669,10 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::ExpCosh( double GammaL, double G
 double Bs2JpsiPhi_mistagObservable_withTimeRes::ExpSinh( double GammaL, double GammaH
 	      , double mean_time_res1, double sigma_time_res1
               , double mean_time_res2, double sigma_time_res2
-              , double frac_time_res1, double time) 
+              , double frac_time_res1, double time)
 {
   	double v = 0.;
-   
+
 	// Calculate the contribution from each resolution term
       	v += erfc(GammaL, GammaH, mean_time_res1, sigma_time_res1, time, -1)*frac_time_res1;
       	v += erfc(GammaL, GammaH, mean_time_res2, sigma_time_res2, time, -1)*(1-frac_time_res1);
@@ -689,7 +689,7 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::erfc( double gammaL, double gamm
         double xL = gammaL * ( time - mean );
         double cL = gammaL * sigma/sqrt(2.);
         double u  = ( time - mean )/( sqrt(2.) * sigma );
-        
+
 	double delta =              exp( cH * cH - xH) * TMath::Erfc( cH - u )/2.
         	     + coshOrSinh * exp( cL * cL - xL) * TMath::Erfc( cL - u )/2.;
         delta /= 2.;
@@ -717,7 +717,7 @@ double Bs2JpsiPhi_mistagObservable_withTimeRes::ExpSin( double gamma, double del
         double v = 0.;
         v += cerfIm(gamma, deltaM, mean_time_res1, sigma_time_res1, time)*frac_time_res1;
         v += cerfIm(gamma, deltaM, mean_time_res2, sigma_time_res2, time)*(1-frac_time_res1);
-        
+
         return v;
 }
 

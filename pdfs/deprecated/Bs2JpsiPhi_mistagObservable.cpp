@@ -13,7 +13,7 @@
 #include "TMath.h"
 
 //Constructor
-Bs2JpsiPhi_mistagObservable::Bs2JpsiPhi_mistagObservable() : 
+Bs2JpsiPhi_mistagObservable::Bs2JpsiPhi_mistagObservable() :
 	// Physics parameters
 	  gammaName     ( "gamma" )
 	, deltaGammaName( "deltaGamma" )
@@ -96,12 +96,12 @@ vector<string> Bs2JpsiPhi_mistagObservable::GetDoNotIntegrateList()
 double Bs2JpsiPhi_mistagObservable::Evaluate(DataPoint * measurement)
 {
 	// Does not make sense to evaluate this PDF for time < 0
-	double time = measurement->GetObservable( timeName )->GetValue();	
+	double time = measurement->GetObservable( timeName )->GetValue();
 	if ( time < 0. ) return 0.;
 
 	// The angular functions f1->f6 as defined in roadmap Table 1.
 	double f1, f2, f3, f4, f5, f6;
-	getAngularFunctions( f1, f2, f3, f4, f5, f6, measurement );	
+	getAngularFunctions( f1, f2, f3, f4, f5, f6, measurement );
 
 	// The time dependent amplitudes as defined in roadmap Eqns 48 -> 59
 	// First for the B
@@ -120,7 +120,7 @@ double Bs2JpsiPhi_mistagObservable::Evaluate(DataPoint * measurement)
 
 	// Now need to know the tag and the mistag
 	int q = (int)measurement->GetObservable( tagName )->GetValue();
-	double omega = measurement->GetObservable( mistagName )->GetValue();	
+	double omega = measurement->GetObservable( mistagName )->GetValue();
 
 	double epsilon[3];
 	epsilon[0] = omega;
@@ -135,7 +135,7 @@ double Bs2JpsiPhi_mistagObservable::Evaluate(DataPoint * measurement)
 		+ f3 * AperpAperpB
 		+ f4 * ImAparaAperpB
 		+ f5 * ReAzeroAparaB
-		+ f6 * ImAzeroAperpB; 
+		+ f6 * ImAzeroAperpB;
 
 	//W-
 	double v2 = f1 * AzeroAzeroBbar
@@ -143,7 +143,7 @@ double Bs2JpsiPhi_mistagObservable::Evaluate(DataPoint * measurement)
 		+ f3 * AperpAperpBbar
 		+ f4 * ImAparaAperpBbar
 		+ f5 * ReAzeroAparaBbar
-		+ f6 * ImAzeroAperpBbar;  
+		+ f6 * ImAzeroAperpBbar;
 
 	return ( w1*v1 + w2*v2 );
 }
@@ -153,7 +153,7 @@ double Bs2JpsiPhi_mistagObservable::Normalisation(DataPoint * measurement, Phase
 {
 	// Now need to know the tag and the mistag
 	int q = (int)measurement->GetObservable( tagName )->GetValue();
-	double omega = measurement->GetObservable( mistagName )->GetValue();	
+	double omega = measurement->GetObservable( mistagName )->GetValue();
 
 	double epsilon[3];
 	epsilon[0] = omega;
@@ -210,11 +210,11 @@ void Bs2JpsiPhi_mistagObservable::getAngularFunctions( double & f1
 	double sin2Psi	 = 2.*sinPsi*cosPsi;
 	double sin2Phi	 = 2.*sinPhi*cosPhi;
 
-	double norm = 9./32./TMath::Pi(); 
+	double norm = 9./32./TMath::Pi();
 	//this is the factor that drops out when you integrate over the angles
 	// i.e., int(2*cospsi*cospsi*(1-(1-costh*costh)*cos(phi)*cos(phi)),cospsi=-1..1, costh=-1..1,phi=-Pi..Pi);
 	// same factor for f1, f2, f3. The remaining terms f4, f5, f6 give 0
-	// int(-(1-cospsi*cospsi)*2*sqrt(1-costh*costh)*costh*sin(phi),cospsi=-1..1, costh=-1..1,phi=-Pi..Pi); 
+	// int(-(1-cospsi*cospsi)*2*sqrt(1-costh*costh)*costh*sin(phi),cospsi=-1..1, costh=-1..1,phi=-Pi..Pi);
 	f1 =  2.* cosPsi*cosPsi * ( 1. - sinTheta*sinTheta * cosPhi*cosPhi ) * norm;
 	f2 =      sinPsi*sinPsi * ( 1. - sinTheta*sinTheta * sinPhi*sinPhi ) * norm;
 	f3 =      sinPsi*sinPsi * sinTheta*sinTheta * norm;
@@ -268,11 +268,11 @@ void Bs2JpsiPhi_mistagObservable::getTimeDependentAmplitudes(  double & AzeroAze
 	double cosDeltaMsT = cos( deltaMs*time );
 
 	// Now calculate the amplitudes
-	AzeroAzero = Azero_sq * expGT * ( coshDeltaGammaT - cachedcosPhis * sinhDeltaGammaT + Btype * cachedsinPhis * sinDeltaMsT ); 
-	AparaApara = Apara_sq * expGT * ( coshDeltaGammaT - cachedcosPhis * sinhDeltaGammaT + Btype * cachedsinPhis * sinDeltaMsT ); 
-	AperpAperp = Aperp_sq * expGT * ( coshDeltaGammaT + cachedcosPhis * sinhDeltaGammaT - Btype * cachedsinPhis * sinDeltaMsT ); 
+	AzeroAzero = Azero_sq * expGT * ( coshDeltaGammaT - cachedcosPhis * sinhDeltaGammaT + Btype * cachedsinPhis * sinDeltaMsT );
+	AparaApara = Apara_sq * expGT * ( coshDeltaGammaT - cachedcosPhis * sinhDeltaGammaT + Btype * cachedsinPhis * sinDeltaMsT );
+	AperpAperp = Aperp_sq * expGT * ( coshDeltaGammaT + cachedcosPhis * sinhDeltaGammaT - Btype * cachedsinPhis * sinDeltaMsT );
 
-	ImAparaAperp = cachedApara*cachedAperp * expGT * ( - cachedcosDeltaPerpPara * cachedsinPhis * sinhDeltaGammaT 
+	ImAparaAperp = cachedApara*cachedAperp * expGT * ( - cachedcosDeltaPerpPara * cachedsinPhis * sinhDeltaGammaT
 			+ Btype * cachedsinDeltaPerpPara * cosDeltaMsT
 			- Btype * cachedcosDeltaPerpPara * cachedcosPhis * sinDeltaMsT );
 
@@ -280,7 +280,7 @@ void Bs2JpsiPhi_mistagObservable::getTimeDependentAmplitudes(  double & AzeroAze
 			+ Btype * cachedsinPhis * sinDeltaMsT );
 
 	ImAzeroAperp = cachedAzero*cachedAperp * expGT * ( - cachedcosDeltaPerp * cachedsinPhis * sinhDeltaGammaT
-			+ Btype * cachedsinDeltaPerp * cosDeltaMsT 
+			+ Btype * cachedsinDeltaPerp * cosDeltaMsT
 			- Btype * cachedcosDeltaPerp * cachedcosPhis * sinDeltaMsT );
 	return;
 }
@@ -330,7 +330,7 @@ void Bs2JpsiPhi_mistagObservable::getTimeAmplitudeIntegrals( double & AzeroAzero
 }
 
 
-inline double Bs2JpsiPhi_mistagObservable::getAzeroAzeroInt(double tmin, double tmax, 
+inline double Bs2JpsiPhi_mistagObservable::getAzeroAzeroInt(double tmin, double tmax,
 		double k0, double tauL, double tauH, double tauBar, double Dms, double phis, int Btype)
 {
 
@@ -370,7 +370,7 @@ inline double Bs2JpsiPhi_mistagObservable::getAparaAparaInt(double tmin, double 
 			+ Btype*2.0*gammaDms*sinphis*(exp(-(1.0/tauBar)*tmin)*((1.0/tauBar)*sin(Dms*tmin)
 					+Dms*cos(Dms*tmin))));
 
-	return (valA-valB);	
+	return (valA-valB);
 }
 
 inline double Bs2JpsiPhi_mistagObservable::getAperpAperpInt(double tmin, double tmax,
@@ -397,7 +397,7 @@ inline double Bs2JpsiPhi_mistagObservable::getAperpAperpInt(double tmin, double 
 // Need to work out what interference terms these correspond to and which strong phase is which.
 // These are only needed (I think) for calculating the projections.
 inline double Bs2JpsiPhi_mistagObservable::A4def(double tmin, double tmax,
-		double k0, double tauL, double tauH, double tauBar, 
+		double k0, double tauL, double tauH, double tauBar,
 		double Dms, double phis, double tphase1, double tphase2, int Btype)
 {
 
@@ -407,16 +407,16 @@ inline double Bs2JpsiPhi_mistagObservable::A4def(double tmin, double tmax,
 
 	double valB = 0.5*k0*cos(tphase2-tphase1)* ( tauH*exp(-(1.0/tauH)*tmax)
 			+ tauL*exp(-(1.0/tauL)*tmax)
-			- cosphis* ( tauH*exp(-(1.0/tauH)*tmax) 
+			- cosphis* ( tauH*exp(-(1.0/tauH)*tmax)
 				- tauL*exp(-(1.0/tauL)*tmax) )
-			+ Btype * 2.0 * sinphis * exp (-(1.0/tauBar)*tmax) * gammaDms 
+			+ Btype * 2.0 * sinphis * exp (-(1.0/tauBar)*tmax) * gammaDms
 			* ( Dms* cos(Dms*tmax) + (1.0/tauBar)*sin(Dms*tmax)) );
 
 	double valA = 0.5*k0*cos(tphase2-tphase1)* ( tauH*exp(-(1.0/tauH)*tmin)
 			+ tauL*exp(-(1.0/tauL)*tmin)
-			- cosphis* ( tauH*exp(-(1.0/tauH)*tmin) 
+			- cosphis* ( tauH*exp(-(1.0/tauH)*tmin)
 				- tauL*exp(-(1.0/tauL)*tmin) )
-			+ Btype * 2.0 * sinphis * exp (-(1.0/tauBar)*tmin) * gammaDms 
+			+ Btype * 2.0 * sinphis * exp (-(1.0/tauBar)*tmin) * gammaDms
 			* ( Dms* cos(Dms*tmin) + (1.0/tauBar)*sin(Dms*tmin)) );
 
 	return (valA-valB);
@@ -424,7 +424,7 @@ inline double Bs2JpsiPhi_mistagObservable::A4def(double tmin, double tmax,
 }
 
 inline double Bs2JpsiPhi_mistagObservable::A5def(double tmin, double tmax,
-		double k0, double tauL, double tauH, double tauBar, 
+		double k0, double tauL, double tauH, double tauBar,
 		double Dms, double phis, double tphase1, double tphase2, int Btype)
 {
 
@@ -432,7 +432,7 @@ inline double Bs2JpsiPhi_mistagObservable::A5def(double tmin, double tmax,
 	double cosphis = cos(phis);
 	double sinphis = sin(phis);
 
-	double valB = k0 * ( gammaDms*sin(tphase1)*exp(-(1.0/tauBar)*tmax)*((1.0/tauBar)*cos(Dms*tmax) 
+	double valB = k0 * ( gammaDms*sin(tphase1)*exp(-(1.0/tauBar)*tmax)*((1.0/tauBar)*cos(Dms*tmax)
 				- Dms*sin(Dms*tmax))
 			- gammaDms*cos(tphase1)*cosphis*exp(-(1.0/tauBar)*tmax)*((1.0/tauBar)
 				*sin(Dms*tmax)
@@ -459,7 +459,7 @@ void Bs2JpsiPhi_mistagObservable::getPhysicsParameters( double & gamma
 		, double & Azero_sq
 		, double & Apara_sq
 		, double & Aperp_sq
-		, double & delta_zero 
+		, double & delta_zero
 		, double & delta_para
 		, double & delta_perp)
 {

@@ -39,7 +39,7 @@ class SWeightPrecalculator : public IPrecalculator
 		~SWeightPrecalculator();
 
 		/*!
-		 * @brief 
+		 * @brief
 		 */
 		virtual IDataSet * ProcessDataSet( IDataSet*, IPDF* );
 
@@ -77,7 +77,7 @@ class SWeightPrecalculator : public IPrecalculator
 
 	private:
 		/*!
-		 * @brief 
+		 * @brief
 		 */
 		void ConfigurePDFs( IPDF* InputPDF );
 

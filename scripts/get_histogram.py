@@ -19,10 +19,10 @@ for name in names:
 	histogram=file.Get(name)
 	bins=histogram.GetNbinsX()
 	for index in range(bins):
-		bin=histogram.GetBin(index)		 
+		bin=histogram.GetBin(index)
 		lower=histogram.GetBinLowEdge(bin+1)
 		width=histogram.GetBinWidth(bin+1)
-		number=histogram.GetBinContent(bin+1)  
+		number=histogram.GetBinContent(bin+1)
 		upper=lower+width
 		output.write(str(lower)+' '+str(upper)+' '+str(number)+'\n')
 	output.close()

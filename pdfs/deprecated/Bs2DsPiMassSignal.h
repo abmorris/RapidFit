@@ -32,15 +32,15 @@ class Bs2DsPiMassSignal : public BasePDF
 		ObservableRef sigma_m1Name;	// width 1
 		ObservableRef alpha_m1Name;	// width 1
 		ObservableRef eta_m1Name;	// width 1
-		ObservableRef sigma_m2Name;	// width 2 
+		ObservableRef sigma_m2Name;	// width 2
 		ObservableRef alpha_m2Name;	// width 1
-		ObservableRef eta_m2Name;	// width 1	
+		ObservableRef eta_m2Name;	// width 1
 		ObservableRef m_BsName;	// Bs mass
 
 		// Observables
 		ObservableRef recoMassName;	// reconstructed Bs mass
 		ObservableRef constraint_recoMassName;
-	
+
 };
 
 #endif

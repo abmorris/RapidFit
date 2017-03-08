@@ -63,9 +63,9 @@ void paramOn(RooArgSet * params, RooPlot * frame1, char* label, int numEntries, 
 	RooRealVar * var = 0;
 	TIterator* pIter = params->createIterator() ;
 	while((var=(RooRealVar*)pIter->Next())) {
-		if(!var->isConstant()) ymin-= dy; 
+		if(!var->isConstant()) ymin-= dy;
 	}
-	if(string(label) != "") ymin-= dy; 
+	if(string(label) != "") ymin-= dy;
 	TPaveText * box = new TPaveText(xmin, ymax, xmax, ymin,"BRNDC");
 	box->SetFillColor(0);
 	box->SetBorderSize(0);
@@ -74,25 +74,25 @@ void paramOn(RooArgSet * params, RooPlot * frame1, char* label, int numEntries, 
 	TText * text = 0;
 	if(string(label) != "") text = box->AddText(label);
 	char formatter [50];
-	int sigfigs = 3;                
-	RooLinkedList cmdList;    
-	const RooCmdArg* formatCmd = static_cast<RooCmdArg*>(cmdList.FindObject("FormatArgs"));    
-	pIter->Reset();    
-	while((var=(RooRealVar*)pIter->Next())) {    
-		if ( string(var->GetName()) == "#mu" ) sigfigs = 5;    
-		TString *formatted = "NELU" ? var->format(sigfigs, "NELU") : var->format(*formatCmd) ;    
-		text = box->AddText(formatted->Data());    
-		delete formatted;    
-	}                      
+	int sigfigs = 3;
+	RooLinkedList cmdList;
+	const RooCmdArg* formatCmd = static_cast<RooCmdArg*>(cmdList.FindObject("FormatArgs"));
+	pIter->Reset();
+	while((var=(RooRealVar*)pIter->Next())) {
+		if ( string(var->GetName()) == "#mu" ) sigfigs = 5;
+		TString *formatted = "NELU" ? var->format(sigfigs, "NELU") : var->format(*formatCmd) ;
+		text = box->AddText(formatted->Data());
+		delete formatted;
+	}
 	sprintf(formatter, "Entries = %d", numEntries);
 	if(numEntries > 0) text = box->AddText(formatter);
-	if(chidof > 0.0){ 
-		sprintf(formatter, "#chi^{2}/NDOF =  %4.3f", chidof);    
-		text = box->AddText(formatter);                                                                                                    }    
-		frame1->addObject(box);                                                                            
+	if(chidof > 0.0){
+		sprintf(formatter, "#chi^{2}/NDOF =  %4.3f", chidof);
+		text = box->AddText(formatter);                                                                                                    }
+		frame1->addObject(box);
 }
 
-// Perform a fixed and profile likelihood in 1D for a given observable: 
+// Perform a fixed and profile likelihood in 1D for a given observable:
 RooPlot *LikelihoodScan(RooAbsReal * nll, RooRealVar *arg){
 	TString legend = arg->getTitle() + " Likelihood Scan";
 	RooUniformBinning binning = (RooUniformBinning&)arg->getBinning();
@@ -108,7 +108,7 @@ RooPlot *LikelihoodScan(RooAbsReal * nll, RooRealVar *arg){
 	return scanplot;
 }
 
-// Make a nice plot 
+// Make a nice plot
 RooPlot *MakePlot(RooAbsPdf * model, RooAbsData * data, RooAbsPdf * sig, RooAbsPdf *bkg, RooRealVar *arg, RooArgSet *params, TString name){
 	RooPlot *varplot = arg->frame();
 	varplot->SetTitle("");
@@ -226,7 +226,7 @@ int main(int argc, char *argv[]){
 	gSystem->mkdir( outputdir );
 	TFile * outputFile = new TFile(outputdir+"/result.root","RECREATE");
 
-	// Yields	
+	// Yields
 	RooRealVar *Nsig_jpsi = new RooRealVar("Nsig_jpsi","Nsig_jpsi",10.0,0.0,entries);
 	RooRealVar *Nbkg_jpsi = new RooRealVar("Nbkg_jpsi","Nbkg_jpsi",10.0,0.0,entries);
 	RooRealVar *Nsig_bs = new RooRealVar("Nsig_bs","Nsig_ns",10.0,0.0,entries);
@@ -352,14 +352,14 @@ int main(int argc, char *argv[]){
 		bsscanvas->Print(outputdir+"/"+bsscanpar->getTitle()+"_scan.pdf");
 		bsscanvas->Close();
 	}
-	
+
 	//Fix the non-yield components of the fit
 	MakeFixed(bs_vars,true);
 
 
 	//Jpsi FIT PDFs
 	RooFormulaVar *jpsi_sig_a1 = new RooFormulaVar("jpsi_sig_a1", "jpsi_sig_a1",  "jpsi_sig_aa + jpsi_sig_ab*jpsi_sig_sigma1 + jpsi_sig_ac*jpsi_sig_sigma1*jpsi_sig_sigma1",  RooArgSet(*jpsi_sig_aa, *jpsi_sig_ab, *jpsi_sig_ac,*jpsi_sig_sigma1));
-	//RooFormulaVar *jpsi_sig_a2 = new RooFormulaVar("jpsi_sig_a2", "jpsi_sig_a2",  "jpsi_sig_aa + jpsi_sig_ab*jpsi_sig_sigma2 + jpsi_sig_ac*jpsi_sig_sigma2*jpsi_sig_sigma2",  RooArgSet(*jpsi_sig_aa, *jpsi_sig_ab, *jpsi_sig_ac, *jpsi_sig_sigma2)); 
+	//RooFormulaVar *jpsi_sig_a2 = new RooFormulaVar("jpsi_sig_a2", "jpsi_sig_a2",  "jpsi_sig_aa + jpsi_sig_ab*jpsi_sig_sigma2 + jpsi_sig_ac*jpsi_sig_sigma2*jpsi_sig_sigma2",  RooArgSet(*jpsi_sig_aa, *jpsi_sig_ab, *jpsi_sig_ac, *jpsi_sig_sigma2));
 	RooFormulaVar *jpsi_sig_mean1 = new RooFormulaVar("jpsi_sig_mean1","jpsi_sig_mean1","jpsi_sig_mean+jpsi_sig_sigma1*jpsi_sig_sa+jpsi_sig_sigma1*jpsi_sig_sigma1*jpsi_sig_sb",RooArgSet(*jpsi_sig_mean,*jpsi_sig_sigma1,*jpsi_sig_sa,*jpsi_sig_sb));
 	//RooFormulaVar *jpsi_sig_mean2 = new RooFormulaVar("jpsi_sig_mean2","jpsi_sig_mean2","jpsi_sig_mean+jpsi_sig_sigma2*jpsi_sig_sa+jpsi_sig_sigma2*jpsi_sig_sigma2*jpsi_sig_sb",RooArgSet(*jpsi_sig_mean,*jpsi_sig_sigma2,*jpsi_sig_sa,*jpsi_sig_sb));
 
@@ -393,7 +393,7 @@ int main(int argc, char *argv[]){
 	jpsimasscanv->Write();
 	jpsimasscanv->Print(outputdir+"/jpsimass.pdf");
 	jpsimasscanv->Close();
-	
+
 
 	//Perform likelihood scans of all floated params in the fit:
 	RooArgList jpsiscanparams = jpsiresult->floatParsFinal();

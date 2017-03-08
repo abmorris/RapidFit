@@ -57,7 +57,7 @@ Bs2Jpsifzero_Signal_v6::Bs2Jpsifzero_Signal_v6(PDFConfigurator* configurator) : 
 	, _usePunziSigmat(false)
 	//objects
 	,t(), tag(),
-	_gamma(), dgam(), Aperp_sq(), 
+	_gamma(), dgam(), Aperp_sq(),
 	 delta_ms(), phi_s(), _cosphis(), _sinphis(), _mistag(), _mistagP1(), _mistagP0(), _mistagSetPoint(),
 	tlo(), thi(), expL_stored(), expH_stored(), expSin_stored(), expCos_stored(),
 	intExpL_stored(), intExpH_stored(), intExpSin_stored(), intExpCos_stored(), timeAcc(NULL), normalisationCacheValid(false),
@@ -92,7 +92,7 @@ Bs2Jpsifzero_Signal_v6::Bs2Jpsifzero_Signal_v6(PDFConfigurator* configurator) : 
 		timeAcc = new SlicedAcceptance( 0., 14., isCopy ) ;
 		if(!isCopy){cout << "Bs2Jpsifzero_Signal_v6:: Constructing timeAcc: DEFAULT FLAT [0 < t < 14] " << endl ;}
 	}
-    
+
 	//resolutionModel = new ResolutionModel( configurator ) ;
 	//if( resolutionModel->isPerEvent()  ) this->TurnCachingOff();
 
@@ -195,7 +195,7 @@ bool Bs2Jpsifzero_Signal_v6::SetPhysicsParameters( ParameterSet* NewParameterSet
 	resolutionModel->setParameters( allParameters ) ;
 
 	// Physics parameters.
-	_gamma  = allParameters.GetPhysicsParameter( gammaName )->GetValue(); 
+	_gamma  = allParameters.GetPhysicsParameter( gammaName )->GetValue();
 	dgam      = allParameters.GetPhysicsParameter( deltaGammaName )->GetValue();
 	Aperp_sq = 1.0;
 	delta_ms = allParameters.GetPhysicsParameter( deltaMName )->GetValue();
@@ -419,7 +419,7 @@ double Bs2Jpsifzero_Signal_v6::diffXsecNorm1()
 		this->DebugPrintNorm( " Bs2Jpsifzero_Signal_v6_v1::diffXsecNorm1( )  ", norm ) ;
 
 	     cout << "XXXXXXX  AT()= " <<  AT()  << "      /    timeint=   " << timeFactorATATInt(  ) << endl ;
-	
+
 	}
 	return norm ;
 }
@@ -518,7 +518,7 @@ void Bs2Jpsifzero_Signal_v6::DebugPrintNorm( string message, double value )  con
 	cout << message << value << endl <<endl ;
 
 	cout << endl ;
-	cout <<  AT()*AT() * timeFactorATATInt(  )<< endl; 
+	cout <<  AT()*AT() * timeFactorATATInt(  )<< endl;
 
 	PDF_THREAD_UNLOCK
 }

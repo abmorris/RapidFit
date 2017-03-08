@@ -72,7 +72,7 @@ int main( int argc, char* argv[] )
 	{
 		gammaTree = ROOT_File_Processing::GetFirstTree( argv[3] );
 		gamma_value = TTree_Processing::Buffer_Branch( gammaTree, "gamma_value" );
-		deltaGamma_value = TTree_Processing::Buffer_Branch( gammaTree, "deltaGamma_value" ); 
+		deltaGamma_value = TTree_Processing::Buffer_Branch( gammaTree, "deltaGamma_value" );
 		FitStatus_value = TTree_Processing::Buffer_Branch( gammaTree, "Fit_Status" );
 	}
 
@@ -113,7 +113,7 @@ int main( int argc, char* argv[] )
 					 + ((*gammaH_tau_error)[i]*(*gammaH_tau_error)[i])/((*gammaH_tau_value)[i]*(*gammaH_tau_value)[i]) );
 	}
 
-	
+
 	cout << "a:" << endl;
 	GL_sum_err = sqrt( GL_sum_err ); cout << GL_sum << " / " << GL_sum_err << endl;
 	GH_sum_err = sqrt( GH_sum_err ); cout << GH_sum << " / " << GH_sum_err << endl;
@@ -137,7 +137,7 @@ int main( int argc, char* argv[] )
 
 	double corr_err_numer = sqrt( GLGH_prod_err_sum*GLGH_prod_err_sum + GL_sum*GH_sum*sqrt((GL_sum_err*GL_sum_err)/(GL_sum_sq*GL_sum_sq) + (GH_sum_err*GH_sum_err)/(GH_sum_sq*GH_sum_sq) ));
 
-	double corr_err_denom = sqrt( ( N*GL_sum_err_sq*GL_sum_err_sq + ( (GL_sum_err*GL_sum_err) *2. ) ) 
+	double corr_err_denom = sqrt( ( N*GL_sum_err_sq*GL_sum_err_sq + ( (GL_sum_err*GL_sum_err) *2. ) )
 				    + ( N*GH_sum_err_sq*GH_sum_err_sq + ( (GH_sum_err*GH_sum_err) *2. ) ) );
 
 	cout << corr_err_numer << " // " << corr_err_denom << endl;
@@ -145,7 +145,7 @@ int main( int argc, char* argv[] )
 	cout << N*GLGH_prod_sum - GL_sum*GH_sum << " // " << sqrt( (N*GL_sum_sq - GL_sum*GL_sum) * (N*GH_sum_sq - GH_sum*GH_sum) ) << endl;
 
 	double corr_err = fabs(corr)* sqrt( corr_err_numer*corr_err_numer/((N*GLGH_prod_sum - GL_sum*GH_sum)*(N*GLGH_prod_sum - GL_sum*GH_sum)) + corr_err_denom*corr_err_denom/((N*GL_sum_sq - GL_sum*GL_sum) * (N*GH_sum_sq - GH_sum*GH_sum)) );
-	
+
 	GL_avr = GL_sum / (double)(gammaL_tau_value->size());
 	GH_avr = GH_sum / (double)(gammaH_tau_value->size());
 
@@ -680,7 +680,7 @@ int main( int argc, char* argv[] )
 	thisHisto->Rebin2D();
 	thisHisto->Rebin2D();
 	thisHisto->Draw("lego2");
-	
+
 	corr_function->SetLineWidth( 3 );
 	//corr_function->SetContour( 10 );
 	corr_function->DrawCopy("CONT3 SAME LIST");

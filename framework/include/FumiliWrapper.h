@@ -8,17 +8,17 @@
  * this to work. With Fumili you need to calculate the
  * derivatives (there is a Gradient() method that needs to be
  * defined in FumiliFCNBase()) which is in general difficult.
- * Here is an example of how this minimisation technique can 
+ * Here is an example of how this minimisation technique can
  * be used:
  *
  *http://seal.web.cern.ch/seal/snapshot/work-packages/mathlibs/minuit/
  *
  * This is using it without ROOT, just as we are using Minuit2.
- * There are some advanced ways to use fitters in ROOT (see 
+ * There are some advanced ways to use fitters in ROOT (see
  * TVirtualFitter and related classes).
- * 
+ *
  * http://seal.web.cern.ch/seal/MathLibs/Minuit2/html/annotated.html
- * 
+ *
  * @author Greig A Cowan greig.cowan@cern.ch
 */
 

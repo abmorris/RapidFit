@@ -601,15 +601,15 @@ TString EdStyle::GetParamRootName( string Param_Name_orig )
 	} else if ( Param_Name == "trphi" ) {
 
 		returnable_string = "#phi_{tr}";
-		
+
   } else if ( Param_Name == "phi" ) {
-  
+
     returnable_string = "#Phi";
-  
+
   } else if ( Param_Name == "Phi" ) {
-  
+
     returnable_string = "#Phi";
-    
+
 	} else {
 
 		returnable_string = Param_Name;

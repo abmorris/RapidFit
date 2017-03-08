@@ -32,7 +32,7 @@ class ClassLookUp
 	public:
 		/*!
 		 * @brief Function to return a named PDF by looking for it's matching symbol in the compiled object
-		 * 
+		 *
 		 * @param Name   Name of the PDF as defined in the source
 		 *
 		 * @param config instance of a PDFConfigurator which always has to be accepted by the PDF
@@ -43,7 +43,7 @@ class ClassLookUp
 
 		/*!
 		 * @brief Copy the input PDF using the correct copy constructor object
-		 * 
+		 *
 		 * Copy Constructor cached in IPDF once found
 		 *
 		 * @param InputPDF  The PDF will be given a pointer to it's copy constructor once found, and that will be used from then on
@@ -54,7 +54,7 @@ class ClassLookUp
 
 		/*!
 		 * @brief Function to return a named ResolutionModel by looking for it's matching symbol in the compiled object
-		 * 
+		 *
 		 * @param Name   Name of the Resolution Model as defined in the source
 		 *
 		 * @param config instance of a PDFConfigurator which always has to be accepted by the PDF

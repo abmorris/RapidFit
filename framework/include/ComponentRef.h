@@ -1,10 +1,10 @@
 /*!
  * @class ComponentRef
- * 
+ *
  * @brief This class has been written to store complex lookups performed when requesting a single component from a PDF
- * 
+ *
  * The important functions for a PDF developer are: get/setComponentNumber() and getComponentName()
- * 
+ *
  * @author Robert Currie rcurrie@cern.ch
  */
 

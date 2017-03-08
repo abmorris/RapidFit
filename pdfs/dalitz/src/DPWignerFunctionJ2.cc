@@ -22,7 +22,7 @@ double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
               break;
       case -2: return dp20(cosTheta);
               break;
-    }    
+    }
   }
   else if ( m == 1 )
   {
@@ -38,7 +38,7 @@ double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
               break;
       case -2: return dp2m1(cosTheta);
               break;
-    }    
+    }
   }
   else if ( m == -1 )
   {
@@ -54,7 +54,7 @@ double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
               break;
       case -2: return dp2p1(cosTheta);
               break;
-    }    
+    }
   }
   else if ( m == 2 )
   {
@@ -70,7 +70,7 @@ double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
               break;
       case -2: return dp2m2(cosTheta);
               break;
-    }    
+    }
   }
   else if ( m == -2 )
   {
@@ -86,7 +86,7 @@ double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
               break;
       case -2: return dp2p2(cosTheta);
               break;
-    }    
+    }
   }
 
   std::cerr<<"What is going on? For spin 2, m and n has to be 0, 1, -1, 2 or -2\n";
@@ -98,7 +98,7 @@ double DPWignerFunctionJ2::d00(double cosTheta)
 {
   return (1.5*cosTheta*cosTheta-0.5);
 }
- 
+
 double DPWignerFunctionJ2::dp10(double cosTheta)
 {
   double sinTheta=TMath::Sqrt(1-cosTheta*cosTheta);
@@ -118,7 +118,7 @@ double DPWignerFunctionJ2::dp1m1(double cosTheta)
 double DPWignerFunctionJ2::dp2p2(double cosTheta)
 {
   double result = 0.5*(1+cosTheta);
-  
+
   return result*result;
 }
 

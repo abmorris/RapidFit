@@ -39,7 +39,7 @@ class Bs2Jpsifzero_SignalAlt_MP_dev : public BasePDF,  public Bs2Jpsifzero_Signa
 		virtual double Normalisation(DataPoint*, PhaseSpaceBoundary*)  ;
 
 	private:
-	
+
 		void MakePrototypes();
 };
 
