@@ -53,7 +53,7 @@ class AngularAcceptance
 		AngularAcceptance( const AngularAcceptance& );
 
 		// Methods for numerator of PDF to return acceptance factor
-		inline double af1() const { return _af1 ; } 
+		inline double af1() const { return _af1 ; }
 		inline double af2() const { return _af2 ; }
 		inline double af3() const { return _af3 ; }
 		inline double af4() const { return _af4 ; }
@@ -86,7 +86,7 @@ class AngularAcceptance
 
 		//	double stream(ifstream& stream) ;
 
-		double _af1, _af2, _af3, _af4, _af5, _af6, _af7, _af8, _af9, _af10 ; 
+		double _af1, _af2, _af3, _af4, _af5, _af6, _af7, _af8, _af9, _af10 ;
 		bool useFlatAngularAcceptance ;
 
 		TH3D *histo;

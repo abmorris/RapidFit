@@ -16,7 +16,7 @@
 PDF_CREATOR( Bs2DsPi_acc );
 
 //Constructor
-Bs2DsPi_acc::Bs2DsPi_acc( PDFConfigurator* configurator ) : 
+Bs2DsPi_acc::Bs2DsPi_acc( PDFConfigurator* configurator ) :
 
 	// Physics parameters
 	gammaName     ( configurator->getName("gamma") )
@@ -35,7 +35,7 @@ Bs2DsPi_acc::Bs2DsPi_acc( PDFConfigurator* configurator ) :
 	, tagName       ( configurator->getName("tag") )
 
 	, timeconstraintName( configurator->getName("time") )
-	//objects    
+	//objects
 ,gamma(), deltaGamma(), deltaM(), mistag(), timeRes(), AcceptanceOffset(), AcceptanceSlopeLow(), AcceptanceSlopeHigh(), AcceptancePower(), time(), tag(), tlow(), thigh()
 {
 	MakePrototypes();
@@ -98,7 +98,7 @@ double Bs2DsPi_acc::Evaluate(DataPoint * measurement)
 double Bs2DsPi_acc::Normalisation(DataPoint * measurement, PhaseSpaceBoundary * boundary)
 {
 	// Get physics parameters and observables
-	getPhysicsParameters( );	
+	getPhysicsParameters( );
 	getObservables( measurement ) ;
 	// Get time integration boundaries
 	IConstraint * timeBound = boundary->GetConstraint( timeconstraintName );
@@ -164,7 +164,7 @@ void Bs2DsPi_acc::getObservables( DataPoint* measurement)
 //...................................................................
 // Adds acceptance function
 
-double Bs2DsPi_acc::acc() const 
+double Bs2DsPi_acc::acc() const
 {
 	//if(time < 0) return 0.0;
 	if(time < AcceptanceOffset) return 0.0;
@@ -183,33 +183,33 @@ double Bs2DsPi_acc::acc() const
 // Interface to time primitives including single gaussian timeRes
 //
 
-double Bs2DsPi_acc::expL() const 
+double Bs2DsPi_acc::expL() const
 {
 	return Mathematics::Exp( time, gamma_l(), timeRes ) ;
 }
 
-double Bs2DsPi_acc::expLint( ) const 
+double Bs2DsPi_acc::expLint( ) const
 {
 	return Mathematics::ExpInt( tlow, thigh, gamma_l(), timeRes ) ;
 }
 
-double Bs2DsPi_acc::expH() const 
+double Bs2DsPi_acc::expH() const
 {
 	return Mathematics::Exp( time, gamma_h(), timeRes ) ;
 }
 
-double Bs2DsPi_acc::expHint( ) const 
+double Bs2DsPi_acc::expHint( ) const
 {
 	return Mathematics::ExpInt( tlow, thigh, gamma_h(), timeRes ) ;
 }
 
 
-double Bs2DsPi_acc::expCos() const 
+double Bs2DsPi_acc::expCos() const
 {
 	return Mathematics::ExpCos( time, gambar(), deltaM, timeRes ) ;
 }
 
-double Bs2DsPi_acc::expCosInt() const 
+double Bs2DsPi_acc::expCosInt() const
 {
 	return Mathematics::ExpCosInt( tlow, thigh, gambar(), deltaM, timeRes ) ;
 }

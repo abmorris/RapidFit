@@ -1,8 +1,8 @@
 /* stackergen: Part of the simpletools package
  * (c) Conor Fitzpatrick, 2008
  *
- * If you find this program useful in whole or in part 
- * please cite this paper: 
+ * If you find this program useful in whole or in part
+ * please cite this paper:
  *
  * Feel free to send bugreports, feature requests, patches etc to:
  * conor.fitzpatrick@cern.ch
@@ -78,8 +78,8 @@ TPaveText* addLHCbLabel(TString footer){
 	TPaveText * label = new TPaveText(0.14, 0.88, 0.14, 0.73,"BRNDC");
 	//TPaveText * label = new TPaveText(0.12, 0.58, 0.12, 0.43,"BRNDC");
 	label->SetFillColor(0);
-	label->SetBorderSize(0);     
-	label->SetTextAlign(11);          
+	label->SetBorderSize(0);
+	label->SetTextAlign(11);
 	label->SetTextSize(Float_t(0.04));
 	TText * labeltext = 0;
 	labeltext = label->AddText("LHC#font[12]{b} 2011 Data");
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]){
 	TString minNLLString = "";
 	minNLLString += minNLL;
 	cout << "plot ranges are: " << param1string << ": " << p1minimum << " " << p1maximum << " " << param2string << ": " << p2minimum << " " << p2maximum << endl;
-	cout << "Minimum NLL is: " << minNLL << endl;	
+	cout << "Minimum NLL is: " << minNLL << endl;
 
 	TString bins = "(200,0,0,200,0,0)";
 
@@ -198,7 +198,7 @@ int main(int argc, char *argv[]){
 	TLegend *leg = new TLegend(0.80,0.89,0.95,0.7);
 	leg->SetHeader("Conf. Levels");
 	leg->SetBorderSize(0);
-        leg->SetFillStyle(0);	
+        leg->SetFillStyle(0);
 	for(int i = 0; i < TotalConts; i++){
 		TString confname = "";
 		double cl = confs[i];
@@ -236,7 +236,7 @@ int main(int argc, char *argv[]){
 	leg->SetFillStyle(0);
 	nllhist->Draw("AXIS");
 	for(int i = 0; i < TotalConts; i++){
-		TString confname = ""; 
+		TString confname = "";
 		double cl = confs[i];
 		confname +=cl;
 		confname += "\% C.L.";
@@ -264,4 +264,4 @@ int main(int argc, char *argv[]){
 	output->Close();
 
 
-} 
+}

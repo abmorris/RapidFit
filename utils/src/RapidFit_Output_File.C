@@ -23,7 +23,7 @@ double RapidFit_Output_File::GetCV_val( TTree* input_tree, TString param_name, b
 	input_tree->SetEstimate(input_tree->GetEntries() );
 	return returnable;
 }
-	
+
 
 pair<double,double> RapidFit_Output_File::GetCV_dat( TTree* input_tree, TString param_name )
 {
@@ -39,7 +39,7 @@ bool RapidFit_Output_File::HasToys( TTree* input_tree, vector<string> controlled
 {
 	TString Grid_Draw_String = Construct_Draw_String( controlled_parameter_name );
 
-	TString Grid_Cut_String = Construct_Cut_String( input_tree, controlled_parameter_name, false ); 
+	TString Grid_Cut_String = Construct_Cut_String( input_tree, controlled_parameter_name, false );
 
 	//	Get 10 unique points that correspond to data in this file, don't need to read the whole file as 10 toys is evidence of toys and quicker
 	vector<vector<double> > toyz = TTree_Processing::Plotter_Data( input_tree, Grid_Draw_String, Grid_Cut_String, rand, 10 );

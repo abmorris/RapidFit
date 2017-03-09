@@ -18,7 +18,7 @@ class DPGLassShape: public virtual DPMassShape
 		double gammaR;
 		int LR;
 		double m1;
-		double m2; 
+		double m2;
 		double a;
 		double r;
 		DPBarrierFactor barrier;

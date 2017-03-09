@@ -44,7 +44,7 @@ string StringProcessing::TimeString()
 	time_stream << month;
 	if( day < 10 ) time_stream << "0";
 	time_stream << day << "_";
-	if( hr < 10 ) time_stream << "0";	
+	if( hr < 10 ) time_stream << "0";
 	time_stream << hr;
 	if( min < 10 ) time_stream << "0";
 	time_stream << min;
@@ -543,7 +543,7 @@ bool StringProcessing::is_empty( const TString input )
 }
 
 string StringProcessing::LatexSafe( const string input )
-{               
+{
 	string temp(input);
 	size_t found=0;
 
@@ -566,7 +566,7 @@ string StringProcessing::LatexSafe( const string input )
 }
 
 string StringProcessing::LatexSafe( const TString input )
-{                   
+{
 	string temp(input.Data());
 	return LatexSafe(temp);
 }

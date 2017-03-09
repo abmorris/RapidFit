@@ -13,7 +13,7 @@
 PDF_CREATOR( Bs2DsPi );
 
 //Constructor
-Bs2DsPi::Bs2DsPi( PDFConfigurator* configurator ) : 
+Bs2DsPi::Bs2DsPi( PDFConfigurator* configurator ) :
 	// Physics parameters
 	  gammaName     ( configurator->getName("gamma") )
 	, deltaGammaName( configurator->getName("deltaGamma") )
@@ -69,11 +69,11 @@ bool Bs2DsPi::SetPhysicsParameters( ParameterSet * NewParameterSet )
 double Bs2DsPi::Evaluate(DataPoint * measurement)
 {
 	double expLT, expHT, t3;
-	getTimeDependentFuncs(  expLT, expHT, t3, measurement );	
+	getTimeDependentFuncs(  expLT, expHT, t3, measurement );
 
 	// Now need to know the tag and the mistag
 	int q = (int)measurement->GetObservable( tagName )->GetValue();
-	double omega = measurement->GetObservable( mistagName )->GetValue();	
+	double omega = measurement->GetObservable( mistagName )->GetValue();
 	double D  = 1.0 - 2.0 * omega;
 
 
@@ -84,11 +84,11 @@ double Bs2DsPi::Evaluate(DataPoint * measurement)
 double Bs2DsPi::Normalisation(DataPoint * measurement, PhaseSpaceBoundary * boundary)
 {
 	double expLTInt, expHTInt, t3Int;
-	getTimeDependentFuncsInt(  expLTInt, expHTInt, t3Int, boundary );	
+	getTimeDependentFuncsInt(  expLTInt, expHTInt, t3Int, boundary );
 
 	// Now need to know the tag and the mistag
 	int q = (int)measurement->GetObservable( tagName )->GetValue();
-	double omega = measurement->GetObservable( mistagName )->GetValue();	
+	double omega = measurement->GetObservable( mistagName )->GetValue();
 	double D  = 1.0 - 2.0 * omega;
 
 
@@ -120,7 +120,7 @@ void Bs2DsPi::getTimeDependentFuncs(  double & expLT, double & expHT, double & t
 		t3 =0.0;
 	}
 	else {
-		expLT = exp( -gamma_l*time );	
+		expLT = exp( -gamma_l*time );
 		expHT = exp( -gamma_h*time );
 
 		double expGT = exp( -gamma*time );
@@ -155,9 +155,9 @@ void Bs2DsPi::getTimeDependentFuncsInt(  double & expLTInt, double & expHTInt, d
 	double gamma_l = gamma + deltaGamma / 2.;
 	double gamma_h = gamma - deltaGamma / 2.;
 
-	expLTInt = -1./gamma_l * ( exp(-gamma_l*tmax) - exp(-gamma_l*tmin));	
-	expHTInt = -1./gamma_h * ( exp(-gamma_h*tmax) - exp(-gamma_h*tmin));	
-	
+	expLTInt = -1./gamma_l * ( exp(-gamma_l*tmax) - exp(-gamma_l*tmin));
+	expHTInt = -1./gamma_h * ( exp(-gamma_h*tmax) - exp(-gamma_h*tmin));
+
 	double denominator = deltaMs*deltaMs + gamma*gamma;
 	double tmaxTerm = exp(-gamma*tmax) * (deltaMs * sin(deltaMs*tmax) - gamma * cos(deltaMs*tmax));
 	double tminTerm = exp(-gamma*tmin) * (deltaMs * sin(deltaMs*tmin) - gamma * cos(deltaMs*tmin));

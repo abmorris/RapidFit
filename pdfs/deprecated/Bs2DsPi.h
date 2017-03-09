@@ -37,7 +37,7 @@ class Bs2DsPi : public BasePDF
 
 		// These contain the strings that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		ObservableRef timeName;		// proper time
 		ObservableRef tagName;		// B tag
 		ObservableRef mistagName;		// B mistag
@@ -45,7 +45,7 @@ class Bs2DsPi : public BasePDF
 		ObservableRef timeconstraintName;
 
 		void getPhysicsParameters( double&, double&, double&);
-		
+
 		void getTimeDependentFuncs( double&, double&, double&, DataPoint*);
 		void getTimeDependentFuncsInt(double&, double&, double&, PhaseSpaceBoundary*);
 

@@ -73,7 +73,7 @@ DALITZOBJS := $(patsubst $(SRCDALITZDIR)/%.$(SRCDALITZEXT),$(OBJDALITZDIR)/%.o,$
 #################
 ##Dependencies
 
-LINKFLAGS = -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -lpthread 
+LINKFLAGS = -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -lpthread
 
 LIBS=-lstdc++
 

@@ -34,7 +34,7 @@ class Bs2JpsiPhiMassSignal : public BasePDF
 		// Physics parameters
 		ObservableRef f_sig_m1Name;	// fraction
 		ObservableRef sigma_m1Name;	// width 1
-		ObservableRef sigma_m2Name;	// width 2 
+		ObservableRef sigma_m2Name;	// width 2
 		ObservableRef m_BsName;	// Bs mass
 
 		// Observables

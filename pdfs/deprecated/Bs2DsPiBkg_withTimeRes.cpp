@@ -16,7 +16,7 @@
 PDF_CREATOR( Bs2DsPiBkg_withTimeRes );
 
 //Constructor
-Bs2DsPiBkg_withTimeRes::Bs2DsPiBkg_withTimeRes(PDFConfigurator* configurator) : 
+Bs2DsPiBkg_withTimeRes::Bs2DsPiBkg_withTimeRes(PDFConfigurator* configurator) :
 	// Physics parameters
 	  lifetimeBdName	( configurator->getName("lifetimeBd") )
 	, timeResName	( configurator->getName("timeRes_DsPi_background") )
@@ -56,9 +56,9 @@ double Bs2DsPiBkg_withTimeRes::Evaluate(DataPoint * measurement)
 	// Parameters
   	double timeRes = allParameters.GetPhysicsParameter( timeResName )->GetValue();
   	double lifetimeBd = allParameters.GetPhysicsParameter( lifetimeBdName )->GetValue();
-  
+
 	double gammaBd = 1. / lifetimeBd ;
-	
+
 	double val           = Mathematics::Exp( time, gammaBd, timeRes ) ;
 
 	return val;
@@ -66,7 +66,7 @@ double Bs2DsPiBkg_withTimeRes::Evaluate(DataPoint * measurement)
 
 
 //.................................
-// Calculate the PDF normalisation 
+// Calculate the PDF normalisation
 double Bs2DsPiBkg_withTimeRes::Normalisation(PhaseSpaceBoundary * boundary)
 
 {
@@ -83,16 +83,16 @@ double Bs2DsPiBkg_withTimeRes::Normalisation(PhaseSpaceBoundary * boundary)
 			tmin = timeBound->GetMinimum();
 			tmax = timeBound->GetMaximum();
 	}
-	
+
 	// Parameters
   	double timeRes = allParameters.GetPhysicsParameter( timeResName )->GetValue();
   	double lifetimeBd = allParameters.GetPhysicsParameter( lifetimeBdName )->GetValue();
-	
+
 	double gammaBd = 1. / lifetimeBd ;
-	
+
 	double val           = Mathematics::ExpInt( tmin, tmax, gammaBd, timeRes ) ;
-	
- 
+
+
 	return val;
 }
 

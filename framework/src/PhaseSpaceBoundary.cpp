@@ -121,7 +121,7 @@ vector<string> PhaseSpaceBoundary::GetDiscreteNames() const
 	return disc_names;
 }
 
-vector<string> PhaseSpaceBoundary::GetContinuousNames() const             
+vector<string> PhaseSpaceBoundary::GetContinuousNames() const
 {
 	vector<string> cont_names;
 
@@ -459,7 +459,7 @@ vector<DataPoint*> PhaseSpaceBoundary::GetDiscreteCombinations() const
 
 	StoredCombinations = newDataPoints;
 
-	storedCombinationID = uniqueID; 
+	storedCombinationID = uniqueID;
 
 	return newDataPoints;
 }

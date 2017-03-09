@@ -31,10 +31,10 @@ class FumiliFunction : public ParametricFunction
 		MnUserParameters * GetMnUserParameters();
 
 		//Interface functions
-		// Need to have this operator here, even if I don't implement it in the src.	
+		// Need to have this operator here, even if I don't implement it in the src.
 		virtual double operator()( const vector<double>& ) const;
 		//virtual double operator()( const vector<double>&, const vector<double>& ) const;
-		virtual double Up() const;		
+		virtual double Up() const;
 
 	protected:
 		//	Uncopyable!

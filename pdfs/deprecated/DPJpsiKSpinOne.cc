@@ -10,8 +10,8 @@
 
 #include <iostream>
 
-DPJpsiKSpinOne::DPJpsiKSpinOne(int fLB, int fLR, double fmB, double mR, 
-                               double gammaR, double m1, double m2, 
+DPJpsiKSpinOne::DPJpsiKSpinOne(int fLB, int fLR, double fmB, double mR,
+                               double gammaR, double m1, double m2,
                                double RB, double RR, double fmJpsi):
 A0(1,0),
 Aplus(1,0),
@@ -57,7 +57,7 @@ Aminus(1,0)
 
 DPJpsiKSpinOne::~DPJpsiKSpinOne()
 {
-  if ( massShape ) 
+  if ( massShape )
   {
     delete massShape;
   }
@@ -71,7 +71,7 @@ DPJpsiKSpinOne::~DPJpsiKSpinOne()
   }
 }
 
-TComplex DPJpsiKSpinOne::amplitude(double m23, double cosTheta1, 
+TComplex DPJpsiKSpinOne::amplitude(double m23, double cosTheta1,
                                    double cosTheta2, double phi, int twoLambda,
                                    int twoLambdaPsi)
 {
@@ -81,7 +81,7 @@ TComplex DPJpsiKSpinOne::amplitude(double m23, double cosTheta1,
   {
     return result;
   }
-  
+
   double pB = DPHelpers::daughterMomentum(this->mB, this->mJpsi, m23);
   double pR = DPHelpers::daughterMomentum(m23, this->m1, this->m2);
 
@@ -122,6 +122,6 @@ void DPJpsiKSpinOne::setHelicityAmplitudes(double magA0, double magAplus,
 void DPJpsiKSpinOne::setResonanceParameters(double mass, double sigma)
 {
  	//std::cout << "SpinOne setting" << std::endl;
- 	this->massShape->setResonanceParameters( mass, sigma );	
+ 	this->massShape->setResonanceParameters( mass, sigma );
  	//std::cout << "SpinOne set" << std::endl;
 }

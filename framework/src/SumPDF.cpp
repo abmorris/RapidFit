@@ -34,8 +34,8 @@ SumPDF::SumPDF( const SumPDF& input ) : BasePDF( (BasePDF) input ), prototypeDat
 SumPDF::SumPDF( PDFConfigurator* config ) : BasePDF(), prototypeDataPoint(), prototypeParameterSet(), doNotIntegrateList(), firstPDF(NULL), secondPDF(NULL), firstFraction(0.5),
 	firstIntegralCorrection(), secondIntegralCorrection(), fractionName(), integrationBoundary(NULL), _plotComponents( true )
 {
-	if( config->GetFractionNames().size() != 1 )                                                                                                                                                                                         
-	{         
+	if( config->GetFractionNames().size() != 1 )
+	{
 		cerr << "SumPDF requires ONLY 1 Fraction" << endl;
 		exit(-564891);
 	}
@@ -256,7 +256,7 @@ double SumPDF::Normalisation( DataPoint* NewDataPoint, PhaseSpaceBoundary * NewB
 //Return the function value at the given point
 double SumPDF::Evaluate( DataPoint * NewDataPoint )
 {
-	if( firstFraction > 1.0 || firstFraction < 0.0 )                  
+	if( firstFraction > 1.0 || firstFraction < 0.0 )
 	{
 		cerr << "Requested impossible fraction: " << firstFraction << endl;
 		return DBL_MAX;

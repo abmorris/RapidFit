@@ -28,7 +28,7 @@ class Histogram_Processing : public TObject
 {
 	public:
 
-		/*! 
+		/*!
 		 * @brief This has been adapted from the original code in RapidFit's Statistics code
 		 *        It is intended to take a histogram and automatically rebin according to this function
 		 *        As such it uses as much inbuilt functionality in root as possible
@@ -97,8 +97,8 @@ class Histogram_Processing : public TObject
 		 *
 		 * @warning If your input has an outer dimention > 2 only the first 2 are used. There is no warning about this!
 		 *
-		 * @param rand       This is an optional pointer to a Random number generator to make sure the output TH1 has a unique name                   
-		 *                   Slightly horrible solution to the HORRIBLE ROOT NAMESPACE                                                                
+		 * @param rand       This is an optional pointer to a Random number generator to make sure the output TH1 has a unique name
+		 *                   Slightly horrible solution to the HORRIBLE ROOT NAMESPACE
 		 *                   You can safely pass NULL to this in doubt
 		 *
 		 * @param bins1      This is the number of bins in X you wish to use
@@ -112,7 +112,7 @@ class Histogram_Processing : public TObject
 		/*!
 		 * @brief Get a TH3 from a vector of vectors
 		 *
-		 * @param input 
+		 * @param input
 		 *
 		 *
 		 * @param rand
@@ -153,7 +153,7 @@ class Histogram_Processing : public TObject
 		static TH1* Get_Histo( TTree* input_tree, TString draw_str, TString weight_str, TRandom* rand=NULL );
 
 		/*!
-		 * @brief 
+		 * @brief
 		 *
 		 * @return Returns a pointer to the new TGraph object which has just been created
 		 */

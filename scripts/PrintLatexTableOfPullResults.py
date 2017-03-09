@@ -8,7 +8,7 @@ __date__ = '7/10/2009'
 __version__ = '$Id: PrintLatexTableOfPullResults.py,v 1.2 2009/10/07 11:49:17 gcowan Exp $'
 
 '''
-Used to summarise the outputs from multiple RapidFit toy studies that have been 
+Used to summarise the outputs from multiple RapidFit toy studies that have been
 run on a batch system. Will produce the final pull plots with fitted Gaussian curves
 and a LaTeX table containing a summary of the parameter sensitivities and pull widths
 and means. This can be pasted into your paper!
@@ -35,8 +35,8 @@ def main():
     for e in dom.getElementsByTagName('PhysicsParameter'):
 	if e.getElementsByTagName('Type')[0].childNodes[0].data != 'Fixed':
 		physicsParameters.append(e.getElementsByTagName('Name')[0].childNodes[0].data)
-		
-	
+
+
 	trees = []
     histos = []
     resultsList = []
@@ -83,18 +83,18 @@ def main():
 	gfit_error = ROOT.TF1("GaussianE","gaus",0.,100.)
 	histo_error.Fit( gfit_error)
 	histo_pull.Fit( gfit_pull )
-	
+
 	chisq = gfit_pull.GetChisquare()
 	ndf = gfit_pull.GetNDF()
 	#chisqdf = chisq/ndf
 
 	pull_constant = gfit_pull.GetParameter(0)
-	pull_econstant = gfit_pull.GetParError(0) 
+	pull_econstant = gfit_pull.GetParError(0)
 	pull_mean = gfit_pull.GetParameter(1)
-	pull_emean = gfit_pull.GetParError(1) 
+	pull_emean = gfit_pull.GetParError(1)
 	pull_sigma = gfit_pull.GetParameter(2)
 	pull_esigma = gfit_pull.GetParError(2)
-		
+
 	error_mean = gfit_error.GetParameter(1)
 	error_emean = gfit_error.GetParError(1)
 
@@ -108,7 +108,7 @@ def main():
     outputFile.Close()
 
     print '\\begin{center}'
-    print '\\begin{tabular}{|c|c|c|c|}' 
+    print '\\begin{tabular}{|c|c|c|c|}'
     print '\hline'
     print 'Physics Parameter & Sensitivity (check I have used correct definition) & Pull mean & Pull sigma \\\\'
     for result in resultsList:

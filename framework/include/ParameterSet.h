@@ -219,7 +219,7 @@ class ParameterSet
 		string XML() const;
 
 		/*!
-		 * @brief 
+		 * @brief
 		 *
 		 * @return
 		 */

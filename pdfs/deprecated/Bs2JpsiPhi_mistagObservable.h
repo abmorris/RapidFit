@@ -53,7 +53,7 @@ class Bs2JpsiPhi_mistagObservable : public BasePDF
 
 		// These contain the strings that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		string timeName;		// proper time
 		string cosThetaName;	// cos of angle of mu+ wrt z-axis in Jpsi frame
 		string phiName;		// azimuthal angle of the mu+ in Jpsi frame
@@ -61,18 +61,18 @@ class Bs2JpsiPhi_mistagObservable : public BasePDF
 					// in phi rest frame
 		string tagName;		// B tag
 		string mistagName;		// B mistag
-	
+
 		void getPhysicsParameters( double&, double&, double&, double&, double&, double&, double&, double&, double&, double&);
 		void getAngularFunctions( double&, double&, double&, double&, double&, double&, DataPoint*);
-		
+
 		void getTimeDependentAmplitudes( double&, double&, double&, double&, double&, double&, DataPoint*, int);
 		void getTimeAmplitudeIntegrals(double&, double&, double&, PhaseSpaceBoundary*, int);
 
 		inline double getAzeroAzeroInt(double, double, double, double, double, double, double, double, int);
 		inline double getAparaAparaInt(double, double, double, double, double, double, double, double, int);
 		inline double getAperpAperpInt(double, double, double, double, double, double, double, double, int);
-	
-        	// Work out what interference terms these correspond to.        
+
+        	// Work out what interference terms these correspond to.
 		inline double A4def(const double, const double, double, double, double, double, double, double, double, double, int);
 		inline double A5def(const double, const double, double, double, double, double, double, double, double, double, int);
 };

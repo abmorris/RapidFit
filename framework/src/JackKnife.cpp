@@ -1,7 +1,7 @@
 /**
-  @namespace JackKnife 
+  @namespace JackKnife
 
-  Namespace allowing jackknifing procedure to be carried out 
+  Namespace allowing jackknifing procedure to be carried out
 
   @author Greig A Cowan greig.cowan@cern.ch
   @date 2012-05-25
@@ -40,7 +40,7 @@
 
 namespace JackKnife
 {
-	void jackknife( I_XMLConfigReader * xmlFile, MinimiserConfiguration * theMinimiser, 
+	void jackknife( I_XMLConfigReader * xmlFile, MinimiserConfiguration * theMinimiser,
 		FitFunctionConfiguration * theFunction, ParameterSet* argumentParameterSet, vector<string> CommandLineParam, int start, int stop )
 	{
 		cout << "Starting JackKnife" << endl;
@@ -48,26 +48,26 @@ namespace JackKnife
 		ParameterSet * parSet      = xmlFile->GetFitParameters( CommandLineParam );
 		PhaseSpaceBoundary * phase = xmlFile->GetPhaseSpaceBoundaries()[0];
 		pdfAndData->SetPhysicsParameters( parSet );
-			
+
 		MemoryDataSet * dataset = (MemoryDataSet*) pdfAndData->GetDataSet();
 		vector<IDataSet*> data;
 		data.push_back(dataset);
-	
+
 		IPDF * pdf = pdfAndData->GetPDF();
 		vector<IPDF*> vectorPDFs;
 		vectorPDFs.push_back(pdf);
-	
-		// Repeat nominal fit to get the nominal value of the physics parameter	
+
+		// Repeat nominal fit to get the nominal value of the physics parameter
 		FitResult * nominal = FitAssembler::DoFit( theMinimiser, theFunction, argumentParameterSet, vectorPDFs, data, xmlFile->GetConstraints() );
 		double nominal_value = nominal->GetResultParameterSet()->GetResultParameter("tau")->GetValue();
 		cout << nominal_value << endl;
 		double jackknifed_value = 0.;
 
 		MemoryDataSet * subset = new MemoryDataSet( phase );
-		int nData = dataset->Yield();	
+		int nData = dataset->Yield();
                 string fileName = ResultFormatter::GetOutputFolder();
-                fileName.append("/jackknife.root");         
-		TFile * outputFile = TFile::Open("jackknife.root", "RECREATE");	
+                fileName.append("/jackknife.root");
+		TFile * outputFile = TFile::Open("jackknife.root", "RECREATE");
                 TNtuple * jack = new TNtuple("jack", "jackknifed - nominal", "diff_jackknifed_nominal:reco_time:true_time");
 
 		double reco_time = 0.;

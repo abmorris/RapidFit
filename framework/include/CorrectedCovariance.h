@@ -60,7 +60,7 @@ class CorrectedCovariance
 		 * This method uses the same technique employed by RooFit:
 		 * http://root.cern.ch/root/html/src/RooAbsPdf.cxx.html#fhMiHE  (11/05/2012)
 		 *
-		 * 
+		 *
 		 *
 		 * @return Returns a RapidFitMatrix which contains the Matrix and Names of the Parameters being related
 		 */

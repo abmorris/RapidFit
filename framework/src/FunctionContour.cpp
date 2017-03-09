@@ -81,7 +81,7 @@ void FunctionContour::SetPlot( int Sigma, vector< pair< double, double > > Conto
 	if ( Sigma > int(allContours.size()) || Sigma < 1 )
 	{
 		cerr << "Contour sigma value (" << Sigma << ") is invalid" << endl;
-	}       
+	}
 	else
 	{
 		allContours[ unsigned(Sigma - 1) ] = Contour;

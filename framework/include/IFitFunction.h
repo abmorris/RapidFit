@@ -2,7 +2,7 @@
  * @class IFitFunction
  *
  * @brief Interface class for the function to minimise
- * 
+ *
  * Overload the evaluate methods and UP value for Chi2, NLL, etc.
  *
  * @author Benjamin M Wynne bwynne@cern.ch
@@ -43,7 +43,7 @@ class IFitFunction
 		virtual void SetupTrace( const TString FileName, const int traceNum ) = 0;
 
 		/*!
-		 * @brief Set the name of the numerical integration method to use 
+		 * @brief Set the name of the numerical integration method to use
 		 */
 		virtual void SetIntegratorConfig( const RapidFitIntegratorConfig* gsl ) = 0;
 

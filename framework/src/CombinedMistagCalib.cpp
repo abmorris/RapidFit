@@ -544,7 +544,7 @@ double CombinedMistagCalib::mistagOSSSB() const
 	if( _onTuple )
 	{
 		//	Mistag calculated from nTuple and so needs calibrating
-		returnValue = _mistagP0_OSSS+(_mistagDeltaP0_OSSS*0.5) + (_mistagP1_OSSS+(_mistagDeltaP1_OSSS*0.5))*( this->getFixedEta() - (_mistagSetPoint_OSSS+(_mistagDeltaSetPoint_OSSS*0.5)) ); 
+		returnValue = _mistagP0_OSSS+(_mistagDeltaP0_OSSS*0.5) + (_mistagP1_OSSS+(_mistagDeltaP1_OSSS*0.5))*( this->getFixedEta() - (_mistagSetPoint_OSSS+(_mistagDeltaSetPoint_OSSS*0.5)) );
 	}
 	else
 	{

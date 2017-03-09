@@ -62,7 +62,7 @@ class ROOT_File_Processing : public TObject
 		static void get_TNtuple_list( TString current_path, vector<pair<string,string> > *found_names );
 
 
-		//	Wrapper functions to return a list of all parameters 
+		//	Wrapper functions to return a list of all parameters
 		static void get_TTree_list_here( vector<pair<string,string> > *found_names );
 
 		static void get_TH1_list_here( vector<pair<string,string> > *found_names );

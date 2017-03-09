@@ -11,7 +11,7 @@ double LegendreMomentShape::Moment(const int l, const int i, const int k, const 
 	if(j < k)
 		return 0;
 	if(std::abs(mKK_mapped) > 1)
-		return 0; 
+		return 0;
 	double Q_l  = gsl_sf_legendre_Pl     (l, mKK_mapped );
 	double P_i  = gsl_sf_legendre_Pl     (i, ctheta_2   );
 	double Y_jk = gsl_sf_legendre_sphPlm (j, k, ctheta_1);

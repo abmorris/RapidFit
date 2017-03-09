@@ -34,12 +34,12 @@ Plotting specific issues
 * Configuration using XML:
 	1. <Plotter> tag needed.
 	2. Specific <Plot> tags for each plot to produce.
-	3. <NumberOfPoints> tag needed to allow user to specify the number of data points to use 
+	3. <NumberOfPoints> tag needed to allow user to specify the number of data points to use
 	for each plot in the <Plotter>. Should be set to 16 by default.
 	4. <PlotXaxisTitle> and/or <PlotTitle> tags needed so that user can customise the plot output.
 	This should be used both for projections and the pulls. Perhaps this title for the observable
-	should live in the <Observable>? 
-	5. We should allow the user to specify if they want the plot to be on a y-log axis or not. For 
+	should live in the <Observable>?
+	5. We should allow the user to specify if they want the plot to be on a y-log axis or not. For
 	JpsiPhi this is only really for the time observable, so we could just set this by default.
 * Optimisation in the integration method - perhaps IntergratorFunction needs to be improved? We could
 also consider making a data point when passing a vector of doubles. Protected method used by a friend
@@ -58,7 +58,7 @@ Completed plotting issues
 The following tasks have been completed
 =======================================
 * Allow use to apply a pre-selection on the data? Do we really need this
-in RapidFit? User could do this outside of the fitter and create a new 
+in RapidFit? User could do this outside of the fitter and create a new
 input ntuple/file? PhaseSpaceBoundary already applies cuts on the
 Observables, but not on other variables that it knows nothing about.
 * Improve the parsing of the "header" row in the DataFileLoader class.
@@ -77,9 +77,9 @@ dataset the same weight. This will be required for per-event acceptance.
 * Get the correlation matrix returned from Minuit and formatted as a
 LaTeX table.
 * Do not zero-suppress plots.
-* Include time resolution in PDFs. Will have to look at old RooFit PDFs 
+* Include time resolution in PDFs. Will have to look at old RooFit PDFs
 for the analytic expressions.
-* Need to allow for no limits on physics parameters and observables. Just 
+* Need to allow for no limits on physics parameters and observables. Just
 don't specify limits in the XML. Minuit is able to deal with this.
 * Use numerical integration for product PDF normilisation.
 * Plot time and angular projections. This is a biggie.

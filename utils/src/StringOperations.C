@@ -519,7 +519,7 @@ TString StringOperations::Clean( TString input )
 		if( i+1 != temp.size() )
 		{
 			if( temp[i] == temp[i+1] )
-			{	
+			{
 				if( temp[i] == '_' )	remove_list.push_back( ch );
 			}
 		}

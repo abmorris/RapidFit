@@ -2,7 +2,7 @@
  * @class FitFunction
  *
  * @brief Parent class for the function to minimise
- * 
+ *
  * Overload the evaluate methods and UP value for Chi2, NLL, etc.
  *
  * @author Benjamin M Wynne bwynne@cern.ch
@@ -50,7 +50,7 @@ class FitFunction : public IFitFunction
 		void SetupTrace( const TString FileName, const int traceNum );
 
 		/*!
-		 * @brief Set the name of the numerical integration method to use 
+		 * @brief Set the name of the numerical integration method to use
 		 */
 		void SetIntegratorConfig( const RapidFitIntegratorConfig* gsl );
 

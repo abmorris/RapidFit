@@ -68,10 +68,10 @@ double Bs2JpsiPhiMassBkg::Evaluate(DataPoint * measurement)
         double mass = measurement->GetObservable( recoMassName )->GetValue();
 
 	double val = exp( -alphaM_pr * mass);
-	
+
 	//To take out a large scale variation  - this is arbitrary provided it is same in Evaluate() and Normalisation()
 	val *= PDF_ScaleFactor;
-	
+
   	return val;
 }
 

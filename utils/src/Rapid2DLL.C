@@ -197,7 +197,7 @@ int Rapid2DLL::PlotRapidFit2DLL( TString controlled_parameter1, TString controll
 	gSystem->cd( "RapidFit_2DLL_"+timeStr );
 
 	TGraph* coord_graph = Histogram_Processing::Get_TGraph( coords, (TRandom*)rand );
-	TGraph* r_coord_graph = Histogram_Processing::Get_TGraph( coords_rotated, (TRandom*)rand );	
+	TGraph* r_coord_graph = Histogram_Processing::Get_TGraph( coords_rotated, (TRandom*)rand );
 
 	TString TCanvas_Name_c("TCanvas_"); TCanvas_Name_c+=rand->Rndm();
 	TCanvas_Name_c = StringOperations::Clean( TCanvas_Name_c );

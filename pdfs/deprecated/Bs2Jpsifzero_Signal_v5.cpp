@@ -385,8 +385,8 @@ bool Bs2Jpsifzero_Signal_v5::SetPhysicsParameters( ParameterSet* NewParameterSet
 
 	// Physics parameters.
 	//_gamma  = allParameters.GetPhysicsParameter( gammaName )->GetValue();
-	_gamma  = allParameters.GetPhysicsParameter( gammaName )->GetValue(); //subtraction for beta_s factor 
-	//_gamma  = _gamma - 0.01; //subtraction for beta_s factor 
+	_gamma  = allParameters.GetPhysicsParameter( gammaName )->GetValue(); //subtraction for beta_s factor
+	//_gamma  = _gamma - 0.01; //subtraction for beta_s factor
 	dgam      = allParameters.GetPhysicsParameter( deltaGammaName )->GetValue();
 /*
 	Azero_sq = allParameters.GetPhysicsParameter( Azero_sqName )->GetValue();
@@ -1022,7 +1022,7 @@ double Bs2Jpsifzero_Signal_v5::diffXsecNorm1()
 	preCalculateTimeIntegrals() ;//  Replaced by new Caching mechanism , but this cant be used when event resolution is selected
 	//if( useEventResolution() ) preCalculateTimeIntegrals() ;
 
-	double norm = 
+	double norm =
 //		A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +
 //		AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +
 		AT()*AT() * timeFactorATATInt(  );// * angAccI3;//   +
@@ -1044,7 +1044,7 @@ double Bs2Jpsifzero_Signal_v5::diffXsecNorm1()
 		this->DebugPrintNorm( " Bs2Jpsifzero_Signal_v5_v1::diffXsecNorm1( ) : return value < 0 = ", timeFactorATATInt() ) ;
 
 	     cout << "XXXXXXX  AT()= " <<  AT()  << "      /    timeint=   " << timeFactorATATInt(  ) << endl ;
-	
+
 	}
 	return norm ;
 }

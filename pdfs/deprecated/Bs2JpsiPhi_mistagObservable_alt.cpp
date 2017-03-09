@@ -17,7 +17,7 @@
 //......................................
 //Constructor
 
-Bs2JpsiPhi_mistagObservable_alt::Bs2JpsiPhi_mistagObservable_alt() : 
+Bs2JpsiPhi_mistagObservable_alt::Bs2JpsiPhi_mistagObservable_alt() :
 	// Physics parameters
 	  gammaName     ( "gamma" )
 	, deltaGammaName( "deltaGamma" )
@@ -51,7 +51,7 @@ Bs2JpsiPhi_mistagObservable_alt::Bs2JpsiPhi_mistagObservable_alt() :
 	, normalisationCacheValid(false)
 {
 	MakePrototypes();
-	
+
 	std::cout << "Constructing signal PDF: Bs2JpsiPhi_mistagObservable_alt " << std::endl ;
 }
 
@@ -106,42 +106,42 @@ Bs2JpsiPhi_mistagObservable_alt::~Bs2JpsiPhi_mistagObservable_alt()
 bool Bs2JpsiPhi_mistagObservable_alt::SetPhysicsParameters( ParameterSet * NewParameterSet )
 {
 	normalisationCacheValid = false;
-	
+
 	bool result = allParameters.SetPhysicsParameters(NewParameterSet);
-	
-	/// Some gymnastics here to match xml parameters to my original pdf parameters 
-	
-	// Physics parameters. 
+
+	/// Some gymnastics here to match xml parameters to my original pdf parameters
+
+	// Physics parameters.
 	gamma_in  = allParameters.GetPhysicsParameter( gammaName )->GetValue();
     dgam      = allParameters.GetPhysicsParameter( deltaGammaName )->GetValue();
 	delta_ms  = allParameters.GetPhysicsParameter( deltaMName )->GetValue();
 	phi_s     = allParameters.GetPhysicsParameter( Phi_sName )->GetValue();
 
 	Azero_sq = allParameters.GetPhysicsParameter( Azero_sqName )->GetValue();
-	if( (Azero_sq < 0.) || (Azero_sq > 1.)  ) { cout << "Warning in Bs2JpsiPhi_mistagObservable_alt::SetPhysicsParameters: Azero_sq <0 or >1 but left as is" <<  endl ;	}	
+	if( (Azero_sq < 0.) || (Azero_sq > 1.)  ) { cout << "Warning in Bs2JpsiPhi_mistagObservable_alt::SetPhysicsParameters: Azero_sq <0 or >1 but left as is" <<  endl ;	}
 	Aperp_sq = allParameters.GetPhysicsParameter( Aperp_sqName )->GetValue();
-	if( (Aperp_sq < 0.) || (Aperp_sq > 1.)  ) { cout << "Warning in Bs2JpsiPhi_mistagObservable_alt::SetPhysicsParameters: Aperp_sq <0 or >1 but left as is" <<  endl ;	}	
+	if( (Aperp_sq < 0.) || (Aperp_sq > 1.)  ) { cout << "Warning in Bs2JpsiPhi_mistagObservable_alt::SetPhysicsParameters: Aperp_sq <0 or >1 but left as is" <<  endl ;	}
 
 	Apara_sq = (1. - Azero_sq - Aperp_sq ) ;
 	if( Apara_sq < 0. ) {
 		cout << "Warning in Bs2JpsiPhi_mistagObservable_alt::SetPhysicsParameters: derived parameter Apara_sq <0  and so set to zero" <<  endl ;
 		Apara_sq = 0. ;
-	}	
-	
+	}
+
 	Rt = Aperp_sq ;  // for backwards compatibility with 1 angle fits
-	
+
 	double _delta_zero = allParameters.GetPhysicsParameter( delta_zeroName )->GetValue();
 	double _delta_para = allParameters.GetPhysicsParameter( delta_paraName )->GetValue();
 	double _delta_perp = allParameters.GetPhysicsParameter( delta_perpName )->GetValue();
-	delta1 = _delta_perp -  _delta_para ;    
+	delta1 = _delta_perp -  _delta_para ;
 	delta2 = _delta_perp -  _delta_zero ;
-	
+
 	// Detector parameters
 	resolution1         = allParameters.GetPhysicsParameter( res1Name )->GetValue();
 	resolution2         = allParameters.GetPhysicsParameter( res2Name )->GetValue();
 	resolution1Fraction = allParameters.GetPhysicsParameter( res1FractionName )->GetValue();
 	timeOffset          = allParameters.GetPhysicsParameter( timeOffsetName )->GetValue();
-	
+
 	// Angular acceptance factors
 	angAccI1 = allParameters.GetPhysicsParameter( angAccI1Name )->GetValue();
 	angAccI2 = allParameters.GetPhysicsParameter( angAccI2Name )->GetValue();
@@ -172,15 +172,15 @@ double Bs2JpsiPhi_mistagObservable_alt::Evaluate(DataPoint * measurement)
 	t = measurement->GetObservable( timeName )->GetValue() - timeOffset ;
 	ctheta_tr = measurement->GetObservable( cosThetaName )->GetValue();
 	phi_tr      = measurement->GetObservable( phiName )->GetValue();
-	ctheta_1   = measurement->GetObservable( cosPsiName )->GetValue();	
+	ctheta_1   = measurement->GetObservable( cosPsiName )->GetValue();
 	tag = (int)measurement->GetObservable( tagName )->GetValue();
 	tagFraction = measurement->GetObservable( mistagName )->GetValue();
 	//tagFraction= 0.5;  //PELC
 
-	
+
 	double val1, val2 ;
 	double returnValue ;
-	
+
 	if(resolution1Fraction >= 0.9999 ) {
 
 		// Set the member variable for time resolution to the first value and calculate
@@ -191,7 +191,7 @@ double Bs2JpsiPhi_mistagObservable_alt::Evaluate(DataPoint * measurement)
 		expH_stored = Mathematics::Exp( t, gamma_h(), resolution ) ;
 		expSin_stored = Mathematics::ExpSin( t, gamma(), delta_ms, resolution ) ;
 		expCos_stored = Mathematics::ExpCos( t, gamma(), delta_ms, resolution ) ;
-				
+
 		val1 = this->diffXsec( );
 		returnValue = val1 ;
 
@@ -206,7 +206,7 @@ double Bs2JpsiPhi_mistagObservable_alt::Evaluate(DataPoint * measurement)
 		expH_stored = Mathematics::Exp( t, gamma_h(), resolution ) ;
 		expSin_stored = Mathematics::ExpSin( t, gamma(), delta_ms, resolution ) ;
 		expCos_stored = Mathematics::ExpCos( t, gamma(), delta_ms, resolution ) ;
-				
+
 		val1 = this->diffXsec( );
 
 		// Set the member variable for time resolution to the second value and calculate
@@ -216,14 +216,14 @@ double Bs2JpsiPhi_mistagObservable_alt::Evaluate(DataPoint * measurement)
 		expL_stored = Mathematics::Exp( t, gamma_l(), resolution ) ;
 		expH_stored = Mathematics::Exp( t, gamma_h(), resolution ) ;
 		expSin_stored = Mathematics::ExpSin( t, gamma(), delta_ms, resolution ) ;
-		expCos_stored = Mathematics::ExpCos( t, gamma(), delta_ms, resolution ) ;		
-		
+		expCos_stored = Mathematics::ExpCos( t, gamma(), delta_ms, resolution ) ;
+
 		val2 = this->diffXsec( );
-		
+
 		returnValue = resolution1Fraction*val1 + (1. - resolution1Fraction)*val2 ;
-				
+
 	}
-	
+
 
 	if(  ( (returnValue <= 0.) && (t>0.) ) || isnan(returnValue) ) {
 		cout << endl ;
@@ -238,9 +238,9 @@ double Bs2JpsiPhi_mistagObservable_alt::Evaluate(DataPoint * measurement)
 		cout << "   time " << t << endl ;
 		if( isnan(returnValue) ) exit(1) ;
 	}
-	
+
 	return returnValue ;
-	
+
 }
 
 
@@ -249,13 +249,13 @@ double Bs2JpsiPhi_mistagObservable_alt::Evaluate(DataPoint * measurement)
 
 double Bs2JpsiPhi_mistagObservable_alt::Normalisation(DataPoint * measurement, PhaseSpaceBoundary * boundary)
 {
-	
-	
+
+
 	// Get observables into member variables
 	t = measurement->GetObservable( timeName )->GetValue() - timeOffset;
 	ctheta_tr = measurement->GetObservable( cosThetaName )->GetValue();
 	phi_tr      = measurement->GetObservable( phiName )->GetValue();
-	ctheta_1   = measurement->GetObservable( cosPsiName )->GetValue();	
+	ctheta_1   = measurement->GetObservable( cosPsiName )->GetValue();
 	tagFraction = measurement->GetObservable( mistagName )->GetValue();
 	//tagFraction= 0.5;  //PELC
 
@@ -269,8 +269,8 @@ double Bs2JpsiPhi_mistagObservable_alt::Normalisation(DataPoint * measurement, P
 		tlo = timeBound->GetMinimum();
 		thi = timeBound->GetMaximum();
 	}
-	
-	
+
+
 	// Recalculate cached values if Physics parameters have changed
 	// Must do this for each of the two resolutions.
 //PELC
@@ -283,14 +283,14 @@ double Bs2JpsiPhi_mistagObservable_alt::Normalisation(DataPoint * measurement, P
 			normalisationCacheValueRes2[tag+1] = this->diffXsecNorm1( );
 		}
 		normalisationCacheValid = true ;
-	}	
-	
-	// Return normalisation value according to tag 
+	}
+
+	// Return normalisation value according to tag
 
 	tag = (int)measurement->GetObservable( tagName )->GetValue();
 
 	double returnValue  = resolution1Fraction*normalisationCacheValueRes1[tag+1] + (1. - resolution1Fraction)*normalisationCacheValueRes2[tag+1] ;
-	
+
 	if( (returnValue <= 0.) || isnan(returnValue) ) {
 		cout << " Bs2JpsiPhi_mistagObservable_alt::Normalisation() returns <=0 or nan " << endl ;
 		cout << " gamma " << gamma() ;
@@ -301,7 +301,7 @@ double Bs2JpsiPhi_mistagObservable_alt::Normalisation(DataPoint * measurement, P
 		cout << " A0    " << A0() ;
 		exit(1) ;
 	}
-	
+
 	return returnValue ;
 }
 
@@ -310,21 +310,21 @@ double Bs2JpsiPhi_mistagObservable_alt::Normalisation(DataPoint * measurement, P
 //Internal helper functions
 
 //Amplitudes Used in one angle PDF
-double Bs2JpsiPhi_mistagObservable_alt::AoAo() const  { return Rt; };   
+double Bs2JpsiPhi_mistagObservable_alt::AoAo() const  { return Rt; };
 double Bs2JpsiPhi_mistagObservable_alt::AeAe() const { return 1-Rt ; };
 
 //Amplitudes Used in three angle PDF
-double Bs2JpsiPhi_mistagObservable_alt::AT() const { 
+double Bs2JpsiPhi_mistagObservable_alt::AT() const {
 	if( Aperp_sq <= 0. ) return 0. ;
-	else return sqrt(Aperp_sq) ; 
+	else return sqrt(Aperp_sq) ;
 };
-double Bs2JpsiPhi_mistagObservable_alt::AP() const { 
+double Bs2JpsiPhi_mistagObservable_alt::AP() const {
 	if( Apara_sq <= 0. ) return 0. ;
-	else return sqrt(Apara_sq) ; 
+	else return sqrt(Apara_sq) ;
 };
-double Bs2JpsiPhi_mistagObservable_alt::A0() const { 
+double Bs2JpsiPhi_mistagObservable_alt::A0() const {
 	if( Azero_sq <= 0. ) return 0. ;
-	else return sqrt(Azero_sq) ; 
+	else return sqrt(Azero_sq) ;
 };
 
 double Bs2JpsiPhi_mistagObservable_alt::ctrsq() const { return (ctheta_tr*ctheta_tr) ; }
@@ -334,24 +334,24 @@ double Bs2JpsiPhi_mistagObservable_alt::st1sq() const { return (1.0 - ctheta_1*c
 double Bs2JpsiPhi_mistagObservable_alt::cphsq() const { return (cos(phi_tr)*cos(phi_tr)) ; }
 double Bs2JpsiPhi_mistagObservable_alt::sphsq() const { return (sin(phi_tr)*sin(phi_tr)) ; }
 
-double Bs2JpsiPhi_mistagObservable_alt::gamma_l() const { 
+double Bs2JpsiPhi_mistagObservable_alt::gamma_l() const {
 	double gl = gamma() + ( dgam / 2.0 ) ;
 	if( gl <= 0. ) {
 		cout << " In Bs2JpsiPhi_mistagObservable_alt : gamma_l() < 0 so setting it to 0.0000001 " << endl ;
 		return 0.0000001 ;
 	}
 	else
-		return gl ; 
+		return gl ;
 }
 
-double Bs2JpsiPhi_mistagObservable_alt::gamma_h() const { 
+double Bs2JpsiPhi_mistagObservable_alt::gamma_h() const {
 	double gh = gamma() - ( dgam / 2.0 ) ;
 	if( gh <= 0. ) {
 		cout << " In Bs2JpsiPhi_mistagObservable_alt : gamma_h() < 0 so setting it to 0.0000001 " << endl ;
 		return 0.0000001 ;
 	}
 	else
-		return gh ; 
+		return gh ;
 }
 
 double Bs2JpsiPhi_mistagObservable_alt::gamma() const   { return gamma_in ; }
@@ -364,14 +364,14 @@ double Bs2JpsiPhi_mistagObservable_alt::q() const { return tag ;}
 // These now interface to an external helper library
 //
 //...................................................
-//Exponentials 
+//Exponentials
 
-double Bs2JpsiPhi_mistagObservable_alt::expL() const 
+double Bs2JpsiPhi_mistagObservable_alt::expL() const
 {
 	return expL_stored ; //Mathematics::Exp( t, gamma_l(), resolution ) ;
 }
 
-double Bs2JpsiPhi_mistagObservable_alt::expH() const 
+double Bs2JpsiPhi_mistagObservable_alt::expH() const
 {
 	return expH_stored ; //Mathematics::Exp( t, gamma_h(), resolution ) ;
 }
@@ -388,25 +388,25 @@ double Bs2JpsiPhi_mistagObservable_alt::intExpH( ) const {
 //......................................................
 // Exponential x sine  and cosine
 
-double Bs2JpsiPhi_mistagObservable_alt::expSin() const  
+double Bs2JpsiPhi_mistagObservable_alt::expSin() const
 {
     return expSin_stored ; // Mathematics::ExpSin( t, gamma(), delta_ms, resolution ) ;
 }
 
-double Bs2JpsiPhi_mistagObservable_alt::expCos() const 
+double Bs2JpsiPhi_mistagObservable_alt::expCos() const
 {
     return expCos_stored ; // Mathematics::ExpCos( t, gamma(), delta_ms, resolution ) ;
 }
 
-double Bs2JpsiPhi_mistagObservable_alt::intExpSin( ) const 
+double Bs2JpsiPhi_mistagObservable_alt::intExpSin( ) const
 {
-	return Mathematics::ExpSinInt( tlo, thi, gamma(), delta_ms, resolution ) ; 
+	return Mathematics::ExpSinInt( tlo, thi, gamma(), delta_ms, resolution ) ;
 }
 
-// Integral of exp( - G * t ) * cos( dm * t )  
-double Bs2JpsiPhi_mistagObservable_alt::intExpCos( ) const 
+// Integral of exp( - G * t ) * cos( dm * t )
+double Bs2JpsiPhi_mistagObservable_alt::intExpCos( ) const
 {
-	return Mathematics::ExpCosInt( tlo, thi, gamma(), delta_ms, resolution ) ; 
+	return Mathematics::ExpCosInt( tlo, thi, gamma(), delta_ms, resolution ) ;
 }
 
 
@@ -418,9 +418,9 @@ double Bs2JpsiPhi_mistagObservable_alt::intExpCos( ) const
 double Bs2JpsiPhi_mistagObservable_alt::timeFactorEven(  )  const
 {
 	//if( t < 0.0 ) return 0.0 ;
-	double result = 
-	( 1.0 + cos(phi_s) ) * expL( ) 
-	+ ( 1.0 - cos(phi_s) ) * expH( ) 
+	double result =
+	( 1.0 + cos(phi_s) ) * expL( )
+	+ ( 1.0 - cos(phi_s) ) * expH( )
 	+ q() * ( 2.0 * sin(phi_s)   ) * expSin( ) * (1.0 - 2.0*tagFraction) ;
 	return result ;
 };
@@ -428,9 +428,9 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorEven(  )  const
 double Bs2JpsiPhi_mistagObservable_alt::timeFactorEvenInt(  )  const
 {
 
-	double result = 
-	( 1.0 + cos(phi_s) )  * intExpL()     
-	+ ( 1.0 - cos(phi_s) )  * intExpH()          
+	double result =
+	( 1.0 + cos(phi_s) )  * intExpL()
+	+ ( 1.0 - cos(phi_s) )  * intExpH()
 	+ q() * ( 2.0 * sin(phi_s)   ) * intExpSin( ) * (1.0 - 2.0*tagFraction) ;
 	return result ;
 };
@@ -440,18 +440,18 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorEvenInt(  )  const
 double Bs2JpsiPhi_mistagObservable_alt::timeFactorOdd(  )   const
 {
 	//if( t < 0.0 ) return 0.0 ;
-	double result = 
-	( 1.0 - cos(phi_s) ) * expL( ) 
-	+ ( 1.0 + cos(phi_s) ) * expH( ) 
+	double result =
+	( 1.0 - cos(phi_s) ) * expL( )
+	+ ( 1.0 + cos(phi_s) ) * expH( )
 	- q() * ( 2.0 * sin(phi_s)   ) * expSin( ) * (1.0 - 2.0*tagFraction) ;
 	return result ;
 };
 
 double Bs2JpsiPhi_mistagObservable_alt::timeFactorOddInt(  )  const
 {
-	double result = 
+	double result =
 	( 1.0 - cos(phi_s) ) * intExpL()
-	+ ( 1.0 + cos(phi_s) ) * intExpH() 
+	+ ( 1.0 + cos(phi_s) ) * intExpH()
 	- q() * ( 2.0 * sin(phi_s)   ) * intExpSin( ) * (1.0 - 2.0*tagFraction) ;
 	return result ;
 };
@@ -461,7 +461,7 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorOddInt(  )  const
 // These are the time factors and their analytic integrals for the three angle PDF
 
 //...........................
-double Bs2JpsiPhi_mistagObservable_alt::timeFactorA0A0( )    const { return timeFactorEven( ) ; } ;      
+double Bs2JpsiPhi_mistagObservable_alt::timeFactorA0A0( )    const { return timeFactorEven( ) ; } ;
 double Bs2JpsiPhi_mistagObservable_alt::timeFactorA0A0Int( ) const { return timeFactorEvenInt( ) ; } ;
 
 //...........................
@@ -490,10 +490,10 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorReA0APInt( ) const
 double Bs2JpsiPhi_mistagObservable_alt::timeFactorImAPAT( ) const
 {
 	//if( t < 0.0 ) return 0.0 ;
-	double result = 
+	double result =
 	q() * 2.0  * ( sin(delta1)*expCos( ) - cos(delta1)*cos(phi_s)*expSin( ) ) * (1.0 - 2.0*tagFraction)
 	- 1.0 * ( expH( ) - expL( ) ) * cos(delta1) * sin(phi_s)  ;
-	
+
 	return result ;
 } ;
 
@@ -501,10 +501,10 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorImAPATInt( ) const
 {
 	double _tlo = tlo ;
 	if(_tlo < 0.) _tlo = 0. ;
-	
-	double result = 
+
+	double result =
 	q() * 2.0  * ( sin(delta1)*intExpCos() - cos(delta1)*cos(phi_s)*intExpSin() ) * (1.0 - 2.0*tagFraction)
-	- 1.0 * ( intExpH() - intExpL() ) * cos(delta1) * sin(phi_s) ;	    
+	- 1.0 * ( intExpH() - intExpL() ) * cos(delta1) * sin(phi_s) ;
 	return result ;
 } ;
 
@@ -514,7 +514,7 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorImA0AT(  ) const
 {
 	//if( t < 0.0 ) return 0.0 ;
 	double result =
-	q() * 2.0  * ( sin(delta2)*expCos( ) - cos(delta2)*cos(phi_s)*expSin( ) ) * (1.0 - 2.0*tagFraction)	
+	q() * 2.0  * ( sin(delta2)*expCos( ) - cos(delta2)*cos(phi_s)*expSin( ) ) * (1.0 - 2.0*tagFraction)
 	-1.0 * ( expH( ) - expL( ) ) * cos(delta2) * sin(phi_s) ;
 	return result ;
 } ;
@@ -523,8 +523,8 @@ double Bs2JpsiPhi_mistagObservable_alt::timeFactorImA0ATInt( ) const
 {
 	double _tlo = tlo ;
 	if(_tlo < 0.) _tlo = 0. ;
-	
-	double result = 
+
+	double result =
 	q() * 2.0  * ( sin(delta2)*intExpCos() - cos(delta2)*cos(phi_s)*intExpSin()  ) * (1.0 - 2.0*tagFraction)
 	-1.0 * ( intExpH() - intExpL()  ) * cos(delta2) * sin(phi_s) ;
 	return result ;
@@ -558,9 +558,9 @@ double Bs2JpsiPhi_mistagObservable_alt::angleFactorOdd(  )   const
 //...........................
 double Bs2JpsiPhi_mistagObservable_alt::angleFactorA0A0(  ) const
 {
-	// Normalised to  1	
+	// Normalised to  1
 	double result = 2.0 * ct1sq() * (1.0 - strsq()*cphsq() ) * (9.0/32.0/TMath::Pi());
-	return result ;	
+	return result ;
 };
 
 //...........................
@@ -568,7 +568,7 @@ double Bs2JpsiPhi_mistagObservable_alt::angleFactorAPAP(  ) const
 {
 	// Normalised to  1
 	double result =  st1sq() * (1.0 - strsq()*sphsq() ) * (9.0/32.0/TMath::Pi());
-	return result ;	
+	return result ;
 };
 
 //...........................
@@ -577,35 +577,35 @@ double Bs2JpsiPhi_mistagObservable_alt::angleFactorATAT(  ) const
 	// Normalised to  1
 	double result = st1sq() * strsq() * (9.0/32.0/TMath::Pi());
 	return result ;
-	
+
 };
 
 //...........................
 double Bs2JpsiPhi_mistagObservable_alt::angleFactorReA0AP( ) const
 {
 	// Normalised to  0
-	double theta_1 = acos(ctheta_1) ;	
+	double theta_1 = acos(ctheta_1) ;
 	double result =    sin(2.0*theta_1) * strsq() * sin(2.0*phi_tr) / sqrt(2.0) * (9.0/32.0/TMath::Pi());
-	return result ;	
+	return result ;
 };
 
 //...........................
 double Bs2JpsiPhi_mistagObservable_alt::angleFactorImAPAT(  ) const
 {
 	// Normalised to  0
-	double theta_tr = acos(ctheta_tr) ;		
+	double theta_tr = acos(ctheta_tr) ;
 	double result =   -1.0 *  st1sq() * sin(2.0*theta_tr) * sin(phi_tr) * (9.0/32.0/TMath::Pi()) ;
-	return result ;	
+	return result ;
 };
 
 //...........................
 double Bs2JpsiPhi_mistagObservable_alt::angleFactorImA0AT(  ) const
 {
 	// Normalised to  0
-	double theta_tr = acos(ctheta_tr) ;		
-	double theta_1 = acos(ctheta_1) ;		
+	double theta_tr = acos(ctheta_tr) ;
+	double theta_1 = acos(ctheta_1) ;
 	double result =  +1.0*   sin(2.0*theta_1) * sin(2.0*theta_tr) * cos(phi_tr) / sqrt(2.0) * (9.0/32.0/TMath::Pi());
-	return result ;	
+	return result ;
 };
 
 
@@ -617,21 +617,21 @@ double Bs2JpsiPhi_mistagObservable_alt::angleFactorImA0AT(  ) const
 // Diff cross sections
 
 double Bs2JpsiPhi_mistagObservable_alt::diffXsec(  )  const
-{   
-	double xsec = 
+{
+	double xsec =
 	0.5 * A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) +
 	0.5 * AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) +
 	0.5 * AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +
 	0.5 * A0()*AP() * timeFactorReA0AP(  ) * angleFactorReA0AP( ) +
 	0.5 * AP()*AT() * timeFactorImAPAT(  ) * angleFactorImAPAT( ) +
 	0.5 * A0()*AT() * timeFactorImA0AT(  ) * angleFactorImA0AT( ) ;
-	
+
 	return xsec ;
 };
 
 double  Bs2JpsiPhi_mistagObservable_alt::diffXsecOne(  ) const
 {
-	double result = 
+	double result =
 	0.5 * AeAe() * timeFactorEven(  ) * angleFactorEven(  )  +
 	0.5 * AoAo() * timeFactorOdd(  )  * angleFactorOdd(  ) ;
 	return result ;
@@ -641,25 +641,25 @@ double  Bs2JpsiPhi_mistagObservable_alt::diffXsecOne(  ) const
 // Integral over all variables: t + angles
 
 double Bs2JpsiPhi_mistagObservable_alt::diffXsecNorm1(  ) const
-{      
+{
 	double reference =  32.0*TMath::Pi()/9.0 ;
-	
-	double norm = 
-	0.5 * A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +  
-	0.5 * AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +  
-	0.5 * AT()*AT() * timeFactorATATInt(  ) * angAccI3   +  
 
-	0.5 * A0()*AP() * timeFactorReA0APInt(  ) * angAccI5 +  
-	0.5 * AP()*AT() * timeFactorImAPATInt(  ) * angAccI4 +  
-	0.5 * A0()*AT() * timeFactorImA0ATInt(  ) * angAccI6 ;  	
+	double norm =
+	0.5 * A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +
+	0.5 * AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +
+	0.5 * AT()*AT() * timeFactorATATInt(  ) * angAccI3   +
+
+	0.5 * A0()*AP() * timeFactorReA0APInt(  ) * angAccI5 +
+	0.5 * AP()*AT() * timeFactorImAPATInt(  ) * angAccI4 +
+	0.5 * A0()*AT() * timeFactorImA0ATInt(  ) * angAccI6 ;
 	// In the canonical PDF, the ApAt term is number 4!
 	return norm ;
 };
 
 //  13.432', '14.151', '14.210
 double Bs2JpsiPhi_mistagObservable_alt::diffXsecOneNorm1(  ) const
-{      
-	double norm = 
+{
+	double norm =
 	0.5 * AeAe() * timeFactorEvenInt(  )  +    // Angle factors normalised to 1
 	0.5 * AoAo() * timeFactorOddInt(  )   ;
 	return norm ;
@@ -667,21 +667,21 @@ double Bs2JpsiPhi_mistagObservable_alt::diffXsecOneNorm1(  ) const
 
 
 //...................................
-// Integral over angles only 3 
+// Integral over angles only 3
 
 double Bs2JpsiPhi_mistagObservable_alt::diffXsecNorm2(  ) const
-{          
-	double norm = 
+{
+	double norm =
 	0.5 * A0()*A0() * timeFactorA0A0(  ) +    // Angle factors normalised to 1
 	0.5 * AP()*AP() * timeFactorAPAP(  ) +
 	0.5 * AT()*AT() * timeFactorATAT(  ) ;
-	
+
 	return norm ;
 };
 
 double Bs2JpsiPhi_mistagObservable_alt::diffXsecOneNorm2(  ) const
-{          
-	double norm = 
+{
+	double norm =
 	0.5 * AeAe() * timeFactorEven(  )  +     // Angle factors normalised to 1
 	0.5 * AoAo() * timeFactorOdd(  )   ;
 	return norm ;

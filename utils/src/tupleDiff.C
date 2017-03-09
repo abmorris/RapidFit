@@ -111,8 +111,8 @@ int main( int argc, char* argv[] )
 	}
 
 	cout << "Num Events:" << endl;
-	cout << "Edi:\t" << EdiMap.size() << endl;    
-	cout << "Master:\t" << MasterMap.size() << endl;  
+	cout << "Edi:\t" << EdiMap.size() << endl;
+	cout << "Master:\t" << MasterMap.size() << endl;
 	cout << "HD:\t" << HDMap.size() << endl;
 
 	vector<double> Edires_costhetaL, Edires_costhetaK, Edires_phi, Edires_time, Edires_mass;
@@ -184,7 +184,7 @@ int main( int argc, char* argv[] )
 
 	HD_costhetaL->Write("",TObject::kOverwrite);
 	HD_costhetaK->Write("",TObject::kOverwrite);
-	HD_phi->Write("",TObject::kOverwrite); 
+	HD_phi->Write("",TObject::kOverwrite);
 	HD_mass->Write("",TObject::kOverwrite);
 	HD_time->Write("",TObject::kOverwrite);
 

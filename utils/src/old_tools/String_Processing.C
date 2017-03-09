@@ -116,7 +116,7 @@ inline TString prettyPrint(Double_t val, Double_t err){
 
 //	Originally Written by Conor Fitzpatrick
 TPaveText* addLHCbLabel(TString footer, bool DATA){
-	//                              
+	//
 	TPaveText * label = new TPaveText(0.18, 0.73, 0.18, 0.88,"BRNDC");
 	label->SetFillStyle(0);         //Transparent i.e. Opacity of 0 :D
 	label->SetBorderSize(0);

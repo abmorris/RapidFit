@@ -65,9 +65,9 @@ class Bd2JpsiKstar_withTimeRes_withAverageAngAcc : public BasePDF
 		// These contain the strings that correspond
 		// to the observable names that are used in the
 		// PDF.
-		
+
 		bool normalisationCacheValid, evaluationCacheValid;
-		
+
 		ObservableRef timeName;		// proper time
 		ObservableRef cosThetaName;	// cos of angle of mu+ wrt z-axis in Jpsi frame
 		ObservableRef phiName;		// azimuthal angle of the mu+ in Jpsi frame

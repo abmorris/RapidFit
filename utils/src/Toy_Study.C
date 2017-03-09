@@ -338,7 +338,7 @@ int ToyStudyAnalysis::Toy_Study( TTree* input_tree, TRandom3* rand_gen, vector<s
 			units = " " + EdStyle::GetParamRootUnit( EdStyle::Remove_Suffix(all_parameter_plots[j]) );
 		}
 		//cout << endl << suffix << "  " << pull_suffix << endl;
-		x_axis->SetTitle( EdStyle::GetParamRootName( EdStyle::Remove_Suffix(all_parameter_plots[j]) ) + " " 
+		x_axis->SetTitle( EdStyle::GetParamRootName( EdStyle::Remove_Suffix(all_parameter_plots[j]) ) + " "
 				+ EdStyle::Get_Suffix( all_parameter_plots[j] )
 				+ units.c_str() );
 		input_histo->SetTitle( "Toy Study " + EdStyle::GetParamRootName( all_parameter_plots[j] ) + " distribution" );

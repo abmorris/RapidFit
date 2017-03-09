@@ -1,8 +1,8 @@
 /* stackergen: Part of the simpletools package
  *  * (c) Conor Fitzpatrick, 2008
  *   *
- *    * If you find this program useful in whole or in part 
- *     * please cite this paper: 
+ *    * If you find this program useful in whole or in part
+ *     * please cite this paper:
  *      *
  *       * Feel free to send bugreports, feature requests, patches etc to:
  *        * conor.fitzpatrick@cern.ch
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]){
 				pullCanvas->Write();
 				pullCanvas->Print(outputdir+"/"+varname+"_pull.pdf");
 				pullCanvas->Print(outputdir+"/"+varname+"_pull.eps");
-				pullgauss->Delete();	
+				pullgauss->Delete();
 
 				results->Draw(var_error+">>error","Fit_Status==3");
 				TCanvas *errCanvas = new TCanvas(varname + " Error",varname + " Error",2048,1536);
@@ -224,7 +224,7 @@ int main(int argc, char *argv[]){
 		if(warnpullw){
 		UInt_t wpullcolw = 0;
 		strpullw = "\\textcolor{";
-		if (pullw[i]<1.0){ 
+		if (pullw[i]<1.0){
 			strpullw+= "blue!";
 			wpullcolw = (UInt_t)((1.0 - pullw[i])*200);
 		}else{

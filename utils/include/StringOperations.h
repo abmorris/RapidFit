@@ -52,7 +52,7 @@ class StringOperations : public TObject
 		//	Remove the extention from an array of strings
 		static void strip_strings( vector<string>* list, string ext );
 
-		//	Create a new string composed of the 
+		//	Create a new string composed of the
 		static vector<string> strip_all_strings( vector<string>* list, string ext );
 
 		//	Copied functions from within RapidFit StringProcessing to try and guarantee that any changes I make don't break RapidFit

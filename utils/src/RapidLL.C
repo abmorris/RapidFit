@@ -64,7 +64,7 @@ unsigned int RapidLL::GetAxisWidth()
 
   vector<string> controlled_parameters( 1, controlled_parameter.Data() );
 
-  vector<TString> free_parameters = 
+  vector<TString> free_parameters =
 
   TString Draw_String = controlled_parameter+value_suffix + ":NLL";
 

@@ -1,7 +1,7 @@
 /*!
  * @namespace JackKnife
  *
- * @brief JackKnifing to the max 
+ * @brief JackKnifing to the max
  *
  * @author Greig A Cowan greig.cowan@cern.ch
  */
@@ -21,7 +21,7 @@
 #include "FitFunctionConfiguration.h"
 
 namespace JackKnife {
-	void jackknife( I_XMLConfigReader * xmlFile, MinimiserConfiguration * theMinimiser, 
+	void jackknife( I_XMLConfigReader * xmlFile, MinimiserConfiguration * theMinimiser,
 		FitFunctionConfiguration * theFunction, ParameterSet* argumentParameterSet, vector<string> CommandLineParam, int start, int stop);
 	void plotUstatistic( IPDF * pdf, IDataSet * data, PhaseSpaceBoundary * phase, string plot );
 }

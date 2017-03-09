@@ -3,7 +3,7 @@
  * @class Foam
  *
  * @breif Class for generating toy data from a PDF.
- * 
+ *
  * Just a wrapper for the Root TFoam generator
  *
  * @author Benjamin M Wynne bwynne@cern.ch

@@ -20,7 +20,7 @@
 
 
 MultiDimChi2::MultiDimChi2( vector<PDFWithData*> allObjects, PhaseSpaceBoundary* thisBound, vector<string> wantedObservables ) :
-	internalHisto(NULL), allBinCenters(NULL) 
+	internalHisto(NULL), allBinCenters(NULL)
 {
 	//	Populate PDF, DataSets and PhaseSpaceBoundaries to be used in this analysis
 	cout << "MultiDimChi2 Hello!" << endl << endl;
@@ -434,7 +434,7 @@ double MultiDimChi2::CalculateTotalExpected( vector<double> thisBinCenter )
 
 			cout << "\tCalculating Integral: " << combinationNum +1 << endl;
 
-			
+
 			//thisPDFIntegrator->ForceTestStatus( false );
 
 			//double Ratio = thisPDFIntegrator->TestIntegral( thisDataPoint, thisPhaseSpace );
@@ -446,7 +446,7 @@ double MultiDimChi2::CalculateTotalExpected( vector<double> thisBinCenter )
 
 			//thisPDFIntegrator->clearGSLIntegrationPoints();
 			double Integral = 1.;//thisPDFIntegrator->NumericallyIntegrateDataPoint( thisDataPoint, thisPhaseSpace, thisPDF->GetDoNotIntegrateList() );
-			
+
 
 			/*
 			double Total = thisPDF->Integral( thisDataPoint, thisPhaseSpace2 );

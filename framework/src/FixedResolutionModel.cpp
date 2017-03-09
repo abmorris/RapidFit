@@ -20,7 +20,7 @@
 using std::make_pair;
 
 //............................................
-// Constructor 
+// Constructor
 FixedResolutionModel::FixedResolutionModel( PDFConfigurator* configurator, bool quiet ) :
 	resScaleName		( configurator->getName( "timeResolutionScale" ) ),
 	eventResolutionName	( configurator->getName( "eventResolution" ) ),

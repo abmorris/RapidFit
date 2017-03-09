@@ -15,7 +15,7 @@
 PDF_CREATOR( Bs2JpsiPhiPromptBkg_withTimeRes );
 
 //Constructor
-Bs2JpsiPhiPromptBkg_withTimeRes::Bs2JpsiPhiPromptBkg_withTimeRes( PDFConfigurator* configurator ) : 
+Bs2JpsiPhiPromptBkg_withTimeRes::Bs2JpsiPhiPromptBkg_withTimeRes( PDFConfigurator* configurator ) :
 	// Physics parameters
 	  sigmaPrName	( configurator->getName("sigmaPr") )
         // Observables

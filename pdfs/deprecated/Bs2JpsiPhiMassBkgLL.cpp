@@ -20,7 +20,7 @@
 PDF_CREATOR( Bs2JpsiPhiMassBkgLL );
 
 //Constructor
-Bs2JpsiPhiMassBkgLL::Bs2JpsiPhiMassBkgLL( PDFConfigurator* configurator ) : 
+Bs2JpsiPhiMassBkgLL::Bs2JpsiPhiMassBkgLL( PDFConfigurator* configurator ) :
 	// Physics parameters
 	  alphaM_llName	( configurator->getName("alphaM_ll") )
         // Observables
@@ -52,16 +52,16 @@ Bs2JpsiPhiMassBkgLL::~Bs2JpsiPhiMassBkgLL()
 double Bs2JpsiPhiMassBkgLL::Evaluate(DataPoint * measurement)
 {
   	double alphaM_ll = allParameters.GetPhysicsParameter( alphaM_llName )->GetValue();
-	
+
 	// Get the observable
         double mass = measurement->GetObservable( recoMassName )->GetValue();
-	
+
 	double val = exp( -alphaM_ll * mass);
-	
+
 	//To take out a large scale variation  - this is arbitrary provided it is same in Evaluate() and Normalisation()
 	double scaleFactor = exp( -alphaM_ll * 5366.0 );
 	val /= scaleFactor ;
-	
+
   	return val;
 }
 
@@ -69,7 +69,7 @@ double Bs2JpsiPhiMassBkgLL::Evaluate(DataPoint * measurement)
 double Bs2JpsiPhiMassBkgLL::Normalisation(PhaseSpaceBoundary * boundary)
 {
 	double mhigh, mlow ;
-	
+
 	IConstraint * massBound = boundary->GetConstraint( constraint_recoMassName );
 	if ( massBound->GetUnit() == "NameNotFoundError" )
 	{
@@ -81,10 +81,10 @@ double Bs2JpsiPhiMassBkgLL::Normalisation(PhaseSpaceBoundary * boundary)
 		mlow = massBound->GetMinimum();
 		mhigh = massBound->GetMaximum();
 	}
-	
+
 	double alphaM_ll = allParameters.GetPhysicsParameter( alphaM_llName )->GetValue();
 	double integral =0;
-	
+
 	if( fabs(alphaM_ll-0.)<DOUBLE_TOLERANCE  ) {
 		integral = mhigh-mlow ;   // this was added by PELC to catch a divide by zero Nov-2010
 	}

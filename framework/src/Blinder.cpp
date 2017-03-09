@@ -1,8 +1,8 @@
 /**
   @class Blinder
 
-  Functions to blind a parameter 
- 
+  Functions to blind a parameter
+
   @author Pete Clarke
   @date 2010-11-25
  */
@@ -18,7 +18,7 @@ double Blinder::unBlindParameter( double blindValue, const char * blindString, d
 	RooRealVar bv("b", "b", blindValue ) ;
 	RooUnblindUniform tv("t", "t", blindString , scale, bv ) ;
 	RooAbsReal& tv1 = tv ;
-	return tv1.getVal() ;	
+	return tv1.getVal() ;
 }
 
 
@@ -29,6 +29,6 @@ double Blinder::getBlindOffset( const char * blindString, double scale )
 	RooRealVar bv("b", "b", blindValue ) ;
 	RooUnblindUniform tv("t", "t", blindString , scale, bv ) ;
 	RooAbsReal& tv1 = tv ;
-	return tv1.getVal() ;	
+	return tv1.getVal() ;
 }
 

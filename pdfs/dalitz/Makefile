@@ -6,7 +6,7 @@ ROOTLIBS     := $(shell root-config --libs)
 
 SYSTEM=$(shell uname -s)
 
-HEADERS=$(wildcard include/*.hh) 
+HEADERS=$(wildcard include/*.hh)
 SOURCES=$(wildcard src/*.cc)
 OBJECTS=$(patsubst src/%.cc, tmp/%.o, $(SOURCES))
 
@@ -32,7 +32,7 @@ bin: lib $(TBIN)
 #
 CXX	    = g++
 #CXXFLAGS    = -g -O -fPIC -Wall $(ROOTCFLAGS) -I.  -Iinclude
-CXXFLAGS    = -pg -g  -fPIC -Wall $(ROOTCFLAGS) -I.  -Iinclude 
+CXXFLAGS    = -pg -g  -fPIC -Wall $(ROOTCFLAGS) -I.  -Iinclude
 
 #--------------------------------------------------------------------------------------------------------------------------------------------
 #
@@ -43,7 +43,7 @@ LDFLAGS     = -O -g
 
 LIBS        = -L. $(ROOTLIBS) $(SYSLIBS) -lstdc++ -Llib \
               -lDPAmpCalc
-SOFLAGS     = -dynamiclib 
+SOFLAGS     = -dynamiclib
 ifeq ($(SYSTEM),Darwin)
 	SOFLAGS+=  -undefined dynamic_lookup
 endif
@@ -69,11 +69,11 @@ tmp/%.o: test/%.cc
 	$(PRINT); $(CXX) $(CXXFLAGS) -c $< -o $@
 
 #-----------------------------------------------------------------------------------------------------------------------------------------
-# how to build lib 
+# how to build lib
 #
 $(LIB): $(OBJECTS) tmp/dict.o
-	$(LD) $(CXXFLAGS) $(SOFLAGS) -o $@ $^ 
-#	@echo "<*** build lib ***>"; $(LD) $(CXXFLAGS) $(SOFLAGS) -o $@ $^ 
+	$(LD) $(CXXFLAGS) $(SOFLAGS) -o $@ $^
+#	@echo "<*** build lib ***>"; $(LD) $(CXXFLAGS) $(SOFLAGS) -o $@ $^
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------

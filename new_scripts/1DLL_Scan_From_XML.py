@@ -323,8 +323,8 @@ if is_ganga:
 				j.inputdata = LHCB_DATA                 #       Point the job to the data
 				print "INPUTDATA:"
 				print LHCB_DATA.files
-				inputDataList = []	
-				for i in LHCB_DATA.files: 
+				inputDataList = []
+				for i in LHCB_DATA.files:
 					inputDataList.append( 'LFN:'+i.name.replace('//','/') )
 				print "INPUTLFNs:"
 				print inputDataList

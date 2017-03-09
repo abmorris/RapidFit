@@ -10,8 +10,8 @@
 
 #include <iostream>
 
-DPJpsiKSpinZero::DPJpsiKSpinZero(int fLB, int fLR, double fmB, double mR, 
-                               double gammaR, double m1, double m2, 
+DPJpsiKSpinZero::DPJpsiKSpinZero(int fLB, int fLR, double fmB, double mR,
+                               double gammaR, double m1, double m2,
                                double RB, double RR, double fmJpsi):
 A0(1,0)
 {
@@ -55,7 +55,7 @@ A0(1,0)
 
 DPJpsiKSpinZero::~DPJpsiKSpinZero()
 {
-  if ( massShape ) 
+  if ( massShape )
   {
     delete massShape;
   }
@@ -69,7 +69,7 @@ DPJpsiKSpinZero::~DPJpsiKSpinZero()
   }
 }
 
-TComplex DPJpsiKSpinZero::amplitude(double m23, double cosTheta1, 
+TComplex DPJpsiKSpinZero::amplitude(double m23, double cosTheta1,
                                    double cosTheta2, double phi, int twoLambda,
                                    int twoLambdaPsi)
 {
@@ -79,7 +79,7 @@ TComplex DPJpsiKSpinZero::amplitude(double m23, double cosTheta1,
   {
     return result;
   }
-  
+
   double pB = DPHelpers::daughterMomentum(this->mB, this->mJpsi, m23);
   double pR = DPHelpers::daughterMomentum(m23, this->m1, this->m2);
 

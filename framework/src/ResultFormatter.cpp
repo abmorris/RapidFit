@@ -343,7 +343,7 @@ void ResultFormatter::SetOutputFolder(string name)
 	if( ResultFormatter::thisOutputFolder == NULL )
 	{
 		ResultFormatter::thisOutputFolder = new string();
-	}	
+	}
 	ResultFormatter::thisOutputFolder = new string( output_folder.Data() );
 	//*ResultFormatter::thisOutputFolder = name;
 	gSystem->mkdir( output_folder );
@@ -383,7 +383,7 @@ void ResultFormatter::WriteOutputLatex( FitResult* OutputData )
 	latex << "\n\\clearpage" << endl;
 
 	latex << "\n\\input{ ./ToShare }" << endl;
-	
+
 	latex << "\n\\clearpage" << endl;
 
 	latex << "\n\\input{ ./FullTable }" << endl;
@@ -586,7 +586,7 @@ void ResultFormatter::LatexToShareResultTable( FitResult * OutputData, stringstr
 {
 	ResultFormatter::TableHeader( latex, 3 );
 	latex << "Parameter & Fit result and error & $\\sigma$ from input \\\\ \t\t\\hline \\hline\n" << endl;
-	
+
 	ResultParameterSet * outputParameters = OutputData->GetResultParameterSet();
 	vector<string> allNames = outputParameters->GetAllNames();
 	for( vector<string>::iterator nameIterator = allNames.begin(); nameIterator != allNames.end(); ++nameIterator )
