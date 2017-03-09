@@ -1,4 +1,6 @@
 #include <regex>
+#include <utility>
+#include "Mathematics.h"
 #include "Bs2PhiKKBackgroundComponent.h"
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
@@ -93,18 +95,20 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double mean  = KKpars[0].value;
 		double sigma = KKpars[1].value;
 		double alpha = KKpars[2].value;
+		double n     = KKpars[3].value;
 		double arg = (mKK-mean)/sigma;
-		if(arg > -alpha)
+		if(alpha<0) arg *= -1;
+		double absalpha = std::abs(alpha);
+		double A,B;
+		if(arg >= -absalpha)
 		{
-			massPart = std::exp(-arg*arg/2);
+			massPart = std::exp(-0.5*arg*arg);
 		}
 		else
 		{
-			double absalpha = std::abs(alpha);
-			double n = KKpars[3].value;
-			double A = std::pow(n/absalpha,n) * std::exp(-alpha*alpha/2);
-			double B = n/absalpha - absalpha;
-			massPart = A * std::pow(B - arg,-n);
+			A = std::pow(n/absalpha,n) * std::exp(-0.5*absalpha*absalpha);
+			B = n/absalpha - absalpha;
+			massPart = A / std::pow(B - arg,n);
 		}
 	}
 	else if(type == "combinatorial")
@@ -123,8 +127,14 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	else if(type == "histogram")
 		massPart = mKKhist.Eval({mKK});
 	else if(!lineshape.empty())
-		massPart = std::norm(KKLineShape->massShape(mKK));
+	{
+		massPart = std::norm(KKLineShape->massShape(mKK))*1e-4;
+	}
 	double angularPart = angulardistribution.Evaluate(datapoint);
+	if(std::isnan(massPart)) std::cerr << "Mass part is nan" << std::endl;
+	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
+	if(std::isnan(angularPart)) std::cerr << "Angular part is nan" << std::endl;
+	if(angularPart < 0) std::cerr << "Angular part is negative" << std::endl;
 	return massPart * angularPart;
 }
 /*****************************************************************************/
@@ -132,7 +142,11 @@ void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	fraction.Update(fitpars);
 	for(auto& par: KKpars)
+	{
 		par.Update(fitpars);
+		if(std::isnan(par.value))
+			std::cerr << par.name.Name() << " is nan" << std::endl;
+	}
 	if(!lineshape.empty()) Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 vector<ObservableRef> Bs2PhiKKBackgroundComponent::GetPhysicsParameters() const

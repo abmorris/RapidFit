@@ -31,7 +31,8 @@ using std::complex;
 namespace Mathematics
 {
 	//	This comes up A LOT, save some CPU cycles and cache it!
-	static const double _pi = atan(1.0)*4.;;
+	static const double _pi = atan(1.0)*4.;
+	static const double sqrt_pi = sqrt(_pi);
 	static const double sqrt_2 = sqrt(2.);
 	static const double _over_sqrt_2 = 1./sqrt_2;
 	static const double _over_sqrt_2pi = 1./sqrt(2.*_pi);
@@ -60,6 +61,7 @@ namespace Mathematics
 	inline double EightThird(){ return eightthird; }
 	inline double Rootpi(){ return rootpi; }
 	inline double Pi(){ return _pi; }
+	inline double SQRT_Pi(){ return sqrt_pi; }
 
 	complex<double> evalCerfApprox( double swt, double u, double c );
 	complex<double> evalCerf( double swt, double u, double c );
