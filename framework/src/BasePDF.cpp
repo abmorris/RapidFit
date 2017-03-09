@@ -371,6 +371,7 @@ double BasePDF::Integral(DataPoint * NewDataPoint, PhaseSpaceBoundary * NewBound
 				if( !( this->ReallyGetComponentStatus() ) )
 				{
 					cerr << "CANNOT ANALYTICALLY OR NUMERICALLY INTEGRATE THIS PDF!!\t" << this->GetLabel() << endl;
+					cerr << "Integral: " << thisNumericalIntegral << endl;
 					exit(-833);
 				}
 			}
