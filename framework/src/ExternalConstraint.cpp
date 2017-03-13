@@ -12,8 +12,11 @@
 #include "StringProcessing.h"
 ///	System Headers
 #include <string>
+#include <vector>
 #include <sstream>
 #include <iostream>
+/// ROOT headers
+#include "TFormula.h"
 
 using std::stringstream;
 using std::cout;
@@ -39,10 +42,23 @@ ExternalConstraint::ExternalConstraint( string NewName, double NewValue, double 
 		wantedParameters.push_back( "Aperp_sq" );
 		wantedParameters.push_back( "Azero_sq" );
 	}
+	// Do something like "GENERIC:<space-delimited prefix list>:<space-delimited parameter list>:<TFormula expression>"
+	else if( name.find("GENERIC") != string::npos )
+	{
+		std::vector<std::string> arguments = StringProcessing::SplitString(name,':');
+		std::vector<std::string> prefices = StringProcessing::SplitString(arguments[1],' ');
+		std::vector<std::string> paramnames = StringProcessing::SplitString(arguments[2],' ');
+		if(prefices.empty()) prefices.push_back("");
+		if(paramnames.empty()) paramnames.push_back("");
+		for(const auto& prefix: prefices)
+			for(const auto& param: paramnames)
+				wantedParameters.push_back(prefix+param);
+	}
 	else
 	{
 		wantedParameters.push_back( name );
 	}
+
 
 
 	internalParameterSet = new ParameterSet( wantedParameters );
@@ -216,6 +232,21 @@ double ExternalConstraint::GetChi2() const
 		if (excess >= 0) penalty = 0;
 		else penalty = ( excess * excess ) / ( error*error );
 		returnable += penalty;
+	}
+	else if( name.find("GENERIC") != string::npos )
+	{
+		std::vector<std::string> arguments = StringProcessing::SplitString(name,':');
+		std::vector<std::string> prefices = StringProcessing::SplitString(arguments[1],' ');
+		std::vector<std::string> paramnames = StringProcessing::SplitString(arguments[2],' ');
+		std::string expression = arguments[3];
+		for(const auto& prefix: prefices)
+		{
+			std::vector<double> paramvalues;
+			for(const auto& param: paramnames)
+				paramvalues.push_back(internalParameterSet->GetPhysicsParameter(prefix+param)->GetValue());
+			TFormula PenaltyCalculator("temp",expression.c_str(),false);
+			returnable += PenaltyCalculator.EvalPar(paramvalues.data());
+		}
 	}
 	else
 	{
