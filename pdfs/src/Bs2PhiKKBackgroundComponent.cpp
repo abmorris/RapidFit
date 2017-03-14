@@ -17,7 +17,7 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 		for(std::string suffix: {"mean", "sigma", "alpha", "n"})
 			KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_"+suffix));
 	else if(type == "combinatorial")
-		for(std::string suffix: {"A", "B", "C", "M"})
+		for(std::string suffix: {"A", "B", "C"})
 			KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_"+suffix));
 	else if(type.find("resonant")!=std::string::npos)
 	{
@@ -117,10 +117,9 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double A = KKpars[0].value;
 		double B = KKpars[1].value;
 		double C = KKpars[2].value;
-		double M = KKpars[3].value;
-		double arg = mKK - M;
+		double arg = mKK - 2*Bs2PhiKK::mK;
 		if(arg <= 0) return 0;
-		double ratio = mKK/M;
+		double ratio = mKK/2*Bs2PhiKK::mK;
 		double val = (1- exp(-arg/C))* pow(ratio, A) + B*(ratio-1);
 		massPart = val > 0 ? val : 0;
 	}
