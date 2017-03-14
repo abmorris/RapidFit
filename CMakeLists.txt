@@ -90,7 +90,7 @@ AUX_SOURCE_DIRECTORY( ${PROJECT_SOURCE_DIR}/framework/src FITTER_SRCS )
 
 
 #  This is here due to 'broken' sources called Roo* I have to remove these from the list of source files in framework/srcs
-#  If these files weren't here I could remove this code which is less than 
+#  If these files weren't here I could remove this code which is less than
 
 SET( ALL_HEADERS )
 LIST(LENGTH FITTER_SRCS SRC_LEN )

@@ -1,7 +1,7 @@
 // $Id: Novosibirsk.h,v 1.1 2009/11/10 10:35:49 gcowan Exp $
 /** @class Novosibirsk Novosibirsk.h
  *
- *  RapidFit PDF 
+ *  RapidFit PDF
  *
  *  @author Pete Clarke
  *  @date 2011-07-30

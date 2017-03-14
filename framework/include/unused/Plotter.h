@@ -40,7 +40,7 @@ class Plotter
 		vector<double> GetStatistics( string, double&, double&, int& );
 		void MakeObservablePlots( string, vector<DataPoint*>, vector<double>, vector<string>, TFile* );
 		void MakePlotCanvas( string, string, TH1F*, double*, double*, int );
-	
+
 		string weightName ;
 
 

@@ -110,7 +110,7 @@ Bd2JpsiKstar_sWave::Bd2JpsiKstar_sWave(PDFConfigurator* configurator ) :
                         cerr << "\n" << endl;
                         exit(-987);
                 }
-		
+
 
 		string fullFileName;
 
@@ -119,7 +119,7 @@ Bd2JpsiKstar_sWave::Bd2JpsiKstar_sWave(PDFConfigurator* configurator ) :
                 //input_file2.open( fileName.c_str(), ifstream::in );
                 //input_file2.close();
                 //bool local_fail2 = input_file2.fail();
-  
+
               if( getenv("RAPIDFITROOT") )
                 {
                         string path( getenv("RAPIDFITROOT") ) ;
@@ -144,7 +144,7 @@ Bd2JpsiKstar_sWave::Bd2JpsiKstar_sWave(PDFConfigurator* configurator ) :
                 {
                         fullFileName = fileName;
                 }
-	
+
 		TFile* f =  TFile::Open(fullFileName.c_str());
                 histo = (TH3D*) f->Get("histo"); //(fileName.c_str())));
 
@@ -396,7 +396,7 @@ double Bd2JpsiKstar_sWave::buildPDFnumerator()
 		+ f10 * ReAzeroAsB
 		;
 	if( useTimeAcceptance() ) v1  = v1 * timeAcc->getValue(time);
-	
+
 	v1  *=  angularFactor();
 	return v1;
 }

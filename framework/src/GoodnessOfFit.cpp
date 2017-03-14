@@ -434,9 +434,9 @@ namespace GoodnessOfFit
 
 			double pvalue = count/double(nPerm);
 
-	    string fileName = ResultFormatter::GetOutputFolder();	
+	    string fileName = ResultFormatter::GetOutputFolder();
 	    fileName.append("/tvalues.root");
-	    	
+
             TFile * outputFile = new TFile(fileName.c_str(), "RECREATE");
             TNtuple * ntuple = new TNtuple("tvalues", "tvalues", "T:Tdata:pvalue");
             for ( int i = 0; i < nPerm; i++ ) ntuple->Fill(Tvalues[i], T, pvalue);

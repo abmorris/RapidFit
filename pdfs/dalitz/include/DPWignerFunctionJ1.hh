@@ -21,7 +21,7 @@ class DPWignerFunctionJ1 : public virtual DPWignerFunction
     static double dp10(double cosTheta);
     static double dp1p1(double cosTheta);
     static double dp1m1(double cosTheta);
-   
+
 };
 
 #endif

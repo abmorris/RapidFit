@@ -35,7 +35,7 @@
 
 
 
-class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF 
+class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 {
 	public:
 		Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4(PDFConfigurator* );
@@ -50,10 +50,10 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 
 		//PELC For debugging purposes
 		//TH1D * histOfPdfValues ;
-		//TCanvas * c0 ; 
+		//TCanvas * c0 ;
 		//mutable int histCounter ;
 		//~PELC
-	
+
 		// These contain the ObservableRefs that correspond to the physics parameter names and references
 		ObservableRef gammaName;		// gamma
 		ObservableRef deltaGammaName;	// delta gamma
@@ -65,16 +65,16 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 
 		//PELC NEW : These are new physics parameters which might be used instead of some of those above later
 		ObservableRef cosphisName;		// fitting cosphis and sinphis independently
-		ObservableRef sinphisName;		// fitting cosphis and sinphis independently	
+		ObservableRef sinphisName;		// fitting cosphis and sinphis independently
 
-		// Mistag parameters  
+		// Mistag parameters
 		ObservableRef mistagName;		// mistag fraction  - may be used as observable also
 		ObservableRef mistagP1Name;		// mistag calib
 		ObservableRef mistagP0Name;		// mistag calib
 		ObservableRef mistagSetPointName;// mistag calib
 
 		// Time resolution
-		ObservableRef resScaleName;			// Scale to multiply all Gaussians with 
+		ObservableRef resScaleName;			// Scale to multiply all Gaussians with
 		ObservableRef res1Name;				// time resolution narrow
 		ObservableRef res2Name;				// time resolution wide
 		ObservableRef res3Name;				// time resolution tail
@@ -82,11 +82,11 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		ObservableRef res3FractionName;		// fraction of tail
 		ObservableRef timeOffsetName;		// time offset
 
-		// These are the angular accceptance factors. 
-		ObservableRef angAccEvenName ;  
+		// These are the angular accceptance factors.
+		ObservableRef angAccEvenName ;
 		ObservableRef angAccOddName ;
 
-		// Observables 
+		// Observables
 		ObservableRef timeName;		// proper time
 		ObservableRef cosThetaName;	// cos of angle of mu+ wrt z-axis in Jpsi frame
 		ObservableRef tagName;			// B tag
@@ -98,31 +98,31 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		double t ;
 		double ctheta_tr ;
 		int tag ;
-	
-		// Physics Fit Parameters 
+
+		// Physics Fit Parameters
 		double _gamma ;
 		double dgam ;
 
 		double Aeven_sq ;
 		double Aodd_sq ;
 		double As_sq ;
-	
+
 		double CachedAEven ;
 		double CachedAOdd ;
 		double CachedAs ;
 		void CacheAmplitudesAndAngles() ;
-	
+
 		double delta_ms ;
 		double phi_s ;
 		double _cosphis ;
 		double _sinphis ;
-	
+
 		// Mistag parameters
 		double _mistag ;
 		double _mistagP1 ;
 		double _mistagP0 ;
 		double _mistagSetPoint ;
-	
+
 		// Time resolution
 		double resolution ;
 		double resolutionScale ;
@@ -136,10 +136,10 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
                 // Angular acceptance factors
 		double angAccEven ;
 		double angAccOdd ;
-	
+
 		// Othere things calculated later on the fly
 		double tlo, thi ;
-	
+
 		// stored time primitives
 		mutable double expL_stored ;
 		mutable double expH_stored ;
@@ -151,8 +151,8 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		mutable double intExpCos_stored ;
 		void preCalculateTimeFactors() const ;
 		void preCalculateTimeIntegrals() const ;
-	
-	
+
+
 		bool timeIntegralCacheValid ;
 		vector< vector<double> > storeExpL;
 		vector< vector<double> > storeExpH;
@@ -160,64 +160,64 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		vector< vector<double> > storeExpCos;
 		void CacheTimeIntegrals() ;
 		void deCacheTimeIntegrals( unsigned int ires, unsigned int islice ) ;
-	
-	
-	
-		//Time acceptance 
+
+
+
+		//Time acceptance
 		SlicedAcceptance * timeAcc ;
-	
+
 		//Configurationparameters
 		bool _useTimeAcceptance ;
-	
+
 		bool _numericIntegralForce ;
 		bool _numericIntegralTimeOnly ;
-	
+
 		bool _useCosAndSin ;
 		bool allowNegativeAsSq ;
-	
+
 		//....................................
 		//Internal helper functions
-	
+
 		inline double ctrsq() const { return (ctheta_tr*ctheta_tr) ; }
 		inline double strsq() const { return (1.0 - ctrsq()) ; }
 
-		
-		inline double gamma_l() const { 
+
+		inline double gamma_l() const {
 			const double gl = gamma() + ( dgam *0.5 ) ;
 			if( gl < 0. ) {
 				cerr << " In Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4 : gamma_l() < 0 so setting it to 0.0000001 " << endl ;
 				return 0.0000001 ;
 			}
 			else
-				return gl ; 
+				return gl ;
 		}
 
-		inline double gamma_h() const { 
+		inline double gamma_h() const {
 			const double gh = gamma() - ( dgam *0.5 ) ;
 			if( gh < 0. ) {
 				cerr << " In Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4 : gamma_h() < 0 so setting it to 0.0000001 " << endl ;
 				return 0.0000001 ;
 			}
 			else
-				return gh ;   
+				return gh ;
 		}
 
 		inline double gamma() const { return _gamma ; }
 
 		inline double q() const { return tag ;}
-	
-		inline double mistag() const { 
+
+		inline double mistag() const {
 			double returnValue = -1000.;
-			
+
 			if( fabs((q()-0.0)) < DOUBLE_TOLERANCE ) {
 				returnValue = 0.5 ;
-			}			
+			}
 			else if( (_mistag>=0.0) && (_mistag <= 0.5) ) {
 				//Normal case
 				returnValue =  _mistagP0 + _mistagP1*(_mistag - _mistagSetPoint ) ;
 				if( returnValue < 0 )  returnValue = 0 ;
-				if( returnValue > 0.5) returnValue = 0.5 ; 
-			}			
+				if( returnValue > 0.5) returnValue = 0.5 ;
+			}
 			else if( _mistag < 0.0 ) {
 				cout << "Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4::mistag() : _mistag < 0 so set to 0 " << endl ;
 				returnValue = 0 ;
@@ -230,14 +230,14 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 				cout << "Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4::mistag() : WARNING ******If you got here you dont know what you are doing  "  << endl ;
 				exit(1);
 			}
-			return returnValue ;			
+			return returnValue ;
 		}
-	
+
 		inline double cosphis() const { return _cosphis ; }
 		inline double sinphis() const { return _sinphis ; }
-	
-		inline bool useTimeAcceptance() const { return _useTimeAcceptance ; }		
-	
+
+		inline bool useTimeAcceptance() const { return _useTimeAcceptance ; }
+
 		//......................................................
 		// Time primitives
 
@@ -254,10 +254,10 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		inline double intExpCos( ) const { return intExpCos_stored ; }
 
 
-	
+
 		//---------------------------------------------------------
 		//............. Differential cross sections and normalisations
-		double diffXsec(  )  const ;   	
+		double diffXsec(  )  const ;
 		double diffXsecTimeOnly(  ) const ;
 		double diffXsecNorm1(  ) const ;
 		double diffXsecCompositeNorm1( unsigned int resolutionIndex )  ;
@@ -265,11 +265,11 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		bool normalisationCacheValid ;
 		double normalisationCacheValue[3] ;
 		//double normalisationCacheValueRes2[3] ;
-	
+
 		void DebugPrintXsec( string , double ) const ;
 		void DebugPrintNorm( string , double ) const ;
-	
-		
+
+
 		//------------------------------------------------------------------------------
 		// These are the time factors and their analytic integrals for the one angle PDF
 
@@ -277,11 +277,11 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		inline double timeFactorEven(  )  const
 		{
 			//if( t < 0.0 ) return 0.0 ;
-			const double result = 
-			( 1.0 + cosphis() ) * expL( ) 
-			+ ( 1.0 - cosphis() ) * expH( ) 
+			const double result =
+			( 1.0 + cosphis() ) * expL( )
+			+ ( 1.0 - cosphis() ) * expH( )
 			+ q() * ( 2.0 * sinphis()   ) * expSin( ) * (1.0 - 2.0*mistag()) ;
-		  
+
 			//DEBUG
 			if( DEBUGFLAG && (result < 0) ) {
 				cout << " Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4::timeFactorEven() : result < 0 " << endl ;
@@ -299,8 +299,8 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		inline double timeFactorEvenInt(  )  const
 		{
 			return
-			( 1.0 + cosphis() )  * intExpL()     
-			+ ( 1.0 - cosphis() )  * intExpH()          
+			( 1.0 + cosphis() )  * intExpL()
+			+ ( 1.0 - cosphis() )  * intExpH()
 			+ q() * ( 2.0 * sinphis()   ) * intExpSin( ) * (1.0 - 2.0*mistag()) ;
 		}
 
@@ -310,8 +310,8 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		{
 			//if( t < 0.0 ) return 0.0 ;
 			return
-			( 1.0 - cosphis() ) * expL( ) 
-			+ ( 1.0 + cosphis() ) * expH( ) 
+			( 1.0 - cosphis() ) * expL( )
+			+ ( 1.0 + cosphis() ) * expH( )
 			- q() * ( 2.0 * sinphis()   ) * expSin( ) * (1.0 - 2.0*mistag()) ;
 		}
 
@@ -319,7 +319,7 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 		{
 			return
 			( 1.0 - cosphis() ) * intExpL()
-			+ ( 1.0 + cosphis() ) * intExpH() 
+			+ ( 1.0 + cosphis() ) * intExpH()
 			- q() * ( 2.0 * sinphis()   ) * intExpSin( ) * (1.0 - 2.0*mistag()) ;
 		}
 
@@ -333,7 +333,7 @@ class Bs2JpsiPhi_SignalAlt_BaseClass_1angle_v4  :  public BasePDF
 
 		//........ for one anfgle tests ...................
 		inline double angleFactorEven(  )   const { return (1.0 + ctrsq()) * 3.0/8.0 /*(Mathematics::Global_Frac()  * 4.0/3.0*TMath::Pi()*/ ; }
-	
+
 		//......... for one angle tests ...................
 		inline double angleFactorOdd(  )   const { return  strsq() * 3.0/4.0 /*Mathematics::Global_Frac() * 8.0/3.0*TMath::Pi()*/ ; }
 

@@ -13,7 +13,7 @@
 // 2007-11-05 : Peter Clarke
 //-----------------------------------------------------------------------------
 
-#include "RooPdf_Bs2JPsiPhi.h"  
+#include "RooPdf_Bs2JPsiPhi.h"
 
 #include <TMath.h>
 #include <cmath>
@@ -24,7 +24,7 @@ using namespace std;
 
 //..................................
 // Constructor for three angle
-RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t btype, 
+RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t btype,
 		    RooAbsReal& _t,
 		    RooAbsReal& _ctheta_tr,
 		    RooAbsReal& _phi_tr,
@@ -39,16 +39,16 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 		    RooAbsReal& _phi_s,
 		    RooAbsReal& _tagFraction,
 		    RooAbsReal& _resolution
-    ) : 
-    RooAbsPdf( name, title ), 
+    ) :
+    RooAbsPdf( name, title ),
     t( "t", "time", this, _t ),
     ctheta_tr( "ctheta_tr", "ctheta_tr", this, _ctheta_tr ),
     phi_tr( "phi_tr", "phi_tr", this, _phi_tr ),
     ctheta_1( "ctheta_1", "ctheta_1", this, _ctheta_1 ),
-    gamma_in("gamma", "gamma", this, _gamma ), 
-    dgam("dgam", "Delta Gamma", this, _dgam ), 
-    Rt("Rt", "Rt", this, _Rt ), 
-    Rp("Rp", "Rp", this, _Rp ), 
+    gamma_in("gamma", "gamma", this, _gamma ),
+    dgam("dgam", "Delta Gamma", this, _dgam ),
+    Rt("Rt", "Rt", this, _Rt ),
+    Rp("Rp", "Rp", this, _Rp ),
     delta1( "delta1", "delta1", this, _delta1 ),
     delta2( "delta2", "delta2", this, _delta2 ),
     delta_ms( "delta_ms", "delta_ms", this, _delta_ms ),
@@ -71,13 +71,13 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 		    RooAbsReal& _phi_s,
 		    RooAbsReal& _tagFraction,
 		    RooAbsReal& _resolution
-   ) : 
-    RooAbsPdf( name, title ), 
+   ) :
+    RooAbsPdf( name, title ),
     t( "t", "time", this, _t ),
     ctheta_tr( "ctheta_tr", "ctheta_tr", this, _ctheta_tr ),
-    gamma_in("gamma", "gamma", this, _gamma ), 
-    dgam("dgam", "Delta Gamma", this, _dgam ), 
-    Rt("Rt", "Rt", this, _Rt ), 
+    gamma_in("gamma", "gamma", this, _gamma ),
+    dgam("dgam", "Delta Gamma", this, _dgam ),
+    Rt("Rt", "Rt", this, _Rt ),
     delta_ms( "delta_ms", "delta_ms", this, _delta_ms ),
     phi_s( "phi_s", "phi_s", this, _phi_s ),
     tagFraction( "tagFraction", "tagFraction", this, _tagFraction ),
@@ -88,17 +88,17 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 
 
   //....................................
-  //Copy constructor  
+  //Copy constructor
   RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const RooPdf_Bs2JPsiPhi& other, const char* name) :
-    RooAbsPdf( other, name ), 
+    RooAbsPdf( other, name ),
     t( "t", this, other.t ),
     ctheta_tr( "ctheta_tr", this, other.ctheta_tr ),
     phi_tr( "phi_tr", this, other.phi_tr ),
     ctheta_1( "ctheta_1", this, other.ctheta_1 ),
-    gamma_in( "gamma", this, other.gamma_in), 
-    dgam( "dgam", this, other.dgam), 
-    Rt( "Rt", this, other.Rt), 
-    Rp( "Rp", this, other.Rp), 
+    gamma_in( "gamma", this, other.gamma_in),
+    dgam( "dgam", this, other.dgam),
+    Rt( "Rt", this, other.Rt),
+    Rp( "Rp", this, other.Rp),
     delta1( "delta1", this, other.delta1 ),
     delta2( "delta2", this, other.delta2 ),
     delta_ms( "delta_ms", this, other.delta_ms ),
@@ -107,14 +107,14 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
     resolution( "resolution", this, other.resolution),
     BTYPE(other.BTYPE),
     MODE(other.MODE)
-    { } 
+    { }
 
- 
+
   //....................................
   //Internal helper functions
-  
+
   //Amplitudes Used in one angle PDF
-  Double_t RooPdf_Bs2JPsiPhi::AoAo() const  { return Rt; };   
+  Double_t RooPdf_Bs2JPsiPhi::AoAo() const  { return Rt; };
   Double_t RooPdf_Bs2JPsiPhi::AeAe() const { return 1-Rt ; };
 
   //Amplitudes Used in three angle PDF
@@ -140,44 +140,44 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   // Time primitives including single gaussian resolution
   //
   // Much of the single gausian resolutino code is copied from Yue Hongs pdf
-  
-  Double_t RooPdf_Bs2JPsiPhi::expL() const 
+
+  Double_t RooPdf_Bs2JPsiPhi::expL() const
   {
-    if(resolution>0.) {     
+    if(resolution>0.) {
 
       Double_t theExp = exp( -t*gamma_l() + resolution*resolution * gamma_l()*gamma_l() / 2. ) ;
       Double_t theErfc = RooMath::erfc(  -( t - resolution*resolution*gamma_l() ) /sqrt(2.)/resolution )  ;
       return theExp * theErfc  / 2.0 ;
 
       // Yue hongs code
-      //Double_t c = gamma_l() * resolution /sqrt(2.); 
+      //Double_t c = gamma_l() * resolution /sqrt(2.);
       //Double_t u = t / resolution / sqrt(2.);
       //return exp( c*c - gamma_l()*t ) * RooMath::erfc(c-u) / 2.;
-    }	
-    else 
+    }
+    else
       if( t < 0.0 ) return 0.0 ;
       return exp( -gamma_l() * t ) ;
   }
 
-  Double_t RooPdf_Bs2JPsiPhi::expH() const 
+  Double_t RooPdf_Bs2JPsiPhi::expH() const
   {
-    if(resolution>0.) {     
+    if(resolution>0.) {
 
       Double_t theExp = exp( -t*gamma_h() + resolution*resolution * gamma_h()*gamma_h() / 2. ) ;
       Double_t theErfc = RooMath::erfc(  -( t - resolution*resolution*gamma_h() ) /sqrt(2.)/resolution )  ;
       return theExp * theErfc  / 2.0 ;
 
       //Yue Hongs code
-      //Double_t c = gamma_h() * resolution /sqrt(2.); 
+      //Double_t c = gamma_h() * resolution /sqrt(2.);
       //Double_t u = t / resolution / sqrt(2.);
       //return exp( c*c - gamma_h()*t ) * RooMath::erfc(c-u) / 2.;
-    }	
-    else 
+    }
+    else
       if( t < 0.0 ) return 0.0 ;
       return exp( -gamma_h() * t ) ;
   }
 
-  Double_t RooPdf_Bs2JPsiPhi::expSin() const  
+  Double_t RooPdf_Bs2JPsiPhi::expSin() const
   {
     if( resolution > 0. ) {
 
@@ -201,10 +201,10 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 
   }
 
-  Double_t RooPdf_Bs2JPsiPhi::expCos() const 
+  Double_t RooPdf_Bs2JPsiPhi::expCos() const
   {
     if( resolution > 0. ) {
- 
+
       //Double_t theExp = exp( -t*gamma() + resolution*resolution * ( gamma()*gamma() - delta_ms*delta_ms ) / 2. ) ;
       //Double_t theCos = cos( delta_ms * ( t - resolution*resolution*gamma() ) ) ;
       //Double_t theSin = sin( delta_ms * ( t - resolution*resolution*gamma() ) ) ;
@@ -226,19 +226,19 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   }
 
   // All of these functions were taken from Yue Hongs code
-  
+
   // Calculate exp(-u^2) cwerf(swt*c + i(u+c)), taking care of numerical instabilities
   //RooComplex RooPdf_Bs2JPsiPhi::evalCerf(Double_t swt, Double_t u, Double_t c) const {
   //  RooComplex z(swt*c,u+c);
   //  return (z.im()>-4.0) ? RooMath::FastComplexErrFunc(z)*exp(-u*u) : evalCerfApprox(swt,u,c) ;
   ///}  DIDNT APPEAR TO BE USED
-    
+
   // Calculate Re(exp(-u^2) cwerf(swt*c + i(u+c))), taking care of numerical instabilities
   Double_t RooPdf_Bs2JPsiPhi::evalCerfRe(Double_t swt, Double_t u, Double_t c) const {
     RooComplex z(swt*c,u+c);
     return (z.im()>-4.0) ? RooMath::FastComplexErrFuncRe(z)*exp(-u*u) : evalCerfApprox(swt,u,c).re() ;
   }
-  
+
   // Calculate Im(exp(-u^2) cwerf(swt*c + i(u+c))), taking care of numerical instabilities
   Double_t RooPdf_Bs2JPsiPhi::evalCerfIm(Double_t swt, Double_t u, Double_t c) const {
     RooComplex z(swt*c,u+c);
@@ -250,7 +250,7 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   RooComplex RooPdf_Bs2JPsiPhi::evalCerfApprox(Double_t swt, Double_t u, Double_t c) const
   {
      static Double_t rootpi= sqrt(atan2(0.,-1.));
-     RooComplex z(swt*c,u+c);  
+     RooComplex z(swt*c,u+c);
      RooComplex zc(u+c,-swt*c);
      RooComplex zsq= z*z;
      RooComplex v= -zsq - u*u;
@@ -290,9 +290,9 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   Double_t RooPdf_Bs2JPsiPhi::timeFactorEven(  )  const
     {
       //if( t < 0.0 ) return 0.0 ;
-      Double_t result = 
-	  ( 1.0 + cos(phi_s) ) * expL( ) 
-        + ( 1.0 - cos(phi_s) ) * expH( ) 
+      Double_t result =
+	  ( 1.0 + cos(phi_s) ) * expL( )
+        + ( 1.0 - cos(phi_s) ) * expH( )
         + q() * ( 2.0 * sin(phi_s)   ) * expSin( ) * (1.0 - 2.0*tagFraction) ;
       return result ;
     };
@@ -303,9 +303,9 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
       Double_t thi = t.max() ;
       if(tlo < 0.) tlo = 0. ;
 
-      Double_t result = 
-	  ( 1.0 + cos(phi_s) )  * intExp( gamma_l(), tlo, thi )     
-        + ( 1.0 - cos(phi_s) )  * intExp( gamma_h(), tlo, thi )          
+      Double_t result =
+	  ( 1.0 + cos(phi_s) )  * intExp( gamma_l(), tlo, thi )
+        + ( 1.0 - cos(phi_s) )  * intExp( gamma_h(), tlo, thi )
 	+ q() * ( 2.0 * sin(phi_s)   ) * intExpSin( gamma(), delta_ms, tlo, thi ) * (1.0 - 2.0*tagFraction) ;
       return result ;
     };
@@ -315,9 +315,9 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   Double_t RooPdf_Bs2JPsiPhi::timeFactorOdd(  )   const
     {
       //if( t < 0.0 ) return 0.0 ;
-      Double_t result = 
-          ( 1.0 - cos(phi_s) ) * expL( ) 
-        + ( 1.0 + cos(phi_s) ) * expH( ) 
+      Double_t result =
+          ( 1.0 - cos(phi_s) ) * expL( )
+        + ( 1.0 + cos(phi_s) ) * expH( )
         - q() * ( 2.0 * sin(phi_s)   ) * expSin( ) * (1.0 - 2.0*tagFraction) ;
       return result ;
     };
@@ -328,9 +328,9 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
       Double_t thi = t.max() ;
       if(tlo < 0.) tlo = 0. ;
 
-      Double_t result = 
+      Double_t result =
 	  ( 1.0 - cos(phi_s) ) * intExp( gamma_l(), tlo, thi )
-        + ( 1.0 + cos(phi_s) ) * intExp( gamma_h(), tlo, thi ) 
+        + ( 1.0 + cos(phi_s) ) * intExp( gamma_h(), tlo, thi )
         - q() * ( 2.0 * sin(phi_s)   ) * intExpSin( gamma(), delta_ms, tlo, thi ) * (1.0 - 2.0*tagFraction) ;
       return result ;
     };
@@ -340,17 +340,17 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 // These are the time factors and their analytic integrals for the three angle PDF
 
   //...........................
-  Double_t RooPdf_Bs2JPsiPhi::timeFactorA0A0( )    const { return timeFactorEven( ) ; } ;      
+  Double_t RooPdf_Bs2JPsiPhi::timeFactorA0A0( )    const { return timeFactorEven( ) ; } ;
   Double_t RooPdf_Bs2JPsiPhi::timeFactorA0A0Int( ) const { return timeFactorEvenInt( ) ; } ;
-      
+
   //...........................
   Double_t RooPdf_Bs2JPsiPhi::timeFactorAPAP( )    const { return timeFactorEven( ) ; } ;
   Double_t RooPdf_Bs2JPsiPhi::timeFactorAPAPInt( ) const { return timeFactorEvenInt( ) ; } ;
-      
+
   //...........................
   Double_t RooPdf_Bs2JPsiPhi::timeFactorATAT( )    const { return timeFactorOdd( ) ; } ;
   Double_t RooPdf_Bs2JPsiPhi::timeFactorATATInt( ) const { return timeFactorOddInt( ) ; } ;
-     
+
  //...........................
   Double_t RooPdf_Bs2JPsiPhi::timeFactorReA0AP( )  const
     {
@@ -358,43 +358,43 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
       Double_t result = cos(delta2-delta1) * this->timeFactorEven(  ) ;
       return result ;
     } ;
-     
+
   Double_t RooPdf_Bs2JPsiPhi::timeFactorReA0APInt( ) const
     {
       Double_t result = cos(delta2-delta1) * this->timeFactorEvenInt( ) ;
       return result ;
     } ;
-     
+
 //...........................
   Double_t RooPdf_Bs2JPsiPhi::timeFactorImAPAT( ) const
     {
       //if( t < 0.0 ) return 0.0 ;
-      Double_t result = 
+      Double_t result =
 	    q() * 2.0  * ( sin(delta1)*expCos( ) - cos(delta1)*cos(phi_s)*expSin( ) ) * (1.0 - 2.0*tagFraction)
 	  - 1.0 * ( expH( ) - expL( ) ) * cos(delta1) * sin(phi_s)  ;
-	    
+
 	  return result ;
     } ;
-     
+
   Double_t RooPdf_Bs2JPsiPhi::timeFactorImAPATInt( ) const
     {
       Double_t tlo = t.min() ;
       Double_t thi = t.max() ;
       if(tlo < 0.) tlo = 0. ;
 
-      Double_t result = 
+      Double_t result =
 	q() * 2.0  * ( sin(delta1)*intExpCos(gamma(),delta_ms,tlo,thi) - cos(delta1)*cos(phi_s)*intExpSin(gamma(),delta_ms,tlo,thi) ) * (1.0 - 2.0*tagFraction)
-	- 1.0 * ( intExp(gamma_h(),tlo,thi) - intExp(gamma_l(),tlo,thi) ) * cos(delta1) * sin(phi_s) ;	    
+	- 1.0 * ( intExp(gamma_h(),tlo,thi) - intExp(gamma_l(),tlo,thi) ) * cos(delta1) * sin(phi_s) ;
          return result ;
     } ;
-     
+
 
 //...........................
   Double_t RooPdf_Bs2JPsiPhi::timeFactorImA0AT(  ) const
     {
       //if( t < 0.0 ) return 0.0 ;
       Double_t result =
-	    q() * 2.0  * ( sin(delta2)*expCos( ) - cos(delta2)*cos(phi_s)*expSin( ) ) * (1.0 - 2.0*tagFraction)	
+	    q() * 2.0  * ( sin(delta2)*expCos( ) - cos(delta2)*cos(phi_s)*expSin( ) ) * (1.0 - 2.0*tagFraction)
 	   -1.0 * ( expH( ) - expL( ) ) * cos(delta2) * sin(phi_s) ;
        return result ;
     } ;
@@ -405,16 +405,16 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
       Double_t thi = t.max() ;
       if(tlo < 0.) tlo = 0. ;
 
-      Double_t result = 
+      Double_t result =
 	q() * 2.0  * ( sin(delta2)*intExpCos(gamma(),delta_ms,tlo,thi) - cos(delta2)*cos(phi_s)*intExpSin(gamma(),delta_ms,tlo,thi)  ) * (1.0 - 2.0*tagFraction)
 	-1.0 * ( intExp(gamma_h(),tlo,thi) - intExp(gamma_l(),tlo,thi)  ) * cos(delta2) * sin(phi_s) ;
        return result ;
     } ;
-     
+
 
 //------------------------------------------------------
 // Angle factors for one angle PDF
-	
+
   //.................................
   Double_t RooPdf_Bs2JPsiPhi::angleFactorEven(  )  const
     {
@@ -431,17 +431,17 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
       return result ;
     };
 
-	
+
 //------------------------------------------------------
 // Angle factors for three angle PDFs
-	
-	
+
+
   //...........................
   Double_t RooPdf_Bs2JPsiPhi::angleFactorA0A0(  ) const
 	{
-          // Normalised to  1	
+          // Normalised to  1
 	  Double_t result = 2.0 * ct1sq() * (1.0 - strsq()*cphsq() ) * (9.0/32.0/TMath::Pi());
-	  return result ;	
+	  return result ;
 	};
 
   //...........................
@@ -449,7 +449,7 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 	{
           // Normalised to  1
 	  Double_t result =  st1sq() * (1.0 - strsq()*sphsq() ) * (9.0/32.0/TMath::Pi());
-	  return result ;	
+	  return result ;
 	};
 
   //...........................
@@ -458,35 +458,35 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
           // Normalised to  1
 	  Double_t result = st1sq() * strsq() * (9.0/32.0/TMath::Pi());
 	  return result ;
-	
+
 	};
 
   //...........................
   Double_t RooPdf_Bs2JPsiPhi::angleFactorReA0AP( ) const
 	{
           // Normalised to  0
-          Double_t theta_1 = acos(ctheta_1) ;	
+          Double_t theta_1 = acos(ctheta_1) ;
 	  Double_t result =    sin(2.0*theta_1) * strsq() * sin(2.0*phi_tr) / sqrt(2.0) * (9.0/32.0/TMath::Pi());
-	  return result ;	
+	  return result ;
 	};
 
   //...........................
   Double_t RooPdf_Bs2JPsiPhi::angleFactorImAPAT(  ) const
 	{
           // Normalised to  0
-          Double_t theta_tr = acos(ctheta_tr) ;		
+          Double_t theta_tr = acos(ctheta_tr) ;
 	  Double_t result =   -1.0 *  st1sq() * sin(2.0*theta_tr) * sin(phi_tr) * (9.0/32.0/TMath::Pi()) ;
-	  return result ;	
+	  return result ;
 	};
 
   //...........................
   Double_t RooPdf_Bs2JPsiPhi::angleFactorImA0AT(  ) const
 	{
           // Normalised to  0
-          Double_t theta_tr = acos(ctheta_tr) ;		
-          Double_t theta_1 = acos(ctheta_1) ;		
+          Double_t theta_tr = acos(ctheta_tr) ;
+          Double_t theta_1 = acos(ctheta_1) ;
 	  Double_t result =  +1.0*   sin(2.0*theta_1) * sin(2.0*theta_tr) * cos(phi_tr) / sqrt(2.0) * (9.0/32.0/TMath::Pi());
-	  return result ;	
+	  return result ;
 	};
 
 
@@ -494,12 +494,12 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 // Putting it all together to make up the differential cross sections.
 
   //.......................................
-  // Evaluate mandatory method		     
+  // Evaluate mandatory method
   Double_t RooPdf_Bs2JPsiPhi::evaluate( )  const
    {
-     if( MODE == 1 ) 
+     if( MODE == 1 )
        return this->diffXsec( );
-      else 
+      else
         return this->diffXsecOne( );
    };
 
@@ -507,21 +507,21 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   // Diff cross sections
 
   Double_t RooPdf_Bs2JPsiPhi::diffXsec(  )  const
-    {   
-      Double_t xsec = 
+    {
+      Double_t xsec =
         0.5 * A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) +
         0.5 * AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) +
         0.5 * AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +
         0.5 * A0()*AP() * timeFactorReA0AP(  ) * angleFactorReA0AP( ) +
         0.5 * AP()*AT() * timeFactorImAPAT(  ) * angleFactorImAPAT( ) +
         0.5 * A0()*AT() * timeFactorImA0AT(  ) * angleFactorImA0AT( ) ;
-      
+
       return xsec ;
     };
 
   Double_t  RooPdf_Bs2JPsiPhi::diffXsecOne(  ) const
     {
-      Double_t result = 
+      Double_t result =
 	0.5 * AeAe() * timeFactorEven(  ) * angleFactorEven(  )  +
 	0.5 * AoAo() * timeFactorOdd(  )  * angleFactorOdd(  ) ;
       return result ;
@@ -531,8 +531,8 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
   // Integral over all variables: t + angles
 
   Double_t RooPdf_Bs2JPsiPhi::diffXsecNorm1(  ) const
-    {      
-     Double_t norm = 
+    {
+     Double_t norm =
        0.5 * A0()*A0() * timeFactorA0A0Int(  ) +    // Angle factors normalised to 1
        0.5 * AP()*AP() * timeFactorAPAPInt(  ) +
        0.5 * AT()*AT() * timeFactorATATInt(  ) ;
@@ -541,8 +541,8 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
     };
 
   Double_t RooPdf_Bs2JPsiPhi::diffXsecOneNorm1(  ) const
-    {      
-     Double_t norm = 
+    {
+     Double_t norm =
 	0.5 * AeAe() * timeFactorEvenInt(  )  +    // Angle factors normalised to 1
 	0.5 * AoAo() * timeFactorOddInt(  )   ;
       return norm ;
@@ -550,11 +550,11 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
 
 
   //...................................
-  // Integral over angles only 3 
+  // Integral over angles only 3
 
   Double_t RooPdf_Bs2JPsiPhi::diffXsecNorm2(  ) const
-    {          
-     Double_t norm = 
+    {
+     Double_t norm =
        0.5 * A0()*A0() * timeFactorA0A0(  ) +    // Angle factors normalised to 1
        0.5 * AP()*AP() * timeFactorAPAP(  ) +
        0.5 * AT()*AT() * timeFactorATAT(  ) ;
@@ -563,8 +563,8 @@ RooPdf_Bs2JPsiPhi::RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t 
     };
 
   Double_t RooPdf_Bs2JPsiPhi::diffXsecOneNorm2(  ) const
-    {          
-     Double_t norm = 
+    {
+     Double_t norm =
 	0.5 * AeAe() * timeFactorEven(  )  +     // Angle factors normalised to 1
 	0.5 * AoAo() * timeFactorOdd(  )   ;
       return norm ;

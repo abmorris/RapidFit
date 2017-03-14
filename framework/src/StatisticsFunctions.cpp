@@ -61,7 +61,7 @@ int StatisticsFunctions::OptimumBinNumber( const vector<double> Numbers )
 	return (int)ceil( range / width );
 }
 
-//Returns the maximum and minimum of a vector of doubles 
+//Returns the maximum and minimum of a vector of doubles
 double StatisticsFunctions::Maximum( const vector<double> Numbers )
 {
 	if ( Numbers.size() > 0 )
@@ -84,7 +84,7 @@ double StatisticsFunctions::Maximum( const vector<double> Numbers )
 }
 
 double StatisticsFunctions::Minimum( const vector<double> Numbers )
-{       
+{
 	if ( Numbers.size() > 0 )
 	{
 		double minimum = Numbers[0];

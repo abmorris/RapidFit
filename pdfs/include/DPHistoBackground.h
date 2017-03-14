@@ -3,7 +3,7 @@
  *
  *  PDF for Bs2JpsiPhi long lived background with time resolution + non-trivial angular distribution realised by a histogram
  *
- *  @author Greig Cowan 
+ *  @author Greig Cowan
  *  @date 2012-04-03
  */
 
@@ -42,10 +42,10 @@ class DPHistoBackground : public BasePDF
 		// These contain the strings that correspond
 		// to the observable names that are used in the
 		// PDF.
-		ObservableRef massName;		
-		ObservableRef cosTheta1Name;	
-		ObservableRef phiName;			
-		ObservableRef cosTheta2Name;	
+		ObservableRef massName;
+		ObservableRef cosTheta1Name;
+		ObservableRef phiName;
+		ObservableRef cosTheta2Name;
 
 		double mass;
 		double cos1;

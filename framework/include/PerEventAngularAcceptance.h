@@ -1,5 +1,5 @@
 /**
-        @class PerEventAngularAcceptance 
+        @class PerEventAngularAcceptance
 
         @author Greig Cowan greig.cowan@cern.ch
 	      @date 2010-05-03
@@ -61,8 +61,8 @@ class PerEventAngularAcceptance
 		map<string, TH1F *> cosThetaMuHistos;
 		map<string, TH1F *> cosThetaMuHistosPredicted;
 		map<string, TH1F *> cosThetaMuTmpHistos; // used to store quantities during event generation
-		map<string, TH1F *> cosThetaMuSumHistos; // Weighted sum of all the 
-		map<string, TH1F *> cosThetaMuHistosEffRatio; // The efficiency we are after 
+		map<string, TH1F *> cosThetaMuSumHistos; // Weighted sum of all the
+		map<string, TH1F *> cosThetaMuHistosEffRatio; // The efficiency we are after
 		map<string, TH1F *> cosThetaKHistos;
 		map<string, TH1F *> cosThetaKHistosPredicted;
 		map<string, TH1F *> cosThetaKTmpHistos;
@@ -71,9 +71,9 @@ class PerEventAngularAcceptance
 		map<string, TH1F *> pHistos;
 		map<string, TH1F *> pHistosPredicted;
 		map<string, TH1F *> pTmpHistos; // used to store quantities during event generation
-		map<string, TH1F *> pSumHistos; // Weighted sum of all the 
-		map<string, TH1F *> pHistosEffRatio; // The efficiency we are after 
-		map<string, TH1F *> pHistosEffRatioPrev; // The efficiency we are after 
+		map<string, TH1F *> pSumHistos; // Weighted sum of all the
+		map<string, TH1F *> pHistosEffRatio; // The efficiency we are after
+		map<string, TH1F *> pHistosEffRatioPrev; // The efficiency we are after
 		map<string, TH1F *> ptHistos;
 		map<string, TH1F *> ptHistosPredicted;
 		map<string, TH1F *> ptTmpHistos;
@@ -95,7 +95,7 @@ class PerEventAngularAcceptance
 		double pmin_jpsi, ptmin_jpsi;
 
 		int cosbins, pbins, ptbins;
-		
+
 		double w_sum_gen;
 
 		// Required to read stuff from the ntuple
@@ -122,7 +122,7 @@ class PerEventAngularAcceptance
 		TBranch   *b_kaon_PE;
 
 	protected:
-	  
+
 	private:
 		//	Uncopyable!
 		PerEventAngularAcceptance ( const PerEventAngularAcceptance& );

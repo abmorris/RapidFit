@@ -85,7 +85,7 @@ class StringProcessing
 		static void RemoveCharacter( string& inputStr, const char inputChar );
 
 		/*!
-		 * @brief Replace an instance of a substring within a 
+		 * @brief Replace an instance of a substring within a
 		 *
 		 * @param inputStr	This is the string which should have it's substrings replaced
 		 *
@@ -153,7 +153,7 @@ class StringProcessing
 		 *
 		 * @param duplicated		This is the vector of strings which occur multiple times in the inputVec
 		 *
-		 * @return This is is a new vector of strings assembled from the unique entries in the inputVec 
+		 * @return This is is a new vector of strings assembled from the unique entries in the inputVec
 		 */
 		static vector<string> RemoveDuplicates( const vector<string> inputVec, vector<string>& duplicated = *((vector<string>*) NULL) );
 
@@ -321,7 +321,7 @@ class StringProcessing
 		static string FindFileName( const string fileName, bool quiet=false );
 
 		/*!
-		 * @brief 
+		 * @brief
 		 *
 		 * Returns a vector populated with the contents of the original vector
 		 * If the element is NOT in the input vector this returns the input

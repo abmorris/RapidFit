@@ -37,7 +37,7 @@ LongLivedBkg::LongLivedBkg(PDFConfigurator* configurator ) :
 	, timeName				( configurator->getName("time") )
 	//Other things to be initialised
 	, _useTimeAcceptance(false)
-	, tauLL1(), tauLL2(), f_LL1() 
+	, tauLL1(), tauLL2(), f_LL1()
 	, sigmaLL(), sigmaLL1(), sigmaLL2(), timeResLL1Frac()
 	, tlow(), thigh(), time()
 	, timeAcc(NULL)
@@ -45,7 +45,7 @@ LongLivedBkg::LongLivedBkg(PDFConfigurator* configurator ) :
 	cout << "Constructing LongLivedBkg::  " << endl ;
 
 	//...........................................
-        // Configure to use time acceptance machinery 
+        // Configure to use time acceptance machinery
         _useTimeAcceptance = configurator->isTrue( "UseTimeAcceptance" ) ;
         if( _useTimeAcceptance ) {
                         timeAcc = new SlicedAcceptance( "File" , configurator->getConfigurationValue( "TimeAcceptanceFile" ) ) ;
@@ -54,7 +54,7 @@ LongLivedBkg::LongLivedBkg(PDFConfigurator* configurator ) :
 
 	//...............
 	MakePrototypes();
-	
+
 }
 
 
@@ -145,9 +145,9 @@ double LongLivedBkg::Evaluate(DataPoint * measurement)
 		exit(1);
 	}
 
-	
+
 	if( _useTimeAcceptance ) returnValue = returnValue * timeAcc->getValue(time);
-	
+
 	return returnValue;
 
 }
@@ -231,7 +231,7 @@ double LongLivedBkg::Normalisation(PhaseSpaceBoundary * boundary)
 
 	double tlo_boundary = tlow;
 	double thi_boundary = thigh;
-	
+
 	if( _useTimeAcceptance ) {
 		//This loops over each time slice, does the normalisation between the limits, and accumulates
 		for( unsigned int islice = 0; islice < timeAcc->numberOfSlices(); ++islice )

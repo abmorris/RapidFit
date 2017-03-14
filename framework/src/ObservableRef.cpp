@@ -91,6 +91,6 @@ int ObservableRef::GetIndexMap( const size_t thisID ) const
 	else
 	{
 		return -1;
-	}	
+	}
 }
 

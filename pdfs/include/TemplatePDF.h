@@ -1,6 +1,6 @@
 /** @class TemplatePDF TemplatePDF.h
  *
- *  RapidFit TemplatePDF 
+ *  RapidFit TemplatePDF
  *
  *  @author Rob
  *  @date 20xx-yy-zz

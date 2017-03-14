@@ -55,7 +55,7 @@ class Bs2PhiPhi : public BasePDF
 
         // These contain the ObservableRefs that correspond
         // to the observable names that are used in the
-        // PDF. 
+        // PDF.
         ObservableRef timeName;    // proper time
         ObservableRef theta_1Name;  // angle between Phi1 p vector and its K+ daughter's p vector
         ObservableRef theta_2Name;  // angle between Phi2 p vector and its K+ daughter's p vector
@@ -63,19 +63,19 @@ class Bs2PhiPhi : public BasePDF
         ObservableRef tagName;     // B tag
         ObservableRef mistagName;  // B mistag
 
-	ObservableRef timeconstraintName;	
-    
+	ObservableRef timeconstraintName;
+
         void getPhysicsParameters( double&, double&, double&, double&, double&
                                  , double&, double&, double&, double&, double&);
         // 10 parameters: gamma_{s,l,h}, deltaM, Phi_s, A{zero,para,perp}_sq, delta_{1,2}
-        
+
         void getAngularFunctions( double&, double&, double&, double&, double&, double&, DataPoint*);
         // 6 output parameters: f_{1~6}
-        
+
         void getTimeDependentAmplitudes( double&, double&, double&, double&, double&, double&, DataPoint*, int);
         // double AzeroAzero, AparaApara, AperpAperp, ImAparaAperp, ReAzeroApara, ImAzeroAperp
         // int Btype
-        
+
         void getTimeAmplitudeIntegrals(double&, double&, double&, PhaseSpaceBoundary*, int);
         // double AzeroAzeroInt, AparaAparaInt, AperpAperpInt
         // int Btype
@@ -84,8 +84,8 @@ class Bs2PhiPhi : public BasePDF
         inline double getMainIntAnswer(double, double, double, double, double, double, double, int, int);
         // double tmin, tmax, gamma_s, gamma_l, gamma_h, Dms, phis
         // int Btype, Swap (for K3 which has a few sign changes compared to K1,2)
-    
-            // Work out what interference terms these correspond to.        
+
+            // Work out what interference terms these correspond to.
         //inline double A4def(const double, const double, double, double, double, double, double, double, double, double, int);
         //inline double A5def(const double, const double, double, double, double, double, double, double, double, double, int);
         // double tmin, tmax, k0, tauL, tauH, tauBar, Dms, phis, tphase1, tphase2

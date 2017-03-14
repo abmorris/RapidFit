@@ -19,10 +19,10 @@
 
 using namespace::std;
 
-RESMODEL_CREATOR( Phis2012ResolutionModel ); 
+RESMODEL_CREATOR( Phis2012ResolutionModel );
 
 //............................................
-// Constructor 
+// Constructor
 Phis2012ResolutionModel::Phis2012ResolutionModel( PDFConfigurator* configurator, bool quiet ) :
 	timeResFracName            ( configurator->getName( "timeResFraction" ) ),
 	eventResolutionName	( configurator->getName( "eventResolution" ) ),
@@ -195,13 +195,13 @@ double Phis2012ResolutionModel::GetThisScale()
 		sfbar = sfBarOffset + (sfBarSlope)*(eventResolution - sigmaBar);
 		sfsigma = sfSigmaOffset + (sfSigmaSlope)*(eventResolution - sigmaBar);
 		resScale = -1.0*sqrt(resFrac/(1.0-resFrac))*sfsigma + sfbar;
-		thisRes *= resScale; 
+		thisRes *= resScale;
 	}
 	else if( wantedComponent == 2 ) {
 		sfbar = sfBarOffset + (sfBarSlope)*(eventResolution - sigmaBar);
 		sfsigma = sfSigmaOffset + (sfSigmaSlope)*(eventResolution - sigmaBar);
 		resScale2 =sqrt((1.0-resFrac)/resFrac)*sfsigma + sfbar;
-		thisRes *= resScale2; 
+		thisRes *= resScale2;
 	}
 	else { thisRes *= resScale; }
 

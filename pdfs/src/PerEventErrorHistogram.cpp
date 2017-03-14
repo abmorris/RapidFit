@@ -1,7 +1,7 @@
 // $Id: PerEventErrorHistogram.cpp,v 1.2 2009/11/13 15:31:51 gcowan Exp $
 /** @class PerEventErrorHistogram PerEventErrorHistogram.cpp
  *
- *  PDF for background due to wrong PV association 
+ *  PDF for background due to wrong PV association
  *
  *  @author Greig Cowan
  *  @date 2012-05-29
@@ -38,7 +38,7 @@ PerEventErrorHistogram::PerEventErrorHistogram( PDFConfigurator* config ) :
 
 	//Make prototypes
 	MakePrototypes();
-	
+
 	//Find name of histogram needed to define 3-D angular distribution
 	string fileName = config->getConfigurationValue( "ErrorHistogram" ) ;
 	string histName = config->getConfigurationValue( "HistogramName" ) ;
@@ -144,7 +144,7 @@ PerEventErrorHistogram::PerEventErrorHistogram( PDFConfigurator* config ) :
 		cout << endl;
 
 		// Check.  This order works for both bases since phi is always the third one.
-		if ((xmax-xmin) < 0.1 ) 
+		if ((xmax-xmin) < 0.1 )
 		{
 			cout << "In PerEventErrorHistogram::PerEventErrorHistogram: The full angular range is not used in this histogram - the PDF does not support this case" << endl;
 			exit(1);
@@ -156,12 +156,12 @@ PerEventErrorHistogram::PerEventErrorHistogram( PDFConfigurator* config ) :
 /*
 // Copy
 PerEventErrorHistogram::PerEventErrorHistogram( const PerEventErrorHistogram& input ) : BasePDF( (BasePDF) input ),
-histo(input.histo), xaxis(input.xaxis), 
-nxbins(input.nxbins), 
-xmin(input.xmin), xmax(input.xmax), 
-deltax(input.deltax), 
-total_num_entries(input.total_num_entries), 
-eventResolutionName( input.eventResolutionName ), 
+histo(input.histo), xaxis(input.xaxis),
+nxbins(input.nxbins),
+xmin(input.xmin), xmax(input.xmax),
+deltax(input.deltax),
+total_num_entries(input.total_num_entries),
+eventResolutionName( input.eventResolutionName ),
 eventResolution(input.eventResolution)
 {
 
@@ -231,7 +231,7 @@ double PerEventErrorHistogram::timeMassFactor( )
 
 		//Find global bin number for values of angles, find number of entries per bin, divide by volume per bin and normalise with total number of entries in the histogram
 		xbin = xaxis->FindFixBin( eventResolution ); if( xbin > nxbins ) xbin = nxbins;
-		
+
 		globalbin = histo->GetBin( xbin );
 		num_entries_bin = histo->GetBinContent(globalbin);
 
@@ -239,6 +239,6 @@ double PerEventErrorHistogram::timeMassFactor( )
 
 		//Angular factor normalized with phase space of histogram and total number of entries in the histogram
 		returnValue = num_entries_bin / (deltax) / total_num_entries ;
-	
+
 	return returnValue;
 }

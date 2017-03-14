@@ -19,7 +19,7 @@
 <Value>0.68</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -29,7 +29,7 @@
 <Value>0.60</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -39,7 +39,7 @@
 <Value>0.73</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -49,7 +49,7 @@
 <Value>0.63</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -59,7 +59,7 @@
 <Value>0.7699</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Fixed</Type>     
+<Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -69,7 +69,7 @@
 <Value>0.7199</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Fixed</Type>     
+<Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -84,7 +84,7 @@
 
 // Mass
 <PhysicsParameter>
-<Name>alphaM_pr_fzero</Name>      // exponent 
+<Name>alphaM_pr_fzero</Name>      // exponent
 <Value>0.0013</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
@@ -132,7 +132,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>alphaM_pr_jpsi</Name>      // exponent 
+<Name>alphaM_pr_jpsi</Name>      // exponent
 <Value>0.0013</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
@@ -232,7 +232,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>f_LL1_B_jpsi</Name>       
+<Name>f_LL1_B_jpsi</Name>
 <Value>1.0</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
@@ -241,7 +241,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>tau_LL1_B_jpsi</Name>        
+<Name>tau_LL1_B_jpsi</Name>
 <Value>0.370</Value>
 <Minimum>0.01</Minimum>
 <Maximum>1.</Maximum>
@@ -250,7 +250,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>tau_LL2_B_jpsi</Name>        
+<Name>tau_LL2_B_jpsi</Name>
 <Value>0.0</Value>
 <Minimum>0.00</Minimum>
 <Maximum>0.0</Maximum>
@@ -261,7 +261,7 @@
 //..........................................
 // Parameters which cant be fixed for scans
 
-// True Physics Parameters for signal 
+// True Physics Parameters for signal
 
 <PhysicsParameter>
 <Name>gamma</Name>
@@ -274,7 +274,7 @@
 
 <PhysicsParameter>
 <Name>deltaGamma</Name>
-<Value>0.123</Value>   
+<Value>0.123</Value>
 <Type>Free</Type>
 <Unit>ps^{-1}</Unit>
 </PhysicsParameter>
@@ -308,7 +308,7 @@
 
 <PhysicsParameter>
 <Name>delta_para</Name>
-<Value>3.25</Value>  
+<Value>3.25</Value>
 <Maximum>6.3</Maximum>
 <Minimum>-6.3</Minimum>
 <Type>Free</Type>
@@ -317,7 +317,7 @@
 
 <PhysicsParameter>
 <Name>delta_perp</Name>
-<Value>2.95</Value> 
+<Value>2.95</Value>
 <Minimum>-6.3</Minimum>
 <Maximum>6.3</Maximum>
 <Type>Free</Type>
@@ -342,7 +342,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>              
+<PhysicsParameter>
 <Name>deltaM</Name>
 <Value>17.63</Value>
 <Type>Free</Type>
@@ -351,7 +351,7 @@
 
 <PhysicsParameter>
 <Name>Phi_s</Name>
-<Value>0.12</Value>  
+<Value>0.12</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -361,46 +361,46 @@
 //..................................
 // Detector Parameters
 
-//Signal PDF time resolution parameters for double gaussian model. 
+//Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
-<Name>timeResolutionScale</Name>     
-<Value>1.0</Value>                      
+<Name>timeResolutionScale</Name>
+<Value>1.0</Value>
 <Type>Free</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution1_jpsi</Name>           
-<Value>0.0434</Value>                   
+<Name>timeResolution1_jpsi</Name>
+<Value>0.0434</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution2_jpsi</Name>
-<Value>0.0853</Value> 
+<Value>0.0853</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution3_jpsi</Name>
-<Value>0.513</Value> 
+<Value>0.513</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution2Fraction_jpsi</Name>     
-<Value>0.165</Value>                      
+<Name>timeResolution2Fraction_jpsi</Name>
+<Value>0.165</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution3Fraction_jpsi</Name>     
-<Value>0.0017</Value>                      
+<Name>timeResolution3Fraction_jpsi</Name>
+<Value>0.0017</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -488,7 +488,7 @@
 
 <PhysicsParameter>
 <Name>angAccI1</Name>
-<Value>0.9795</Value>   // 
+<Value>0.9795</Value>   //
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -507,7 +507,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>  
+<PhysicsParameter>
 <Name>angAccI4</Name>
 <Value>0.0004</Value>       //
 <Type>Fixed</Type>
@@ -709,7 +709,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -719,7 +719,7 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -729,7 +729,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -739,7 +739,7 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -807,7 +807,7 @@
 //Exponential background mass model
 
 <PhysicsParameter>
-<Name>alphaM_pr_2010</Name>      // exponent 
+<Name>alphaM_pr_2010</Name>      // exponent
 <Value>0.00140</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
@@ -876,36 +876,36 @@
 //Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
-<Name>timeResolution1_2010</Name>           
-<Value>0.0337</Value>                   
+<Name>timeResolution1_2010</Name>
+<Value>0.0337</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution2_2010</Name>
-<Value>0.0646</Value> 
+<Value>0.0646</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution3_2010</Name>
-<Value>0.180</Value> 
+<Value>0.180</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution2Fraction_2010</Name>     
-<Value>0.456</Value>                      
+<Name>timeResolution2Fraction_2010</Name>
+<Value>0.456</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution3Fraction_2010</Name>     
-<Value>0.017</Value>                      
+<Name>timeResolution3Fraction_2010</Name>
+<Value>0.017</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -1078,7 +1078,7 @@
 </PDF>
 <PDF>
 <Name>BsMass</Name>
-<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution> 
+<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution>
 <ParameterSubstitution>f_sig_m1:f_sig_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>sigma_m1:sigma_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>ratio_21:ratio_21_jpsi</ParameterSubstitution>
@@ -1113,7 +1113,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1188,7 +1188,7 @@
 </PDF>
 <PDF>
 <Name>BsMass</Name>
-<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution> 
+<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution>
 <ParameterSubstitution>f_sig_m1:f_sig_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>sigma_m1:sigma_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>ratio_21:ratio_21_jpsi</ParameterSubstitution>
@@ -1222,7 +1222,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1304,7 +1304,7 @@
 </PDF>
 <PDF>
 <Name>BsMass</Name>
-<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution> 
+<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution>
 <ParameterSubstitution>f_sig_m1:f_sig_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>sigma_m1:sigma_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>ratio_21:ratio_21_jpsi</ParameterSubstitution>
@@ -1340,7 +1340,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1415,7 +1415,7 @@
 </PDF>
 <PDF>
 <Name>BsMass</Name>
-<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution> 
+<ParameterSubstitution>m_Bs:m_Bs_jpsi</ParameterSubstitution>
 <ParameterSubstitution>f_sig_m1:f_sig_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>sigma_m1:sigma_m1_jpsi</ParameterSubstitution>
 <ParameterSubstitution>ratio_21:ratio_21_jpsi</ParameterSubstitution>
@@ -1449,7 +1449,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1570,7 +1570,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Bs2Jpsif0_2011.root</FileName>  
+<FileName>$RAPIDFITDATA/Bs2Jpsif0_2011.root</FileName>
 <NTuplePath>tree</NTuplePath>
 <CutString>(t>0.0)</CutString>
 <NumberEvents>1000000</NumberEvents>
@@ -1578,7 +1578,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>t</Name>
-<Minimum>0.0</Minimum> 
+<Minimum>0.0</Minimum>
 <Maximum>10.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1668,7 +1668,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Bs2Jpsif0_2011.root</FileName>  
+<FileName>$RAPIDFITDATA/Bs2Jpsif0_2011.root</FileName>
 <NTuplePath>tree</NTuplePath>
 <CutString>(t>0.0)</CutString>
 <NumberEvents>10000000</NumberEvents>
@@ -1676,7 +1676,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>t</Name>
-<Minimum>0.0</Minimum> 
+<Minimum>0.0</Minimum>
 <Maximum>10.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1773,7 +1773,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Bs2Jpsif0_2010.root</FileName>  
+<FileName>$RAPIDFITDATA/Bs2Jpsif0_2010.root</FileName>
 <NTuplePath>tree</NTuplePath>
 <CutString>(t>0.0)</CutString>
 <NumberEvents>1000000</NumberEvents>
@@ -1781,7 +1781,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>t</Name>
-<Minimum>0.0</Minimum> 
+<Minimum>0.0</Minimum>
 <Maximum>10.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1871,7 +1871,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Bs2Jpsif0_2010.root</FileName>  
+<FileName>$RAPIDFITDATA/Bs2Jpsif0_2010.root</FileName>
 <NTuplePath>tree</NTuplePath>
 <CutString>(t>0.0)</CutString>
 <NumberEvents>10000000</NumberEvents>
@@ -1879,7 +1879,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>t</Name>
-<Minimum>0.0</Minimum> 
+<Minimum>0.0</Minimum>
 <Maximum>10.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1970,7 +1970,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -2078,7 +2078,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
 <NTuplePath>DecayTree</NTuplePath>
 
@@ -2087,7 +2087,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -2184,15 +2184,15 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
 <NTuplePath>DecayTree</NTuplePath>
-<NumberEvents>1000000</NumberEvents>   
+<NumberEvents>1000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -2300,16 +2300,16 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
-<NTuplePath>DecayTree</NTuplePath>  
+<NTuplePath>DecayTree</NTuplePath>
 
 <NumberEvents>10000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>

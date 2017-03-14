@@ -32,17 +32,17 @@ class ExponentialWithDeltaGamma : public BasePDF
 		void MakePrototypes();
 		bool SetPhysicsParameters(ParameterSet*);
 		double buildPDFnumerator();
-		double buildPDFdenominator();		
+		double buildPDFdenominator();
 
 		// Physics parameters
-		ObservableRef tauName;		// 1/Gamma 
+		ObservableRef tauName;		// 1/Gamma
 		ObservableRef deltaGammaName;	// deltaGamma
 		ObservableRef sin2betaName;	// sin2beta
 		// Detector parameters
-		ObservableRef eventResolutionName;                      // Scale to multiply all Gaussians with 
-		ObservableRef resScale1Name;                     // Scale to multiply all Gaussians with 
-		ObservableRef resScale2Name;                     // Scale to multiply all Gaussians with 
-		ObservableRef resScale3Name;                     // Scale to multiply all Gaussians with 
+		ObservableRef eventResolutionName;                      // Scale to multiply all Gaussians with
+		ObservableRef resScale1Name;                     // Scale to multiply all Gaussians with
+		ObservableRef resScale2Name;                     // Scale to multiply all Gaussians with
+		ObservableRef resScale3Name;                     // Scale to multiply all Gaussians with
 		ObservableRef sigma1Name;		// time res sigma 1
 		ObservableRef sigma2Name;		// time res sigma 2
 		ObservableRef timeRes1FracName;
@@ -54,10 +54,10 @@ class ExponentialWithDeltaGamma : public BasePDF
 		double taueff;
 		double deltaGamma;
 		double sin2beta;
-		
+
 		// This stuff is all to do with resolution
-		double sigma; 
-		double sigma1; 
+		double sigma;
+		double sigma1;
 		double sigma2;
 		double timeRes1Frac;
 		double timeRes2Frac;
@@ -72,10 +72,10 @@ class ExponentialWithDeltaGamma : public BasePDF
 
 		// These contain the ObservableRefs that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		double time;
 
-		//Time acceptance 
+		//Time acceptance
 		SlicedAcceptance * timeAcc;
 
 		//Configurationparameters

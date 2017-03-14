@@ -136,7 +136,7 @@ DataPoint * RootFileDataSet::GetDataPoint( int DataIndex )
 {
 	if ( DataIndex < rootNTuple->GetEntries() )
 	{
-		rootNTuple->GetEntry( DataIndex );	
+		rootNTuple->GetEntry( DataIndex );
 
 		//Delete the old reference data point and make a new one
 		vector<string> observableNames = dataBoundary->GetAllNames();

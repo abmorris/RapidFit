@@ -19,7 +19,7 @@ class VectoredFeldmanCousins : public IStudy
 		/*!
 		 * @brief Constructor Class
 		 *
-		 * @param input_GlobalResult  This is a 
+		 * @param input_GlobalResult  This is a
 		 *
 		 * @param ResultsForFC  This is the vector of fit results to be used to run over to perform a VectoredFC
 		 *

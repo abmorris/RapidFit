@@ -16,7 +16,7 @@
 <Value>0.68</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -26,21 +26,21 @@
 <Value>0.62</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 // Mass
 
 <PhysicsParameter>
-<Name>alphaM_pr</Name>      
+<Name>alphaM_pr</Name>
 <Value>0.0017</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>f_sig_m1</Name>      
+<Name>f_sig_m1</Name>
 <Value>0.803</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.00001</Maximum>
@@ -49,7 +49,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>sigma_m1</Name>      
+<Name>sigma_m1</Name>
 <Value>6.45</Value>
 <Minimum>0.0</Minimum>
 <Maximum>100.0</Maximum>
@@ -76,7 +76,7 @@
 // LL lifetimes
 
 <PhysicsParameter>
-<Name>f_LL1</Name>          
+<Name>f_LL1</Name>
 <Value>0.99285</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
@@ -85,7 +85,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>tau_LL1</Name>        
+<Name>tau_LL1</Name>
 <Value>0.15</Value>
 <Minimum>0.01</Minimum>
 <Maximum>0.5</Maximum>
@@ -94,7 +94,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>tau_LL2</Name>        
+<Name>tau_LL2</Name>
 <Value>1.0</Value>
 <Minimum>0.05</Minimum>
 <Maximum>3.0</Maximum>
@@ -107,7 +107,7 @@
 //..........................................
 // Parameters which cant be fixed for scans
 
-// True Physics Parameters for signal 
+// True Physics Parameters for signal
 
 <PhysicsParameter>
 <Name>gamma</Name>
@@ -120,7 +120,7 @@
 
 <PhysicsParameter>
 <Name>deltaGamma</Name>
-<Value>0.13</Value>   
+<Value>0.13</Value>
 <Minimum>-0.1</Minimum>
 <Maximum>0.3</Maximum>
 <Type>Free</Type>
@@ -156,7 +156,7 @@
 
 <PhysicsParameter>
 <Name>delta_para</Name>
-<Value>3.3</Value>  
+<Value>3.3</Value>
 <Maximum>6.3</Maximum>
 <Minimum>-6.3</Minimum>
 <Type>Free</Type>
@@ -165,7 +165,7 @@
 
 <PhysicsParameter>
 <Name>delta_perp</Name>
-<Value>2.9</Value> 
+<Value>2.9</Value>
 <Minimum>-6.3</Minimum>
 <Maximum>6.3</Maximum>
 <Type>Free</Type>
@@ -190,7 +190,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>              
+<PhysicsParameter>
 <Name>deltaM</Name>
 <Value>17.63</Value>
 <Type>Free</Type>
@@ -199,7 +199,7 @@
 
 <PhysicsParameter>
 <Name>Phi_s</Name>
-<Value>0.19</Value>  
+<Value>0.19</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -211,46 +211,46 @@
 //..................................
 // Detector Parameters
 
-//Signal PDF time resolution parameters for double gaussian model. 
+//Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
-<Name>timeResolutionScale</Name>     
-<Value>1.45</Value>                      
+<Name>timeResolutionScale</Name>
+<Value>1.45</Value>
 <Type>Free</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution1</Name>           
-<Value>0.0434</Value>                   
+<Name>timeResolution1</Name>
+<Value>0.0434</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution2</Name>
-<Value>0.0853</Value> 
+<Value>0.0853</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution3</Name>
-<Value>0.513</Value> 
+<Value>0.513</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution2Fraction</Name>     
-<Value>0.165</Value>                      
+<Name>timeResolution2Fraction</Name>
+<Value>0.165</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution3Fraction</Name>     
-<Value>0.0017</Value>                      
+<Name>timeResolution3Fraction</Name>
+<Value>0.0017</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -267,48 +267,48 @@
 
 <PhysicsParameter>
 <Name>angAccI1</Name>
-#<Value>1.0</Value>   
-<Value>0.9792</Value>   
+#<Value>1.0</Value>
+<Value>0.9792</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>angAccI2</Name>
-#<Value>1.0</Value>   
-<Value>1.0296</Value>  
+#<Value>1.0</Value>
+<Value>1.0296</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>angAccI3</Name>
-#<Value>1.0</Value>  
-<Value>1.0319</Value>  
+#<Value>1.0</Value>
+<Value>1.0319</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>  
+<PhysicsParameter>
 <Name>angAccI4</Name>
-#<Value>0.0</Value>     
-<Value>-0.0035</Value>    
+#<Value>0.0</Value>
+<Value>-0.0035</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>angAccI5</Name>
-#<Value>0.0</Value>   
-<Value>0.0001</Value>    
+#<Value>0.0</Value>
+<Value>0.0001</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>angAccI6</Name>
-#<Value>0.0</Value>    
-<Value>-0.0010</Value>    
+#<Value>0.0</Value>
+<Value>-0.0010</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -534,13 +534,13 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>Bs2JpsiPhi_ntupleB_for_fitting_20120203_sWeighted_0p3.root</FileName>  
+<FileName>Bs2JpsiPhi_ntupleB_for_fitting_20120203_sWeighted_0p3.root</FileName>
 <NumberEvents>10000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -639,13 +639,13 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>Bs2JpsiPhi_ntupleB_for_fitting_20120203_sWeighted_0p3.root</FileName>  
+<FileName>Bs2JpsiPhi_ntupleB_for_fitting_20120203_sWeighted_0p3.root</FileName>
 <NumberEvents>10000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>

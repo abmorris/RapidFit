@@ -10,7 +10,7 @@
 	<ParameterSet>
 
 		//..........................................
-		// True Physics Parameters for signal 
+		// True Physics Parameters for signal
 
 		<PhysicsParameter>
 			<Name>gamma</Name>
@@ -23,7 +23,7 @@
 
 		<PhysicsParameter>
 			<Name>deltaGamma</Name>
-			<Value>0.0</Value>   
+			<Value>0.0</Value>
 			<Type>Free</Type>
 			<Unit>ps^{-1}</Unit>
 		</PhysicsParameter>
@@ -57,7 +57,7 @@
 
 		<PhysicsParameter>
 			<Name>delta_para</Name>
-			<Value>3.1</Value>  
+			<Value>3.1</Value>
 			<Maximum>6.3</Maximum>
 			<Minimum>-6.3</Minimum>
 			<Type>Free</Type>
@@ -66,7 +66,7 @@
 
 		<PhysicsParameter>
 			<Name>delta_perp</Name>
-			<Value>1.7</Value> 
+			<Value>1.7</Value>
 			<Minimum>-3.3</Minimum>
 			<Maximum>3.3</Maximum>
 			<Type>Free</Type>
@@ -91,7 +91,7 @@
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
-		<PhysicsParameter>              
+		<PhysicsParameter>
 			<Name>deltaM</Name>
 			<Value>17.77</Value>
 			<Type>Free</Type>
@@ -100,7 +100,7 @@
 
 		<PhysicsParameter>
 			<Name>Phi_s</Name>
-			<Value>0.0</Value>  
+			<Value>0.0</Value>
 			<Type>Free</Type>
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
@@ -108,7 +108,7 @@
 		//..................................
 		// Detector Parameters
 
-		//Signal PDF time resolution parameters for double gaussian model. 
+		//Signal PDF time resolution parameters for double gaussian model.
 
 		<PhysicsParameter>
 			<Name>timeResolution1Fraction</Name>     // This is the fraction of the first Gaussian
@@ -126,7 +126,7 @@
 
 		<PhysicsParameter>
 			<Name>timeResolution2</Name>
-			<Value>0.0646</Value> 
+			<Value>0.0646</Value>
 			<Type>Fixed</Type>
 			<Unit>ps</Unit>
 		</PhysicsParameter>
@@ -162,7 +162,7 @@
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
-		<PhysicsParameter>  
+		<PhysicsParameter>
 			<Name>angAccI4</Name>
 			<Value>-0.000087511</Value>    //-0.0000318417
 			<Type>Fixed</Type>
@@ -220,7 +220,7 @@
 		</PhysicsParameter>
 
 		<PhysicsParameter>
-			<Name>mistagP1</Name> 
+			<Name>mistagP1</Name>
 			<Value>1.</Value>
 			<Type>Fixed</Type>
 			<Unit> </Unit>
@@ -247,25 +247,25 @@
 			<Value>1.</Value>
 		</PhysicsParameter>
 
-		<PhysicsParameter> 
+		<PhysicsParameter>
 			<Name>timeResolution3</Name>
 			<Type>Fixed</Type>
 			<Unit> </Unit>
 			<Value>0.</Value>
 		</PhysicsParameter>
 
-		<PhysicsParameter>              
-			<Name>timeResolution2Fraction</Name>       
-			<Type>Fixed</Type>      
-			<Unit> </Unit>          
-			<Value>0.36</Value>       
-		</PhysicsParameter> 
-		<PhysicsParameter>              
-			<Name>timeResolution3Fraction</Name>       
-			<Type>Fixed</Type>      
-			<Unit> </Unit>          
-			<Value>0.</Value>       
-		</PhysicsParameter> 
+		<PhysicsParameter>
+			<Name>timeResolution2Fraction</Name>
+			<Type>Fixed</Type>
+			<Unit> </Unit>
+			<Value>0.36</Value>
+		</PhysicsParameter>
+		<PhysicsParameter>
+			<Name>timeResolution3Fraction</Name>
+			<Type>Fixed</Type>
+			<Unit> </Unit>
+			<Value>0.</Value>
+		</PhysicsParameter>
 
 	</ParameterSet>
 
@@ -330,7 +330,7 @@
 
 		<DataSet>
 			<Source>File</Source>
-			<FileName>goldstandard_unbiased_timecut3.root</FileName>  
+			<FileName>goldstandard_unbiased_timecut3.root</FileName>
 			<NTuplePath>merged</NTuplePath>
 
 			<NumberEvents>2000000</NumberEvents>
@@ -338,7 +338,7 @@
 			<PhaseSpaceBoundary>
 				<Observable>
 					<Name>time</Name>
-					<Minimum>0.3</Minimum> 
+					<Minimum>0.3</Minimum>
 					<Maximum>14.0</Maximum>
 					<Unit>ps</Unit>
 				</Observable>
@@ -413,15 +413,15 @@
 
 		<DataSet>
 			<Source>File</Source>
-			<FileName>goldstandard_unbiased_timecut3.root</FileName>  
-			<NTuplePath>merged</NTuplePath>  
+			<FileName>goldstandard_unbiased_timecut3.root</FileName>
+			<NTuplePath>merged</NTuplePath>
 
 			<NumberEvents>2000000</NumberEvents>
 
 			<PhaseSpaceBoundary>
 				<Observable>
 					<Name>time</Name>
-					<Minimum>0.3</Minimum> 
+					<Minimum>0.3</Minimum>
 					<Maximum>14.0</Maximum>
 					<Unit>ps</Unit>
 				</Observable>
@@ -495,14 +495,14 @@
 
 		<DataSet>
 			<Source>File</Source>
-			<FileName>goldstandard_biased_timecut3PELC.root</FileName>  
-			<NTuplePath>merged</NTuplePath>  
-			<NumberEvents>200000000</NumberEvents>   
+			<FileName>goldstandard_biased_timecut3PELC.root</FileName>
+			<NTuplePath>merged</NTuplePath>
+			<NumberEvents>200000000</NumberEvents>
 
 			<PhaseSpaceBoundary>
 				<Observable>
 					<Name>time</Name>
-					<Minimum>0.3</Minimum> 
+					<Minimum>0.3</Minimum>
 					<Maximum>14.0</Maximum>
 					<Unit>ps</Unit>
 				</Observable>
@@ -577,15 +577,15 @@
 
 		<DataSet>
 			<Source>File</Source>
-			<FileName>goldstandard_biased_timecut3PELC.root</FileName>  
-			<NTuplePath>merged</NTuplePath>  
+			<FileName>goldstandard_biased_timecut3PELC.root</FileName>
+			<NTuplePath>merged</NTuplePath>
 
 			<NumberEvents>20000000</NumberEvents>
 
 			<PhaseSpaceBoundary>
 				<Observable>
 					<Name>time</Name>
-					<Minimum>0.3</Minimum> 
+					<Minimum>0.3</Minimum>
 					<Maximum>14.0</Maximum>
 					<Unit>ps</Unit>
 				</Observable>
@@ -648,7 +648,7 @@
 		</DataSet>
 	</ToFit>
 
-	<Output>                                                                                                                                                              
+	<Output>
 		<Scan>
 			<Name>Phi_s</Name>
 			<Minimum>-2.5</Minimum>

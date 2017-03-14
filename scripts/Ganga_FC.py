@@ -30,18 +30,18 @@ name = 'Feldman_Cousins_test' ,
     files = ['FCOutput.root'] ,
     args = None ,
     ignorefailed = False ,
-    overwrite = False 
+    overwrite = False
     ) ,
  inputsandbox = [ ] ,
  application = Executable (
     exe = '/exports/home/s0957039/runrapidfit.sh',
     env = {} ,
-    args = [] 
+    args = []
     ) ,
  outputdata = None ,
  splitter = ArgSplitter (
  args = fcsplitter('-f /exports/home/s0957039/trunk/config/betas_tagged_analysis/tagged_cfit_3_free.xml --doFCscan',20,10,'Phi_s',0.0,2.0*pi,39,'deltaGamma',-0.7,0.7,39,169234)
     ) ,
- backend = SGE( ) 
-    ) 
+ backend = SGE( )
+    )
 j.submit()

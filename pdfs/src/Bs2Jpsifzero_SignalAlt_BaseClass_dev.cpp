@@ -23,7 +23,7 @@ PDF_CREATOR( Bs2Jpsifzero_SignalAlt_BaseClass_dev );
 
 //.....................................
 // New Constructor which takes configuration object
-Bs2Jpsifzero_SignalAlt_BaseClass_dev::Bs2Jpsifzero_SignalAlt_BaseClass_dev(PDFConfigurator* configurator ) : 
+Bs2Jpsifzero_SignalAlt_BaseClass_dev::Bs2Jpsifzero_SignalAlt_BaseClass_dev(PDFConfigurator* configurator ) :
 // Physics parameters
 	  gammaName     		( configurator->getName("gamma") )
 	, deltaGammaName		( configurator->getName("deltaGamma") )
@@ -76,21 +76,21 @@ Bs2Jpsifzero_SignalAlt_BaseClass_dev::Bs2Jpsifzero_SignalAlt_BaseClass_dev(PDFCo
 	, _useTimeAcceptance(false)
 	, _numericIntegralForce(false)
 	, _numericIntegralTimeOnly(false)
-	, _useCosAndSin(false) 
+	, _useCosAndSin(false)
 	, allowNegativeAsSq(false)
 	//objects
 	,t(), ctheta_tr(), phi_tr(), ctheta_1(), tag(), /*timeAcceptanceCategory(),*/ _gamma(), dgam(), Aperp_sq(), Apara_sq(), Azero_sq(), As_sq(), delta_para(),
 	delta_perp(), delta_zero(), delta_s(), delta1(), delta2(), delta_ms(), phi_s(), _cosphis(), _sinphis(), _mistag(), _mistagP1(), _mistagP0(), _mistagSetPoint(),
-	resolutionScale(), resolution1(), resolution2(), resolution3(), resolution2Fraction(), resolution3Fraction(), timeOffset(), 
-	angAccI1(), angAccI2(), angAccI3(), angAccI4(), angAccI5(), angAccI6(), angAccI7(), angAccI8(), angAccI9(), angAccI10(), 
+	resolutionScale(), resolution1(), resolution2(), resolution3(), resolution2Fraction(), resolution3Fraction(), timeOffset(),
+	angAccI1(), angAccI2(), angAccI3(), angAccI4(), angAccI5(), angAccI6(), angAccI7(), angAccI8(), angAccI9(), angAccI10(),
 	tlo(), thi(), expL_stored(), expH_stored(), expSin_stored(), expCos_stored(),
 	intExpL_stored(), intExpH_stored(), intExpSin_stored(), intExpCos_stored(), timeAcc(NULL), normalisationCacheValid(false), resolution()
 {
 
 	//...........................................
-	// Configure to use time acceptance machinery 
+	// Configure to use time acceptance machinery
 	_useTimeAcceptance = configurator->isTrue( "UseTimeAcceptance" ) ;
-	
+
 	if( useTimeAcceptance() ) {
 		if( configurator->hasConfigurationValue( "TimeAcceptanceType", "Upper" ) ) {
 			timeAcc = new SlicedAcceptance( 0., 14.0, 0.0157 ) ;
@@ -109,21 +109,21 @@ Bs2Jpsifzero_SignalAlt_BaseClass_dev::Bs2Jpsifzero_SignalAlt_BaseClass_dev(PDFCo
 			timeAcc = new SlicedAcceptance( 0., 14. ) ;
 			cout << "Bs2Jpsifzero_SignalAlt_BaseClass_dev:: Constructing timeAcc: DEFAULT FLAT [0 < t < 14]  " << endl ;
 	}
-	
-	
+
+
 	//...........................................
-	// Configure numerical integration options 
+	// Configure numerical integration options
 	_numericIntegralForce    = configurator->isTrue( "NumericIntegralForce") ;
 	_numericIntegralTimeOnly = configurator->isTrue( "NumericIntegralTimeOnly" ) ;
-	
+
 	//...........................................
-	// Configure fit parameter options 
+	// Configure fit parameter options
 	_useCosAndSin = configurator->isTrue( "UseCosAndSin" ) ;
 	allowNegativeAsSq = configurator->isTrue( "AllowNegativeAsSq" ) ;
-	
 
-	
-	//PELC  - debug to plot the distribution of PDF values for each event 
+
+
+	//PELC  - debug to plot the distribution of PDF values for each event
 	//histOfPdfValues = new TH1D( "HistOfPdfValue" ,  "HistOfPdfValue" , 110, -0.00001, 0.00001 ) ;
 	//c0  = new TCanvas;
 	//histCounter = 0;
@@ -155,7 +155,7 @@ Bs2Jpsifzero_SignalAlt_BaseClass_dev::Bs2Jpsifzero_SignalAlt_BaseClass_dev( cons
 	tlo(input.tlo), thi(input.thi), expL_stored(input.expL_stored), expH_stored(input.expH_stored), expSin_stored(input.expSin_stored),
 	expCos_stored(input.expCos_stored), intExpL_stored(input.intExpL_stored), intExpH_stored(input.intExpH_stored),
 	intExpSin_stored(input.intExpSin_stored), intExpCos_stored(input.intExpCos_stored), _useTimeAcceptance(input._useTimeAcceptance),
-	_numericIntegralForce(input._numericIntegralForce), _numericIntegralTimeOnly(input._numericIntegralTimeOnly), 
+	_numericIntegralForce(input._numericIntegralForce), _numericIntegralTimeOnly(input._numericIntegralTimeOnly),
 	_useCosAndSin(input._useCosAndSin), allowNegativeAsSq(input.allowNegativeAsSq), timeAcc(input.timeAcc),
 	normalisationCacheValid(input.normalisationCacheValid)
 {
@@ -188,8 +188,8 @@ void Bs2Jpsifzero_SignalAlt_BaseClass_dev::preCalculateTimeIntegrals( ) const
 {
 	intExpL_stored = Mathematics::ExpInt( tlo, thi, gamma_l(), resolution )  ;
 	intExpH_stored = Mathematics::ExpInt( tlo, thi, gamma_h(), resolution )  ;
-	intExpSin_stored = Mathematics::ExpSinInt( tlo, thi, gamma(), delta_ms, resolution ) ; 
-	intExpCos_stored = Mathematics::ExpCosInt( tlo, thi, gamma(), delta_ms, resolution ) ; 
+	intExpSin_stored = Mathematics::ExpSinInt( tlo, thi, gamma(), delta_ms, resolution ) ;
+	intExpCos_stored = Mathematics::ExpCosInt( tlo, thi, gamma(), delta_ms, resolution ) ;
 	return ;
 }
 
@@ -202,34 +202,34 @@ void Bs2Jpsifzero_SignalAlt_BaseClass_dev::preCalculateTimeIntegrals( ) const
 // Main Diff cross section
 
 double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsec(  )  const
-{   
+{
 	preCalculateTimeFactors() ;
-	
-	double xsec = 
-	
+
+	double xsec =
+
 	//0.5 * A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) +
 	//0.5 * AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) +
 	0.5 * timeFactorATAT(  )  ;
-	
 
-	//If this is the very first time here, and it is before a normalisation call has been made, then the time acceptance 
+
+	//If this is the very first time here, and it is before a normalisation call has been made, then the time acceptance
 	// object cannot exist.  Only option is to ignore it until it is created - but this should happen within one iteration
 	if( useTimeAcceptance() ) xsec = xsec * timeAcc->getValue(t);
-				
+
 	if( DEBUGFLAG && (xsec < 0) ) this->DebugPrintXsec( " Bs2Jpsifzero_SignalAlt_BaseClass_dev_v1::diffXsec( ) : return value < 0 = ", xsec ) ;
-	
-	//PELC - This turned out to be an important debugging tool 
+
+	//PELC - This turned out to be an important debugging tool
 	//switch it on to see the values of PDF being returend.  If ANY go negative, it means there is a sign wrong in one or more of the terms
 	//You need to enable in the .h file as well
-	//histOfPdfValues->Fill(xsec) ;	
+	//histOfPdfValues->Fill(xsec) ;
 	//histCounter++ ;
 	//if( histCounter > 10000 ) {
 	//	histOfPdfValues->Draw() ;
-	//	c0->Update() ;	
+	//	c0->Update() ;
 	//	c0->SaveAs( "histOfPdfValues-from-Evaluate.eps" ) ;
 	//	histCounter = 0 ;
 	//}
-	 
+
 	return xsec ;
 }
 
@@ -238,23 +238,23 @@ double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsec(  )  const
 // Integral over angles only for a fixed time.
 
 double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecTimeOnly(  ) const
-{          
+{
 	preCalculateTimeFactors() ;
-	
-	double xsec = 
-	
+
+	double xsec =
+
 	//0.5 * A0()*A0() * timeFactorA0A0(  ) * angAccI1 +
 	//0.5 * AP()*AP() * timeFactorAPAP(  ) * angAccI2 +
 	0.5 *  timeFactorATAT(  )  ;
-	
-	
-	
-	//If this is the very first time here, and it is before a normalisation call has been made, then the time acceptance 
+
+
+
+	//If this is the very first time here, and it is before a normalisation call has been made, then the time acceptance
 	// object cannot exist.  Only option is to ignore it until it is created - but this should happen within one iteration
 	if( useTimeAcceptance() ) xsec = xsec * timeAcc->getValue(t);
-	
+
 	if( DEBUGFLAG && (xsec < 0) ) this->DebugPrintXsec( " Bs2Jpsifzero_SignalAlt_BaseClass_dev_v1::diffXsecTimeOnly( ) : return value < 0 = ", xsec ) ;
-	
+
 	return xsec ;
 }
 
@@ -265,18 +265,18 @@ double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecTimeOnly(  ) const
 // Integral over all variables: t + angles
 
 double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecNorm1(  ) const
-{ 
+{
 	preCalculateTimeIntegrals() ;
-	
+
 	double norm =
-	
-	//0.5 * A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +  
-	//0.5 * AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +  
-	0.5  * timeFactorATATInt(  ) ; 
-	
-	
+
+	//0.5 * A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +
+	//0.5 * AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +
+	0.5  * timeFactorATATInt(  ) ;
+
+
 	if( DEBUGFLAG && (norm < 0) ) this->DebugPrintNorm( " Bs2Jpsifzero_SignalAlt_BaseClass_dev_v1::diffXsecNorm1( ) : return value < 0 = ", norm ) ;
-	 
+
 	return norm ;
 }
 
@@ -286,13 +286,13 @@ double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecNorm1(  ) const
 // New method to calculate normalisation using a histogrammed "low-end" time acceptance function
 // The acceptance function information is all contained in the timeAcceptance member object,
 
-double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecCompositeNorm1(  )  
-{   
+double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecCompositeNorm1(  )
+{
 	double tlo_boundary = tlo ;
 	double thi_boundary = thi ;
 	double returnValue = 0;
-	
-	if( useTimeAcceptance() ) {		 
+
+	if( useTimeAcceptance() ) {
 		//This loops over each time slice, does the normalisation between the limits, and accumulates
 		for( unsigned int islice = 0; islice < timeAcc->numberOfSlices(); ++islice )
 		{
@@ -300,7 +300,7 @@ double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecCompositeNorm1(  )
 			thi = thi_boundary < timeAcc->getSlice(islice)->thigh() ? thi_boundary : timeAcc->getSlice(islice)->thigh() ;
 			if( thi > tlo ) returnValue+= this->diffXsecNorm1(  ) * timeAcc->getSlice(islice)->height() ;
 		}
-	}	
+	}
 	else {
 		returnValue = this->diffXsecNorm1() ;
 	}
@@ -314,52 +314,52 @@ double Bs2Jpsifzero_SignalAlt_BaseClass_dev::diffXsecCompositeNorm1(  )
 //...............................................................................
 // Debug printout
 void Bs2Jpsifzero_SignalAlt_BaseClass_dev::DebugPrintXsec( string message, double value )  const
-{   
+{
     cout << "*************DEBUG OUTPUT FROM Bs2Jpsifzero_SignalAlt_BaseClass_dev::DebugPrintXsec ***************************" << endl ;
 	cout << message << value << endl <<endl ;
 	cout << "   A0()*A0() term: " <<  A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) << endl ;
 	cout << "   AP()*AP() term: " <<AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) << endl ;
 	cout << "   AT()*AT() term: " <<AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) << endl << endl ;
-	
+
 	cout << "   AP()*AT() term: " <<AP()*AT() * timeFactorImAPAT(  ) * angleFactorImAPAT( )<< endl ;
 	cout << "                 : " <<AP()*AT() <<" / "<<  timeFactorImAPAT( )  <<" / "<<  angleFactorImAPAT( )<< endl ;
 	cout << "   A0()*AP() term: " <<A0()*AP() * timeFactorReA0AP(  ) * angleFactorReA0AP( )<< endl ;
 	cout << "                 : " <<A0()*AP() <<" / "<<  timeFactorReA0AP(  ) <<" / "<<  angleFactorReA0AP( )<< endl ;
 	cout << "   A0()*AT() term: " <<A0()*AT() * timeFactorImA0AT(  ) * angleFactorImA0AT( )<< endl << endl;
 	cout << "                 : " <<A0()*AT() <<" / "<<  timeFactorImA0AT(  ) <<" / "<<  angleFactorImA0AT( )<< endl << endl;
-	
+
 	cout << "   AS()*AS() term: " <<AS()*AS() * timeFactorASAS(  ) * angleFactorASAS( ) << endl << endl ;
-	
+
 	cout << "   AS()*AP() term: " <<AS()*AP() * timeFactorReASAP(  ) * angleFactorReASAP( )<< endl ;
 	cout << "                 : " <<AS()*AP() <<" / "<<   timeFactorReASAP(  ) <<" / "<<  angleFactorReASAP( )<< endl ;
 	cout << "   AS()*AT() term: " <<AS()*AT() * timeFactorImASAT(  ) * angleFactorImASAT( )<< endl ;
 	cout << "                 : " <<AS()*AT() <<" / "<<   timeFactorImASAT(  ) <<" / "<<   angleFactorImASAT( )<< endl ;
 	cout << "   AS()*A0() term: " <<AS()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( )<< endl ;
 	cout << "                 : " <<AS()*A0() <<" / "<<   timeFactorReASA0(  ) <<" / "<<  angleFactorReASA0( )<< endl << endl ;
-	
+
 	double PwaveTot =
 	0.5 * A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) +
 	0.5 * AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) +
-	0.5 * AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +		
+	0.5 * AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +
 	0.5 * AP()*AT() * timeFactorImAPAT(  ) * angleFactorImAPAT( ) +
 	0.5 * A0()*AP() * timeFactorReA0AP(  ) * angleFactorReA0AP( ) +
 	0.5 * A0()*AT() * timeFactorImA0AT(  ) * angleFactorImA0AT( ) ;
-	
+
 	double SwaveAdditions =
 	0.5 * AS()*AS() * timeFactorASAS(  ) * angleFactorASAS( ) +
 	0.5 * AS()*AP() * timeFactorReASAP(  ) * angleFactorReASAP( ) +
 	0.5 * AS()*AT() * timeFactorImASAT(  ) * angleFactorImASAT( ) +
 	0.5 * AS()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( ) ;
-	
+
 	cout << "   Pwave Only : " << PwaveTot << endl ;
 	cout << "   Swave add : " <<  SwaveAdditions << endl ;
-	
+
 }
-	
+
 
 
 void Bs2Jpsifzero_SignalAlt_BaseClass_dev::DebugPrintNorm( string message, double value )  const
-{   
+{
     cout << "*************DEBUG OUTPUT FROM Bs2Jpsifzero_SignalAlt_BaseClass_dev::DebugPrintNorm ***************************" << endl ;
 	cout << message << value << endl <<endl ;
 
@@ -375,4 +375,4 @@ void Bs2Jpsifzero_SignalAlt_BaseClass_dev::DebugPrintNorm( string message, doubl
 	cout <<  AS()*AT() * timeFactorImASATInt(  ) * angAccI9<< endl ;
 	cout <<  AS()*A0() * timeFactorReASA0Int(  ) * angAccI10<< endl ;
 }
-	
+

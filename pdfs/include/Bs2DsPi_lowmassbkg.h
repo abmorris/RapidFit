@@ -33,7 +33,7 @@ class Bs2DsPi_lowmassbkg : public BasePDF
 
 
 
-	private:	
+	private:
 
 		void MakePrototypes();
 

@@ -18,7 +18,7 @@
    Canvas0.48497361433692276->SetBottomMargin(0.16);
    Canvas0.48497361433692276->SetFrameBorderMode(0);
    Canvas0.48497361433692276->SetFrameBorderMode(0);
-   
+
    TH1F *sigma_pull0.23165654274635017 = new TH1F("sigma_pull0.23165654274635017","Toy Study sigma pull distribution",100,-4.4,4.5);
    sigma_pull0.23165654274635017->SetBinContent(8,1);
    sigma_pull0.23165654274635017->SetBinContent(10,2);
@@ -102,7 +102,7 @@
    sigma_pull0.23165654274635017->SetBinContent(90,1);
    sigma_pull0.23165654274635017->SetBinContent(92,1);
    sigma_pull0.23165654274635017->SetEntries(10000);
-   
+
    TF1 *gaus = new TF1("gaus","gaus",-4.4,4.5);
    gaus->SetFillColor(1);
    gaus->SetFillStyle(0);
@@ -135,7 +135,7 @@
    gaus->SetParError(2,0.007296624);
    gaus->SetParLimits(2,0,10.18851);
    sigma_pull0.23165654274635017->GetListOfFunctions()->Add(gaus);
-   
+
    TPaveStats *ptstats = new TPaveStats(0.45,0.65,0.9,0.9,"brNDC");
    ptstats->SetName("stats");
    ptstats->SetBorderSize(1);
@@ -178,7 +178,7 @@
    sigma_pull0.23165654274635017->GetZaxis()->SetTitleOffset(1.2);
    sigma_pull0.23165654274635017->GetZaxis()->SetTitleFont(132);
    sigma_pull0.23165654274635017->Draw("");
-   
+
    ptstats = new TPaveStats(0.45,0.65,0.9,0.9,"brNDC");
    ptstats->SetName("stats");
    ptstats->SetBorderSize(1);

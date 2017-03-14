@@ -21,7 +21,7 @@ using namespace::std;
 #define CONTINUOUS_TOLERANCE 1E-9
 
 //Constructor with correct argument
-ObservableContinuousConstraint::ObservableContinuousConstraint( string Name, double NewMinimum, double NewMaximum, string NewUnit, string TF1 ) : 
+ObservableContinuousConstraint::ObservableContinuousConstraint( string Name, double NewMinimum, double NewMaximum, string NewUnit, string TF1 ) :
 	name(Name), minimum(NewMinimum), maximum(NewMaximum), unit(NewUnit), tf1( TF1 )
 {
 	if(maximum < minimum)
@@ -68,7 +68,7 @@ string ObservableContinuousConstraint::GetName() const
 
 //Get and set the minimum
 double ObservableContinuousConstraint::GetMinimum() const
-{       
+{
 	return minimum;
 }
 void ObservableContinuousConstraint::SetMinimum(double NewMinimum)
@@ -85,7 +85,7 @@ void ObservableContinuousConstraint::SetMinimum(double NewMinimum)
 
 //Get and set the maximum
 double ObservableContinuousConstraint::GetMaximum() const
-{       
+{
 	return maximum;
 }
 void ObservableContinuousConstraint::SetMaximum(double NewMaximum)
@@ -173,7 +173,7 @@ void ObservableContinuousConstraint::Print() const
 Observable* ObservableContinuousConstraint::GetMidRangeValue() const
 {
 	double diff=(maximum-minimum)/2.;
-	return new Observable( name, minimum+diff, unit ); 
+	return new Observable( name, minimum+diff, unit );
 }
 
 string ObservableContinuousConstraint::GetTF1() const

@@ -48,10 +48,10 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 
 		//PELC For debugging purposes
 		//TH1D * histOfPdfValues ;
-		//TCanvas * c0 ; 
+		//TCanvas * c0 ;
 		//mutable int histCounter ;
 		//~PELC
-	
+
 		// These contain the ObservableRefs that correspond to the physics parameter names and references
 		ObservableRef gammaName;		// gamma
 		ObservableRef deltaGammaName;	// delta gamma
@@ -68,16 +68,16 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 
 		//PELC NEW : These are new physics parameters which might be used instead of some of those above later
 		ObservableRef cosphisName;		// fitting cosphis and sinphis independently
-		ObservableRef sinphisName;		// fitting cosphis and sinphis independently	
+		ObservableRef sinphisName;		// fitting cosphis and sinphis independently
 
-		// Mistag parameters  
+		// Mistag parameters
 		ObservableRef mistagName;		// mistag fraction  - may be used as observable also
 		ObservableRef mistagP1Name;		// mistag calib
 		ObservableRef mistagP0Name;		// mistag calib
 		ObservableRef mistagSetPointName;// mistag calib
 
 		// Time resolution
-		ObservableRef resScaleName;			// Scale to multiply all Gaussians with 
+		ObservableRef resScaleName;			// Scale to multiply all Gaussians with
 		ObservableRef res1Name;				// time resolution narrow
 		ObservableRef res2Name;				// time resolution wide
 		ObservableRef res3Name;				// time resolution tail
@@ -86,7 +86,7 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		ObservableRef timeOffsetName;		// time offset
 
 		// These are the angular accceptance factors. The first 6 are P-wave, the second 4 are S-wave
-		ObservableRef angAccI1Name ;  
+		ObservableRef angAccI1Name ;
 		ObservableRef angAccI2Name ;
 		ObservableRef angAccI3Name ;
 		ObservableRef angAccI4Name ;
@@ -97,7 +97,7 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		ObservableRef angAccI9Name ;
 		ObservableRef angAccI10Name ;
 
-		// Observables 
+		// Observables
 		ObservableRef timeName;		// proper time
 		ObservableRef cosThetaName;	// cos of angle of mu+ wrt z-axis in Jpsi frame
 		ObservableRef phiName;			// azimuthal angle of the mu+ in Jpsi frame
@@ -114,8 +114,8 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		double ctheta_1 ;
 		int tag ;
 		//X int timeAcceptanceCategory ;
-	
-		// Physics Fit Parameters 
+
+		// Physics Fit Parameters
 		double _gamma ;
 		double dgam ;
 
@@ -130,18 +130,18 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		double delta_s ;
 		double delta1 ;
 		double delta2 ;
-	
+
 		double delta_ms ;
 		double phi_s ;
 		double _cosphis ;
 		double _sinphis ;
-	
+
 		// Mistag parameters
 		double _mistag ;
 		double _mistagP1 ;
 		double _mistagP0 ;
 		double _mistagSetPoint ;
-	
+
 		// Time resolution
 		double resolution ;
 		double resolutionScale ;
@@ -163,10 +163,10 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		double angAccI8 ;
 		double angAccI9 ;
 		double angAccI10 ;
-	
+
 		// Othere things calculated later on the fly
 		double tlo, thi ;
-	
+
 		// stored time primitives
 		mutable double expL_stored ;
 		mutable double expH_stored ;
@@ -178,96 +178,96 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		mutable double intExpCos_stored ;
 		void preCalculateTimeFactors() const ;
 		void preCalculateTimeIntegrals() const ;
-	
-		//Time acceptance 
+
+		//Time acceptance
 		SlicedAcceptance * timeAcc ;
-	
+
 		//Configurationparameters
 		bool _useTimeAcceptance ;
-	
+
 		bool _numericIntegralForce ;
 		bool _numericIntegralTimeOnly ;
-	
+
 		bool _useCosAndSin ;
 		bool allowNegativeAsSq ;
-	
+
 		//....................................
 		//Internal helper functions
 
-		inline double AT() const { 
+		inline double AT() const {
 			if( Aperp_sq <= 0. ) return 0. ;
-			else return sqrt(Aperp_sq) ; 
+			else return sqrt(Aperp_sq) ;
 		}
-		inline double AP() const { 
+		inline double AP() const {
 			if( Apara_sq <= 0. ) return 0. ;
-			else return sqrt(Apara_sq) ; 
+			else return sqrt(Apara_sq) ;
 		}
-		inline double A0() const { 
+		inline double A0() const {
 			if( Azero_sq <= 0. ) return 0. ;
-			else return sqrt(Azero_sq) ; 
+			else return sqrt(Azero_sq) ;
 		}
-		inline double AS() const { 
+		inline double AS() const {
 			if( As_sq <= 0. ) return 0. ;
-			else return sqrt(As_sq) ; 
+			else return sqrt(As_sq) ;
 		}
 
 		inline double ctrsq() const { return (ctheta_tr*ctheta_tr) ; }
 		inline double strsq() const { return (1.0 - ctrsq()) ; }
-		inline double theta_tr() const { return acos(ctheta_tr) ; }	
+		inline double theta_tr() const { return acos(ctheta_tr) ; }
 		inline double ctr() const { return ctheta_tr ; }
 		inline double str() const { return sin(theta_tr()) ; }
 		inline double s2tr() const { return sin(2.0*theta_tr()) ; }
-		
+
 		inline double ct1sq() const { return (ctheta_1*ctheta_1) ; }
 		inline double st1sq() const { return (1.0 - ct1sq()) ; }
-		inline double theta_1() const { return acos(ctheta_1) ; }	
+		inline double theta_1() const { return acos(ctheta_1) ; }
 		inline double ct1() const { return ctheta_1 ; }
 		inline double st1() const { return sin(theta_1()) ; }
 		inline double s2t1() const { return sin(2.0*theta_1()) ; }
-	
+
 		inline double cph() const {  return cos(phi_tr) ; }
 		inline double sph() const {  return sin(phi_tr) ; }
 		inline double cphsq() const { return (cos(phi_tr)*cos(phi_tr)) ; }
 		inline double sphsq() const { return (sin(phi_tr)*sin(phi_tr)) ; }
 		inline double s2ph() const { return sin(2.0*phi_tr) ; }
 
-		
-		inline double gamma_l() const { 
+
+		inline double gamma_l() const {
 			const double gl = gamma() + ( dgam *0.5 ) ;
 			if( gl < 0. ) {
 				cerr << " In Bs2Jpsifzero_SignalAlt_BaseClass_dev : gamma_l() < 0 so setting it to 0.0000001 " << endl ;
 				return 0.0000001 ;
 			}
 			else
-				return gl ; 
+				return gl ;
 		}
 
-		inline double gamma_h() const { 
+		inline double gamma_h() const {
 			const double gh = gamma() - ( dgam *0.5 ) ;
 			if( gh < 0. ) {
 				cerr << " In Bs2Jpsifzero_SignalAlt_BaseClass_dev : gamma_h() < 0 so setting it to 0.0000001 " << endl ;
 				return 0.0000001 ;
 			}
 			else
-				return gh ;   
+				return gh ;
 		}
 
 		inline double gamma() const { return _gamma ; }
 
 		inline double q() const { return tag ;}
-	
-		inline double mistag() const { 
+
+		inline double mistag() const {
 			double returnValue = -1000.;
-			
+
 			if( fabs((q()-0.0)) < DOUBLE_TOLERANCE ) {
 				returnValue = 0.5 ;
-			}			
+			}
 			else if( (_mistag>=0.0) && (_mistag <= 0.5) ) {
 				//Normal case
 				returnValue =  _mistagP0 + _mistagP1*(_mistag - _mistagSetPoint ) ;
 				if( returnValue < 0 )  returnValue = 0 ;
-				if( returnValue > 0.5) returnValue = 0.5 ; 
-			}			
+				if( returnValue > 0.5) returnValue = 0.5 ;
+			}
 			else if( _mistag < 0.0 ) {
 				cout << "Bs2Jpsifzero_SignalAlt_BaseClass_dev::mistag() : _mistag < 0 so set to 0 " << endl ;
 				returnValue = 0 ;
@@ -280,14 +280,14 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 				cout << "Bs2Jpsifzero_SignalAlt_BaseClass_dev::mistag() : WARNING ******If you got here you dont know what you are doing  "  << endl ;
 				exit(1);
 			}
-			return returnValue ;			
+			return returnValue ;
 		}
-	
+
 		inline double cosphis() const { return _cosphis ; }
 		inline double sinphis() const { return _sinphis ; }
-	
-		inline bool useTimeAcceptance() const { return _useTimeAcceptance ; }		
-	
+
+		inline bool useTimeAcceptance() const { return _useTimeAcceptance ; }
+
 		//......................................................
 		// Time primitives
 
@@ -304,10 +304,10 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		inline double intExpCos( ) const { return intExpCos_stored ; }
 
 
-	
+
 		//---------------------------------------------------------
 		//............. Differential cross sections and normalisations
-		double diffXsec(  )  const ;   	
+		double diffXsec(  )  const ;
 		double diffXsecTimeOnly(  ) const ;
 		double diffXsecNorm1(  ) const ;
 		double diffXsecCompositeNorm1(  )  ;
@@ -315,11 +315,11 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		bool normalisationCacheValid ;
 		double normalisationCacheValue[3] ;
 		//double normalisationCacheValueRes2[3] ;
-	
+
 		void DebugPrintXsec( string , double ) const ;
 		void DebugPrintNorm( string , double ) const ;
-	
-		
+
+
 		//------------------------------------------------------------------------------
 		// These are the time factors and their analytic integrals for the one angle PDF
 
@@ -327,11 +327,11 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		inline double timeFactorEven(  )  const
 		{
 			//if( t < 0.0 ) return 0.0 ;
-			const double result = 
-			( 1.0 + cosphis() ) * expL( ) 
-			+ ( 1.0 - cosphis() ) * expH( ) 
+			const double result =
+			( 1.0 + cosphis() ) * expL( )
+			+ ( 1.0 - cosphis() ) * expH( )
 			+ q() * ( 2.0 * sinphis()   ) * expSin( ) * (1.0 - 2.0*mistag()) ;
-		  
+
 			//DEBUG
 			if( DEBUGFLAG && (result < 0) ) {
 				cout << " Bs2Jpsifzero_SignalAlt_BaseClass_dev::timeFactorEven() : result < 0 " << endl ;
@@ -349,8 +349,8 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		inline double timeFactorEvenInt(  )  const
 		{
 			return
-			( 1.0 + cosphis() )  * intExpL()     
-			+ ( 1.0 - cosphis() )  * intExpH()          
+			( 1.0 + cosphis() )  * intExpL()
+			+ ( 1.0 - cosphis() )  * intExpH()
 			+ q() * ( 2.0 * sinphis()   ) * intExpSin( ) * (1.0 - 2.0*mistag()) ;
 		}
 
@@ -360,8 +360,8 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		{
 			//if( t < 0.0 ) return 0.0 ;
 			return
-			( 1.0 - cosphis() ) * expL( ) 
-			+ ( 1.0 + cosphis() ) * expH( ) 
+			( 1.0 - cosphis() ) * expL( )
+			+ ( 1.0 + cosphis() ) * expH( )
 			- q() * ( 2.0 * sinphis()   ) * expSin( ) * (1.0 - 2.0*mistag()) ;
 		}
 
@@ -369,7 +369,7 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		{
 			return
 			( 1.0 - cosphis() ) * intExpL()
-			+ ( 1.0 + cosphis() ) * intExpH() 
+			+ ( 1.0 + cosphis() ) * intExpH()
 			- q() * ( 2.0 * sinphis()   ) * intExpSin( ) * (1.0 - 2.0*mistag()) ;
 		}
 
@@ -378,7 +378,7 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		// These are the time factors and their analytic integrals for the three angle PDF
 
 		//...........................
-		inline double timeFactorA0A0( )    const { return timeFactorEven( ) ; }     
+		inline double timeFactorA0A0( )    const { return timeFactorEven( ) ; }
 		inline double timeFactorA0A0Int( ) const { return timeFactorEvenInt( ) ; }
 
 		//...........................
@@ -396,15 +396,15 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 			q() * 2.0  * ( sin(delta1)*expCos( ) - cos(delta1)*cosphis()*expSin( ) ) * (1.0 - 2.0*mistag())
 			- ( expH( ) - expL( ) ) * cos(delta1) * sinphis()  ;
 		}
-		
+
 		inline double timeFactorImAPATInt( ) const
 		{
 			//double _tlo = tlo ;
 			//if(_tlo < 0.) _tlo = 0. ;
-			
+
 			return
 			q() * 2.0  * ( sin(delta1)*intExpCos() - cos(delta1)*cosphis()*intExpSin() ) * (1.0 - 2.0*mistag())
-			- ( intExpH() - intExpL() ) * cos(delta1) * sinphis() ;	
+			- ( intExpH() - intExpL() ) * cos(delta1) * sinphis() ;
 		}
 
 
@@ -423,8 +423,8 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		//...........................
 		inline double timeFactorImA0AT(  ) const
 		{
-			return 
-			q() * 2.0  * ( sin(delta2)*expCos( ) - cos(delta2)*cosphis()*expSin( ) ) * (1.0 - 2.0*mistag())	
+			return
+			q() * 2.0  * ( sin(delta2)*expCos( ) - cos(delta2)*cosphis()*expSin( ) ) * (1.0 - 2.0*mistag())
 			- ( expH( ) - expL( ) ) * cos(delta2) * sinphis() ;
 		}
 
@@ -432,8 +432,8 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		{
 			//double _tlo = tlo ;
 			//if(_tlo < 0.) _tlo = 0. ;
-	
-			return 
+
+			return
 			q() * 2.0  * ( sin(delta2)*intExpCos() - cos(delta2)*cosphis()*intExpSin()  ) * (1.0 - 2.0*mistag())
 			- ( intExpH() - intExpL()  ) * cos(delta2) * sinphis() ;
 		}
@@ -463,7 +463,7 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 
 			return
 			q() * 2.0  * ( cos(delta)*intExpCos() - sin(delta)*cosphis()*intExpSin() ) * (1.0 - 2.0*mistag())
-			- ( intExpH() - intExpL() ) * sin(delta) * sinphis() ;	    
+			- ( intExpH() - intExpL() ) * sin(delta) * sinphis() ;
 		}
 
 
@@ -481,7 +481,7 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 
 		//...........................
 		inline double timeFactorReASA0( ) const
-		{			
+		{
 			double delta = delta_zero - delta_s ;
 			return
 			q() * 2.0  * ( cos(delta)*expCos( ) - sin(delta)*cosphis()*expSin( ) ) * (1.0 - 2.0*mistag())
@@ -492,16 +492,16 @@ class Bs2Jpsifzero_SignalAlt_BaseClass_dev
 		{
 			//double _tlo = tlo ;
 			//if(_tlo < 0.) _tlo = 0. ;
-			
+
 			double delta = delta_zero - delta_s ;
-			
+
 			return
 			q() * 2.0  * ( cos(delta)*intExpCos() - sin(delta)*cosphis()*intExpSin() ) * (1.0 - 2.0*mistag())
-			- ( intExpH() - intExpL() ) * sin(delta) * sinphis() ;	    
+			- ( intExpH() - intExpL() ) * sin(delta) * sinphis() ;
 		}
 
 
-		
+
 
 		//------------------------------------------------------
 		// Angle factors for three angle PDFs

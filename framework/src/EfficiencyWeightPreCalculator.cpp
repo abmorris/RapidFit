@@ -56,13 +56,13 @@ IDataSet * EfficiencyWeightPreCalculator::ProcessDataSet( IDataSet * InputData, 
 
 	vector<DataPoint*> allPoints;
 	vector<double> allValues;
-	
+
 	RapidFitIntegrator * testIntegrator = new RapidFitIntegrator( InputPDF, true, true );
         vector<string> pdfComponents  = InputPDF->PDFComponents();
 	vector<string> doNotIntegrate = InputPDF->GetDoNotIntegrateList();
         ComponentRef * thisRef = new ComponentRef( "0", "dummyObservable" );
 	double pdf_norm = testIntegrator->NumericallyIntegratePhaseSpace( InputData->GetBoundary(), doNotIntegrate, thisRef );
-        	
+
 	cout << "Number of events in non-weighted dataset: " << InputData->GetDataNumber() << endl;
     	double pdf_value(0.);
 	double sumOfWeights(0.);

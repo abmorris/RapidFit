@@ -16,7 +16,7 @@
 
 /* Documentation
 
-This is a PDF for use in fitting Bs -> Vector Vector Decays. 
+This is a PDF for use in fitting Bs -> Vector Vector Decays.
 
 It has been written for the Bs -> J/Psi Phi decay to analyse the full three decay angle
 distribution in order to separate the different CP eigenstate components.
@@ -37,18 +37,18 @@ The PDF is instantiation is:
 
   RooPdf_Bs2JPsiPhi signal (
 
-      These are fixed parametes used only as construction 
-       "name of pdf", 
+      These are fixed parametes used only as construction
+       "name of pdf",
        "description",
        btype                // Sets whether PDF is for B (=1),  Bbar (=1) or Untagged (=0)
 
-      These are RooRealVar parameters 
+      These are RooRealVar parameters
        time,                // proper time for event decay
        ctheta_tr,           // transversity angle for event decay
-       phi_tr,              // phi angle for event decay 
-       ctheta_1,            // other angle for event decay 
+       phi_tr,              // phi angle for event decay
+       ctheta_1,            // other angle for event decay
        gamma,               // average Bs lifetime
-       dgam,                // Bs lifetime difference 
+       dgam,                // Bs lifetime difference
        Rt,                  // Fraction of "transverse" or CP -1 final state
        Rp,                  // Fraction of "parallel" CP final state
        delta1,              // First strong phase  (see reference)
@@ -83,18 +83,18 @@ with AT^2 + AP^2 + AO^2 = 0
 
 
 
-class RooPdf_Bs2JPsiPhi : public RooAbsPdf 
+class RooPdf_Bs2JPsiPhi : public RooAbsPdf
 {
 
 protected:
- 
+
   // Measured Event Attributes
   RooRealProxy t ;
   RooRealProxy ctheta_tr ;
   RooRealProxy phi_tr ;
   RooRealProxy ctheta_1 ;
 
-  // Physics Fit Parameters 
+  // Physics Fit Parameters
   RooRealProxy gamma_in ;
   RooRealProxy dgam ;
   RooRealProxy Rt ;
@@ -107,16 +107,16 @@ protected:
   // Other experimental parameters
   RooRealProxy tagFraction ;
   RooRealProxy resolution ;
-  
+
   //.......................................
-  // Evaluate mandatory method		     
+  // Evaluate mandatory method
   Double_t evaluate( )  const ;
 
  public:
 
   //..................................
   //Constructor for three angle PDF
-  RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t _btype, 
+  RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t _btype,
 		    RooAbsReal& _t,
 		    RooAbsReal& _ctheta_tr,
 		    RooAbsReal& _phi_tr,
@@ -135,7 +135,7 @@ protected:
 
   //..................................
   //Constructor for one angle PDF
-  RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t _btype, 
+  RooPdf_Bs2JPsiPhi(const char *name, const char *title, Int_t _btype,
 		    RooAbsReal& _t,
 		    RooAbsReal& _ctheta_tr,
 		    RooAbsReal& _gamma,
@@ -148,17 +148,17 @@ protected:
 		    ) ;
 
   //....................................
-  //Copy constructor  
+  //Copy constructor
   RooPdf_Bs2JPsiPhi(const RooPdf_Bs2JPsiPhi& other, const char* name=0) ;
 
   //.....................................
-  // Mandatory method    
-  //virtual TObject* RooPdf_Bs2JPsiPhi::clone(const char* newname) const { 
-  //  return new RooPdf_Bs2JPsiPhi(*this,newname); 
+  // Mandatory method
+  //virtual TObject* RooPdf_Bs2JPsiPhi::clone(const char* newname) const {
+  //  return new RooPdf_Bs2JPsiPhi(*this,newname);
   //};
   //Stupid GCC upgrade wants the class specifier removed. Don't know why.
-  virtual TObject* clone(const char* newname) const { 
-    return new RooPdf_Bs2JPsiPhi(*this,newname); 
+  virtual TObject* clone(const char* newname) const {
+    return new RooPdf_Bs2JPsiPhi(*this,newname);
   };
 
   //......................................
@@ -171,9 +171,9 @@ private:
   // State variables
   const Int_t BTYPE ;  // Whether constructed for  B (+1), Bbar (-1) or  Untagged (0)
   const Int_t MODE  ;  // Whether constructed for one angle (-1) or for three angle (+1)
-    
+
   //Amplitudes Used in one angle PDF
-  Double_t AoAo() const ;   
+  Double_t AoAo() const ;
   Double_t AeAe() const ;
 
   //Amplitudes Used in three angle PDF
@@ -204,7 +204,7 @@ private:
   RooComplex evalCerfApprox( Double_t, Double_t, Double_t ) const ;
   Double_t evalCerfRe( Double_t, Double_t, Double_t ) const ;
   Double_t evalCerfIm( Double_t, Double_t, Double_t ) const ;
-  
+
   //---------------------
   // Some time primitive integrals
 
@@ -237,36 +237,36 @@ private:
   // These are the time factors and their analytic integrals for the three angle PDF
 
   //...........................
-  Double_t timeFactorA0A0( ) const ;      
+  Double_t timeFactorA0A0( ) const ;
   Double_t timeFactorA0A0Int( ) const ;
-      
+
   //...........................
   Double_t timeFactorAPAP( ) const ;
   Double_t timeFactorAPAPInt( ) const ;
-      
+
   //...........................
   Double_t timeFactorATAT( ) const ;
   Double_t timeFactorATATInt( ) const ;
-     
+
  //...........................
-  Double_t timeFactorReA0AP( )  const ;  
+  Double_t timeFactorReA0AP( )  const ;
   Double_t timeFactorReA0APInt( ) const ;
-     
+
   //...........................
-  Double_t timeFactorImAPAT( ) const ; 
+  Double_t timeFactorImAPAT( ) const ;
   Double_t timeFactorImAPATInt( ) const ;
- 
+
   //...........................
   Double_t timeFactorImA0AT(  ) const ;
   Double_t timeFactorImA0ATInt( ) const ;
-    
+
 
   //------------------------------------------------------
   // Angle factors for one angle distributions
-	
+
   Double_t angleFactorEven(  )  const ;
   Double_t angleFactorOdd(  )   const ;
-	
+
   //------------------------------------------------------
   // Angle factors for three angle distributions
 
@@ -288,7 +288,7 @@ private:
   // Integral over all variables: t + angles
   Double_t diffXsecNorm1(  ) const ;
   Double_t diffXsecOneNorm1(  ) const ;
- 
+
  //...................................
   // Integral over angles only
   Double_t diffXsecNorm2(  ) const ;

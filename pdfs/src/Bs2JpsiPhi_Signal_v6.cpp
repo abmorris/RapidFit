@@ -80,7 +80,7 @@ Bs2JpsiPhi_Signal_v6::Bs2JpsiPhi_Signal_v6(PDFConfigurator* configurator) : Base
 	//objects
 	,t(), ctheta_tr(), phi_tr(), ctheta_1(), ctheta_k(), phi_h(), ctheta_l(),
 	_gamma(), dgam(), Aperp_sq(), Apara_sq(), Azero_sq(), As_sq(), delta_para(),
-	delta_perp(), delta_zero(), delta_s(), delta1(), delta2(), delta_ms(), phi_s(), _cosphis(), _sinphis(), 
+	delta_perp(), delta_zero(), delta_s(), delta1(), delta2(), delta_ms(), phi_s(), _cosphis(), _sinphis(),
 	angAccI1(), angAccI2(), angAccI3(), angAccI4(), angAccI5(), angAccI6(), angAccI7(), angAccI8(), angAccI9(), angAccI10(),
 	tlo(), thi(), expL_stored(), expH_stored(), expSin_stored(), expCos_stored(),
 	intExpL_stored(), intExpH_stored(), intExpSin_stored(), intExpCos_stored(), timeAcc(NULL),
@@ -106,7 +106,7 @@ Bs2JpsiPhi_Signal_v6::Bs2JpsiPhi_Signal_v6(PDFConfigurator* configurator) : Base
 	_usePunziMistag = configurator->isTrue( "UsePunziMistag" ) ;
 	allowNegativeAsSq = configurator->isTrue( "AllowNegativeAsSq" ) ;
 	_usePlotComponents = configurator->isTrue( "PlotComponents" ) ;
-	_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ; 
+	_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ;
 	_fitDirectlyForApara = configurator->isTrue( "FitDirectlyForApara" );
 	_useNewMistagModel = configurator->isTrue( "useNewMistagModel" );
 	DebugFlag_v6 = !configurator->hasConfigurationValue( "DEBUG", "False" );
@@ -126,7 +126,7 @@ Bs2JpsiPhi_Signal_v6::Bs2JpsiPhi_Signal_v6(PDFConfigurator* configurator) : Base
 			if( !isCopy ) cout << "Bs2JpsiPhi_Signal_v6:: Adding OffsetToGammaForBetaFactor = " << _offsetToGammaForBetaFactor << endl ;
 		}
 	}
-    
+
 	//...............................................
 	// Configure to use angular acceptance machinery
 	string angAccFile = configurator->getConfigurationValue( "AngularAcceptanceFile" ) ;
@@ -257,7 +257,7 @@ void Bs2JpsiPhi_Signal_v6::MakePrototypes()
 		allObservables.push_back( phiName );
 		allObservables.push_back( cosPsiName );
 	}
-	//if(useEventResolution()) allObservables.push_back( eventResolutionName );    
+	//if(useEventResolution()) allObservables.push_back( eventResolutionName );
 	resolutionModel->addObservables( allObservables );
 	_mistagCalibModel->addObservables( allObservables );
 
@@ -309,7 +309,7 @@ vector<string> Bs2JpsiPhi_Signal_v6::GetDoNotIntegrateList()
 	vector<string> list;
 
 	//***THIS NEEDS FIXING*** PROBLEM IS ONLY THE RESOULTION MODEL KNOWS THIS NOW - SO HOW DOES ONE ADD TO THE D.I.L CLEANLY ??
-	//list.push_back("eventResolution") ; 
+	//list.push_back("eventResolution") ;
     	resolutionModel->addObservables( list );
 
 	if( !_usePunziMistag ) _mistagCalibModel->addObservables( list );
@@ -342,7 +342,7 @@ bool Bs2JpsiPhi_Signal_v6::SetPhysicsParameters( ParameterSet* NewParameterSet )
 	//timeIntegralCacheValid = false;   //This cannot be used if event resolution is used
 
 	bool result = allParameters.SetPhysicsParameters(NewParameterSet);
-    
+
 	//Let the resolution model take its specific parameters out
 	resolutionModel->setParameters( allParameters );
 	_mistagCalibModel->setParameters( allParameters );
@@ -461,7 +461,7 @@ double Bs2JpsiPhi_Signal_v6::EvaluateForNumericIntegral(DataPoint * measurement)
 double Bs2JpsiPhi_Signal_v6::Evaluate(DataPoint * measurement)
 {
 	_datapoint = measurement;
-    
+
 	//Let the resolution model pull out its specific obsrvables first.
 	//This can only be the case if event resolution is used (so far)
 	resolutionModel->setObservables( measurement );

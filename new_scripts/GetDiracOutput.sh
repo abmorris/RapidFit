@@ -1,6 +1,6 @@
 #
 #	Provide the JOB_NUM which matches the file JOB_NUM.log which is local and contains a series of DIRAC jobID values
-#	
+#
 #	This script will request the output from each of these values and will store the output in a folder /tmp/username/JOB_NUM
 #
 #	This will perform as many parallel requests for job outputs as you want by adjusting parallel_requests, 50 is normally excessive but fast

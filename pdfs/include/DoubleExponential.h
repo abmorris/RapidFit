@@ -33,18 +33,18 @@ class DoubleExponential : public BasePDF
 		void MakePrototypes();
 		bool SetPhysicsParameters(ParameterSet*);
 		double buildPDFnumerator();
-		double buildPDFdenominator();		
+		double buildPDFdenominator();
 
 		// Physics parameters
 		ObservableRef tau1Name;		// decay constant 1
 		ObservableRef tau2Name;		// decay constant 2
 		ObservableRef fraction1Name;	// fraction of tau1
 		// Detector parameters
-		ObservableRef eventResolutionName;                      // Scale to multiply all Gaussians with 
-		ObservableRef resScale1Name;                     // Scale to multiply all Gaussians with 
-		ObservableRef resScale2Name;                     // Scale to multiply all Gaussians with 
-		ObservableRef resScale3Name;                     // Scale to multiply all Gaussians with 
-		ObservableRef timeOffsetName;  
+		ObservableRef eventResolutionName;                      // Scale to multiply all Gaussians with
+		ObservableRef resScale1Name;                     // Scale to multiply all Gaussians with
+		ObservableRef resScale2Name;                     // Scale to multiply all Gaussians with
+		ObservableRef resScale3Name;                     // Scale to multiply all Gaussians with
+		ObservableRef timeOffsetName;
 		ObservableRef sigma1Name;		// time res sigma 1
 		ObservableRef sigma2Name;		// time res sigma 2
 		ObservableRef sigma3Name;		// time res sigma 2
@@ -56,10 +56,10 @@ class DoubleExponential : public BasePDF
 		double tau1;
 		double tau2;
 		double fraction1;
-		
+
 		// This stuff is all to do with resolution
-		double sigma; 
-		double sigma1; 
+		double sigma;
+		double sigma1;
 		double sigma2;
 		double sigma3;
 		double timeRes2Frac;
@@ -74,10 +74,10 @@ class DoubleExponential : public BasePDF
 
 		// These contain the ObservableRefs that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		double time;
 
-		//Time acceptance 
+		//Time acceptance
 		SlicedAcceptance * timeAcc;
 
 		//Configurationparameters

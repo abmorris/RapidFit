@@ -21,7 +21,7 @@ using namespace::std;
 
 RESMODEL_CREATOR( TripleFixedResModel );
 //............................................
-// Constructor 
+// Constructor
 TripleFixedResModel::TripleFixedResModel( PDFConfigurator* configurator, bool quiet ) :
 	Resolution1Name			( configurator->getName( "timeResolution1" ) ),
 	Resolution2Name			( configurator->getName( "timeResolution2" ) ),
@@ -52,7 +52,7 @@ void TripleFixedResModel::addParameters( vector<string> & parameterNames )
 //To take the current value of a parameter into the instance
 void TripleFixedResModel::setParameters( ParameterSet & parameters )
 {
-	if( parameters.GetPhysicsParameter( ResolutionScaleName )->isFixed() && 
+	if( parameters.GetPhysicsParameter( ResolutionScaleName )->isFixed() &&
 		parameters.GetPhysicsParameter( Resolution1Name )->isFixed() &&
 		parameters.GetPhysicsParameter( Resolution2Name )->isFixed() &&
 		parameters.GetPhysicsParameter( Resolution3Name )->isFixed() &&

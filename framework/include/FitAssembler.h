@@ -2,7 +2,7 @@
  * @class FitAssembler
  *
  * @brief The intention is for this class to formalise the process of assembling the components of a fit
- * 
+ *
  * Ideally it will be a set of nested static methods, starting from more and more rudimentary components
  *
  * @author Benjamin M Wynne bwynne@cern.ch

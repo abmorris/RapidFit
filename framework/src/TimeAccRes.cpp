@@ -20,7 +20,7 @@
 using namespace::std;
 
 //............................................
-// Constructor 
+// Constructor
 TimeAccRes::TimeAccRes( PDFConfigurator* configurator, bool quiet ) :
 	resolutionModel(NULL), timeAcc(NULL), _config( new PDFConfigurator( *configurator ) )
 {
@@ -57,7 +57,7 @@ void TimeAccRes::ConfigTimeAcc( PDFConfigurator* configurator, bool quiet )
 			timeAcc = new SlicedAcceptance( "File" , configurator->getConfigurationValue( "TimeAcceptanceFile" ), quiet ) ;
 			if( !quiet ) cout << "TimeAccRes:: Constructing timeAcc: using file: " << configurator->getConfigurationValue( "TimeAcceptanceFile" ) << endl ;
 		}
-		
+
 		else if( configurator->getConfigurationValue( "TimeAcceptanceRootFile" ) != "" ) //CF: adding root histo parsing for fluctuation studies
 		{
 			if(configurator->getConfigurationValue("FluctuateAcceptance") == "True"){
@@ -66,7 +66,7 @@ void TimeAccRes::ConfigTimeAcc( PDFConfigurator* configurator, bool quiet )
 			}else{
 			timeAcc = new SlicedAcceptance( "RootFile" , configurator->getConfigurationValue( "TimeAcceptanceRootFile" ),  configurator->getConfigurationValue( "TimeAcceptanceHisto" ), false ,quiet ) ;
 			if( !quiet ) cout << "TimeAccRes:: Constructing timeAcc: using fluctuated root file: " << configurator->getConfigurationValue( "TimeAcceptanceRootFile" ) << endl ;
-			
+
 			}
 		}
 	}

@@ -87,7 +87,7 @@ Bs2JpsiPhi_Signal_v5::Bs2JpsiPhi_Signal_v5( const Bs2JpsiPhi_Signal_v5& input ) 
 	, _expLObs(input._expLObs), _expHObs(input._expHObs), _expSinObs(input._expSinObs), _expCosObs(input._expCosObs), _intexpLObs(input._intexpLObs), _intexpHObs(input._intexpHObs)
 
 	, _intexpSinObs(input._intexpSinObs), _intexpCosObs(input._intexpCosObs), _intexpLObs_vec(input._intexpLObs_vec), _intexpHObs_vec(input._intexpHObs_vec)
-	
+
 	, _intexpSinObs_vec(input._intexpSinObs_vec), _intexpCosObs_vec(input._intexpCosObs_vec), timeBinNum(input.timeBinNum), _datapoint(NULL), componentIndex(input.componentIndex)
 
 	, angularTermDependencies(input.angularTermDependencies), A0A0_Obs(input.A0A0_Obs), APAP_Obs(input.APAP_Obs), ATAT_Obs(input.ATAT_Obs), ASAS_Obs(input.ASAS_Obs)
@@ -218,7 +218,7 @@ Bs2JpsiPhi_Signal_v5::Bs2JpsiPhi_Signal_v5(PDFConfigurator* configurator) : Base
 	_usePunziMistag = configurator->isTrue( "UsePunziMistag" ) ;
 	allowNegativeAsSq = configurator->isTrue( "AllowNegativeAsSq" ) ;
 	_usePlotComponents = configurator->isTrue( "PlotComponents" ) ;
-	_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ; 
+	_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ;
 	_fitDirectlyForApara = configurator->isTrue( "FitDirectlyForApara" );
 	DebugFlag_v5 = !configurator->hasConfigurationValue( "DEBUG", "False" );
 
@@ -232,7 +232,7 @@ Bs2JpsiPhi_Signal_v5::Bs2JpsiPhi_Signal_v5(PDFConfigurator* configurator) : Base
 		_offsetToGammaForBetaFactor = atof( offsetToGammaForBetaFactor.c_str() ) ;
 		cout << "Bs2JpsiPhi_Signal_v5:: Adding OffsetToGammaForBetaFactor = " << _offsetToGammaForBetaFactor << endl ;
 	}
-    
+
 	//...............................................
 	// Configure to use angular acceptance machinery
 	string angAccFile = configurator->getConfigurationValue( "AngularAcceptanceFile" ) ;

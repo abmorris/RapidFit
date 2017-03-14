@@ -15,7 +15,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -25,12 +25,12 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
 //..........................................
-// True Physics Parameters for signal 
+// True Physics Parameters for signal
 
 <PhysicsParameter>
 <Name>gamma</Name>
@@ -43,7 +43,7 @@
 
 <PhysicsParameter>
 <Name>deltaGamma</Name>
-<Value>0.0</Value>   
+<Value>0.0</Value>
 <Minimum>-1.0</Minimum>
 <Maximum>1.0</Maximum>
 <Type>Free</Type>
@@ -79,7 +79,7 @@
 
 <PhysicsParameter>
 <Name>delta_para</Name>
-<Value>3.1</Value>  
+<Value>3.1</Value>
 <Minimum>-6.3</Minimum>
 <Maximum>6.6</Maximum>
 <Type>Free</Type>
@@ -88,7 +88,7 @@
 
 <PhysicsParameter>
 <Name>delta_perp</Name>
-<Value>-0.17</Value> 
+<Value>-0.17</Value>
 <Minimum>-6.3</Minimum>
 <Maximum>6.3</Maximum>
 <Type>Free</Type>
@@ -109,7 +109,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>              
+<PhysicsParameter>
 <Name>deltaM</Name>
 <Value>17.7</Value>
 <Type>Free</Type>
@@ -120,7 +120,7 @@
 <Name>Phi_s</Name>
 <BlindString>BsOlivier</BlindString>
 <BlindScale>3.0</BlindScale>
-<Value>3.1</Value>  
+<Value>3.1</Value>
 <Minimum>0.0</Minimum>
 <Maximum>6.28318530718</Maximum>
 <Type>Free</Type>
@@ -166,7 +166,7 @@
 //..................................
 // Detector Parameters
 
-//Signal PDF time resolution parameters for double gaussian model. 
+//Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
 <Name>timeResolution1Fraction</Name>     // This is the fraction of the first Gaussian
@@ -184,7 +184,7 @@
 
 <PhysicsParameter>
 <Name>timeResolution2</Name>
-<Value>0.0646</Value> 
+<Value>0.0646</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
@@ -220,7 +220,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>  
+<PhysicsParameter>
 <Name>angAccI4</Name>
 <Value>-0.000087511</Value>    //-0.0000318417
 <Type>Fixed</Type>
@@ -323,7 +323,7 @@
 //Exponential background mass model
 
 <PhysicsParameter>
-<Name>alphaM_pr</Name>      // exponent 
+<Name>alphaM_pr</Name>      // exponent
 <Value>0.00135</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
@@ -442,7 +442,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>/phys/linux/s0127440/scratch/Data2010_NTuples/goldstandard_unbiased_timecut.root</FileName>  
+<FileName>/phys/linux/s0127440/scratch/Data2010_NTuples/goldstandard_unbiased_timecut.root</FileName>
 <NTuplePath>merged</NTuplePath>
 
 <NumberEvents>2000000</NumberEvents>
@@ -450,7 +450,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -535,15 +535,15 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>/phys/linux/s0127440/scratch/Data2010_NTuples/goldstandard_unbiased_timecut.root</FileName>  
-<NTuplePath>merged</NTuplePath>  
+<FileName>/phys/linux/s0127440/scratch/Data2010_NTuples/goldstandard_unbiased_timecut.root</FileName>
+<NTuplePath>merged</NTuplePath>
 
 <NumberEvents>2000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>

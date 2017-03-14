@@ -1,7 +1,7 @@
 // $Id: PerEventMistagHistogram.cpp,v 1.2 2009/11/13 15:31:51 gcowan Exp $
 /** @class PerEventMistagHistogram PerEventMistagHistogram.cpp
  *
- *  PDF for background due to wrong PV association 
+ *  PDF for background due to wrong PV association
  *
  *  @author Greig Cowan
  *  @date 2012-05-29
@@ -38,7 +38,7 @@ PerEventMistagHistogram::PerEventMistagHistogram( PDFConfigurator* config ) :
 
 	//Make prototypes
 	MakePrototypes();
-	
+
 	//Find name of histogram needed to define 3-D angular distribution
 	string fileName = config->getConfigurationValue( "MistagHistogramFile" ) ;
 	string histName = config->getConfigurationValue( "MistagHistogramName" ) ;
@@ -144,7 +144,7 @@ PerEventMistagHistogram::PerEventMistagHistogram( PDFConfigurator* config ) :
 		cout << endl;
 
 		// Check.  This order works for both bases since phi is always the third one.
-		if ((xmax-xmin) < 0.1 ) 
+		if ((xmax-xmin) < 0.1 )
 		{
 			cout << "In PerEventMistagHistogram::PerEventMistagHistogram: The full angular range is not used in this histogram - the PDF does not support this case" << endl;
 			exit(1);
@@ -156,12 +156,12 @@ PerEventMistagHistogram::PerEventMistagHistogram( PDFConfigurator* config ) :
 /*
 // Copy
 PerEventMistagHistogram::PerEventMistagHistogram( const PerEventMistagHistogram& input ) : BasePDF( (BasePDF) input ),
-histo(input.histo), xaxis(input.xaxis), 
-nxbins(input.nxbins), 
-xmin(input.xmin), xmax(input.xmax), 
-deltax(input.deltax), 
-total_num_entries(input.total_num_entries), 
-mistagName( input.mistagName ), 
+histo(input.histo), xaxis(input.xaxis),
+nxbins(input.nxbins),
+xmin(input.xmin), xmax(input.xmax),
+deltax(input.deltax),
+total_num_entries(input.total_num_entries),
+mistagName( input.mistagName ),
 mistag(input.mistag)
 {
 
@@ -231,7 +231,7 @@ double PerEventMistagHistogram::timeMassFactor( )
 
 		//Find global bin number for values of angles, find number of entries per bin, divide by volume per bin and normalise with total number of entries in the histogram
 		xbin = xaxis->FindFixBin( mistag ); if( xbin > nxbins ) xbin = nxbins;
-		
+
 		globalbin = histo->GetBin( xbin );
 		num_entries_bin = histo->GetBinContent(globalbin);
 
@@ -239,6 +239,6 @@ double PerEventMistagHistogram::timeMassFactor( )
 
 		//Angular factor normalized with phase space of histogram and total number of entries in the histogram
 		returnValue = num_entries_bin / (deltax) / total_num_entries ;
-	
+
 	return returnValue;
 }

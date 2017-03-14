@@ -29,7 +29,7 @@ LogNormalDistribution::LogNormalDistribution(PDFConfigurator* configurator) :
 	LNxName( configurator->getName("LNx") ),
 	plotComponents(false)
 {
-	
+
 	std::cout << "Constructing PDF: LogNormalDistribution " << std::endl ;
 
 	plotComponents = configurator->isTrue( "PlotComponents" );
@@ -71,7 +71,7 @@ bool LogNormalDistribution::SetPhysicsParameters( ParameterSet * NewParameterSet
   	theta2 = allParameters.GetPhysicsParameter( LNtheta2Name )->GetValue();
   	m2     = allParameters.GetPhysicsParameter( LNm2Name )->GetValue();
   	f      = allParameters.GetPhysicsParameter( LNfName )->GetValue();
-	
+
 	return isOK;
 }
 
@@ -82,7 +82,7 @@ double LogNormalDistribution::Evaluate(DataPoint * measurement)
 {
 	// Get the observable
 	double this_x = measurement->GetObservable( LNxName )->GetValue();
-	
+
 	double returnValue = 0.000000000001;
 
 	if ( this_x > theta1 && x > theta2 ) returnValue = f*TMath::LogNormal( this_x, sigma1, theta1, m1 ) + (1.-f)*TMath::LogNormal( this_x, sigma2, theta2, m2 );

@@ -3,7 +3,7 @@
  * @class PhysicsParameter
  *
  * A parameter to be adjusted by the fitter, with a starting value and limits
- * Modified by Pete Clarke december 2010 to add blinding 
+ * Modified by Pete Clarke december 2010 to add blinding
  *
  * @author Benjamin M Wynne bwynne@cern.ch
  * @author Robert Currie rcurrie@cern.ch
@@ -106,13 +106,13 @@ string PhysicsParameter::GetName() const
 
 //............ Get ans Set methods became complex since adding blinding  .......
 
-//Get the unblinded value. 
+//Get the unblinded value.
 double PhysicsParameter::GetValue() const
 {
 	return this->GetTrueValue();
 }
 
-// Set the blinded value 
+// Set the blinded value
 // {This sets a different thing to what GetValue gets for historic reasons.}
 void PhysicsParameter::SetValue(double NewValue)
 {
@@ -134,9 +134,9 @@ void PhysicsParameter::SetBlindedValue(double NewValue)
 double PhysicsParameter::GetTrueValue() const
 {
 	double new_value=-9999;
-	if( toBeBlinded ) 
+	if( toBeBlinded )
 	{
-		new_value = value + blindOffset;   
+		new_value = value + blindOffset;
 	}
 	else new_value = value ;
 	return new_value;
@@ -145,11 +145,11 @@ double PhysicsParameter::GetTrueValue() const
 //Set the true value
 void PhysicsParameter::SetTrueValue(double NewValue)
 {
-	if( toBeBlinded ) 
+	if( toBeBlinded )
 	{
-		value = NewValue - blindOffset;   
+		value = NewValue - blindOffset;
 	}
-	else value = NewValue;	
+	else value = NewValue;
 }
 
 //.....................

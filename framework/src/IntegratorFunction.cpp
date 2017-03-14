@@ -280,7 +280,7 @@ double IntegratorFunction::DoEval( const Double_t * x ) const
 	}
 	else if( generateFunc == true )
 	{
-		try	
+		try
 		{
 			result = wrappedFunction->EvaluateForNumericGeneration( newDataPoint );
 		}

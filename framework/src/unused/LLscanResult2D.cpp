@@ -45,12 +45,12 @@ LLscanResult2D::LLscanResult2D( string _parameterName, vector<double> _parameter
 		cout << "Constructing LLscanResult2D: zero size second parameter list " << endl ;
 		exit(1);
 	}
-	
+
 	if( parameterValues2.size() != (listOfLLscans[0]->GetRawLLvalues()).size() ) {
 		cout << "Constructing LLscanResult2D: number parameters2 .ne. size of LLscan " << endl ;
 		exit(1);
 	}
-	
+
 /*
  //PELC WORK IN PROGRESS
 
@@ -59,7 +59,7 @@ LLscanResult2D::LLscanResult2D( string _parameterName, vector<double> _parameter
 	//This is a way to set any safe llmin value to start with
 	double llmin = 0 ;
 	for( i1=0; i1 < parameterValues.size() ; ++i1 ) {
-		vector<double> llscan = listOfLLscans[i1]->GetRawLLvalues() ; 
+		vector<double> llscan = listOfLLscans[i1]->GetRawLLvalues() ;
 		for(i2=0; i2 < parameterValues2.size() ; ++i2 ) {
 			if( llscan[i2] != LLSCAN_FIT_FAILURE_VALUE ) {
 				llmin = llscan[i2] ;
@@ -67,9 +67,9 @@ LLscanResult2D::LLscanResult2D( string _parameterName, vector<double> _parameter
 			}
 		}
 	}
-	
+
 	for( i1=0; i1 < parameterValues.size() ; ++i1 ) {
-		vector<double> llscan_raw = listOfLLscans[i1]->GetRawLLvalues() ; 
+		vector<double> llscan_raw = listOfLLscans[i1]->GetRawLLvalues() ;
 		vector<double> llscan_offset ;
 		for(i2=0; i2 < parameterValues2.size() ; ++i2 ) {
 			if( llscan_raw != LLSCAN_FIT_FAILURE_VALUE ) {
@@ -81,11 +81,11 @@ LLscanResult2D::LLscanResult2D( string _parameterName, vector<double> _parameter
 		}
 		????? listOfLLscans_offset.push_back(llscan_offset) ;
 	}
-	
-	//Now need to 
-*/		
-	
-	
+
+	//Now need to
+*/
+
+
 }
 
 //Destructor
@@ -107,7 +107,7 @@ void LLscanResult2D::print()
 
 
 // Return a 2D histogram
-TH2D * LLscanResult2D::GetTH2D() 
+TH2D * LLscanResult2D::GetTH2D()
 {
 
 	int numberOfPoints = int(parameterValues.size())*int(parameterValues2.size());
@@ -121,8 +121,8 @@ TH2D * LLscanResult2D::GetTH2D()
 	for(unsigned int ix=0; ix < parameterValues.size() ; ++ix ) {
 		vector<double> LLvalues= listOfLLscans[ix]->GetRawLLvalues() ;
 		for(unsigned int iy=0; iy < parameterValues2.size() ; ++iy ) {
-			pvx[ind] = parameterValues[ix]  ;  
-			pvy[ind] = parameterValues2[iy] ; 
+			pvx[ind] = parameterValues[ix]  ;
+			pvy[ind] = parameterValues2[iy] ;
 			pvz[ind] = LLvalues[iy];
 			++ind;
 		}
@@ -133,17 +133,17 @@ TH2D * LLscanResult2D::GetTH2D()
 	double llminNew = 0 ;
 	int ipmin = -1 ;
 	for(int ip=0; ip < numberOfPoints ; ++ip ) { if( (pvz[ip] > llminNew) ) llminNew = pvz[ip] ;}  // This is only safe way to initialise llminNew to a large value
-	for(int ip=0; ip < numberOfPoints ; ++ip ) { 
-		if( (pvz[ip] < llminNew) && (fabs(pvz[ip] + 9999.)<DOUBLE_TOLERANCE) ) 
+	for(int ip=0; ip < numberOfPoints ; ++ip ) {
+		if( (pvz[ip] < llminNew) && (fabs(pvz[ip] + 9999.)<DOUBLE_TOLERANCE) )
 		{
 			llminNew = pvz[ip] ;
 			ipmin = ip ;
 		}
-	} 
+	}
 
 	//Now adjust the LL values to be relative to the minimum
 	for(int ip=0; ip < numberOfPoints ; ++ip ) {
-		
+
 		if( fabs( pvz[ip] + 9999. ) < DOUBLE_TOLERANCE )
 		{
 			pvz[ip]-=llminNew ;
@@ -160,41 +160,41 @@ TH2D * LLscanResult2D::GetTH2D()
 		cout << " i:  " << ii << " x:  "<< pvx[ii] << " y:  "  << pvy[ii]  << " LL: " <<pvz[ii] << endl ;
 		if( fabs( ii - ipmin ) < DOUBLE_TOLERANCE ) cout << " >>>>>>>>>>>>>MINIMUM>>>>>>>>>>>>>>" <<endl;
 	}
- 
-	
-	// Make some plots
-	TCanvas * c0 = new TCanvas;	
 
-	TGraph2D * gr = new TGraph2D(numberOfPoints, pvx, pvy, pvz ) ;	
+
+	// Make some plots
+	TCanvas * c0 = new TCanvas;
+
+	TGraph2D * gr = new TGraph2D(numberOfPoints, pvx, pvy, pvz ) ;
 	gr->SetTitle(" ");
-	
+
 	gr->Draw("colz") ;   //cont, //cont1, lego
-	c0->Update() ;	
+	c0->Update() ;
 	c0->SaveAs( "llcontour-graph-colz.eps" ) ;
 
 	gr->Draw("cont1") ;   //cont, //cont1, lego
-	c0->Update() ;	
+	c0->Update() ;
 	c0->SaveAs( "llcontour-graph-cont1.eps" ) ;
 
 	TH2D* hist = gr->GetHistogram() ;
 	hist->SetTitle(" ");
-	
+
 	double contours[4] ;
 	contours[0]=1.15;    //not 0.5,  -2log(0.317) = 2.2977 / This must = 2* Delta_log(LL) /  Hence Delta_log(LL) = 1.15
 	contours[1]=2.30;    //not ?,  -2log(0.1) = 4.605 / This must = 2* Delta_log(LL) /  Hence Delta_log(LL) = 2.30
 	contours[2]=3.00;    //not 2,  -2log(0.05) = 5.99 / This must = 2* Delta_log(LL) /  Hence Delta_log(LL) = 3.00
-	contours[3]=4.61;    //not 4.5,-2log(0.01) = 9.21 / This must = 2* Delta_log(LL) /  Hence Delta_log(LL) = 4.61 
+	contours[3]=4.61;    //not 4.5,-2log(0.01) = 9.21 / This must = 2* Delta_log(LL) /  Hence Delta_log(LL) = 4.61
 	hist->SetContour(4, contours );
 	hist->Draw("cont1") ;
-	c0->Update() ;	
+	c0->Update() ;
 	c0->SaveAs( "llcontour.eps" ) ;
-	
-	
+
+
 	//SetTitle( "" )  to get rid of big title
 	//
-	
+
 	/*
-	//gr->SetTitle("LL Scan for Parameter xxx");	
+	//gr->SetTitle("LL Scan for Parameter xxx");
 	gr->SetMarkerStyle(1);
 	gr->SetLineWidth(2);
 	gr->SetMarkerColor(4);
@@ -206,10 +206,10 @@ TH2D * LLscanResult2D::GetTH2D()
 	gr->Draw("ALP");
 	string title("LL Scan for Parameter ") ;
 	title+=parameterName.c_str();
-	gr->SetTitle(title.c_str());	
+	gr->SetTitle(title.c_str());
 	gr->GetXaxis()->SetTitle(parameterName.c_str());
 	 */
-								 
+
 	return hist ;
 }
 

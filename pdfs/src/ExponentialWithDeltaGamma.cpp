@@ -212,7 +212,7 @@ double ExponentialWithDeltaGamma::Normalisation( PhaseSpaceBoundary* boundary )
 			cerr << "Bound on time not provided" << endl;
 			norm = -1.;
 		}
-		else    
+		else
 		{
 			tlow = timeBound->GetMinimum();
 			thigh = timeBound->GetMaximum();

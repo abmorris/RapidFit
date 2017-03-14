@@ -34,7 +34,7 @@ Sinusoid::Sinusoid(PDFConfigurator* configurator) :
 
 //Destructor
 Sinusoid::~Sinusoid()
-{ 
+{
 }
 
 //Make the data point and parameter set

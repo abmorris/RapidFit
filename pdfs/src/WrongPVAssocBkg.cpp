@@ -1,7 +1,7 @@
 // $Id: WrongPVAssocBkg.cpp,v 1.2 2009/11/13 15:31:51 gcowan Exp $
 /** @class WrongPVAssocBkg WrongPVAssocBkg.cpp
  *
- *  PDF for background due to wrong PV association 
+ *  PDF for background due to wrong PV association
  *
  *  @author Greig Cowan
  *  @date 2012-05-29
@@ -31,7 +31,7 @@ WrongPVAssocBkg::WrongPVAssocBkg( PDFConfigurator* config ) :
 	, eventResolutionName   ( config->getName("eventResolution") )
 	, mass(), time()
 	, xaxis(), yaxis()
-	, nxbins(), nybins() 
+	, nxbins(), nybins()
 	, xmin(), xmax()
 	, ymin(), ymax()
 	, deltax(), deltay()
@@ -46,13 +46,13 @@ WrongPVAssocBkg::WrongPVAssocBkg( PDFConfigurator* config ) :
 	//Make prototypes
 	MakePrototypes();
 
-	// If the flat distribution is chosen, ther eis nothing needed 
+	// If the flat distribution is chosen, ther eis nothing needed
 	_makeFlat  = config->isTrue( "MakeFlat") ;
 	if( _makeFlat ) {
 		cout << " WrongPVAssocBkg::WrongPVAssocBkg: constructing with flat time and mass distributions " << endl ;
 		return ;
 	}
-	
+
 	//Find name of histogram needed to define 3-D angular distribution
 	string fileName = config->getConfigurationValue( "TimeMassHistogram" ) ;
 
@@ -167,7 +167,7 @@ WrongPVAssocBkg::WrongPVAssocBkg( PDFConfigurator* config ) :
 		cout << endl;
 
 		// Check.  This order works for both bases since phi is always the third one.
-		if (xmin>0.3 || xmax<14.0 || ymin >5200. || ymax<5550. ) 
+		if (xmin>0.3 || xmax<14.0 || ymin >5200. || ymax<5550. )
 		{
 			cout << "In WrongPVAssocBkg::WrongPVAssocBkg: The histo range does not cover t[0.3-14] m[5200-5550]- *****you should worry******" << endl;
 			//exit(1);
@@ -180,14 +180,14 @@ WrongPVAssocBkg::WrongPVAssocBkg( PDFConfigurator* config ) :
 // Copy
 WrongPVAssocBkg::WrongPVAssocBkg( const WrongPVAssocBkg& input ) : BasePDF( (BasePDF) input ),
 histo(input.histo), xaxis(input.xaxis), yaxis(input.yaxis),
-nxbins(input.nxbins), nybins(input.nybins), 
-xmin(input.xmin), xmax(input.xmax), 
-ymin(input.ymin), ymax(input.ymax), 
-deltax(input.deltax), deltay(input.deltay), 
-total_num_entries(input.total_num_entries), 
+nxbins(input.nxbins), nybins(input.nybins),
+xmin(input.xmin), xmax(input.xmax),
+ymin(input.ymin), ymax(input.ymax),
+deltax(input.deltax), deltay(input.deltay),
+total_num_entries(input.total_num_entries),
 total_num_entries_phase_space(input.total_num_entries_phase_space),
 normalisationDone(input.normalisationDone),
-massName(input.massName), timeName(input.timeName), eventResolutionName( input.eventResolutionName ), 
+massName(input.massName), timeName(input.timeName), eventResolutionName( input.eventResolutionName ),
 mass(input.mass), time(input.time),
 _makeFlat(input._makeFlat)
 {
@@ -234,20 +234,20 @@ double WrongPVAssocBkg::Evaluate(DataPoint * measurement)
 		double tlow = measurement->GetPhaseSpaceBoundary()->GetConstraint( timeName )->GetMinimum();
 		double thigh = measurement->GetPhaseSpaceBoundary()->GetConstraint( timeName )->GetMaximum();
 		double mlow = measurement->GetPhaseSpaceBoundary()->GetConstraint( massName )->GetMinimum();
-		double mhigh = measurement->GetPhaseSpaceBoundary()->GetConstraint( massName )->GetMaximum();		
+		double mhigh = measurement->GetPhaseSpaceBoundary()->GetConstraint( massName )->GetMaximum();
 		return 1. / (thigh-tlow) / (mhigh-mlow) ;
 	}
 
-	//If not flat, then this bit has to be done once to find the total number of entries within the phase space boundary	
+	//If not flat, then this bit has to be done once to find the total number of entries within the phase space boundary
 	// Has to be done here as this is first time phase space boundary is avaialble.
 	if( ! normalisationDone )
 	{
 		double tlow = measurement->GetPhaseSpaceBoundary()->GetConstraint( timeName )->GetMinimum();
 		double thigh = measurement->GetPhaseSpaceBoundary()->GetConstraint( timeName )->GetMaximum();
 		double mlow = measurement->GetPhaseSpaceBoundary()->GetConstraint( massName )->GetMinimum();
-		double mhigh = measurement->GetPhaseSpaceBoundary()->GetConstraint( massName )->GetMaximum();		
-		total_num_entries_phase_space = 0;		
-		for(int i=1; i < nxbins+1; ++i)	{ 
+		double mhigh = measurement->GetPhaseSpaceBoundary()->GetConstraint( massName )->GetMaximum();
+		total_num_entries_phase_space = 0;
+		for(int i=1; i < nxbins+1; ++i)	{
 			for (int j=1; j < nybins+1; ++j)
 			{
 				double xcenter = (histo->GetXaxis())->GetBinCenter(i) ;
@@ -256,17 +256,17 @@ double WrongPVAssocBkg::Evaluate(DataPoint * measurement)
 					total_num_entries_phase_space += histo->GetBinContent(i,j);
 				}
 			}
-		}		
+		}
 		normalisationDone = true ;
 		cout << "WrongPVAssocBkg::Evaluate: Total number entries = "  <<total_num_entries << "  of which in phase space = " << total_num_entries_phase_space << endl ;
 	}
 	// Observable
 	mass = measurement->GetObservable( massName )->GetValue();
 	time = measurement->GetObservable( timeName )->GetValue();
-	
+
 	return this->timeMassFactor();
-	
-	
+
+
 }
 
 
@@ -291,7 +291,7 @@ double WrongPVAssocBkg::timeMassFactor( )
 	int xbin = -1, ybin = -1;
 	double num_entries_bin = -1.;
 
-	
+
 	//Find global bin number for values of angles, find number of entries per bin, divide by volume per bin and normalise with total number of entries in the histogram
 	xbin = xaxis->FindFixBin( time ); if( xbin > nxbins ) xbin = nxbins; if( xbin < 1 ) xbin = 1;
 	ybin = yaxis->FindFixBin( mass ); if( ybin > nybins ) ybin = nybins; if( ybin < 1 ) ybin = 1;

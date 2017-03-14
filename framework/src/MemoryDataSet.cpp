@@ -217,7 +217,7 @@ vector<DataPoint> MemoryDataSet::GetDiscreteSubSet( const vector<ObservableRef> 
 	{
 		DataPoint data_i = allData[i];
 
-		decision = true;       
+		decision = true;
 		for( unsigned int j=0; j< discreteParam.size(); ++j )
 		{
 			//cout << string(discreteParam[j]) << " = " << data_i->GetObservable( discreteParam[j] )->GetValue() << " w: " << discreteVal[j] << "\t";

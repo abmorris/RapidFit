@@ -23,7 +23,7 @@ class DPWignerFunctionJ3over2 : public virtual DPWignerFunction
     static double dp3m1(double cosTheta);
     static double dp1p1(double cosTheta);
     static double dp1m1(double cosTheta);
-   
+
 };
 
 #endif

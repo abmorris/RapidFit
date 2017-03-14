@@ -53,7 +53,7 @@ Any further arguments are treated as input files that should be added to the inp
 
 
 
-The script polls te environment for RAPIDFITROOT which has been used in the larger analyses requiring batch jobs for long enough I feel it's a standard part of RapidFit's install. 
+The script polls te environment for RAPIDFITROOT which has been used in the larger analyses requiring batch jobs for long enough I feel it's a standard part of RapidFit's install.
 
 The script also polls root-config to determine the running version of ROOT at submittion (this is very likely the one that you built RapidFit against)
 

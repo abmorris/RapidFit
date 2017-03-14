@@ -1,5 +1,5 @@
 #  XML-Config
-#  
+#
 #  YOU WANT TO EDIT THESE
 
 
@@ -87,7 +87,7 @@ while [ $i -le $wanted_X_segments ]; do
 	limit_X_max=$(echo "scale=$floating_precision; $X_min + ( $i + 1 ) * $X_Step - $X_Point_Step" | bc)
 	limit_X_min=$(echo "scale=$floating_precision; $X_min + $i* $X_Step" | bc)
 	X_Points_per_Segment=$X_Points_per_Segment_true;
-	if [ $i -eq $wanted_X_segments ]; then 
+	if [ $i -eq $wanted_X_segments ]; then
                 X_Points_per_Segment=$(echo "scale=0; ( $X_max - ( $X_min + ( $i - 1 ) * $X_Step ) ) / $X_Step " | bc);
                 limit_X_max=$(echo "scale=$floating_precision; $limit_X_min + ( $X_Points_per_Segment - 1 ) * $X_Step " | bc );
         fi

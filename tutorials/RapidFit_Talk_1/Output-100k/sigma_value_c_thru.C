@@ -18,7 +18,7 @@
    Canvas0.16290987539105117->SetBottomMargin(0.16);
    Canvas0.16290987539105117->SetFrameBorderMode(0);
    Canvas0.16290987539105117->SetFrameBorderMode(0);
-   
+
    TH1F *sigma_value0.999741748906672 = new TH1F("sigma_value0.999741748906672","Toy Study sigma value distribution",100,1.785,2.23);
    sigma_value0.999741748906672->SetBinContent(8,1);
    sigma_value0.999741748906672->SetBinContent(9,1);
@@ -103,7 +103,7 @@
    sigma_value0.999741748906672->SetBinContent(89,4);
    sigma_value0.999741748906672->SetBinContent(93,2);
    sigma_value0.999741748906672->SetEntries(100000);
-   
+
    TF1 *gammaf = new TF1("gammaf","[0]*TMath::GammaDist(x,([1]*[1])/([2]*[2]),0,([2]*[2])/[1])",1.785,2.23);
    gammaf->SetFillColor(1);
    gammaf->SetFillStyle(0);
@@ -136,7 +136,7 @@
    gammaf->SetParError(2,9.748883e-05);
    gammaf->SetParLimits(2,0,0);
    sigma_value0.999741748906672->GetListOfFunctions()->Add(gammaf);
-   
+
    TPaveStats *ptstats = new TPaveStats(0.45,0.65,0.9,0.9,"brNDC");
    ptstats->SetName("stats");
    ptstats->SetBorderSize(1);
@@ -179,7 +179,7 @@
    sigma_value0.999741748906672->GetZaxis()->SetTitleOffset(1.2);
    sigma_value0.999741748906672->GetZaxis()->SetTitleFont(132);
    sigma_value0.999741748906672->Draw("");
-   
+
    ptstats = new TPaveStats(0.45,0.65,0.9,0.9,"brNDC");
    ptstats->SetName("stats");
    ptstats->SetBorderSize(1);

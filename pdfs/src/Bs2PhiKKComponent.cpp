@@ -41,7 +41,7 @@ Bs2PhiKKComponent::Bs2PhiKKComponent(PDFConfigurator* config, std::string _phina
 	// Flatte
 	else if(lineshape=="FT")
 	{
-		KKpars.push_back(PhysPar(config,KKname+"_mass")); 
+		KKpars.push_back(PhysPar(config,KKname+"_mass"));
 		KKpars.push_back(PhysPar(config,KKname+"_gpipi"));
 		KKpars.push_back(PhysPar(config,KKname+"_Rg"));
 	}

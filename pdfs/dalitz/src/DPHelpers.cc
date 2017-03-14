@@ -112,7 +112,7 @@ void DPHelpers::Belle(const TLorentzVector & _pMuPlus,
   TVector3 aMuPlus = p3MuPlus - p3Psi * (p3MuPlus.Dot(p3Psi)/p3Psi.Mag2());
 
   // angle between K* and Psi decay planes in B0 rest frame
-  phiKPiPsi = atan2( 
+  phiKPiPsi = atan2(
 			(p3Psi.Cross(aK)).Dot(aMuPlus)/(p3Psi.Mag()*aK.Mag()*aMuPlus.Mag()),
                         aK.Dot(aMuPlus)/(aK.Mag()*aMuPlus.Mag())
 			);

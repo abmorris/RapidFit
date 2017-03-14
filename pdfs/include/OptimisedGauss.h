@@ -47,7 +47,7 @@ class OptimisedGauss : public BasePDF
 
 
 		//	Each DataPoint contains the Method GetObservable( string ) and GetObservable( ObservableRef )
-		//	Using the 2nd method and constructing ObservableRef objects means that the DataPoint does NOT need to 
+		//	Using the 2nd method and constructing ObservableRef objects means that the DataPoint does NOT need to
 		//	Perform a lookup about where in the DataPoint the object is for every single event in the nTuple
 		//	This replaces 1,000,000 calls to StringProcessing::VectorContains with 1,000 calls a clear improvement
 

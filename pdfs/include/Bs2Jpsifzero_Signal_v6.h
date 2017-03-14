@@ -1,7 +1,7 @@
 // $Id: Bs2Jpsifzero_Signal_v6.h,v 1.1 2013/07/17  Dianne Ferguson Exp $
 /** @class Bs2Jpsifzero_Signal_v6
  *
- *  Bs2Jpsifzero 
+ *  Bs2Jpsifzero
  *
  *  @author Dianne Ferguson dferguso@cern.ch
  *  @date 2013-07-17

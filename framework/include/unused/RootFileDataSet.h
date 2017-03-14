@@ -32,10 +32,10 @@ class RootFileDataSet : public IDataSet
 		virtual bool AddDataPoint( DataPoint* );
 		virtual int GetDataNumber();
 		virtual PhaseSpaceBoundary * GetBoundary();
-	
+
 		bool CheckTNtupleWithBoundary( TNtuple*, PhaseSpaceBoundary* );
 		bool SetBranches();
-	
+
 	private:
 		TFile * inputFile;
 		TNtuple * rootNTuple;

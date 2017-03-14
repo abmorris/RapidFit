@@ -72,7 +72,7 @@ ResultParameter::ResultParameter( string Name, double NewValue, double NewOrigin
 		maximum = NewMinimum;
 	}
 
-	if ( (value < minimum) && ( fabs( minimum ) > DOUBLE_TOLERANCE ) ) 
+	if ( (value < minimum) && ( fabs( minimum ) > DOUBLE_TOLERANCE ) )
 	{
 		cerr << "Result parameter \"" << Name << "\" has value less than minimum" << endl;
 	}
@@ -175,13 +175,13 @@ double ResultParameter::GetPull() const
 
 //Get the minimum
 double ResultParameter::GetMinimum() const
-{       
+{
 	return minimum;
 }
 
 //Get the maximum
 double ResultParameter::GetMaximum() const
-{       
+{
 	return maximum;
 }
 

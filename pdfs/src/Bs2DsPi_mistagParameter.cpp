@@ -16,7 +16,7 @@
 PDF_CREATOR( Bs2DsPi_mistagParameter );
 
 //Constructor
-Bs2DsPi_mistagParameter::Bs2DsPi_mistagParameter( PDFConfigurator* configurator ) : 
+Bs2DsPi_mistagParameter::Bs2DsPi_mistagParameter( PDFConfigurator* configurator ) :
 
 	// Physics parameters
 	gammaName     ( configurator->getName("gamma") )
@@ -150,33 +150,33 @@ void Bs2DsPi_mistagParameter::getObservables( DataPoint* measurement)
 // Interface to time primitives including single gaussian timeRes
 //
 
-double Bs2DsPi_mistagParameter::expL() const 
+double Bs2DsPi_mistagParameter::expL() const
 {
 	return Mathematics::Exp( time, gamma_l(), timeRes ) ;
 }
 
-double Bs2DsPi_mistagParameter::expLint( ) const 
+double Bs2DsPi_mistagParameter::expLint( ) const
 {
 	return Mathematics::ExpInt( tlow, thigh, gamma_l(), timeRes ) ;
 }
 
-double Bs2DsPi_mistagParameter::expH() const 
+double Bs2DsPi_mistagParameter::expH() const
 {
 	return Mathematics::Exp( time, gamma_h(), timeRes ) ;
 }
 
-double Bs2DsPi_mistagParameter::expHint( ) const 
+double Bs2DsPi_mistagParameter::expHint( ) const
 {
 	return Mathematics::ExpInt( tlow, thigh, gamma_h(), timeRes ) ;
 }
 
 
-double Bs2DsPi_mistagParameter::expCos() const 
+double Bs2DsPi_mistagParameter::expCos() const
 {
 	return Mathematics::ExpCos( time, gambar(), deltaM, timeRes ) ;
 }
 
-double Bs2DsPi_mistagParameter::expCosInt() const 
+double Bs2DsPi_mistagParameter::expCosInt() const
 {
 	return Mathematics::ExpCosInt( tlow, thigh, gambar(), deltaM, timeRes ) ;
 }

@@ -23,7 +23,7 @@ class Mathematics : public TObject
 
 		/*!
 		 * @brief This will find all of the unique coordinates stored in a 1D vector of doubles
-		 * 
+		 *
 		 * @return Returns the unique doubles each wrapped in a vector in a larger vector
 		 */
 		static vector<vector<Double_t> > Unique_Coords( vector<Double_t> input );
@@ -37,7 +37,7 @@ class Mathematics : public TObject
 
 		/*!
 		 * @brief This will find all of the unique coordinates stored in a n-D vector of doubles
-		 * 
+		 *
 		 * @warning UNTESTED UNTESTED UNTESTED UNTESTED
 		 *          This may just work, or it may burn down your house and delete your inbox,
 		 *          I have no idea what will happen, but it should work

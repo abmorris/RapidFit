@@ -35,7 +35,7 @@ class Minuit2Function : public FCNBase
 		virtual double Up() const;
 		virtual void SetErrorDef( double );
 		virtual double ErrorDef() const;
-	
+
 	private:
 		//	Uncopyable!
 		Minuit2Function ( const Minuit2Function& );

@@ -52,13 +52,13 @@ class LongLivedBkg_3Dangular : public BasePDF
 		ObservableRef tauLL2Name;            // decay constant 2
 
 		// For transversity angles
-		ObservableRef cosThetaName;	
-		ObservableRef phiName;			
-		ObservableRef cosPsiName;	
+		ObservableRef cosThetaName;
+		ObservableRef phiName;
+		ObservableRef cosPsiName;
 		// For helicity angles
-		ObservableRef cthetakName;	
-		ObservableRef cthetalName;		
-		ObservableRef phihName;			
+		ObservableRef cthetakName;
+		ObservableRef cthetalName;
+		ObservableRef phihName;
 
 		ObservableRef timeName;
 		ObservableRef timeconstName;
@@ -66,8 +66,8 @@ class LongLivedBkg_3Dangular : public BasePDF
 		double tauLL1;
 		double tauLL2;
 		double f_LL1;
-		double sigmaLL; 
-		double sigmaLL1; 
+		double sigmaLL;
+		double sigmaLL1;
 		double sigmaLL2;
 		double timeResLL1Frac;
 

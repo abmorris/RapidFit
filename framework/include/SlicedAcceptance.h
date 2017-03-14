@@ -44,7 +44,7 @@ class SlicedAcceptance
 		SlicedAcceptance( double tlow, double thigh, bool quiet=false );
 
 		/*!
-		 * @brief 
+		 * @brief
 		 *
 		 * @param tlow
 		 *

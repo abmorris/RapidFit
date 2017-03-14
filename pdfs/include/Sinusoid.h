@@ -1,6 +1,6 @@
 /** @class Sinusoid Sinusoid.h
  *
- *  RapidFit Sinusoid 
+ *  RapidFit Sinusoid
  *
  *  @author Rob
  *  @date 20xx-yy-zz

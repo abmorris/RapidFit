@@ -15,7 +15,7 @@
  * This does rely on XMLTag but in principle it can be exchanged for a proper XML parser
  *
  * Benefits?	Unknown, none of us are XML guru's
- * 
+ *
  * Cons?        Can't comment out code as quickly/flexibly
  *              Would be difficult to engineer --OverrideXML into a new parser it barely works here ;)
  *              Would have to be installed on all platforms and the authors have a distrust of ROOT XML

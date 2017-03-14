@@ -183,7 +183,7 @@ class Bs2JpsiPhi_Signal_v6 : public BasePDF
 		double _CC, _DD, _SS;
 
 		// This flag is somewhat outdated now that there is a ResolutionModel
-		// Kept for now as  aplaceholder as we will need other configuration to choose the model. 
+		// Kept for now as  aplaceholder as we will need other configuration to choose the model.
 		bool _useEventResolution;
 		inline bool useEventResolution() const {return _useEventResolution; }
 
@@ -262,13 +262,13 @@ class Bs2JpsiPhi_Signal_v6 : public BasePDF
 
 		double stored_AP;
 		inline double AP() const { return stored_AP; }
-		
+
 		double stored_A0;
 		inline double A0() const { return stored_A0; }
-		
+
 		double stored_AS;
 		inline double AS() const { return stored_AS; }
-		
+
 		double stored_ASint;
 		inline double ASint() const { return stored_ASint; }
 

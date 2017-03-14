@@ -24,7 +24,7 @@ PDF_CREATOR( Bs2JpsiPhi_Signal_v5_old );
 //......................................
 //Constructor(s)
 //New one with configurator
-Bs2JpsiPhi_Signal_v5_old::Bs2JpsiPhi_Signal_v5_old(PDFConfigurator* configurator) : 
+Bs2JpsiPhi_Signal_v5_old::Bs2JpsiPhi_Signal_v5_old(PDFConfigurator* configurator) :
 // Physics parameters
 gammaName				( configurator->getName("gamma") )
 , deltaGammaName		( configurator->getName("deltaGamma") )
@@ -86,17 +86,17 @@ gammaName				( configurator->getName("gamma") )
 , _useHelicityBasis(false)
 , _numericIntegralForce(false)
 , _numericIntegralTimeOnly(false)
-, _useCosAndSin(false) 
+, _useCosAndSin(false)
 , _useCosDpar(false)
 , _usePunziMistag(false)
 , _usePunziSigmat(false)
 , allowNegativeAsSq(false)
 //objects
-,t(), ctheta_tr(), phi_tr(), ctheta_1(), ctheta_k(), phi_h(), ctheta_l(), tag(), 
+,t(), ctheta_tr(), phi_tr(), ctheta_1(), ctheta_k(), phi_h(), ctheta_l(), tag(),
 _gamma(), dgam(), Aperp_sq(), Apara_sq(), Azero_sq(), As_sq(), delta_para(),
 delta_perp(), delta_zero(), delta_s(), delta1(), delta2(), delta_ms(), phi_s(), _cosphis(), _sinphis(), _mistag(), _mistagP1(), _mistagP0(), _mistagSetPoint(),
-resolutionScale(), resolution1(), resolution2(), resolution3(), resolution2Fraction(), resolution3Fraction(), timeOffset(), 
-angAccI1(), angAccI2(), angAccI3(), angAccI4(), angAccI5(), angAccI6(), angAccI7(), angAccI8(), angAccI9(), angAccI10(), 
+resolutionScale(), resolution1(), resolution2(), resolution3(), resolution2Fraction(), resolution3Fraction(), timeOffset(),
+angAccI1(), angAccI2(), angAccI3(), angAccI4(), angAccI5(), angAccI6(), angAccI7(), angAccI8(), angAccI9(), angAccI10(),
 tlo(), thi(), expL_stored(), expH_stored(), expSin_stored(), expCos_stored(),
 intExpL_stored(), intExpH_stored(), intExpSin_stored(), intExpCos_stored(), timeAcc(NULL), normalisationCacheValid(false),
 CachedA1(), CachedA2(), CachedA3(), CachedA4(), CachedA5(), CachedA6(), CachedA7(), CachedA8(), CachedA9(), CachedA10(),
@@ -107,7 +107,7 @@ resolution(), eventResolution(),timeIntegralCacheValid(), storeExpL(), storeExpH
 	_useHelicityBasis = configurator->isTrue( "UseHelicityBasis" ) ;
 
 	std::cout << "Constructing PDF: Bs2JpsiPhi_Signal_v5_old " << std::endl ;
-	
+
 	//...............................................
 	// Configure to use angular acceptance machinery
 	string angAccFile = configurator->getConfigurationValue( "AngularAcceptanceFile" ) ;
@@ -126,9 +126,9 @@ resolution(), eventResolution(),timeIntegralCacheValid(), storeExpL(), storeExpH
 	angAccI9 = angAcc->af9() ;	cout << "  af9 = " << angAccI9 << endl ;
 	angAccI10 = angAcc->af10();	cout << "  af10 = " << angAccI10 << endl ;
 	if( _angAccIgnoreNumerator ) cout << "Bs2JpsiPhi_Signal_v5_old:: Ignoring angular acceptance numerator " << endl ;
-	
+
 	//...........................................
-	// Configure to use time acceptance machinery 
+	// Configure to use time acceptance machinery
 	_useTimeAcceptance = configurator->isTrue( "UseTimeAcceptance" ) ;
 	if( useTimeAcceptance() ) {
 		if( configurator->hasConfigurationValue( "TimeAcceptanceType", "Upper" ) ) {
@@ -144,24 +144,24 @@ resolution(), eventResolution(),timeIntegralCacheValid(), storeExpL(), storeExpH
 		timeAcc = new SlicedAcceptance( 0., 14. ) ;
 		cout << "Bs2JpsiPhi_Signal_v5_old:: Constructing timeAcc: DEFAULT FLAT [0 < t < 14]  " << endl ;
 	}
-	
+
 	//Make empty Cache for the time integrals. This has to be done now after the SlicedAcceptance is created
 	vector<double> empty ;
 	for( int islice = 0; islice < timeAcc->numberOfSlices(); ++islice ) empty.push_back(0.0) ;
-	for( int ires=0; ires < 4 ; ++ires ) {			
+	for( int ires=0; ires < 4 ; ++ires ) {
 		storeExpL.push_back( empty ) ;
 		storeExpH.push_back( empty ) ;
 		storeExpSin.push_back( empty ) ;
 		storeExpCos.push_back( empty ) ;
 	}
-	
+
 	//...........................................
-	// Configure numerical integration options 
+	// Configure numerical integration options
 	_numericIntegralForce    = configurator->isTrue( "NumericIntegralForce") ;
 	_numericIntegralTimeOnly = configurator->isTrue( "NumericIntegralTimeOnly" ) ;
-	
+
 	//...........................................
-	// Configure other options 
+	// Configure other options
 	_useEventResolution = configurator->isTrue( "UseEventResolution" ) ;
 	_useCosAndSin = configurator->isTrue( "UseCosAndSin" ) ;
 	_useCosDpar = configurator->isTrue( "UseCosDpar" ) ;
@@ -172,19 +172,19 @@ resolution(), eventResolution(),timeIntegralCacheValid(), storeExpL(), storeExpH
 	this->TurnCachingOff();
 
 	this->SetNumericalNormalisation( false );
-	
+
 	//........................
 	// Now do some actual work
-	this->MakePrototypes();	
-	
+	this->MakePrototypes();
 
-	//PELC  - debug to plot the distribution of PDF values for each event 
+
+	//PELC  - debug to plot the distribution of PDF values for each event
 	//histOfPdfValues = new TH1D( "HistOfPdfValue" ,  "HistOfPdfValue" , 110, -0.00001, 0.00001 ) ;
 	//c0  = new TCanvas;
 	//histCounter = 0;
 	//~PELC
-	
-	
+
+
 }
 
 
@@ -199,7 +199,7 @@ void Bs2JpsiPhi_Signal_v5_old::MakePrototypes()
 {
 	//Make the DataPoint prototype
 	allObservables.push_back( timeName );
-	
+
 	if( _useHelicityBasis )
 	{
 		allObservables.push_back( cthetakName );
@@ -215,7 +215,7 @@ void Bs2JpsiPhi_Signal_v5_old::MakePrototypes()
 
 	allObservables.push_back( tagName );
 	allObservables.push_back( mistagName );
-	
+
 	if(useEventResolution()) allObservables.push_back( eventResolutionName );
 
 	//Make the parameter set
@@ -248,7 +248,7 @@ void Bs2JpsiPhi_Signal_v5_old::MakePrototypes()
 	parameterNames.push_back( mistagDeltaP1Name );
 	parameterNames.push_back( mistagDeltaP0Name );
 	parameterNames.push_back( mistagDeltaSetPointName );
-	
+
 	parameterNames.push_back( resScaleName );
 	if( ! useEventResolution() ) {
 		parameterNames.push_back( res1Name );
@@ -258,7 +258,7 @@ void Bs2JpsiPhi_Signal_v5_old::MakePrototypes()
 		parameterNames.push_back( res3FractionName );
 	}
 	parameterNames.push_back( timeOffsetName );
-		 
+
 	allParameters = ParameterSet(parameterNames);
 }
 
@@ -268,11 +268,11 @@ void Bs2JpsiPhi_Signal_v5_old::MakePrototypes()
 vector<string> Bs2JpsiPhi_Signal_v5_old::GetDoNotIntegrateList()
 {
 	vector<string> list;
-	
+
 	//list.push_back(mistagName) ;
 	if( ! _usePunziMistag) list.push_back(mistagName) ;
 	if( useEventResolution() && ! _usePunziSigmat) list.push_back(eventResolutionName) ;
-		
+
 	if( _numericIntegralTimeOnly ) {
 		if( _useHelicityBasis ) {
 			list.push_back( cthetakName );
@@ -283,8 +283,8 @@ vector<string> Bs2JpsiPhi_Signal_v5_old::GetDoNotIntegrateList()
 			list.push_back( cosThetaName );
 			list.push_back( cosPsiName ) ;
 			list.push_back( phiName ) ;
-		}			
-	}	
+		}
+	}
 	return list;
 }
 
@@ -297,13 +297,13 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 
 	normalisationCacheValid = false;  //This is only used for the untagged events and only if not useing event resolution
 	timeIntegralCacheValid = false;   //This cannot be used if event resolution is used
-	
+
 	bool result = allParameters.SetPhysicsParameters(NewParameterSet);
-	
-	// Physics parameters. 
+
+	// Physics parameters.
 	_gamma  = allParameters.GetPhysicsParameter( gammaName )->GetValue();
 	dgam      = allParameters.GetPhysicsParameter( deltaGammaName )->GetValue();
-	
+
 	Azero_sq = allParameters.GetPhysicsParameter( Azero_sqName )->GetValue();
 	if( (Azero_sq < 0.) || (Azero_sq > 1.)  )
 	{
@@ -326,9 +326,9 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 		cout << "Warning in Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters: derived parameter Apara_sq <0  and so set to zero" <<  endl ;
 		Apara_sq = 0.;
 		PDF_THREAD_UNLOCK
-	}	
-	
-	double fs = allParameters.GetPhysicsParameter( As_sqName )->GetValue();	
+	}
+
+	double fs = allParameters.GetPhysicsParameter( As_sqName )->GetValue();
 	if( (fs < 0.) || (fs >= 1.) )
 	{
 		PDF_THREAD_LOCK
@@ -337,18 +337,18 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 	}
 	As_sq = fs / (1. - fs ) ;
 	Csp = allParameters.GetPhysicsParameter( CspName )->GetValue();
-	
+
 	delta_zero = allParameters.GetPhysicsParameter( delta_zeroName )->GetValue();
 	delta_para = allParameters.GetPhysicsParameter( delta_paraName )->GetValue();
 	delta_perp = allParameters.GetPhysicsParameter( delta_perpName )->GetValue();
 	delta_s	   = allParameters.GetPhysicsParameter( delta_sName )->GetValue() + delta_perp;
 	delta1 = delta_perp -  delta_para ;
 	delta2 = delta_perp -  delta_zero ;
-	
+
 	if( _useCosDpar ) cosdpar = allParameters.GetPhysicsParameter( cosdparName )->GetValue(); //PELC-COSDPAR Special for fitting cosdpar separately
-	
-	delta_ms = allParameters.GetPhysicsParameter( deltaMName )->GetValue();	
-	
+
+	delta_ms = allParameters.GetPhysicsParameter( deltaMName )->GetValue();
+
 	if(_useCosAndSin){
 		_cosphis = allParameters.GetPhysicsParameter( cosphisName )->GetValue();
 		_sinphis = allParameters.GetPhysicsParameter( sinphisName )->GetValue();
@@ -359,7 +359,7 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 		_sinphis = sin(phi_s) ;
 	}
 	lambda = allParameters.GetPhysicsParameter( lambdaName )->GetValue();
-	
+
 	// Mistag parameters
 	_mistagP1		= allParameters.GetPhysicsParameter( mistagP1Name )->GetValue();
 	_mistagP0		= allParameters.GetPhysicsParameter( mistagP0Name )->GetValue();
@@ -367,7 +367,7 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 	_mistagDeltaP1		= allParameters.GetPhysicsParameter( mistagDeltaP1Name )->GetValue();
 	_mistagDeltaP0		= allParameters.GetPhysicsParameter( mistagDeltaP0Name )->GetValue();
 	_mistagDeltaSetPoint = allParameters.GetPhysicsParameter( mistagDeltaSetPointName )->GetValue();
-	
+
 	// Detector parameters
 	resolutionScale		= allParameters.GetPhysicsParameter( resScaleName )->GetValue();
 	if( ! useEventResolution() )
@@ -379,11 +379,11 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 		resolution3Fraction = allParameters.GetPhysicsParameter( res3FractionName )->GetValue();
 	}
 	timeOffset          = allParameters.GetPhysicsParameter( timeOffsetName )->GetValue();
-	
-	
+
+
 	// New: Prepare the coefficients of all of the time dependent terms (C,D,S etc)
 	this->prepareCDS() ;
-	
+
 	return result;
 }
 
@@ -391,7 +391,7 @@ bool Bs2JpsiPhi_Signal_v5_old::SetPhysicsParameters( ParameterSet * NewParameter
 //.............................................................
 //Calculate the PDF value for a given set of observables for use by numeric integral
 
-double Bs2JpsiPhi_Signal_v5_old::EvaluateForNumericIntegral(DataPoint * measurement) 
+double Bs2JpsiPhi_Signal_v5_old::EvaluateForNumericIntegral(DataPoint * measurement)
 {
 	if( _numericIntegralTimeOnly ) return this->EvaluateTimeOnly(measurement) ;
 	else return this->Evaluate(measurement) ;
@@ -405,7 +405,7 @@ double Bs2JpsiPhi_Signal_v5_old::Evaluate(DataPoint * measurement)
 {
 
 	double angAcceptanceFactor = 0 ;
-	
+
 	// Get observables into member variables
 	t = measurement->GetObservable( timeName )->GetValue() - timeOffset ;
 
@@ -421,20 +421,20 @@ double Bs2JpsiPhi_Signal_v5_old::Evaluate(DataPoint * measurement)
 		ctheta_1   = measurement->GetObservable( cosPsiName )->GetValue();
 		angAcceptanceFactor = angAcc->getValue( ctheta_1, ctheta_tr, phi_tr );
 	}
-	
+
 	tag = (int)measurement->GetObservable( tagName )->GetValue();
 	_mistag = measurement->GetObservable( mistagName )->GetValue();
-	
+
 	if( useEventResolution() ) eventResolution = measurement->GetObservable( eventResolutionName )->GetValue();
 
 	//Cache amplitues and angles terms used in cross section
 	this->CacheAmplitudesAndAngles() ;
-	
+
 	//***** This will be returned*****
 	//It gets constructed according to what you want to do with resolution
-	double returnValue ;	
-	
-	
+	double returnValue ;
+
+
 	if( resolutionScale <= 0. ) {
 		//This is the "code" to run with resolution=0
 		resolution = 0. ;
@@ -445,7 +445,7 @@ double Bs2JpsiPhi_Signal_v5_old::Evaluate(DataPoint * measurement)
 		resolution = eventResolution * resolutionScale ;
 		returnValue = this->diffXsec( );
 	}
-	else {	
+	else {
 		//Good old fashioned triple Gaussian resolution is selected
 		double val1=0. , val2=0., val3=0. ;
 		double resolution1Fraction = 1. - resolution2Fraction - resolution3Fraction ;
@@ -461,23 +461,23 @@ double Bs2JpsiPhi_Signal_v5_old::Evaluate(DataPoint * measurement)
 			resolution = resolution3 * resolutionScale ;
 			val3 = this->diffXsec( );
 		}
-		returnValue = resolution1Fraction*val1 + resolution2Fraction*val2 + resolution3Fraction*val3 ;				
+		returnValue = resolution1Fraction*val1 + resolution2Fraction*val2 + resolution3Fraction*val3 ;
 	}
-	
-	
+
+
 	//conditions to throw exception
 	bool c1 = std::isnan(returnValue) ;
 	bool c2 = (resolutionScale> 0.) && (returnValue <= 0.) ;
-	bool c3 = (resolutionScale<=0.) && (t>0.) && (returnValue <= 0.)  ;	
+	bool c3 = (resolutionScale<=0.) && (t>0.) && (returnValue <= 0.)  ;
 	if( DEBUGFLAG && (c1 || c2 || c3)  ) {
 		this->DebugPrint( " Bs2JpsiPhi_Signal_v5_old::Evaluate() returns <=0 or nan :" , returnValue ) ;
 		if( std::isnan(returnValue) ) throw 10 ;
 		if( returnValue <= 0. ) throw 10 ;
 	}
-	
-			
+
+
 	if( _angAccIgnoreNumerator ) return returnValue ;
-	else return returnValue  * angAcceptanceFactor ;	
+	else return returnValue  * angAcceptanceFactor ;
 }
 
 
@@ -493,7 +493,7 @@ double Bs2JpsiPhi_Signal_v5_old::EvaluateTimeOnly(DataPoint * measurement)
 	if( useEventResolution() ) eventResolution = measurement->GetObservable( eventResolutionName )->GetValue();
 
 	double returnValue ;
-	
+
 
 	if( resolutionScale <= 0. ) {
 		resolution = 0. ;
@@ -503,7 +503,7 @@ double Bs2JpsiPhi_Signal_v5_old::EvaluateTimeOnly(DataPoint * measurement)
 		resolution = eventResolution * resolutionScale ;
 		returnValue = this->diffXsecTimeOnly( );
 	}
-	else {				
+	else {
 		double val1=0. , val2=0., val3=0. ;
 		double resolution1Fraction = 1. - resolution2Fraction - resolution3Fraction ;
 		if(resolution1Fraction > 0 ) {
@@ -518,23 +518,23 @@ double Bs2JpsiPhi_Signal_v5_old::EvaluateTimeOnly(DataPoint * measurement)
 			resolution = resolution3 * resolutionScale ;
 			val3 = this->diffXsecTimeOnly( );
 		}
-		returnValue = resolution1Fraction*val1 + resolution2Fraction*val2 + resolution3Fraction*val3 ;	
+		returnValue = resolution1Fraction*val1 + resolution2Fraction*val2 + resolution3Fraction*val3 ;
 	}
-	
-	
+
+
 	//conditions to throw exception
 	bool c1 = std::isnan(returnValue) ;
 	bool c2 = (resolutionScale> 0.) && (returnValue <= 0.) ;
-	bool c3 = (resolutionScale<=0.) && (t>0.) && (returnValue <= 0.)  ;	
+	bool c3 = (resolutionScale<=0.) && (t>0.) && (returnValue <= 0.)  ;
 	if( DEBUGFLAG && (c1 || c2 || c3)  ) {
 		this->DebugPrint( " Bs2JpsiPhi_Signal_v5_old::EvaluateTimeOnly() returns <=0 or nan :" , returnValue ) ;
 		if( std::isnan(returnValue) ) throw 10 ;
 		if( returnValue <= 0. ) throw 10 ;
 	}
-		
-	
+
+
 	return returnValue ;
-	
+
 }
 
 
@@ -550,7 +550,7 @@ double Bs2JpsiPhi_Signal_v5_old::Normalisation(DataPoint * measurement, PhaseSpa
 	tag = (int)measurement->GetObservable( tagName )->GetValue();
 	_mistag = measurement->GetObservable( mistagName )->GetValue() ;
 	if( useEventResolution() ) eventResolution = measurement->GetObservable( eventResolutionName )->GetValue();
-	
+
 	// Get time boundaries into member variables
 	IConstraint * timeBound = boundary->GetConstraint( timeName );
 	if ( timeBound->GetUnit() == "NameNotFoundError" ) {
@@ -567,7 +567,7 @@ double Bs2JpsiPhi_Signal_v5_old::Normalisation(DataPoint * measurement, PhaseSpa
 	//How it is calcualted depends upon how resolution is treated
 	double returnValue=0 ;
 
-	
+
 	// If we are going to use event-by-event resolution, then all the caching is irrelevant and will be bypassed.
 	// You cant cache either untagged or tagged since the resolution will change from event to event and affect the normalisation.
 	if( useEventResolution() )  {
@@ -575,34 +575,34 @@ double Bs2JpsiPhi_Signal_v5_old::Normalisation(DataPoint * measurement, PhaseSpa
 		else resolution = eventResolution * resolutionScale ;
 		returnValue = this->diffXsecCompositeNorm1( 0 );
 	}
-		
-	
+
+
 	//We are not going to use event by event resolution so we can use all the caching machinery
 	else {
-		
+
 		//First job for any new set of parameters is to Cache the time integrals
 		if( ! timeIntegralCacheValid ) {
 			CacheTimeIntegrals() ;
 			timeIntegralCacheValid = true ;
 			// if( ! useEventResolution() ) timeIntegralCacheValid = true ;
 		}
-	
-	
+
+
 		//If this is an untagged event and the result has been cached, then it can be used
-		// Otherwise must calculate the normalisation	
+		// Otherwise must calculate the normalisation
 		if( (tag==0) && normalisationCacheValid ) {
 			returnValue = normalisationCacheUntagged ;
 		}
-	
-		
-		//So we need to calculate the normalisation 
+
+
+		//So we need to calculate the normalisation
 		else {
 			if( resolutionScale <= 0. ) {
 				resolution = 0. ;
 				returnValue = this->diffXsecCompositeNorm1( 0 );
 			}
-			else {						
-				double val1=0. , val2=0., val3=0. ;		
+			else {
+				double val1=0. , val2=0., val3=0. ;
 				double resolution1Fraction = 1. - resolution2Fraction - resolution3Fraction ;
 				if(resolution1Fraction > 0 ) {
 					resolution = resolution1 * resolutionScale ;
@@ -616,29 +616,29 @@ double Bs2JpsiPhi_Signal_v5_old::Normalisation(DataPoint * measurement, PhaseSpa
 					resolution = resolution3 * resolutionScale ;
 					val3 = this->diffXsecCompositeNorm1( 3 );
 				}
-				returnValue = resolution1Fraction*val1 + resolution2Fraction*val2 + resolution3Fraction*val3 ;	
+				returnValue = resolution1Fraction*val1 + resolution2Fraction*val2 + resolution3Fraction*val3 ;
 			}
 		}
-	
+
 		// If this is an untagged event then the normaisation is invariant and so can be cached
 		//if( (tag==0) && !normalisationCacheValid && !useEventResolution() )  {
 		if( (tag==0) && !normalisationCacheValid )  {
 			normalisationCacheUntagged = returnValue ;
 			normalisationCacheValid = true ;
 		}
-		
+
 	}
-	
+
 	// Conditions to throw exception
 	bool c1 = std::isnan(returnValue)  ;
-	bool c2 = (returnValue <= 0.) ;	
+	bool c2 = (returnValue <= 0.) ;
 	if( DEBUGFLAG && (c1 || c2 ) ) {
 		this->DebugPrint( " Bs2JpsiPhi_Signal_v5_old::Normalisation() returns <=0 or nan :" , returnValue ) ;
 		if( std::isnan(returnValue) ) throw 10 ;
 		if( returnValue <= 0. ) throw 10 ;
 	}
-		
-	
+
+
 	return returnValue ;
 }
 
@@ -662,8 +662,8 @@ void Bs2JpsiPhi_Signal_v5_old::preCalculateTimeIntegrals( ) const
 {
 	intExpL_stored = Mathematics::ExpInt( tlo, thi, gamma_l(), resolution )  ;
 	intExpH_stored = Mathematics::ExpInt( tlo, thi, gamma_h(), resolution )  ;
-	intExpSin_stored = Mathematics::ExpSinInt( tlo, thi, gamma(), delta_ms, resolution ) ; 
-	intExpCos_stored = Mathematics::ExpCosInt( tlo, thi, gamma(), delta_ms, resolution ) ; 
+	intExpSin_stored = Mathematics::ExpSinInt( tlo, thi, gamma(), delta_ms, resolution ) ;
+	intExpCos_stored = Mathematics::ExpCosInt( tlo, thi, gamma(), delta_ms, resolution ) ;
 	return ;
 }
 
@@ -715,7 +715,7 @@ double Bs2JpsiPhi_Signal_v5_old::EvaluateComponent( DataPoint* input, ComponentR
 // Main Diff cross section
 
 double Bs2JpsiPhi_Signal_v5_old::diffXsec(  )  const
-{   
+{
 	preCalculateTimeFactors();
 
 	double xsec=-1.;
@@ -748,13 +748,13 @@ double Bs2JpsiPhi_Signal_v5_old::diffXsec(  )  const
 
 			 AS()*AP() * timeFactorReASAP(  ) * angleFactorReASAP( ) +
 			 AS()*AT() * timeFactorImASAT(  ) * angleFactorImASAT( ) +
-			 AS()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( ) ;	
+			 AS()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( ) ;
 		 	*/
 
 			CachedA1 * timeFactorA0A0(  ) +
 			CachedA2 * timeFactorAPAP(  ) +
 			CachedA3 * timeFactorATAT(  ) +
-		
+
 			CachedA4 * timeFactorImAPAT(  ) +
 			CachedA5 * timeFactorReA0AP(  ) +
 			CachedA6 * timeFactorImA0AT(  ) +
@@ -768,14 +768,14 @@ double Bs2JpsiPhi_Signal_v5_old::diffXsec(  )  const
 			if( useTimeAcceptance() ) xsec = xsec * timeAcc->getValue(t);
 			if( DEBUGFLAG && (xsec < 0) ) this->DebugPrintXsec( " Bs2JpsiPhi_Signal_v5_old::diffXsec( ) : return value < 0 = ", xsec ) ;
 
-			//PELC - This turned out to be an important debugging tool 
+			//PELC - This turned out to be an important debugging tool
 			//switch it on to see the values of PDF being returend.  If ANY go negative, it means there is a sign wrong in one or more of the terms
 			//You need to enable in the .h file as well
-			//histOfPdfValues->Fill(xsec) ;	
+			//histOfPdfValues->Fill(xsec) ;
 			//histCounter++ ;
 			//if( histCounter > 10000 ) {
 			//	histOfPdfValues->Draw() ;
-			//	c0->Update() ;	
+			//	c0->Update() ;
 			//	c0->SaveAs( "histOfPdfValues-from-Evaluate.eps" ) ;
 			//	histCounter = 0 ;
 			//}
@@ -790,29 +790,29 @@ double Bs2JpsiPhi_Signal_v5_old::diffXsec(  )  const
 // Integral over angles only for a fixed time.
 
 double Bs2JpsiPhi_Signal_v5_old::diffXsecTimeOnly(  ) const
-{          
+{
 	preCalculateTimeFactors() ;
-	
-	double xsec = 
-	
+
+	double xsec =
+
 	A0()*A0() * timeFactorA0A0(  ) * angAccI1 +
 	AP()*AP() * timeFactorAPAP(  ) * angAccI2 +
 	AT()*AT() * timeFactorATAT(  ) * angAccI3 +
-	
+
 	AP()*AT() * timeFactorImAPAT(  ) * angAccI4 +
 	A0()*AP() * timeFactorReA0AP(  ) * angAccI5 +
 	A0()*AT() * timeFactorImA0AT(  ) * angAccI6 +
-	
+
 	AS()*AS() * timeFactorASAS(  ) * angAccI7 +
-	
+
 	ASint()*AP() * timeFactorReASAP(  ) * angAccI8 +
 	ASint()*AT() * timeFactorImASAT(  ) * angAccI9 +
 	ASint()*A0() * timeFactorReASA0(  ) * angAccI10 ;
-	
+
 	if( useTimeAcceptance() ) xsec = xsec * timeAcc->getValue(t);
-	
+
 	if( DEBUGFLAG && (xsec < 0) ) this->DebugPrintXsec( " Bs2JpsiPhi_Signal_v5_old::diffXsecTimeOnly( ) : return value < 0 = ", xsec ) ;
-	
+
 	return xsec ;
 }
 
@@ -823,28 +823,28 @@ double Bs2JpsiPhi_Signal_v5_old::diffXsecTimeOnly(  ) const
 // Integral over all variables: t + angles
 
 double Bs2JpsiPhi_Signal_v5_old::diffXsecNorm1(  ) const
-{ 
-	//preCalculateTimeIntegrals() ;  Replaced by new Caching mechanism , but this cant be used when event resolution is selected 
-	if( useEventResolution() ) preCalculateTimeIntegrals() ;   
-	
+{
+	//preCalculateTimeIntegrals() ;  Replaced by new Caching mechanism , but this cant be used when event resolution is selected
+	if( useEventResolution() ) preCalculateTimeIntegrals() ;
+
 	double norm =
-	
-	A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +  
-	AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +  
-	AT()*AT() * timeFactorATATInt(  ) * angAccI3   +  
-	
-	AP()*AT() * timeFactorImAPATInt(  ) * angAccI4 +  
-	A0()*AP() * timeFactorReA0APInt(  ) * angAccI5 +  
-	A0()*AT() * timeFactorImA0ATInt(  ) * angAccI6 +  
-	
-	AS()*AS() * timeFactorASASInt(  ) * angAccI7   +  
-	
-	ASint()*AP() * timeFactorReASAPInt(  ) * angAccI8 +  
-	ASint()*AT() * timeFactorImASATInt(  ) * angAccI9 +  
-	ASint()*A0() * timeFactorReASA0Int(  ) * angAccI10 ;  
-	
+
+	A0()*A0() * timeFactorA0A0Int(  ) * angAccI1   +
+	AP()*AP() * timeFactorAPAPInt(  ) * angAccI2   +
+	AT()*AT() * timeFactorATATInt(  ) * angAccI3   +
+
+	AP()*AT() * timeFactorImAPATInt(  ) * angAccI4 +
+	A0()*AP() * timeFactorReA0APInt(  ) * angAccI5 +
+	A0()*AT() * timeFactorImA0ATInt(  ) * angAccI6 +
+
+	AS()*AS() * timeFactorASASInt(  ) * angAccI7   +
+
+	ASint()*AP() * timeFactorReASAPInt(  ) * angAccI8 +
+	ASint()*AT() * timeFactorImASATInt(  ) * angAccI9 +
+	ASint()*A0() * timeFactorReASA0Int(  ) * angAccI10 ;
+
 	if( DEBUGFLAG && (norm < 0) ) this->DebugPrintNorm( " Bs2JpsiPhi_Signal_v5_old::diffXsecNorm1( ) : return value < 0 = ", norm ) ;
-	
+
 	return norm ;
 }
 
@@ -854,22 +854,22 @@ double Bs2JpsiPhi_Signal_v5_old::diffXsecNorm1(  ) const
 // New method to calculate normalisation using a histogrammed "low-end" time acceptance function
 // The acceptance function information is all contained in the timeAcceptance member object,
 
-double Bs2JpsiPhi_Signal_v5_old::diffXsecCompositeNorm1( int resolutionIndex )  
-{   
+double Bs2JpsiPhi_Signal_v5_old::diffXsecCompositeNorm1( int resolutionIndex )
+{
 	double tlo_boundary = tlo ;
 	double thi_boundary = thi ;
 	double returnValue = 0;
-	
+
 	for( unsigned int islice = 0; islice < (unsigned) timeAcc->numberOfSlices(); ++islice )
 	{
 		//De cache the time integrals  (unles using event Resolution
 		if( ! useEventResolution() ) this->deCacheTimeIntegrals( (unsigned)resolutionIndex, islice ) ;
-			
+
 		tlo = tlo_boundary > timeAcc->getSlice((int)islice)->tlow() ? tlo_boundary : timeAcc->getSlice((int)islice)->tlow() ;
-		thi = thi_boundary < timeAcc->getSlice((int)islice)->thigh() ? thi_boundary : timeAcc->getSlice((int)islice)->thigh() ;			
+		thi = thi_boundary < timeAcc->getSlice((int)islice)->thigh() ? thi_boundary : timeAcc->getSlice((int)islice)->thigh() ;
 		if( thi > tlo ) returnValue+= this->diffXsecNorm1(  ) * timeAcc->getSlice((int)islice)->height() ;
-	}		
-	
+	}
+
 	tlo = tlo_boundary;
 	thi = thi_boundary ;
 	return returnValue ;
@@ -880,32 +880,32 @@ double Bs2JpsiPhi_Signal_v5_old::diffXsecCompositeNorm1( int resolutionIndex )
 //.......................................................
 // New speed up method to Cache time integrals
 void Bs2JpsiPhi_Signal_v5_old::CacheAmplitudesAndAngles() {
-	
+
 	CachedA1 = A0()*A0() * angleFactorA0A0( ) ;
 	CachedA2 = AP()*AP() * angleFactorAPAP( ) ;
 	CachedA3 = AT()*AT() * angleFactorATAT( ) ;
-	
+
 	CachedA4 = AP()*AT() * angleFactorImAPAT( ) ;
 	CachedA5 = A0()*AP() * angleFactorReA0AP( ) ;
 	CachedA6 = A0()*AT() * angleFactorImA0AT( ) ;
-	
+
 	CachedA7 = AS()*AS() * angleFactorASAS( ) ;
-	
+
 	CachedA8 = ASint()*AP() * angleFactorReASAP( ) ;
 	CachedA9 = ASint()*AT() * angleFactorImASAT( ) ;
-	CachedA10= ASint()*A0() * angleFactorReASA0( ) ;	
-	
+	CachedA10= ASint()*A0() * angleFactorReASA0( ) ;
+
 }
 
 //.......................................................
 // New speed up method to Cache time integrals
 void Bs2JpsiPhi_Signal_v5_old::CacheTimeIntegrals() {
-	
+
 	// This need to know  (and be modified for)
 	//  --> Number of resolutions
 	//  --> Number fo slices
 	//  --->  tlo and thi for each slice
-	
+
 	double tlo_boundary = tlo ;
 	double thi_boundary = thi ;
 
@@ -918,7 +918,7 @@ void Bs2JpsiPhi_Signal_v5_old::CacheTimeIntegrals() {
 			if( thi > tlo ) {
 				this->preCalculateTimeIntegrals() ;
 				//cout << " >>>>> caching time integrals / " << intExpL_stored << "  /  "<< intExpH_stored << "  /  "<< intExpSin_stored << "  /  "<< intExpCos_stored << "  /  " << endl ;
-				
+
 				storeExpL[ires][islice] = intExpL_stored ;
 				storeExpH[ires][islice] = intExpH_stored ;
 				storeExpSin[ires][islice] = intExpSin_stored ;
@@ -930,25 +930,25 @@ void Bs2JpsiPhi_Signal_v5_old::CacheTimeIntegrals() {
 				storeExpSin[ires][islice] = 0 ;
 				storeExpCos[ires][islice] = 0 ;
 			}
-			
+
 		}
 	}
-	
+
 	else {
 		for( unsigned int ires=0; ires < 4 ; ++ires ) {
-		
+
 			if( ires==0 ) resolution = 0.0 ;
 			if( ires==1 ) resolution = resolution1 * resolutionScale ;
 			if( ires==2 ) resolution = resolution2 * resolutionScale ;
 			if( ires==3 ) resolution = resolution3 * resolutionScale ;
-		
+
 			for( unsigned int islice = 0; islice < (unsigned)timeAcc->numberOfSlices(); ++islice ) {
 				tlo = tlo_boundary > timeAcc->getSlice((int)islice)->tlow() ? tlo_boundary : timeAcc->getSlice((int)islice)->tlow() ;
 				thi = thi_boundary < timeAcc->getSlice((int)islice)->thigh() ? thi_boundary : timeAcc->getSlice((int)islice)->thigh() ;
 				if( thi > tlo ) {
 					this->preCalculateTimeIntegrals() ;
 					//cout << " >>>>> caching time integrals / " << intExpL_stored << "  /  "<< intExpH_stored << "  /  "<< intExpSin_stored << "  /  "<< intExpCos_stored << "  /  " << endl ;
-				
+
 					storeExpL[ires][islice] = intExpL_stored ;
 					storeExpH[ires][islice] = intExpH_stored ;
 					storeExpSin[ires][islice] = intExpSin_stored ;
@@ -960,34 +960,34 @@ void Bs2JpsiPhi_Signal_v5_old::CacheTimeIntegrals() {
 					storeExpSin[ires][islice] = 0 ;
 					storeExpCos[ires][islice] = 0 ;
 				}
-			
+
 			}
 		}
 	}
-	
+
 	tlo = tlo_boundary;
 	thi = thi_boundary ;
-	
-	
-}		
+
+
+}
 
 
 //.......................................................
 // New speed up method to Cache time integrals
 void Bs2JpsiPhi_Signal_v5_old::deCacheTimeIntegrals( unsigned int ires, unsigned int islice ) {
-	
-	//Time integrals are stored under 
+
+	//Time integrals are stored under
 	// ires =  resolution integral
 	// islice = acceptance slice
-	
+
 	intExpL_stored   = storeExpL[ires][islice]  ;
 	intExpH_stored   = storeExpH[ires][islice]  ;
 	intExpSin_stored = storeExpSin[ires][islice]  ;
 	intExpCos_stored = storeExpCos[ires][islice]  ;
-	
+
 	//cout << " <<<<< de-caching time integrals / " << intExpL_stored << "  /  "<< intExpH_stored << "  /  "<< intExpSin_stored << "  /  "<< intExpCos_stored << "  /  " << endl ;
-	
-}		
+
+}
 
 
 
@@ -998,7 +998,7 @@ void Bs2JpsiPhi_Signal_v5_old::prepareCDS()
 
 	double F1 = 2.0*lambda / (1.0 + lambda*lambda);
 	double F2 = (1.0 - lambda*lambda) / (1.0 + lambda*lambda);
-	
+
 	_SS = _sinphis * F1;
 	_DD = _cosphis * F1;
 	_CC = F2;
@@ -1018,7 +1018,7 @@ void Bs2JpsiPhi_Signal_v5_old::DebugPrint( string message, double value )  const
 	(void) message; (void) value;
 	cout << "*************DEBUG OUTPUT FROM Bs2JpsiPhi_Signal_v5_old::DebugPrint ***************************" << endl ;
 	cout << message << value << endl <<endl ;
-	
+
 	cout << endl ;
 	cout << "   gamma " << gamma() << endl ;
 	cout << "   gl    " << gamma_l() << endl ;
@@ -1038,7 +1038,7 @@ void Bs2JpsiPhi_Signal_v5_old::DebugPrint( string message, double value )  const
 	cout << "   time      " << t << endl ;
 	cout << "   ctheta_tr " << ctheta_tr << endl ;
 	cout << "   ctheta_1 " << ctheta_1 << endl ;
-	cout << "   phi_tr " << phi_tr << endl ;		
+	cout << "   phi_tr " << phi_tr << endl ;
 	PDF_THREAD_UNLOCK
 }
 
@@ -1052,37 +1052,37 @@ void Bs2JpsiPhi_Signal_v5_old::DebugPrintXsec( string message, double value )  c
 	cout << "   A0()*A0() term: " <<  A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) << endl ;
 	cout << "   AP()*AP() term: " <<AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) << endl ;
 	cout << "   AT()*AT() term: " <<AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) << endl << endl ;
-	
+
 	cout << "   AP()*AT() term: " <<AP()*AT() * timeFactorImAPAT(  ) * angleFactorImAPAT( )<< endl ;
 	cout << "                 : " <<AP()*AT() <<" / "<<  timeFactorImAPAT( )  <<" / "<<  angleFactorImAPAT( )<< endl ;
 	cout << "   A0()*AP() term: " <<A0()*AP() * timeFactorReA0AP(  ) * angleFactorReA0AP( )<< endl ;
 	cout << "                 : " <<A0()*AP() <<" / "<<  timeFactorReA0AP(  ) <<" / "<<  angleFactorReA0AP( )<< endl ;
 	cout << "   A0()*AT() term: " <<A0()*AT() * timeFactorImA0AT(  ) * angleFactorImA0AT( )<< endl << endl;
 	cout << "                 : " <<A0()*AT() <<" / "<<  timeFactorImA0AT(  ) <<" / "<<  angleFactorImA0AT( )<< endl << endl;
-	
+
 	cout << "   AS()*AS() term: " <<AS()*AS() * timeFactorASAS(  ) * angleFactorASAS( ) << endl << endl ;
-	
+
 	cout << "   AS()*AP() term: " <<ASint()*AP() * timeFactorReASAP(  ) * angleFactorReASAP( )<< endl ;
 	cout << "                 : " <<ASint()*AP() <<" / "<<   timeFactorReASAP(  ) <<" / "<<  angleFactorReASAP( )<< endl ;
 	cout << "   AS()*AT() term: " <<ASint()*AT() * timeFactorImASAT(  ) * angleFactorImASAT( )<< endl ;
 	cout << "                 : " <<ASint()*AT() <<" / "<<   timeFactorImASAT(  ) <<" / "<<   angleFactorImASAT( )<< endl ;
 	cout << "   AS()*A0() term: " <<ASint()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( )<< endl ;
 	cout << "                 : " <<ASint()*A0() <<" / "<<   timeFactorReASA0(  ) <<" / "<<  angleFactorReASA0( )<< endl << endl ;
-	
+
 	double PwaveTot =
 	A0()*A0() * timeFactorA0A0(  ) * angleFactorA0A0( ) +
 	AP()*AP() * timeFactorAPAP(  ) * angleFactorAPAP( ) +
-	AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +		
+	AT()*AT() * timeFactorATAT(  ) * angleFactorATAT( ) +
 	AP()*AT() * timeFactorImAPAT(  ) * angleFactorImAPAT( ) +
 	A0()*AP() * timeFactorReA0AP(  ) * angleFactorReA0AP( ) +
 	A0()*AT() * timeFactorImA0AT(  ) * angleFactorImA0AT( ) ;
-	
+
 	double SwaveAdditions =
 	AS()*AS() * timeFactorASAS(  ) * angleFactorASAS( ) +
 	ASint()*AP() * timeFactorReASAP(  ) * angleFactorReASAP( ) +
 	ASint()*AT() * timeFactorImASAT(  ) * angleFactorImASAT( ) +
 	ASint()*A0() * timeFactorReASA0(  ) * angleFactorReASA0( ) ;
-	
+
 	cout << "   Pwave Only : " << PwaveTot << endl ;
 	cout << "   Swave add : " <<  SwaveAdditions << endl ;
 	PDF_THREAD_UNLOCK
@@ -1094,7 +1094,7 @@ void Bs2JpsiPhi_Signal_v5_old::DebugPrintNorm( string message, double value )  c
 	(void) message; (void) value;
 	cout << "*************DEBUG OUTPUT FROM Bs2JpsiPhi_Signal_v5_old::DebugPrintNorm ***************************" << endl ;
 	cout << message << value << endl <<endl ;
-	
+
 	cout << endl ;
 	cout <<  A0()*A0() * timeFactorA0A0Int(  )* angAccI1  << endl ;
 	cout <<  AP()*AP() * timeFactorAPAPInt(  )* angAccI2 << endl ;

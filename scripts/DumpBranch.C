@@ -2,16 +2,16 @@
 
 //#define SSpion // uses SSpion tagger (Bu and Bd) ELSE SSkaon (Bs only)
 //	To Compile:
-//	
+//
 //	g++ -Wall -Wextra -Wsign-compare -Wmissing-noreturn -msse -msse2 -m3dnow -g -ansi -O3 -funroll-all-loops `root-config --cflags --libs --ldflags` -lTreePlayer -Wall -g CreateNtupleB.C -o CreateNtupleB
 //	./CreateNtupleB ntuplaA.root B_s0
-//	
+//
 //	(( to Run in CINT:
 //	(( root -q -b "CreateNtupleB.C(\"ntuplaA.root", \"B_s0\")"
-//	
+//
 //     WARNING, M. Dorigo and O. Leroy 8 October 2013:
 //     tagdecision and tagomega (os, ss and total) contains by default the nnetKaon
-//     	
+//
 //
 //	ROOT Headers
 #include "TFile.h"

@@ -2,7 +2,7 @@
 #include <complex>
 DPFlatteShape::DPFlatteShape(const double in_mean, const double in_g0, const double in_m0a, const double in_m0b, const double in_g1, const double in_m1a, const double in_m1b) :
 	  mean(in_mean)
-	, g0(in_g0) 
+	, g0(in_g0)
 	, m0a(in_m0a)
 	, m0b(in_m0b)
 	, g1(in_g1)
@@ -29,10 +29,10 @@ std::complex<double> DPFlatteShape::massShape(const double x) const
 	double s = x*x;
 	// Energy, centre of mass p^2 of first channel
 	double E0a = 0.5 * (s + m0a*m0a - m0b*m0b) / x;
-	double qSq0 = E0a*E0a - m0a*m0a; 
+	double qSq0 = E0a*E0a - m0a*m0a;
 	// Energy, centre of mass p^2 of second channel
 	double E1a = 0.5 * (s + m1a*m1a - m1b*m1b) / x;
-	double qSq1 = E1a*E1a - m1a*m1a; 
+	double qSq1 = E1a*E1a - m1a*m1a;
 	std::complex<double> gamma0 = (qSq0 > 0) ? std::complex<double>(g0*sqrt(qSq0),0) : std::complex<double>(0, g0*sqrt(-qSq0));
 	std::complex<double> gamma1 = (qSq1 > 0) ? std::complex<double>(g1*sqrt(qSq1),0) : std::complex<double>(0, g1*sqrt(-qSq1));
 	std::complex<double> gamma = gamma0 + gamma1;

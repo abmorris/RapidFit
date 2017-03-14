@@ -255,8 +255,8 @@ SlicedAcceptance::SlicedAcceptance( string type, string fileName,string histName
 	cout << "WARNING! This is for systematic studies only. " << endl;
 	cout << "WARNING! Projections and pull fits will have a different fluctuated acceptance to the PDF you fit with." << endl;
 	cout << "WARNING! ONLY USE FluctuateAcceptance:True FOR SYSTEMATIC STUDIES" << endl;
-	TRandom3 * rng = new TRandom3(0);	
-	//Randomly fluctuate bin contents within error: 
+	TRandom3 * rng = new TRandom3(0);
+	//Randomly fluctuate bin contents within error:
 	for (int l = 1; l <= histo->GetNbinsX(); ++l){
 	if(!quiet)	cout << "Bin content and error before: " << histo->GetBinContent(l) << "+/-" << histo->GetBinError(l);
 		histo->SetBinContent(l,rng->Gaus(histo->GetBinContent(l),histo->GetBinError(l)));

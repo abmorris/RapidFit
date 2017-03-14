@@ -41,7 +41,7 @@ class Bs2DsPi_mistagParameter : public BasePDF
 
 		// These contain the strings that correspond
 		// to the observable names that are used in the
-		// PDF. 
+		// PDF.
 		ObservableRef timeName;		// proper time
 		ObservableRef tagName;		// B tag
 
@@ -49,24 +49,24 @@ class Bs2DsPi_mistagParameter : public BasePDF
 
 		// Physics parameters
 	    double gamma, deltaGamma, deltaM, mistag, timeRes ;
-	
+
 	    // Observables
 		double time ;
 		int tag;
 
 	    // Limits
 		double tlow, thigh ;
-	
+
 		void getPhysicsParameters(  );
 	    void getObservables( DataPoint* );
-		
+
 		void getTimeDependentFuncsInt(double&, double&, double&, PhaseSpaceBoundary*);
-	
+
 		// Widths
 		double gamma_l() const ;
 		double gamma_h() const ;
 		double gambar() const ;
-	
+
 		// Time primitives
 		double expL() const ;
 		double expH() const ;
@@ -74,13 +74,13 @@ class Bs2DsPi_mistagParameter : public BasePDF
 		double expLint() const ;
 		double expHint() const ;
 		double expCosInt() const ;
-		
+
 		// Functions to help convolve a single gaussian into time primitives
 		// DIDNT APPEAR TO BE USED RooComplex evalCerf( double, double, double ) const ;
 		//RooComplex evalCerfApprox( double, double, double ) const ;
 		//double evalCerfRe( double, double, double ) const ;
 		//double evalCerfIm( double, double, double ) const ;
-	
+
 
 };
 

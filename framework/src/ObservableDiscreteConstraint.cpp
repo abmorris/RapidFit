@@ -50,7 +50,7 @@ ObservableDiscreteConstraint::ObservableDiscreteConstraint( const IConstraint* i
 }
 
 //Destructor
-ObservableDiscreteConstraint::~ObservableDiscreteConstraint() 
+ObservableDiscreteConstraint::~ObservableDiscreteConstraint()
 {
 }
 
@@ -62,7 +62,7 @@ string ObservableDiscreteConstraint::GetName() const
 //There is no minimum or maximum, so return an error
 double ObservableDiscreteConstraint::GetMinimum() const
 {
-	cerr << "Minimum requested, but constraint is discrete" << endl;	
+	cerr << "Minimum requested, but constraint is discrete" << endl;
 	return 0.0;
 }
 double ObservableDiscreteConstraint::GetMaximum() const
@@ -173,8 +173,8 @@ void ObservableDiscreteConstraint::SetTF1( const string input )
 }
 
 string ObservableDiscreteConstraint::XML() const
-{                           
-	stringstream xml;   
+{
+	stringstream xml;
 
 	xml << "\t<Observable>" << endl;
 	xml << "\t\t<Name>" << name << "</Name>" << endl;
@@ -184,8 +184,8 @@ string ObservableDiscreteConstraint::XML() const
 	}
 	xml << "\t\t<Unit>" << unit << "</Unit>" << endl;
 	if( !tf1.empty() ) xml << "\t\t<TF1>" << tf1 << "</TF1>" << endl;
-	xml << "\t</Observable>" << endl;                                                                                                                                                                                                    
+	xml << "\t</Observable>" << endl;
 
-	return xml.str();   
+	return xml.str();
 }
 

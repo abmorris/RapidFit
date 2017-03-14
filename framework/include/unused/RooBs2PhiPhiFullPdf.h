@@ -148,20 +148,20 @@ private:
     RooComplex z(swt*c,u+c);
     return (z.im()>-4.0) ? RooMath::FastComplexErrFunc(z)*exp(-u*u) : evalCerfApprox(swt,u,c) ;
   }
-    
+
   // Calculate Re(exp(-u^2) cwerf(swt*c + i(u+c))), taking care of numerical instabilities
   inline Double_t evalCerfRe(Double_t swt, Double_t u, Double_t c) const {
     RooComplex z(swt*c,u+c);
     return (z.im()>-4.0) ? RooMath::FastComplexErrFuncRe(z)*exp(-u*u) : evalCerfApprox(swt,u,c).re() ;
   }
-  
+
   // Calculate Im(exp(-u^2) cwerf(swt*c + i(u+c))), taking care of numerical instabilities
   inline Double_t evalCerfIm(Double_t swt, Double_t u, Double_t c) const {
     RooComplex z(swt*c,u+c);
     return (z.im()>-4.0) ? RooMath::FastComplexErrFuncIm(z)*exp(-u*u) : evalCerfApprox(swt,u,c).im() ;
   }
 
-  //contribution from exp(-Gamma_H*t) 
+  //contribution from exp(-Gamma_H*t)
   Double_t ExpL() const;
   //contribution from exp(-Gamma_H*t)
   Double_t ExpH() const;
@@ -169,7 +169,7 @@ private:
   Double_t ExpSin() const;
   //contribution from  exp(-(Gamma_H+Gamma_L)/2*t)*cos(dms*t)
   Double_t ExpCos() const;
-  
+
   Double_t reso_t(Double_t dt) const;
 
   Double_t reso_theta(Double_t dt, Double_t res) const;
@@ -177,23 +177,23 @@ private:
   Double_t reso_phi(Double_t dt, Double_t res) const;
 
   Double_t CosTheta1() const;
-  
+
   Double_t SinTheta1() const;
-  
+
   Double_t CosTheta2() const;
-  
+
   Double_t SinTheta2() const;
-  
+
   Double_t Sin2Theta1() const;
-  
+
   Double_t Sin2Theta2() const;
-  
+
   Double_t SinPhi() const;
-  
+
   Double_t CosPhi() const;
-  
+
   Double_t Sin2Phi() const;
-  
+
   Double_t  Cos2Phi() const;
 
   ClassDef(RooBs2PhiPhiFullPdf,0) // Your description goes here...

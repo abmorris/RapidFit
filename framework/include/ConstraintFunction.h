@@ -2,7 +2,7 @@
  *  @class ConstraintFunction
  *
  *  @brief Where external, experimental constraints on PhysicsParameters are calculated
- * 
+ *
  *  @author Benjamin M Wynne bwynne@cern.ch
  */
 

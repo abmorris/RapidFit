@@ -446,7 +446,7 @@ double Bd2JpsiKstar_sWave_Fs::Evaluate(DataPoint * measurement)
 	}
 
 	return returnValue;
-    
+
 }
 
 
@@ -549,11 +549,11 @@ double Bd2JpsiKstar_sWave_Fs::buildPDFnumerator()
 				break;
 		}
 	}
-    
+
 	if( useTimeAcceptance() ) v1  = v1 * timeAcc->getValue(time);
 
     if( ! useFlatAngularDistribution ) v1  *=  angularFactor();
-    
+
 	return v1;
 }
 
@@ -621,7 +621,7 @@ double Bd2JpsiKstar_sWave_Fs::Normalisation(DataPoint * measurement, PhaseSpaceB
 	}
 
     return returnValue;
-        
+
 	//return -1 ;
 }
 
@@ -666,7 +666,7 @@ double Bd2JpsiKstar_sWave_Fs::NormAnglesOnlyForAcceptanceWeights(DataPoint * mea
 	double returnValue;
 	time = measurement->GetObservable( timeName )->GetValue();
 	KstarFlavour = measurement->GetObservable( KstarFlavourName )->GetValue();
-    
+
 	//First job for any new set of parameters is to Cache the time integrals
 
 
@@ -828,7 +828,7 @@ double Bd2JpsiKstar_sWave_Fs::buildPDFdenominatorAngles()  //test method
 	double f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
     Mathematics::getBs2JpsiPhiAngularFunctionsWithSwave( f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, cosTheta, phi, cosPsi );
     //this->getAngularFunctionsTransversity( f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, cosTheta, phi, cosPsi );
-    
+
 
 
 	// The integrals of the time dependent amplitudes as defined in roadmap Eqns 48 -> 59
@@ -1168,7 +1168,7 @@ void Bd2JpsiKstar_sWave_Fs::getAngularFunctionsHelicity( double &f1, double &f2,
     f8 = Bs2JpsiPhi_Angular_Terms::HangleFactorReASAP( input ) ;
     f9 = Bs2JpsiPhi_Angular_Terms::HangleFactorImASAT( input ) ;
     f10 = Bs2JpsiPhi_Angular_Terms::HangleFactorReASA0( input ) ;
-    
+
     return ;
 }
 
@@ -1188,6 +1188,6 @@ void Bd2JpsiKstar_sWave_Fs::getAngularFunctionsTransversity( double &f1, double 
     f8 = Bs2JpsiPhi_Angular_Terms::TangleFactorReASAP( input ) ;
     f9 = Bs2JpsiPhi_Angular_Terms::TangleFactorImASAT( input ) ;
     f10 = Bs2JpsiPhi_Angular_Terms::TangleFactorReASA0( input ) ;
-    
+
     return ;
 }

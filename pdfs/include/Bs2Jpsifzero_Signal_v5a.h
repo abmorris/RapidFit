@@ -355,7 +355,7 @@ class Bs2Jpsifzero_Signal_v5a : public BasePDF
 		inline double mistag() const {
 			double returnValue = -1000.;
 
-			if( (fabs(q()) < 0.5) || (fabs(q()) > 1.) ) { 
+			if( (fabs(q()) < 0.5) || (fabs(q()) > 1.) ) {
 				returnValue = 0.5 ;
 			}
 			else if( (_mistag>=0.0) && (_mistag <= 0.5) ) {

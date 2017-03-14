@@ -125,9 +125,9 @@ template<class T> void DebugClass::Dump2TTree( const string fileName, const vect
 	else TTreeName = ttreeName;
 
 	TTree* thisTTree = NULL;
-	
+
 	thisTTree = (TTree*) thisFile->Get( TTreeName );
-	
+
 	if( thisTTree == NULL ) new TTree( TTreeName, TTreeName );
 
 	T someObject;
@@ -197,9 +197,9 @@ template<class T> void DebugClass::Dump2TTree( const string fileName, const vect
 	else TTreeName = ttreeName;
 
 	TTree* thisTTree = NULL;
-	
+
 	thisTTree = (TTree*)thisFile->Get( TTreeName );
-	
+
 	if( thisTTree == NULL ) thisTTree = new TTree( TTreeName, TTreeName );
 
 	T someObject;

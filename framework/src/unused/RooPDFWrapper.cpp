@@ -79,7 +79,7 @@ bool RooPDFWrapper::SetPhysicsParameters( ParameterSet * NewParameters )
 	bool worked = pdfParameterSet->SetPhysicsParameters( NewParameters );
 
 	if ( worked )
-	{		
+	{
 		//Pass the values to the wrapped PDF
 		for ( int parameterIndex = 0; parameterIndex < prototypeParameterSet.size(); parameterIndex++ )
 		{

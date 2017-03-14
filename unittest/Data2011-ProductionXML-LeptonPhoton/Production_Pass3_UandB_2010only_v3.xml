@@ -64,8 +64,8 @@
 
 
 <PhysicsParameter>
-<Name>timeResolutionScale</Name>     
-<Value>1.0</Value>                      
+<Name>timeResolutionScale</Name>
+<Value>1.0</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -73,7 +73,7 @@
 
 
 //..........................................
-// True Physics Parameters for signal 
+// True Physics Parameters for signal
 
 <PhysicsParameter>
 <Name>gamma</Name>
@@ -86,7 +86,7 @@
 
 <PhysicsParameter>
 <Name>deltaGamma</Name>
-<Value>0.0</Value>   
+<Value>0.0</Value>
 <Type>Free</Type>
 <Unit>ps^{-1}</Unit>
 </PhysicsParameter>
@@ -120,7 +120,7 @@
 
 <PhysicsParameter>
 <Name>delta_para</Name>
-<Value>3.1</Value>  
+<Value>3.1</Value>
 <Maximum>6.3</Maximum>
 <Minimum>-6.3</Minimum>
 <Type>Free</Type>
@@ -129,7 +129,7 @@
 
 <PhysicsParameter>
 <Name>delta_perp</Name>
-<Value>-0.17</Value> 
+<Value>-0.17</Value>
 <Minimum>-3.3</Minimum>
 <Maximum>3.3</Maximum>
 <Type>Free</Type>
@@ -154,7 +154,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>              
+<PhysicsParameter>
 <Name>deltaM</Name>
 <Value>17.77</Value>
 <Type>Free</Type>
@@ -163,7 +163,7 @@
 
 <PhysicsParameter>
 <Name>Phi_s</Name>
-<Value>0.0</Value>  
+<Value>0.0</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -191,7 +191,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>  
+<PhysicsParameter>
 <Name>angAccI4</Name>
 <Value>-0.0000318417</Value>    //-0.0000318417
 <Type>Fixed</Type>
@@ -307,7 +307,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -317,7 +317,7 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -327,7 +327,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -337,7 +337,7 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -405,7 +405,7 @@
 //Exponential background mass model
 
 <PhysicsParameter>
-<Name>alphaM_pr_2010</Name>      // exponent 
+<Name>alphaM_pr_2010</Name>      // exponent
 <Value>0.00140</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
@@ -474,36 +474,36 @@
 //Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
-<Name>timeResolution1_2010</Name>           
-<Value>0.0337</Value>                   
+<Name>timeResolution1_2010</Name>
+<Value>0.0337</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution2_2010</Name>
-<Value>0.0646</Value> 
+<Value>0.0646</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution3_2010</Name>
-<Value>0.180</Value> 
+<Value>0.180</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution2Fraction_2010</Name>     
-<Value>0.456</Value>                      
+<Name>timeResolution2Fraction_2010</Name>
+<Value>0.456</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution3Fraction_2010</Name>     
-<Value>0.017</Value>                      
+<Name>timeResolution3Fraction_2010</Name>
+<Value>0.017</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -599,7 +599,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -707,7 +707,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
 <NTuplePath>DecayTree</NTuplePath>
 
@@ -716,7 +716,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -813,15 +813,15 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
 <NTuplePath>DecayTree</NTuplePath>
-<NumberEvents>1000000</NumberEvents>   
+<NumberEvents>1000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -929,16 +929,16 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
-<NTuplePath>DecayTree</NTuplePath>  
+<NTuplePath>DecayTree</NTuplePath>
 
 <NumberEvents>10000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>

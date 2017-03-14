@@ -207,7 +207,7 @@ IPDF* ClassLookUp::CopyPDF( const IPDF* inputPDF )
 				thisConfig->addConfigurationParameter( "RAPIDFIT_SAYS_THIS_IS_A_COPY:True" );
 			}
 		}
-		returnable_PDF = ClassLookUp::LookUpPDFName( Name, thisConfig ); 
+		returnable_PDF = ClassLookUp::LookUpPDFName( Name, thisConfig );
 		inputPDF->SetCopyConstructor( NULL );
 		delete thisConfig;
 		//	I SHOULD NEVER DO THIS BUT USERS PDFS may modify the GetPhysicsParameters and not know about const (sigh)...

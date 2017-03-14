@@ -57,7 +57,7 @@ void get_TGraph2D_list( TString current_path, vector<pair<string,string> > *foun
 void get_TNtuple_list( TString current_path, vector<pair<string,string> > *found_names );
 
 
-//	Wrapper functions to return a list of all parameters 
+//	Wrapper functions to return a list of all parameters
 
 void get_TTree_list_here( vector<pair<string,string> > *found_names );
 

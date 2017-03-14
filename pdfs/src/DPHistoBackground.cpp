@@ -46,7 +46,7 @@ DPHistoBackground::DPHistoBackground( PDFConfigurator* config ) :
 
 	//Make prototypes
 	MakePrototypes();
-	
+
 	//Find name of histogram needed to define 3-D angular distribution
 	string fileName = config->getConfigurationValue( "AngularDistributionHistogram" ) ;
 
@@ -200,13 +200,13 @@ DPHistoBackground::DPHistoBackground( PDFConfigurator* config ) :
 DPHistoBackground::DPHistoBackground( const DPHistoBackground& input ) : BasePDF( (BasePDF) input ),
 xaxis(), yaxis(), zaxis(), maxis(),
 nxbins(input.nxbins), nybins(input.nybins), nzbins(input.nzbins), nmbins(input.nmbins),
-xmin(input.xmin), xmax(input.xmax), 
-ymin(input.ymin), ymax(input.ymax), 
-zmin(input.zmin), zmax(input.zmax), 
-mmin(input.zmin), mmax(input.zmax), 
+xmin(input.xmin), xmax(input.xmax),
+ymin(input.ymin), ymax(input.ymax),
+zmin(input.zmin), zmax(input.zmax),
+mmin(input.zmin), mmax(input.zmax),
 deltax(input.deltax), deltay(input.deltay), deltaz(input.deltaz), deltam(input.deltam),
 total_num_entries(input.total_num_entries), useFlatAngularDistribution(input.useFlatAngularDistribution),
-massName(input.massName), cosTheta1Name(input.cosTheta1Name), phiName(input.phiName), cosTheta2Name(input.cosTheta2Name), 
+massName(input.massName), cosTheta1Name(input.cosTheta1Name), phiName(input.phiName), cosTheta2Name(input.cosTheta2Name),
 mass(input.mass), cos1(input.cos1), cos2(input.cos2), phi(input.phi),
 histogramFile(), histo()
 ,fullFileName(input.fullFileName)
@@ -293,7 +293,7 @@ double DPHistoBackground::angleMassFactor( )
 		ybin = yaxis->FindFixBin( cos1 ); if( ybin > nybins ) ybin = nybins;
 		zbin = zaxis->FindFixBin( phi  ); if( zbin > nzbins ) zbin = nzbins;
 		mbin = maxis->FindFixBin( mass ); if( mbin > nmbins ) mbin = nmbins;
-		
+
 		int idx[4] = { xbin, ybin, zbin, mbin};
 		globalbin = (int)histo->GetBin( idx );
 		num_entries_bin = histo->GetBinContent(globalbin);

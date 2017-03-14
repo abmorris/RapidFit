@@ -19,10 +19,10 @@
 
 using namespace::std;
 
-RESMODEL_CREATOR( DoubleFixedResModel ); 
+RESMODEL_CREATOR( DoubleFixedResModel );
 
 //............................................
-// Constructor 
+// Constructor
 DoubleFixedResModel::DoubleFixedResModel( PDFConfigurator* configurator, bool quiet ) :
 	Resolution1Name			( configurator->getName( "timeResolution1" ) ),
 	Resolution2Name			( configurator->getName( "timeResolution2" ) ),

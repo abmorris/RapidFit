@@ -34,7 +34,7 @@ void ScanStudies::DoScan( MinimiserConfiguration * MinimiserConfig, FitFunctionC
 
 	//	cout << "Performing Scan for the parameter " << scanName << endl ;
 
-	// Get a pointer to the physics parameter to be scanned and fix it	
+	// Get a pointer to the physics parameter to be scanned and fix it
 	// CAREFUL:  this must be reset as it was at the end.
 	PhysicsParameter* scanParameter = NULL;
 	try{

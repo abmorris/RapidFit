@@ -12,9 +12,9 @@ start=$PWD
 
 while read line; do
 	#echo $line
-	#dirac-wms-job-get-output-data 
-	#dirac-wms-job-get-output 
-	#dirac-wmd-job-get-input 
+	#dirac-wms-job-get-output-data
+	#dirac-wms-job-get-output
+	#dirac-wmd-job-get-input
 
 	sleep 0.5;
 

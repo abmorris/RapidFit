@@ -23,8 +23,8 @@ TPaveText* addLHCbLabel(TString footer){
 	//TPaveText * label = new TPaveText(0.12, 0.58, 0.12, 0.43,"BRNDC");
 	//label->SetFillColor(0);
 	label->SetFillStyle(0);
-	label->SetBorderSize(0);     
-	label->SetTextAlign(11);          
+	label->SetBorderSize(0);
+	label->SetTextAlign(11);
 	label->SetTextSize(Float_t(0.04));
 	TText * labeltext = 0;
 	labeltext = label->AddText("LHC#font[12]{b} 2011 Data");
@@ -173,7 +173,7 @@ int main (int argc, char* argv[] )
 //	Double_t Y_min_1 = strtod( argv[4], NULL );
 //	Double_t X_min_2 = strtod( argv[5], NULL );
 //	Double_t Y_min_2 = strtod( argv[6], NULL );
-	
+
 //	c1->cd();
 //	TMarker* new_mark = new TMarker( X_min_1, Y_min_1, 20 );
 //	new_mark->SetMarkerSize(1);
@@ -184,7 +184,7 @@ int main (int argc, char* argv[] )
 //	new_mark2->SetMarkerColor(9);
 	//new_mark2->Draw("SAME");
 //	c1->Update();
-	
+
 	c1->cd();
 	leg->Draw();
 	leg2->Draw();

@@ -44,7 +44,7 @@ PerEventAngularAcceptance::~PerEventAngularAcceptance()
 }
 
 //Constructor with correct argument
-PerEventAngularAcceptance::PerEventAngularAcceptance( string fileName, string tupleName, string outFileName ) : 
+PerEventAngularAcceptance::PerEventAngularAcceptance( string fileName, string tupleName, string outFileName ) :
 	//	Did the author intend for ALL of these to be persistant in the heap?
 	tupleFile(), decaytree(), evtList(), nev(), particles(), resonances(), partsAndRes(),
 	p(), pInB(), pInJpsi(), cosThetaMuHistos(), cosThetaMuHistosPredicted(), cosThetaMuTmpHistos(),
@@ -291,7 +291,7 @@ void PerEventAngularAcceptance::loopOnReconstructedBs()
 		p["Jpsi"] = new TLorentzVector(*p["muonminus"] + *p["muonplus"]);
 		p["B"] = new TLorentzVector(*p["Jpsi"] + *p["kaon"]);
 
-		if(fabs(Bu_BKGCAT-0)<DOUBLE_TOLERANCE) continue; 
+		if(fabs(Bu_BKGCAT-0)<DOUBLE_TOLERANCE) continue;
 		if(Bu_MM < 5200. || Bu_MM > 5360.) continue;
 		if(Bu_TAU < -0.2 || Bu_TAU > 20.) continue;
 
@@ -485,7 +485,7 @@ void PerEventAngularAcceptance::generateEventsAndCalculateFgivenB()
 		w_no_eff["muonminus"] = w_angular * inacc[3] * w_mup * w_k   * inacc[1];
 		w_no_eff["kaon"]      = w_angular * inacc[3] * w_mup * w_mum * inacc[2];
 
-		/* 
+		/*
 		   cout << w_angular << " "<< effMuonP(*newP["muonplus"]) << " " << effMuonM(*newP["muonminus"]) << " " << effKaon(*newP["kaon"]) << endl;
 		   cout << w_angular << " "<< inacc[0] << " " << inacc[1] << " " << inacc[2] << " " << inacc[3] << endl;
 		   cout << w_angular << " " << w_sum_gen << endl;
@@ -548,7 +548,7 @@ void PerEventAngularAcceptance::writeHistos()
 	vector<string>::iterator particleIterator;
 	for ( particleIterator = particles.begin(); particleIterator != particles.end(); ++particleIterator )
 	{
-		string particle = *particleIterator;  
+		string particle = *particleIterator;
 		cosThetaMuHistos[particle]->Write();
 		cosThetaKHistos[particle]->Write();
 		cosThetaMuHistosPredicted[particle]->Write();
@@ -566,7 +566,7 @@ void PerEventAngularAcceptance::writeHistos()
 	}
 	outFile->Close();
 	delete outFile;
-}  
+}
 
 double PerEventAngularAcceptance::effMuonP(TLorentzVector P)
 {

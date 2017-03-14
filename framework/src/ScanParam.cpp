@@ -1,6 +1,6 @@
 /**
   @class ScanParam
-      an object to hold the 
+      an object to hold the
 
   @author Rob Currie
   @date 2011-02

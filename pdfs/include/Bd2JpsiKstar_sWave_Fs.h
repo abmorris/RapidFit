@@ -173,7 +173,7 @@ class Bd2JpsiKstar_sWave_Fs : public BasePDF
 
         void getAngularFunctionsHelicity( double &,double &,double &,double &,double &,double &, double &, double &, double &, double &, double, double , double  );
         void getAngularFunctionsTransversity( double &,double &,double &,double &,double &,double &, double &, double &, double &, double &, double, double , double  );
-    
+
 		DataPoint* _datapoint;
 
 		string fileName;

@@ -19,7 +19,7 @@
 <Value>0.68</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -29,7 +29,7 @@
 <Value>0.60</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -39,7 +39,7 @@
 <Value>0.73</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -49,7 +49,7 @@
 <Value>0.63</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -57,7 +57,7 @@
 // Mass
 
 <PhysicsParameter>
-<Name>alphaM_pr</Name>      // exponent 
+<Name>alphaM_pr</Name>      // exponent
 <Value>0.0013</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
@@ -127,7 +127,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>f_LL1_B</Name>       
+<Name>f_LL1_B</Name>
 <Value>1.0</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
@@ -136,7 +136,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>tau_LL1_B</Name>        
+<Name>tau_LL1_B</Name>
 <Value>0.370</Value>
 <Minimum>0.01</Minimum>
 <Maximum>1.</Maximum>
@@ -145,7 +145,7 @@
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>tau_LL2_B</Name>        
+<Name>tau_LL2_B</Name>
 <Value>0.0</Value>
 <Minimum>0.00</Minimum>
 <Maximum>0.0</Maximum>
@@ -158,7 +158,7 @@
 //..........................................
 // Parameters which cant be fixed for scans
 
-// True Physics Parameters for signal 
+// True Physics Parameters for signal
 
 <PhysicsParameter>
 <Name>gamma</Name>
@@ -171,7 +171,7 @@
 
 <PhysicsParameter>
 <Name>deltaGamma</Name>
-<Value>0.10</Value>   
+<Value>0.10</Value>
 <Type>Free</Type>
 <Unit>ps^{-1}</Unit>
 </PhysicsParameter>
@@ -205,7 +205,7 @@
 
 <PhysicsParameter>
 <Name>delta_para</Name>
-<Value>3.29</Value>  
+<Value>3.29</Value>
 <Maximum>6.3</Maximum>
 <Minimum>-6.3</Minimum>
 <Type>Free</Type>
@@ -214,7 +214,7 @@
 
 <PhysicsParameter>
 <Name>delta_perp</Name>
-<Value>2.7</Value> 
+<Value>2.7</Value>
 <Minimum>-6.3</Minimum>
 <Maximum>6.3</Maximum>
 <Type>Free</Type>
@@ -239,7 +239,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>              
+<PhysicsParameter>
 <Name>deltaM</Name>
 <Value>17.63</Value>
 <Type>Free</Type>
@@ -248,7 +248,7 @@
 
 <PhysicsParameter>
 <Name>Phi_s</Name>
-<Value>0.17</Value>  
+<Value>0.17</Value>
 <Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -258,46 +258,46 @@
 //..................................
 // Detector Parameters
 
-//Signal PDF time resolution parameters for double gaussian model. 
+//Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
-<Name>timeResolutionScale</Name>     
-<Value>1.0</Value>                      
+<Name>timeResolutionScale</Name>
+<Value>1.0</Value>
 <Type>Free</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution1</Name>           
-<Value>0.0434</Value>                   
+<Name>timeResolution1</Name>
+<Value>0.0434</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution2</Name>
-<Value>0.0853</Value> 
+<Value>0.0853</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution3</Name>
-<Value>0.513</Value> 
+<Value>0.513</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution2Fraction</Name>     
-<Value>0.165</Value>                      
+<Name>timeResolution2Fraction</Name>
+<Value>0.165</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution3Fraction</Name>     
-<Value>0.0017</Value>                      
+<Name>timeResolution3Fraction</Name>
+<Value>0.0017</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -314,7 +314,7 @@
 
 <PhysicsParameter>
 <Name>angAccI1</Name>
-<Value>0.9795</Value>   // 
+<Value>0.9795</Value>   //
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
@@ -333,7 +333,7 @@
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
-<PhysicsParameter>  
+<PhysicsParameter>
 <Name>angAccI4</Name>
 <Value>0.0004</Value>       //
 <Type>Fixed</Type>
@@ -493,7 +493,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -503,7 +503,7 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -513,7 +513,7 @@
 <Value>0.78</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -523,7 +523,7 @@
 <Value>0.72</Value>
 <Minimum>0.0</Minimum>
 <Maximum>1.0</Maximum>
-<Type>Free</Type>           
+<Type>Free</Type>
 <Unit>Unitless</Unit>
 </PhysicsParameter>
 
@@ -591,7 +591,7 @@
 //Exponential background mass model
 
 <PhysicsParameter>
-<Name>alphaM_pr_2010</Name>      // exponent 
+<Name>alphaM_pr_2010</Name>      // exponent
 <Value>0.00140</Value>
 <Type>Fixed</Type>
 <Unit>Unitless</Unit>
@@ -660,36 +660,36 @@
 //Signal PDF time resolution parameters for double gaussian model.
 
 <PhysicsParameter>
-<Name>timeResolution1_2010</Name>           
-<Value>0.0337</Value>                   
+<Name>timeResolution1_2010</Name>
+<Value>0.0337</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution2_2010</Name>
-<Value>0.0646</Value> 
+<Value>0.0646</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
 <Name>timeResolution3_2010</Name>
-<Value>0.180</Value> 
+<Value>0.180</Value>
 <Type>Fixed</Type>
 <Unit>ps</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution2Fraction_2010</Name>     
-<Value>0.456</Value>                      
+<Name>timeResolution2Fraction_2010</Name>
+<Value>0.456</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
 
 <PhysicsParameter>
-<Name>timeResolution3Fraction_2010</Name>     
-<Value>0.017</Value>                      
+<Name>timeResolution3Fraction_2010</Name>
+<Value>0.017</Value>
 <Type>Fixed</Type>
 <Unit>unitless</Unit>
 </PhysicsParameter>
@@ -854,7 +854,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>
 <NTuplePath>DecayTree</NTuplePath>
 <CutString>(sel==1)&&(time>0.3)</CutString>
 <NumberEvents>1000000</NumberEvents>
@@ -862,7 +862,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -944,7 +944,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>
 <NTuplePath>DecayTree</NTuplePath>
 <CutString>(sel==1)&&(time>0.3)</CutString>
 <NumberEvents>10000000</NumberEvents>
@@ -952,7 +952,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1045,7 +1045,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>
 <NTuplePath>DecayTree</NTuplePath>
 <CutString>(sel==1)&&(time>0.3)</CutString>
 <NumberEvents>1000000</NumberEvents>
@@ -1053,7 +1053,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1138,7 +1138,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/Pass3-version2_Bs_310711_RapidFit.root</FileName>
 <NTuplePath>DecayTree</NTuplePath>
 <CutString>(sel==1)&&(time>0.3)</CutString>
 <NumberEvents>10000000</NumberEvents>
@@ -1146,7 +1146,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1265,7 +1265,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1374,7 +1374,7 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
 <NTuplePath>DecayTree</NTuplePath>
 
@@ -1383,7 +1383,7 @@
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1481,15 +1481,15 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
 <NTuplePath>DecayTree</NTuplePath>
-<NumberEvents>1000000</NumberEvents>   
+<NumberEvents>1000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1598,16 +1598,16 @@
 
 <DataSet>
 <Source>File</Source>
-<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>  
+<FileName>$RAPIDFITDATA/2010-repro-Bs_260811_RapidFit.root</FileName>
 <CutString>sel</CutString>
-<NTuplePath>DecayTree</NTuplePath>  
+<NTuplePath>DecayTree</NTuplePath>
 
 <NumberEvents>10000000</NumberEvents>
 
 <PhaseSpaceBoundary>
 <Observable>
 <Name>time</Name>
-<Minimum>0.3</Minimum> 
+<Minimum>0.3</Minimum>
 <Maximum>14.0</Maximum>
 <Unit>ps</Unit>
 </Observable>
@@ -1665,33 +1665,33 @@
 <Output>
 
 #<Projection>mass</Projection>
-       <Scan>                                                                                                                                                        
-                <Name>Phi_s</Name>                                                                                                                               
-                <Minimum>-2.0</Minimum>                                                                                                                              
-                <Maximum>0.</Maximum>                                                                                                                               
-                <Points>20</Points>                                                                                                                                    
-        </Scan>   
-       <Scan>                                                                                                                                                        
-                <Name>deltaGamma</Name>                                                                                                                       
-                <Minimum>-0.1</Minimum>                                                                                                                                
-                <Maximum>0.2</Maximum>                                                                                                                                
-                <Points>20</Points>                                                                                                                            
-        </Scan>   
-        <TwoDScan>                                                                                                                                                      
-            <X_Param>                                                                                                                                             
-                <Name>Phi_s</Name>                                                                                                                            
-                <Minimum>-2.0</Minimum>                                                                                                                                
-                <Maximum>0.0</Maximum>                                                                                                                               
-                <Points>10</Points>                                                                                                                            
-            </X_Param>                                                                                                                                            
-                                                                                                                                                                      
-            <Y_Param>                                                                                                                                             
-                <Name>deltaGamma</Name>                                                                                                                       
-                <Minimum>-0.1</Minimum>                                                                                                                                
-                <Maximum>0.2</Maximum>                                                                                                                                
-                <Points>10</Points>                                                                                                                            
-            </Y_Param>                                                                                                                                            
-        </TwoDScan>                                                                                                                                                     
+       <Scan>
+                <Name>Phi_s</Name>
+                <Minimum>-2.0</Minimum>
+                <Maximum>0.</Maximum>
+                <Points>20</Points>
+        </Scan>
+       <Scan>
+                <Name>deltaGamma</Name>
+                <Minimum>-0.1</Minimum>
+                <Maximum>0.2</Maximum>
+                <Points>20</Points>
+        </Scan>
+        <TwoDScan>
+            <X_Param>
+                <Name>Phi_s</Name>
+                <Minimum>-2.0</Minimum>
+                <Maximum>0.0</Maximum>
+                <Points>10</Points>
+            </X_Param>
+
+            <Y_Param>
+                <Name>deltaGamma</Name>
+                <Minimum>-0.1</Minimum>
+                <Maximum>0.2</Maximum>
+                <Points>10</Points>
+            </Y_Param>
+        </TwoDScan>
 </Output>
 
 

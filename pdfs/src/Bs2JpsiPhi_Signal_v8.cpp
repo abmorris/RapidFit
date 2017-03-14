@@ -29,59 +29,59 @@ PDF_CREATOR( Bs2JpsiPhi_Signal_v8 );
 //......................................
 //Constructor(s)
 //New one with configurator
-Bs2JpsiPhi_Signal_v8::Bs2JpsiPhi_Signal_v8(PDFConfigurator* configurator) : BasePDF(), 
+Bs2JpsiPhi_Signal_v8::Bs2JpsiPhi_Signal_v8(PDFConfigurator* configurator) : BasePDF(),
 	// Physics parameters
-	gammaName			( configurator->getName("gamma") ), 
-	deltaGammaName		( configurator->getName("deltaGamma") ), 
-	deltaMName			( configurator->getName("deltaM") ), 
-	Azero_sqName			( configurator->getName("Azero_sq") ), 
-	Apara_sqName			( configurator->getName("Apara_sq") ), 
-	Aperp_sqName			( configurator->getName("Aperp_sq") ), 
-	delta_zeroName		( configurator->getName("delta_zero") ), 
-	delta_paraName		( configurator->getName("delta_para") ), 
-	delta_perpName		( configurator->getName("delta_perp") ), 
-	As_sqName			( configurator->getName("F_s") ), 
-	delta_sName			( configurator->getName("delta_s") ), 
-	CspName			( configurator->getName("Csp") ), 
+	gammaName			( configurator->getName("gamma") ),
+	deltaGammaName		( configurator->getName("deltaGamma") ),
+	deltaMName			( configurator->getName("deltaM") ),
+	Azero_sqName			( configurator->getName("Azero_sq") ),
+	Apara_sqName			( configurator->getName("Apara_sq") ),
+	Aperp_sqName			( configurator->getName("Aperp_sq") ),
+	delta_zeroName		( configurator->getName("delta_zero") ),
+	delta_paraName		( configurator->getName("delta_para") ),
+	delta_perpName		( configurator->getName("delta_perp") ),
+	As_sqName			( configurator->getName("F_s") ),
+	delta_sName			( configurator->getName("delta_s") ),
+	CspName			( configurator->getName("Csp") ),
 	cosdparName			( configurator->getName("cosdpar") ), //PELC-COSDPAR Special for fitting cosdpar separately
-	phis_Name			( configurator->getName("Phi_s") ), 
-	phis_zeroName			( configurator->getName("Phis_zero") ), 
-	phis_paraName			( configurator->getName("Phis_para") ), 
-	phis_perpName			( configurator->getName("Phis_perp") ), 
-	phis_SName			( configurator->getName("Phis_S") ), 
-	lambdaName			( configurator->getName("lambda") ), 
-	lambda_zeroName		( configurator->getName("lambda_zero") ), 
-	lambda_paraName		( configurator->getName("lambda_para") ), 
-	lambda_perpName		( configurator->getName("lambda_perp") ), 
-	lambda_SName			( configurator->getName("lambda_S") ), 
+	phis_Name			( configurator->getName("Phi_s") ),
+	phis_zeroName			( configurator->getName("Phis_zero") ),
+	phis_paraName			( configurator->getName("Phis_para") ),
+	phis_perpName			( configurator->getName("Phis_perp") ),
+	phis_SName			( configurator->getName("Phis_S") ),
+	lambdaName			( configurator->getName("lambda") ),
+	lambda_zeroName		( configurator->getName("lambda_zero") ),
+	lambda_paraName		( configurator->getName("lambda_para") ),
+	lambda_perpName		( configurator->getName("lambda_perp") ),
+	lambda_SName			( configurator->getName("lambda_S") ),
 	// Observables
-	timeName			( configurator->getName("time") ), 
-	cosThetaName			( configurator->getName("cosTheta") ), 
-	cosPsiName			( configurator->getName("cosPsi") ), 
-	phiName			( configurator->getName("phi") ), 
-	cthetakName 			( configurator->getName("helcosthetaK") ), 
-	cthetalName			( configurator->getName("helcosthetaL") ), 
-	phihName			( configurator->getName("helphi") ), 
-	BetaName			( configurator->getName("beta") ), 
+	timeName			( configurator->getName("time") ),
+	cosThetaName			( configurator->getName("cosTheta") ),
+	cosPsiName			( configurator->getName("cosPsi") ),
+	phiName			( configurator->getName("phi") ),
+	cthetakName 			( configurator->getName("helcosthetaK") ),
+	cthetalName			( configurator->getName("helcosthetaL") ),
+	phihName			( configurator->getName("helphi") ),
+	BetaName			( configurator->getName("beta") ),
 	// Other things
-	_useEventResolution(false), 
-	//_useTimeAcceptance(false), 
-	_useHelicityBasis(false), 
-	_numericIntegralForce(false), 
-	_numericIntegralTimeOnly(false), 
-	_useCosAndSin(false), 
-	_useCosDpar(false), 
-	_usePunziMistag(false), 
-	_usePunziSigmat(false), 
-	allowNegativeAsSq(false), 
-	_usePlotComponents(false), 
-	_usePlotAllComponents(false), 
-	DebugFlag_v8(true), 
-	_offsetToGammaForBetaFactor(), 
+	_useEventResolution(false),
+	//_useTimeAcceptance(false),
+	_useHelicityBasis(false),
+	_numericIntegralForce(false),
+	_numericIntegralTimeOnly(false),
+	_useCosAndSin(false),
+	_useCosDpar(false),
+	_usePunziMistag(false),
+	_usePunziSigmat(false),
+	allowNegativeAsSq(false),
+	_usePlotComponents(false),
+	_usePlotAllComponents(false),
+	DebugFlag_v8(true),
+	_offsetToGammaForBetaFactor(),
 	//objects
 	t(), ctheta_tr(), phi_tr(), ctheta_1(), ctheta_k(), phi_h(), ctheta_l(),
 	_gamma(), dgam(), Aperp_sq(), Apara_sq(), Azero_sq(), As_sq(), delta_para(),
-	delta_perp(), delta_zero(), delta_s(), delta_perp_Minus_para(), delta_perp_Minus_zero(), delta_ms(), phi_s(), _cosphis(), _sinphis(), 
+	delta_perp(), delta_zero(), delta_s(), delta_perp_Minus_para(), delta_perp_Minus_zero(), delta_ms(), phi_s(), _cosphis(), _sinphis(),
 	angAccI1(), angAccI2(), angAccI3(), angAccI4(), angAccI5(), angAccI6(), angAccI7(), angAccI8(), angAccI9(), angAccI10(),
 	tlo(), thi(), expL_stored(), expH_stored(), expSin_stored(), expCos_stored(),
 	intExpL_stored(), intExpH_stored(), intExpSin_stored(), intExpCos_stored(),//, timeAcc(NULL),
@@ -107,7 +107,7 @@ Bs2JpsiPhi_Signal_v8::Bs2JpsiPhi_Signal_v8(PDFConfigurator* configurator) : Base
 	_usePunziMistag = configurator->isTrue( "UsePunziMistag" ) ;
 	allowNegativeAsSq = configurator->isTrue( "AllowNegativeAsSq" ) ;
 	_usePlotComponents = configurator->isTrue( "PlotComponents" ) ;
-	_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ; 
+	_usePlotAllComponents = configurator->isTrue( "PlotAllComponents" ) ;
 	_fitDirectlyForApara = configurator->isTrue( "FitDirectlyForApara" );
 	_useNewMistagModel = configurator->isTrue( "useNewMistagModel" );
 	DebugFlag_v8 = !configurator->hasConfigurationValue( "DEBUG", "False" );
@@ -227,7 +227,7 @@ void Bs2JpsiPhi_Signal_v8::MakePrototypes()
 		allObservables.push_back( phiName );
 		allObservables.push_back( cosPsiName );
 	}
-	//if(useEventResolution()) allObservables.push_back( eventResolutionName );    
+	//if(useEventResolution()) allObservables.push_back( eventResolutionName );
 	resolutionModel->addObservables( allObservables );
 	_mistagCalibModel->addObservables( allObservables );
 
@@ -292,7 +292,7 @@ vector<string> Bs2JpsiPhi_Signal_v8::GetDoNotIntegrateList()
 	vector<string> list;
 
 	//***THIS NEEDS FIXING*** PROBLEM IS ONLY THE RESOULTION MODEL KNOWS THIS NOW - SO HOW DOES ONE ADD TO THE D.I.L CLEANLY ??
-	//list.push_back("eventResolution") ; 
+	//list.push_back("eventResolution") ;
 	resolutionModel->addObservables( list );
 
 	if( !_usePunziMistag ) _mistagCalibModel->addObservables( list );

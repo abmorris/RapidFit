@@ -155,7 +155,7 @@ bool DoubleExponential::SetPhysicsParameters( ParameterSet * NewParameterSet )
 		sigma1    = allParameters.GetPhysicsParameter( sigma1Name )->GetValue();
 		sigma2    = allParameters.GetPhysicsParameter( sigma2Name )->GetValue();
 		sigma3    = allParameters.GetPhysicsParameter( sigma3Name )->GetValue();
-	} 
+	}
 	resolutionScale1 = allParameters.GetPhysicsParameter( resScale1Name )->GetValue();
 	resolutionScale2 = allParameters.GetPhysicsParameter( resScale2Name )->GetValue();
 	resolutionScale3 = allParameters.GetPhysicsParameter( resScale3Name )->GetValue();
@@ -251,12 +251,12 @@ double DoubleExponential::Normalisation( PhaseSpaceBoundary* boundary )
 	{
 		IConstraint * timeBound = boundary->GetConstraint( timeName );
 		if ( timeBound->GetUnit() == "NameNotFoundError" )
-		{            
+		{
 			cerr << "Bound on time not provided" << endl;
 			norm = -1.;
-		}            
-		else         
-		{            
+		}
+		else
+		{
 			tlow = timeBound->GetMinimum();
 			thigh = timeBound->GetMaximum();
 		}
@@ -265,7 +265,7 @@ double DoubleExponential::Normalisation( PhaseSpaceBoundary* boundary )
 			// Set the member variable for time resolution to the first value and calculate
 			sigma = sigma1;
 			norm = buildPDFdenominator();
-		}       
+		}
 		else
 		{
 			// Set the member variable for time resolution to the first value and calculate
@@ -328,7 +328,7 @@ double DoubleExponential::Normalisation(DataPoint * measurement, PhaseSpaceBound
 			// Set the member variable for time resolution to the first value and calculate
 			sigma = sigma1;
 			norm = buildPDFdenominator();
-		}       
+		}
 		else
 		{
 			// Set the member variable for time resolution to the first value and calculate

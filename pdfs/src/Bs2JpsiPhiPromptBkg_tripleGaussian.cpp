@@ -3,7 +3,7 @@
  *
  *  PDF for Bs2JpsiPhi prompt background
  *
- *  @author Pete Clarke 
+ *  @author Pete Clarke
  *  @date 2010 01 22
  */
 #include "Bs2JpsiPhiPromptBkg_tripleGaussian.h"
@@ -14,7 +14,7 @@
 PDF_CREATOR( Bs2JpsiPhiPromptBkg_tripleGaussian );
 
 //Constructor
-Bs2JpsiPhiPromptBkg_tripleGaussian::Bs2JpsiPhiPromptBkg_tripleGaussian( PDFConfigurator* configurator ) : 
+Bs2JpsiPhiPromptBkg_tripleGaussian::Bs2JpsiPhiPromptBkg_tripleGaussian( PDFConfigurator* configurator ) :
 	// Physics parameters
 	  frac_sigmaPr1Name	( configurator->getName("frac_sigmaPr1") )
 	, frac_sigmaPr23Name	( configurator->getName("frac_sigmaPr23" ))
@@ -22,7 +22,7 @@ Bs2JpsiPhiPromptBkg_tripleGaussian::Bs2JpsiPhiPromptBkg_tripleGaussian( PDFConfi
 	, sigmaPr2Name	( configurator->getName("sigmaPr2") )
 	, sigmaPr3Name	( configurator->getName("sigmaPr3") )
 	// Observables
-	, timeName	( configurator->getName("time") )	
+	, timeName	( configurator->getName("time") )
 	, timeconstraintName( configurator->getName("time") )
 {
 	MakePrototypes();
@@ -60,20 +60,20 @@ double Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate(DataPoint * measurement)
 	//Retrieve parameters
 	double sigmaPr1  = allParameters.GetPhysicsParameter( sigmaPr1Name )->GetValue();
 	double sigmaPr2 =  allParameters.GetPhysicsParameter( sigmaPr2Name )->GetValue();
-	double sigmaPr3 =  allParameters.GetPhysicsParameter( sigmaPr3Name )->GetValue();	
+	double sigmaPr3 =  allParameters.GetPhysicsParameter( sigmaPr3Name )->GetValue();
 	double frac1    = allParameters.GetPhysicsParameter( frac_sigmaPr1Name )->GetValue();
 	double frac23   = allParameters.GetPhysicsParameter( frac_sigmaPr23Name )->GetValue();
-	
+
 	//Reality Checks
 	if( frac1 < 0. || frac1 > 1.001 )  cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate() : frac1 = " << frac1 << endl ;
 	if( frac23 < 0. || frac23 > 1.001 )  cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate() : frac23 = " << frac23 << endl ;
 	if( sigmaPr1 <= 0. ) cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate() : sigmaPr1 < 0 : " << sigmaPr1 << endl ;
 	if( sigmaPr2 <= 0. ) cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate() : sigmaPr2 < 0 : " << sigmaPr2 << endl ;
 	if( sigmaPr3 <= 0. ) cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate() : sigmaPr3 < 0 : " << sigmaPr3 << endl ;
-	
+
 	//Calculate PDF
 	double gauss1=0, gauss2=0, gauss3=0 ;
-	
+
 	if( sigmaPr1 > 0. ) {
 		double timeNorm = 1./( sigmaPr1 * sqrt( 2.*TMath::Pi() ) );
 		gauss1    = timeNorm * exp( -time*time / ( 2. * sigmaPr1 * sigmaPr1 ) );
@@ -83,12 +83,12 @@ double Bs2JpsiPhiPromptBkg_tripleGaussian::Evaluate(DataPoint * measurement)
 		double timeNorm = 1./( sigmaPr2 * sqrt( 2.*TMath::Pi() ) );
 		gauss2    = timeNorm * exp( -time*time / ( 2. * sigmaPr2 * sigmaPr2 ) );
 	}
-	
+
 	if( sigmaPr3 > 0. ) {
 		double timeNorm = 1./( sigmaPr3 * sqrt( 2.*TMath::Pi() ) );
 		gauss3    = timeNorm * exp( -time*time / ( 2. * sigmaPr3 * sigmaPr3 ) );
 	}
-		
+
 	return frac1*gauss1 + (1.-frac1)*( frac23*gauss2 + (1.-frac23)*gauss3 ) ;
 }
 
@@ -119,15 +119,15 @@ double Bs2JpsiPhiPromptBkg_tripleGaussian::Normalisation(PhaseSpaceBoundary * bo
 	double sigmaPr3 = allParameters.GetPhysicsParameter( sigmaPr3Name )->GetValue();
 	double frac1 = allParameters.GetPhysicsParameter( frac_sigmaPr1Name )->GetValue();
 	double frac23 = allParameters.GetPhysicsParameter( frac_sigmaPr23Name )->GetValue();
-	
+
 	//Reality checks
 	if( sigmaPr1 <= 0. ) {cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Normalisation() : sigmaPr1 < 0 : " << sigmaPr1 << endl ;exit(1); }
 	if( sigmaPr2 <= 0. ) {cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Normalisation() : sigmaPr2 < 0 : " << sigmaPr2 << endl ; exit(1); }
 	if( sigmaPr3 <= 0. ) {cout << "Bs2JpsiPhiPromptBkg_tripleGaussian::Normalisation() : sigmaPr3 < 0 : " << sigmaPr3 << endl ; exit(1); }
-	
+
 	double val1 = 0.5 * ( erf( tmax/(sqrt(2.)*sigmaPr1) ) - erf( tmin/(sqrt(2.)*sigmaPr1 )) );
 	double val2 = 0.5 * ( erf( tmax/(sqrt(2.)*sigmaPr2) ) - erf( tmin/(sqrt(2.)*sigmaPr2 )) );
 	double val3 = 0.5 * ( erf( tmax/(sqrt(2.)*sigmaPr3) ) - erf( tmin/(sqrt(2.)*sigmaPr3 )) );
-	
+
 	return frac1*val1 + (1.-frac1)*(frac23*val2 + (1.-frac23)*val3) ;
 }

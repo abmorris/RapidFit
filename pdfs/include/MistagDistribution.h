@@ -1,7 +1,7 @@
 // $Id: MistagDistribution.h,v 1.1 2009/11/10 10:35:49 gcowan Exp $
 /** @class MistagDistribution MistagDistribution.h
  *
- *  RapidFit PDF 
+ *  RapidFit PDF
  *
  *  @author Pete Clarke
  *  @date 2011-07-30
@@ -42,7 +42,7 @@ class MistagDistribution : public BasePDF
 
 		// Observables
 		double x ;
-		ObservableRef GFxName;	
+		ObservableRef GFxName;
 		ObservableRef tagName;
 
 		bool NumericallyIntegrate;

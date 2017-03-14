@@ -34,7 +34,7 @@ void MakePlot(TH1* hist, TString Name, TString dir){
 
 	TString FitType = Histogram_Processing::Best_Fit_Function( hist );
 	Histogram_Processing::Silent_Fit( hist, FitType );
-	TString Canvas_Name(Name+"_Canvas");  
+	TString Canvas_Name(Name+"_Canvas");
 	TCanvas* c1 = EdStyle::RapidFitCanvas( Canvas_Name, Canvas_Name );
 	Histogram_Processing::Silent_Draw( c1, hist );
 	TAxis* x_axis = hist->GetXaxis();
@@ -145,7 +145,7 @@ int main( int argc, char* argv[] )
 
 		TH1D* deltaValue = new TH1D(valueStr,valueStr,1000,1.0,-1.0);
 		deltaValue->SetName( valueStr );
-		
+
 		TH1D* deltaError = new TH1D(errorStr,errorStr,1000,1.0,-1.0);
 		deltaError->SetName( errorStr );
 
@@ -154,7 +154,7 @@ int main( int argc, char* argv[] )
 
 		TH1D* perToyPull = new TH1D(ptpullStr,ptpullStr,1000,1.0,-1.0);
 		perToyPull->SetName( ptpullStr );
-	
+
 
 		cout << "Number of entries in vectors: " << thisValue1->size() << endl;
 		for(unsigned int j=0; j< thisValue1->size(); j++){

@@ -22,7 +22,7 @@ using namespace::std;
 RESMODEL_CREATOR( ResolutionModel );
 
 //............................................
-// Constructor 
+// Constructor
 ResolutionModel::ResolutionModel( PDFConfigurator* configurator, bool quiet ) :
 	resScaleName		( configurator->getName("timeResolutionScale") ),
 	eventResolutionName	( configurator->getName("eventResolution") ), isCacheValid(false)

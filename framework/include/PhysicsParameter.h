@@ -45,7 +45,7 @@ class PhysicsParameter
 		void SetMaximum(double);
 
 		void SetLimits(double, double);
-	
+
 		void SetBlindOffset( double ) ;
 		void SetBlinding( bool ) ;
 
@@ -77,7 +77,7 @@ class PhysicsParameter
 		double stepSize;
 		string type;
 		string unit;
-	
+
 		bool toBeBlinded;
 		double blindOffset;
 

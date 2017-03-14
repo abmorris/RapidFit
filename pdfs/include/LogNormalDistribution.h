@@ -1,7 +1,7 @@
 // $Id: LogNormalDistribution.h,v 1.1 2009/11/10 10:35:49 gcowan Exp $
 /** @class LogNormalDistribution LogNormalDistribution.h
  *
- *  RapidFit PDF 
+ *  RapidFit PDF
  *
  *  @author Pete Clarke
  *  @date 2011-07-30
@@ -35,9 +35,9 @@ class LogNormalDistribution : public BasePDF
 	private:
 		void MakePrototypes();
 		bool SetPhysicsParameters(ParameterSet*);
-	
+
 		//TF1 * PDF ;
-	
+
 		// Physics parameters
 		double sigma1 ;
 		double theta1 ;
@@ -56,7 +56,7 @@ class LogNormalDistribution : public BasePDF
 
 		// Observables
 		double x ;
-		ObservableRef LNxName;	
+		ObservableRef LNxName;
 
 		bool plotComponents;
 };

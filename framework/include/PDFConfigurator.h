@@ -47,7 +47,7 @@ class PDFConfigurator
 		// E.g. to substitute tau_LL  ->  tauLL2
 		void appendParameterNames( string names_list );
 		void addParameterSubstitution( string substitution );
-		string getName( string defaultName ) ; 
+		string getName( string defaultName ) ;
 
 		// Set configuration parameter
 		/*!

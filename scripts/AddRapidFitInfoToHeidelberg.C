@@ -7,7 +7,7 @@
 #include "TChain.h"
 #include "TMath.h"
 
-/* 
+/*
 *  Add the rapid fit variables to the standard ntuple. To use, type then root and at the prompt
 *   .L AddRapidFitInfo.C++
 *   AddRapidFitInfo("TheFile.root", "DecayTree")
@@ -21,25 +21,25 @@ std::string AddRapidFitInfoToHeidelberg(std::string fileName = "heidelberg-data.
   TChain* decaytree = new TChain(treeName.c_str());
   decaytree->Add(fileName.c_str());
 
-	
+
   // make the output
   std::string outputName = fileName.substr(0,fileName.size() - 5);
- 
+
   if (setTagToZero == false){
      outputName += "_RapidFit.root";
   }
   else {
      outputName += "_RapidFit_Untagged.root";
   }
- 
+
   TFile* outFile  =new TFile(outputName.c_str(),"RECREATE");
-   
+
   std::cout << "Reading: " << treeName << " from " << fileName  << " to " << outputName << std::endl;
 
   // clone the tree..
   TTree*  newtree = decaytree->CloneTree(-1);
- 
-  //add the new branches 
+
+  //add the new branches
   float time; TBranch* branch_time =  newtree->Branch("time",&time, "time/F");
   float cosTheta; TBranch* branch_cosTheta =  newtree->Branch("cosTheta",&cosTheta, "cosTheta/F");
   float cosPsi; TBranch* branch_cosPsi =  newtree->Branch("cosPsi",&cosPsi, "cosPsi/F");
@@ -49,8 +49,8 @@ std::string AddRapidFitInfoToHeidelberg(std::string fileName = "heidelberg-data.
   float mass; TBranch* branch_mass =  newtree->Branch("mass",&mass, "mass/F");
 
   // address of the old variables
-  double dtime; newtree->SetBranchAddress("t",&dtime); 
-  double dcosTheta; newtree->SetBranchAddress("trcostheta",&dcosTheta); 
+  double dtime; newtree->SetBranchAddress("t",&dtime);
+  double dcosTheta; newtree->SetBranchAddress("trcostheta",&dcosTheta);
   double dcosPsi; newtree->SetBranchAddress("trcospsi",&dcosPsi);
   double dphi; newtree->SetBranchAddress("trphi",&dphi);
   int itag; newtree->SetBranchAddress("tagdecision",&itag);
@@ -65,22 +65,22 @@ std::string AddRapidFitInfoToHeidelberg(std::string fileName = "heidelberg-data.
     cosTheta = dcosTheta;
     cosPsi = dcosPsi;
     phi = dphi;
-    if (setTagToZero == false){ 
+    if (setTagToZero == false){
       tag = (float) itag;
     }
     else {
       tag = 0.0;
-    }    
+    }
     mass = dmass;
     mistag = dmistag;
-  
+
     branch_time->Fill();
-    branch_cosTheta->Fill(); 
+    branch_cosTheta->Fill();
     branch_cosPsi->Fill();
-    branch_phi->Fill(); 
-    branch_tag->Fill(); 
-    branch_mistag->Fill(); 
-    branch_mass->Fill(); 
+    branch_phi->Fill();
+    branch_tag->Fill();
+    branch_mistag->Fill();
+    branch_mass->Fill();
   } // loop i
 
   newtree->Write();

@@ -24,10 +24,10 @@ GammaDistribution::GammaDistribution(PDFConfigurator* configurator) :
 	// Observables
 	GFxName( configurator->getName("GFx") )
 {
-	
+
 	std::cout << "Constructing PDF: GammaDistribution " << std::endl ;
 
-	//PDF = new TF1("sigmatPDF","[3]*TMath::GammaDist(x, [0], [2], [1] )",0, 0.1); 
+	//PDF = new TF1("sigmatPDF","[3]*TMath::GammaDist(x, [0], [2], [1] )",0, 0.1);
 	//PDF->SetParameters(10.4,0.0027, 0.003,1);
 
 	MakePrototypes();
@@ -59,7 +59,7 @@ bool GammaDistribution::SetPhysicsParameters( ParameterSet * NewParameterSet )
   	gamma = allParameters.GetPhysicsParameter( GFgammaName )->GetValue();
   	mu    = allParameters.GetPhysicsParameter( GFmuName )->GetValue();
   	beta  = allParameters.GetPhysicsParameter( GFbetaName )->GetValue();
-	
+
 	return isOK;
 }
 
@@ -70,10 +70,10 @@ double GammaDistribution::Evaluate(DataPoint * measurement)
 {
 	//PDF->SetParameters(gamma,beta,mu,1.);
 	//PDF->SetParameters(10.4,0.0027, 0.003,1);
-	
+
 	// Get the observable
 	x = measurement->GetObservable( GFxName )->GetValue();
-	
+
 	double returnValue = 0.000000000001;
 
 	if( x > mu ) returnValue = TMath::GammaDist( x, gamma, mu, beta );

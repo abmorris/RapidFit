@@ -1,5 +1,5 @@
 /** @class RapidFitPdfExponential RapidFitPdfExponential.cxx
- *  
+ *
  *
  *  PDf for a simple exponential with a single Gaussian resolution convoluted in analytically
  *
@@ -38,23 +38,23 @@ RapidFitPdfExponential::RapidFitPdfExponential( PDFConfigurator* configurator ) 
 //RapidFitPdfExponential::RapidFitPdfExponential( double res ) : gamma(), resolution(), valid(), gammaName("gamma"), timeName("time")
 //{
 //  if( res >= 0.0 ) {
-//    resolution = res ; 
+//    resolution = res ;
 //    valid = true ;
 //  }
 //  else {
-//    resolution = 0.0; 
+//    resolution = 0.0;
 //    valid = false ;
 //  }
 //}
 
 
 //....................................
-//Copy constructor  
+//Copy constructor
 RapidFitPdfExponential::RapidFitPdfExponential( const RapidFitPdfExponential & other  ) :
    BasePDF( (BasePDF) other ), gamma( other.gamma ), resolution(other.resolution), valid(other.valid), gammaName("gamma"), timeName("time")
-{  
+{
 }
- 
+
 
 //.................................
 // Status
@@ -85,13 +85,13 @@ bool RapidFitPdfExponential::SetPhysicsParameters( ParameterSet * params )
 	}
   /*
   if( ! params->has("Gamma") ) { return false ; }
-  
+
   if( params->get("Gamma").isValid() ) {
     gamma.set( params->get("Gamma") ) ;
 	return true ;
   }
   else
-    return false ; 
+    return false ;
     */
 }
 
@@ -115,29 +115,29 @@ double RapidFitPdfExponential::Evaluate( DataPoint * dataPoint )
 	else
 	{
 		double t = newTime->GetValue();
-		return this->evaluateNumerator( t ) ;  
+		return this->evaluateNumerator( t ) ;
 	}
   /*
   if( ! dataPoint->has("ProperTime") ) { return -1.0 ; }
 
-  double t = dataPoint->get("ProperTime").getValue() ; 
-  
-     	 
-  return this.evaluateNumerator( t ) ;  
+  double t = dataPoint->get("ProperTime").getValue() ;
+
+
+  return this.evaluateNumerator( t ) ;
   */
 }
 
 
 
 //..................................
-// Evaluate integral of pdf	
+// Evaluate integral of pdf
 //
 // This is called to evaluate the interal of the numerator over a specified set of bounds of
 // the Observables
 //
 // It MUST return a negative number if it cannot do the integral.
 //
-// Typically it will only be called once when iterating over a DataSet because it 
+// Typically it will only be called once when iterating over a DataSet because it
 // doesnt change for any given set of PhysicsParameters and DataPointBounds
 // It does checks on the input and then passes to an internal method for calculation.
 //
@@ -160,13 +160,13 @@ double RapidFitPdfExponential::Integral( DataPoint* dataPoint, PhaseSpaceBoundar
   /*
   if( ! bounds->has("ProperTime") ) { return -1.0 ; }
 
-  double tlow = bounds->get("ProperTime").getLow() ; 
-  double thigh = bounds->get("ProperTime").getHigh() ; 
-  
-  if( thigh <  tlow ) 
+  double tlow = bounds->get("ProperTime").getLow() ;
+  double thigh = bounds->get("ProperTime").getHigh() ;
+
+  if( thigh <  tlow )
      return -1.0 ;
-  else 
-    return this.evaluateIntegral( tlow, thigh ) ;  
+  else
+    return this.evaluateIntegral( tlow, thigh ) ;
   */
 }
 
@@ -177,19 +177,19 @@ double RapidFitPdfExponential::Integral( DataPoint* dataPoint, PhaseSpaceBoundar
 // This is where you put all the maths
 
 double  RapidFitPdfExponential::evaluateNumerator( double t ) const
-{ 
+{
    double gam = gamma->GetValue() ;
 
-   if(resolution > 0.0 ) {     
+   if(resolution > 0.0 ) {
       double theExp = exp( -gam*t + resolution*resolution * gam*gam / 2. ) ;
       double theErfc = TMath::Erfc(  -( t - resolution*resolution*gam ) /sqrt(2.)/resolution )  ;
       return theExp * theErfc  / 2.0 ;
-   }	
+   }
    else
       if( t < 0.0 ) return 0.0 ;
    else
       return exp( -gam * t ) ;
-  
+
 }
 
 
@@ -199,22 +199,22 @@ double  RapidFitPdfExponential::evaluateNumerator( double t ) const
 // This is where you put all the maths
 // Remember that this must return a negative number if it determines it cannot do the integral.
 
-double RapidFitPdfExponential::evaluateIntegral( double tlow, double thigh) const 
-{ 
+double RapidFitPdfExponential::evaluateIntegral( double tlow, double thigh) const
+{
    double gam = gamma->GetValue() ;
 
    if( resolution > 0.0 ) {
      // Cant do integral with resolution with finite limits
-	 if( ( tlow <  - 5.0*resolution ) && (gam*thigh > 20.0 )  ) 
+	 if( ( tlow <  - 5.0*resolution ) && (gam*thigh > 20.0 )  )
 	   return ( 1.0 / gam) ;
-	 else 
-	   return -1.0 ;  
-   }	  
+	 else
+	   return -1.0 ;
+   }
    else
      if( tlow <= 0 )
-       return ( 1.0 / gam  *  ( 1.0 - exp(thigh) )  ) ; 
+       return ( 1.0 / gam  *  ( 1.0 - exp(thigh) )  ) ;
      else
-       return ( 1.0 / gam  *  ( exp(tlow) - exp(thigh) )  ) ; 
+       return ( 1.0 / gam  *  ( exp(tlow) - exp(thigh) )  ) ;
 }
 
 vector<string> RapidFitPdfExponential::GetPrototypeDataPoint()

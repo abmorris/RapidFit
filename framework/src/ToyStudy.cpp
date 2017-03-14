@@ -99,7 +99,7 @@ void ToyStudy::DoWholeStudy( int OutputLevel )
 
 		TString this_filename = filename;
 		this_filename.Append("_S");
-		this_filename+=studyIndex; 
+		this_filename+=studyIndex;
 
 		//	Have to explicitly call this to request the data be deleted between runs, not normally an issue but causes problems with large (pb) datasets
 		for( unsigned int i=0; i< pdfsAndData.size(); ++i )

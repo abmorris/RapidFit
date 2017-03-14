@@ -1,7 +1,7 @@
 /*!
  * @class BasePDF_Framework
  *
- * @brief This Particular Framework makes use of the 
+ * @brief This Particular Framework makes use of the
  *
  * @author Robert Currie rcurrie@cern.ch
  *

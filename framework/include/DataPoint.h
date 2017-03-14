@@ -149,14 +149,14 @@ class DataPoint
 		 *
 		 * This WILL NOT add an observable to the DataPoint if one does not exist with the given name
 		 *
-		 * @param Name     Name of the New observable we want to add                                                
-		 *                                                 
-		 * @param Value    The Value we want it to take    
-		 *                                                 
-		 * @param Unit     The corresponding Unit          
-		 *                                                 
+		 * @param Name     Name of the New observable we want to add
+		 *
+		 * @param Value    The Value we want it to take
+		 *
+		 * @param Unit     The corresponding Unit
+		 *
 		 * @param trusted  Is this trusted? i.e. Do we know the parameter to already exist in the DataPoint (possibly as a NULL parameter in a default DataPoint)
-		 *                                                 
+		 *
 		 * @param position If this is trusted use this position to save performing a lookup of known DataPoints
 		 *
 		 * @return boolean, true is sucessful, false if not

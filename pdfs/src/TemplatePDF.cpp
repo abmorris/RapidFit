@@ -29,7 +29,7 @@ TemplatePDF::TemplatePDF(PDFConfigurator* configurator) :
 
 //Destructor
 TemplatePDF::~TemplatePDF()
-{ 
+{
 }
 
 //Make the data point and parameter set

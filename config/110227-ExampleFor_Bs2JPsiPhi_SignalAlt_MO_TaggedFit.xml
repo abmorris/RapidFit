@@ -6,7 +6,7 @@
 
     //================================================
     // Formal Paremters to be fitted or fixed
-    
+
 	<ParameterSet>
 
         //Fraction of signal in total sample
@@ -15,7 +15,7 @@
 			<Value>0.80</Value>
 			<Minimum>0.0</Minimum>
 			<Maximum>1.0</Maximum>
-			<Type>Free</Type>           
+			<Type>Free</Type>
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
@@ -25,12 +25,12 @@
 			<Value>0.72</Value>
 			<Minimum>0.0</Minimum>
 			<Maximum>1.0</Maximum>
-			<Type>Free</Type>           
+			<Type>Free</Type>
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
          //..........................................
-        // True Physics Parameters for signal 
+        // True Physics Parameters for signal
 
 		<PhysicsParameter>
 			<Name>gamma</Name>
@@ -43,7 +43,7 @@
 
 		<PhysicsParameter>
 			<Name>deltaGamma</Name>
- 			<Value>0.0 </Value>   
+ 			<Value>0.0 </Value>
 			<Minimum>-1.0</Minimum>
 			<Maximum>1.0</Maximum>
 			<Type>Free</Type>
@@ -79,7 +79,7 @@
 
 		<PhysicsParameter>
 			<Name>delta_para</Name>
-			<Value>3.2</Value>  
+			<Value>3.2</Value>
 			<Minimum>-6.3</Minimum>
 			<Maximum>6.6</Maximum>
 			<Type>Free</Type>
@@ -88,7 +88,7 @@
 
 		<PhysicsParameter>
 			<Name>delta_perp</Name>
-			<Value>-0.17</Value> 
+			<Value>-0.17</Value>
 			<Minimum>-6.3</Minimum>
 			<Maximum>6.3</Maximum>
 			<Type>Free</Type>
@@ -109,7 +109,7 @@
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
-		<PhysicsParameter>              
+		<PhysicsParameter>
 			<Name>deltaM</Name>
 			<Value>17.3</Value>
 			<Type>Free</Type>
@@ -120,13 +120,13 @@
 			<Name>Phi_s</Name>          // Model assumption :Set to zero for untagged fit
             <BlindString>BsGoofy</BlindString>
             <BlindScale>0.0</BlindScale>
-			<Value>0.0</Value>  
+			<Value>0.0</Value>
 			<Type>Free</Type>
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
         // Signal Mass parameters for double Gaussian mass model
-        
+
 		<PhysicsParameter>
 			<Name>f_sig_m1</Name>      // Fraction of first Gaussian
 			<Value>1.0</Value>
@@ -164,25 +164,25 @@
 
         //..................................
         // Detector Parameters
-        
+
         // Mistag calibration
 		<PhysicsParameter>
             <Name>mistagScale</Name>
-			<Value>1.0</Value> 
+			<Value>1.0</Value>
 			<Type>Fixed</Type>
 			<Unit> </Unit>
 		</PhysicsParameter>
-        
+
 		<PhysicsParameter>
             <Name>mistagOffset</Name>
-			<Value>0.0</Value> 
+			<Value>0.0</Value>
 			<Type>Fixed</Type>
 			<Unit> </Unit>
 		</PhysicsParameter>
-        
 
-        //Signal PDF time resolution parameters for double gaussian model. 
-        
+
+        //Signal PDF time resolution parameters for double gaussian model.
+
 		<PhysicsParameter>
             <Name>timeResolution1Fraction</Name>     // This is the fraction of the first Gaussian
 			<Value>0.64</Value>                      //Set to 1 when you want to only use a single time resolution
@@ -203,7 +203,7 @@
 
 		<PhysicsParameter>
             <Name>timeResolution2</Name>
-			<Value>0.0646</Value> 
+			<Value>0.0646</Value>
             <Minimum>-0.00000001</Minimum>
             <Maximum>0.500</Maximum>
 			<Type>Fixed</Type>
@@ -221,7 +221,7 @@
 
 
         // Angular acceptance factors
-        
+
         <PhysicsParameter>
         <Name>angAccI1</Name>
             <Value>0.983695</Value>   //0.978305
@@ -243,7 +243,7 @@
             <Unit>Unitless</Unit>
         </PhysicsParameter>
 
-        <PhysicsParameter>  
+        <PhysicsParameter>
             <Name>angAccI4</Name>
             <Value>-0.000087511</Value>    //-0.0000318417
             <Type>Fixed</Type>
@@ -263,7 +263,7 @@
             <Type>Fixed</Type>
             <Unit>Unitless</Unit>
         </PhysicsParameter>
- 
+
         <PhysicsParameter>
             <Name>angAccI7</Name>
             <Value>1.0</Value>
@@ -291,16 +291,16 @@
             <Type>Fixed</Type>
             <Unit>Unitless</Unit>
         </PhysicsParameter>
-               
-               
- 
-                
-               
+
+
+
+
+
         //............................................
         // Background model
-  
+
         // Long lived lifetime components for double exponential model
-        
+
 		<PhysicsParameter>
 			<Name>f_LL1</Name>          // Fraction of first exponential
 			<Value>0.992</Value>
@@ -329,17 +329,17 @@
 		</PhysicsParameter>
 
         //Exponential background mass model
-        
+
 		<PhysicsParameter>
-			<Name>alphaM_pr</Name>      // exponent 
+			<Name>alphaM_pr</Name>      // exponent
 			<Value>0.00094</Value>
 			<Type>Fixed</Type>
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
-                               
+
 
         //Long lived time resolution components
-        
+
 		<PhysicsParameter>
 			<Name>timeResLL1Frac</Name>
 			<Value>1.0</Value>
@@ -361,7 +361,7 @@
 			<Unit>Unitless</Unit>
 		</PhysicsParameter>
 
-                                                             
+
 	</ParameterSet>
 
 
@@ -373,11 +373,11 @@
 
 	<NumberRepeats>1</NumberRepeats>
 
- 
+
 
     //==========================================
     // Specify the fit
-    
+
     //...................................
     // This applies a constraint on deltaM
 	<ToFit>
@@ -415,18 +415,18 @@
 
 
     //========================================
-    // FIT TO UNBIASED  TAGGED    
-    
+    // FIT TO UNBIASED  TAGGED
+
 	<ToFit>
 
         //...................
         // The PDF
-        
+
         <NormalisedSumPDF>
             <FractionName>SignalFractionUBT</FractionName>
             <ProdPDF>
                 <PDF>
-                    <Name>Bs2JpsiPhi_SignalAlt_MO_v1</Name>  
+                    <Name>Bs2JpsiPhi_SignalAlt_MO_v1</Name>
                 </PDF>
                 <PDF>
                     <Name>Bs2JpsiPhiMassSignal</Name>
@@ -445,17 +445,17 @@
         //....................
         // The dataset
 		<DataSet>
- 
+
 			<Source>File</Source>
-            <FileName>../dataFiles/Pass9_DefaultSample_v4.root</FileName>  
+            <FileName>../dataFiles/Pass9_DefaultSample_v4.root</FileName>
             		<NTuplePath>DecayTree</NTuplePath>    //DecayTree
-            
-			<NumberEvents>20000000</NumberEvents>   
+
+			<NumberEvents>20000000</NumberEvents>
 
 			<PhaseSpaceBoundary>
 				<Observable>
 					<Name>time</Name>
-					<Minimum>0.3</Minimum> 
+					<Minimum>0.3</Minimum>
 					<Maximum>14.0</Maximum>
 					<Unit>ps</Unit>
 				</Observable>
@@ -500,7 +500,7 @@
 					<Value>0.0</Value>
 					<Unit> </Unit>
 				</Observable>
-                
+
 				<Observable>
 					<Name>mass</Name>
 					<Minimum>5200.0</Minimum>
@@ -514,18 +514,18 @@
 
 
     //========================================
-    // FIT TO UNBIASED  UN-TAGGED    
+    // FIT TO UNBIASED  UN-TAGGED
 
 	<ToFit>
 
         //...................
         // The PDF
-        
+
         <NormalisedSumPDF>
             <FractionName>SignalFractionUBU</FractionName>
             <ProdPDF>
                 <PDF>
-                    <Name>Bs2JpsiPhi_SignalAlt_MO_v1</Name>   
+                    <Name>Bs2JpsiPhi_SignalAlt_MO_v1</Name>
                 </PDF>
                 <PDF>
                     <Name>Bs2JpsiPhiMassSignal</Name>
@@ -544,17 +544,17 @@
         //....................
         // The dataset
 		<DataSet>
- 
+
 			<Source>File</Source>
-            <FileName>../dataFiles/Pass9_DefaultSample_v4.root</FileName>  
-            		<NTuplePath>DecayTree</NTuplePath>  
-                                                
-			<NumberEvents>20000000</NumberEvents>   
+            <FileName>../dataFiles/Pass9_DefaultSample_v4.root</FileName>
+            		<NTuplePath>DecayTree</NTuplePath>
+
+			<NumberEvents>20000000</NumberEvents>
 
 			<PhaseSpaceBoundary>
 				<Observable>
 					<Name>time</Name>
-					<Minimum>0.3</Minimum> 
+					<Minimum>0.3</Minimum>
 					<Maximum>14.0</Maximum>
 					<Unit>ps</Unit>
 				</Observable>
@@ -598,7 +598,7 @@
 					<Value>0.0</Value>
 					<Unit> </Unit>
 				</Observable>
-                
+
 				<Observable>
 					<Name>mass</Name>
 					<Minimum>5200.0</Minimum>
@@ -610,39 +610,39 @@
 		</DataSet>
 	</ToFit>
 
-<Output>                                                                                                                                                              
-                                                                                                                                                                      
-        <Scan>                                                                                                                                                        
-                <Name>gamma</Name>                                                                                                                                    
-                <Maximum>1.0</Maximum>                                                                                                                                
-                <Minimum>0.0</Minimum>                                                                                                                                
-                <Points>5</Points>                                                                                                                                    
-        </Scan>                                                                                                                                                       
-                                                                                                                                                                      
-        <Scan>                                                                                                                                                        
-                <Name>deltaGamma</Name>                                                                                                                               
-                <Sigma>5</Sigma>                                                                                                                                      
-                <Points>5</Points>                                                                                                                                    
-        </Scan>                                                                                                                                                       
-                                                                                                                                                                      
-        <2DScan>                                                                                                                                                      
-                                                                                                                                                                      
-                <X_Param>                                                                                                                                             
-                    <Name>Phi_s</Name>                                                                                                                            
-                    <Minimum>0.0</Minimum>                                                                                                                                
-                    <Maximum>6.3</Maximum>                                                                                                                                
-                    <Points>5</Points>                                                                                                                            
-                </X_Param>                                                                                                                                            
-                                                                                                                                                                      
-                <Y_Param>                                                                                                                                             
-                        <Name>deltaGamma</Name>                                                                                                                       
-                        <Minimum>-0.6</Minimum>                                                                                                                                
-                        <Maximum>0.6</Maximum>                                                                                                                                
-                        <Points>5</Points>                                                                                                                            
-                </Y_Param>                                                                                                                                            
-                                                                                                                                                                      
-        </2DScan>                                                                                                                                                     
-                                                                                                                                                                      
+<Output>
+
+        <Scan>
+                <Name>gamma</Name>
+                <Maximum>1.0</Maximum>
+                <Minimum>0.0</Minimum>
+                <Points>5</Points>
+        </Scan>
+
+        <Scan>
+                <Name>deltaGamma</Name>
+                <Sigma>5</Sigma>
+                <Points>5</Points>
+        </Scan>
+
+        <2DScan>
+
+                <X_Param>
+                    <Name>Phi_s</Name>
+                    <Minimum>0.0</Minimum>
+                    <Maximum>6.3</Maximum>
+                    <Points>5</Points>
+                </X_Param>
+
+                <Y_Param>
+                        <Name>deltaGamma</Name>
+                        <Minimum>-0.6</Minimum>
+                        <Maximum>0.6</Maximum>
+                        <Points>5</Points>
+                </Y_Param>
+
+        </2DScan>
+
 </Output>
 
 

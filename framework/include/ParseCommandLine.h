@@ -17,7 +17,7 @@ class ParseCommandLine
 	public:
 	/*!
 	 * @brief This is a static method intended to contain all of the code to parse the command line options
-	 * 
+	 *
 	 */
 	static int ParseThisCommandLine( RapidFitConfiguration& config, vector<string> input );
 

@@ -1,7 +1,7 @@
 // $Id: CrystalBall.h,v 1.1 2009/11/10 10:35:49 gcowan Exp $
 /** @class CrystalBall CrystalBall.h
  *
- *  RapidFit PDF 
+ *  RapidFit PDF
  *
  *  @author Pete Clarke
  *  @date 2011-07-30
@@ -32,7 +32,7 @@ class CrystalBall : public BasePDF
 		// Physics parameters
 		ObservableRef m0Name;	// fraction
 		ObservableRef sigmaName;	// width 1
-		ObservableRef alphaName;	// width 2 
+		ObservableRef alphaName;	// width 2
 		ObservableRef nName;	// Bs mass
 
 		// Observables

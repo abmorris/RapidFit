@@ -47,7 +47,7 @@ class StatisticsFunctions
 		/*!
 		 * @brief This calculates the 'Optimal' bin number according to D. Scott's method, published 1979
 		 *
-		 * @param inputList	This is the vector of elements to calculate the 
+		 * @param inputList	This is the vector of elements to calculate the
 		 *
 		 * @return Returns the optimal bin number assuming the input values are doubles
 		 */

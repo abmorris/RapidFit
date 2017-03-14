@@ -9,7 +9,7 @@ class BoxPDF : public BasePDF
 	public:
 		BoxPDF( PDFConfigurator* );
 		~BoxPDF();
-		
+
 		void makePrototypes();
 
 		double Evaluate( DataPoint* );

@@ -63,12 +63,12 @@ Below is a configuration for the JpsiPhi analysis
 
 X_par="Phi_s"
 Y_par="deltaGamma"
- 
+
 X_min=-1.
 X_max=1.
 Y_min=0.
 Y_max=0.25
-  
+
 resolution=100
 sqrt_jobs_per_core=2
 

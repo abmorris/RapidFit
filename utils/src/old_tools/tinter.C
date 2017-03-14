@@ -340,7 +340,7 @@ int main ( int argc, char* argv[] )
 	set_style();
 
 	//  Take the first argument open that file
-	TString Input_Filename ( argv[1] ); 
+	TString Input_Filename ( argv[1] );
 	TFile *input_pull = new TFile ( Input_Filename,"READ" );
 
 	TString outputdir = True_Filename( string( argv[1] ) );
@@ -460,7 +460,7 @@ int main ( int argc, char* argv[] )
 
 			if( true )//GetOptimalBins( local_histogram ) != 0 )
 			{
-				//  
+				//
 				TString format_1;
 				tabs_TStr ( tree_name, 3, &format_1 );
 				TString format_2;
@@ -476,9 +476,9 @@ int main ( int argc, char* argv[] )
 
 
 				//  The gamma distribution coded up in root is the more general form of that found on wikipedia (there's a surprise)
-				//  
+				//
 				//  Using the root definition:					wiki:
-				//  				gamma = mean^2 / sigma^2		k     = mu^2 / sigma^2	
+				//  				gamma = mean^2 / sigma^2		k     = mu^2 / sigma^2
 				//  				beta  = sigma^2 / mean			theta = sigma^2 / mu
 				//
 				//  		For:		mu == 0				The 2 conditions above are ONLY valid for this condition

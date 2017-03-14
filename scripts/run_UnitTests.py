@@ -115,7 +115,7 @@ while True:
 		cFit_Log.info("%s", cFit_line)
 	if sFit_line and not exitcode_sFit:
 		sFit_line = sFit_line[:-1]
-		sFit_Log.info("%s", sFit_line)	
+		sFit_Log.info("%s", sFit_line)
 
 
 

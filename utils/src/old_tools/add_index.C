@@ -44,7 +44,7 @@ int main( int argc, char* argv[] )
 	for( unsigned int i=0; i< input_trees.size(); ++i )
 	{
 		cout << "Processing:\t" << input_trees[i].second ;
-		
+
 		//	goto the directory containing the TTree object
 		gDirectory->cd( input_trees[i].first.c_str() );
 

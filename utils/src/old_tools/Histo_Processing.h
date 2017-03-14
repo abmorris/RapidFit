@@ -88,7 +88,7 @@ vector<vector<Double_t> > Plotter_Data( TTree* input_tree, TString Draw_String, 
 //	Create a ttree from a vector of vectors
 TTree* vecvec2TTree( vector<vector<Float_t> > input_vec );
 
-//	
+//
 TGraph2D* Plot_From_Cut_lo( TTree* wanted_tree, TString Draw_String, TString Cut_String, TRandom3* random, TString param1, TString param2 );
 
 //	Algorithm for comparing a 2D point and returning a boolean comparison

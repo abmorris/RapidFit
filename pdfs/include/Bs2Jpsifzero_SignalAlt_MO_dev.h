@@ -1,5 +1,5 @@
 // $Id: Bs2Jpsifzero_SignalAlt_MO_dev.h,v 1.1 2009/12/06  Pete Clarke Exp $
-/** @class Bs2Jpsifzero_SignalAlt_MO_dev 
+/** @class Bs2Jpsifzero_SignalAlt_MO_dev
  *
  *  Bs2Jpsifzero_SignalAlt series with mistag as observable
  *
@@ -38,7 +38,7 @@ class Bs2Jpsifzero_SignalAlt_MO_dev : public BasePDF,  public Bs2Jpsifzero_Signa
 	private:
 
 		void MakePrototypes();
-		
+
 };
 
 #endif

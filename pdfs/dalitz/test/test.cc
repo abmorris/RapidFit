@@ -38,9 +38,9 @@ int main(int argc, char** argv)
   DPTotalAmplitude calculator;
 
   // Open file with phase space decays and get tree from it
-  TFile* input=TFile::Open("../PhaseSpacePreparation/phsp_B0JpsiKspin1.root"); 
-  TTree* inputTree=(TTree*)input->Get("tree"); 
-  dataStruct infoToStore; 
+  TFile* input=TFile::Open("../PhaseSpacePreparation/phsp_B0JpsiKspin1.root");
+  TTree* inputTree=(TTree*)input->Get("tree");
+  dataStruct infoToStore;
   inputTree->SetBranchAddress("angles", (void*)&infoToStore);
 
   // Output tree
@@ -62,5 +62,5 @@ int main(int argc, char** argv)
 
   tree->Write("tree");
   output->Close();
-  
+
 }

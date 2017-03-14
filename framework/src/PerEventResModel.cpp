@@ -21,7 +21,7 @@ using namespace::std;
 RESMODEL_CREATOR( PerEventResModel );
 
 //............................................
-// Constructor 
+// Constructor
 PerEventResModel::PerEventResModel( PDFConfigurator* configurator, bool quiet ) :
 	resScaleName		( configurator->getName("timeResolutionScale") ),
 	eventResolutionName	( configurator->getName("eventResolution") ),

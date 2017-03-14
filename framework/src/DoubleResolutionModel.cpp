@@ -20,9 +20,9 @@
 using namespace::std;
 
 RESMODEL_CREATOR( DoubleResolutionModel );
- 
+
 //............................................
-// Constructor 
+// Constructor
 DoubleResolutionModel::DoubleResolutionModel( PDFConfigurator* configurator, bool quiet ) :
 	resScaleName		( configurator->getName( "timeResolutionScale" ) ),
 	resScale2Name            ( configurator->getName( "timeResolutionScale2" ) ),

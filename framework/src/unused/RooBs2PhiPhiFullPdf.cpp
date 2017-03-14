@@ -7,42 +7,42 @@
 	@date 2009-10-02
 */
 
- /***************************************************************************** 
-  * Project: RooFit                                                           * 
-  *                                                                           * 
-  * Copyright (c) 2000-2005, Regents of the University of California          * 
-  *                          and Stanford University. All rights reserved.    * 
-  *                                                                           * 
-  * Redistribution and use in source and binary forms,                        * 
-  * with or without modification, are permitted according to the terms        * 
-  * listed in LICENSE (http://roofit.sourceforge.net/license.txt)             * 
-  *****************************************************************************/ 
+ /*****************************************************************************
+  * Project: RooFit                                                           *
+  *                                                                           *
+  * Copyright (c) 2000-2005, Regents of the University of California          *
+  *                          and Stanford University. All rights reserved.    *
+  *                                                                           *
+  * Redistribution and use in source and binary forms,                        *
+  * with or without modification, are permitted according to the terms        *
+  * listed in LICENSE (http://roofit.sourceforge.net/license.txt)             *
+  *****************************************************************************/
 
- // -- CLASS DESCRIPTION [PDF] -- 
- // Your description goes here... 
+ // -- CLASS DESCRIPTION [PDF] --
+ // Your description goes here...
 //Analytic integrals removed...
-#include <iostream> 
+#include <iostream>
 
-#include "RooBs2PhiPhiFullPdf.h" 
-#include "RooAbsReal.h" 
+#include "RooBs2PhiPhiFullPdf.h"
+#include "RooAbsReal.h"
 
 #include "TF1.h"
 #include "TRandom3.h"
 #include "TRandom.h"
 
- ClassImp(RooBs2PhiPhiFullPdf) 
+ ClassImp(RooBs2PhiPhiFullPdf)
 
    //what to do about asymmetry in untagged events?
 
 
- RooBs2PhiPhiFullPdf::RooBs2PhiPhiFullPdf(const char *name, const char *title, 
+ RooBs2PhiPhiFullPdf::RooBs2PhiPhiFullPdf(const char *name, const char *title,
                                           RooAbsReal& _theta1,
                                           RooAbsReal& _theta2,
                                           RooAbsReal& _kai,
                                           RooAbsReal& _time,
                                           //	RooRealVar& _tag,
                                           RooAbsCategory& _tag,
-                                          //Int_t tag, 
+                                          //Int_t tag,
                                           RooAbsReal& _Rt,
                                           RooAbsReal& _Rp,
                                           RooAbsReal& _sp1,
@@ -56,14 +56,14 @@
                                           RooAbsReal& _wtag,
                                           RooAbsReal& _dwtag,//define dwtag as [wtag(Bbar) - wtag(B)]/2
                                           RooAbsReal& _aprod,
-                                          RooAbsReal& _sigtime,//add additional time resolutions 
+                                          RooAbsReal& _sigtime,//add additional time resolutions
                                           RooAbsReal& _sigtime2,
                                           RooAbsReal& _sigtheta,
                                           RooAbsReal& _sigphi,
                                           RooAbsReal& _biastime,//and generate a random number to choose
                                           RooAbsReal& _accpara1,//which gaussian is used - add for angles
                                           RooAbsReal& _accpara2) ://also
-   RooAbsPdf(name,title), 
+   RooAbsPdf(name,title),
    theta1("theta1","theta1",this,_theta1),
    theta2("theta2","theta2",this,_theta2),
    kai("kai","kai",this,_kai),
@@ -89,12 +89,12 @@
    biastime("biastime","biastime",this,_biastime),
    accpara1("accpara1","accpara1",this,_accpara1),
    accpara2("accpara2","accpara2",this,_accpara2)
- { 
- } 
+ {
+ }
 
 
- RooBs2PhiPhiFullPdf::RooBs2PhiPhiFullPdf(const RooBs2PhiPhiFullPdf& other, const char* name) :  
-   RooAbsPdf(other,name), 
+ RooBs2PhiPhiFullPdf::RooBs2PhiPhiFullPdf(const RooBs2PhiPhiFullPdf& other, const char* name) :
+   RooAbsPdf(other,name),
    theta1("theta1",this,other.theta1),
    theta2("theta2",this,other.theta2),
    kai("kai",this,other.kai),
@@ -120,15 +120,15 @@
    biastime("biastime",this,other.biastime),
    accpara1("accpara1",this,other.accpara1),
    accpara2("accpara2",this,other.accpara2)
- { 
- } 
+ {
+ }
 
 
 Double_t RooBs2PhiPhiFullPdf::wtageff() const
 {
   Double_t v = tag;
   if(tag==0) v = 0.0;
-  else v = wtag - (dwtag*tag);  
+  else v = wtag - (dwtag*tag);
   return v;
 }
 
@@ -136,14 +136,14 @@ Double_t RooBs2PhiPhiFullPdf::tageff() const
 {
   Double_t v = efftag;
   if(tag==0) v = aprod - 2*defftag;
-  else v = tag; 
+  else v = tag;
   return v;
 }
 
 
-Double_t RooBs2PhiPhiFullPdf::evaluate() const 
+Double_t RooBs2PhiPhiFullPdf::evaluate() const
 {
-  
+
 
    Double_t v = A1()*ang1()*t1()*eff_t()+
                 A2()*ang2()*t2()*eff_t()+
@@ -153,12 +153,12 @@ Double_t RooBs2PhiPhiFullPdf::evaluate() const
                 A6()*ang6()*t6()*eff_t();
    v *= frac_flav();
    return v;
- } 
+ }
 
  Double_t RooBs2PhiPhiFullPdf::eff_t() const
  {
    if (time<0) return 0;
-   else if ((accpara1>1)&&(accpara2>1)) 
+   else if ((accpara1>1)&&(accpara2>1))
      return  accpara1*time*time*time/(1 + accpara2*time*time*time);
    else return accpara1*time*time*time/(accpara2+time*time*time);
 
@@ -250,7 +250,7 @@ Double_t RooBs2PhiPhiFullPdf::evaluate() const
 
  Double_t RooBs2PhiPhiFullPdf::ang2_Inte() const
  {
-       return 3.14159*32./9.; 
+       return 3.14159*32./9.;
    //return 2*3.14159*16./9.;
  }
 
@@ -280,7 +280,7 @@ Double_t RooBs2PhiPhiFullPdf::evaluate() const
       if (matchArgs(allVars, analVars, theta1,theta2,kai)){
    return 1;
    }
-      /*    
+      /*
      if (matchArgs(allVars, analVars, theta2,kai)){
       cout<<"Using Analytic integral 2"<<endl;
       return 2;
@@ -291,7 +291,7 @@ Double_t RooBs2PhiPhiFullPdf::evaluate() const
       }
       if (matchArgs(allVars, analVars, theta1,theta2)){
       cout<<"Using Analytic Integral 4"<<endl;
-      return 4; 
+      return 4;
       }
       */
       else return 0;
@@ -311,7 +311,7 @@ Double_t RooBs2PhiPhiFullPdf::evaluate() const
        A6()*ang6_Inte()*t6()*eff_t();
      y *= frac_flav();
    }
-   
+
    if(code==2){
      //another integral with anaytic parts for theta2, kai and time
      cout<<"Using Analytic Integral 2"<<endl;
@@ -403,7 +403,7 @@ Double_t RooBs2PhiPhiFullPdf::t4() const
    // CWERF for z = x + i y with large negative y
 
    static Double_t rootpi= sqrt(atan2(0.,-1.));
-   RooComplex z(swt*c,u+c);  
+   RooComplex z(swt*c,u+c);
    RooComplex zc(u+c,-swt*c);
    RooComplex zsq= z*z;
    RooComplex v= -zsq - u*u;
@@ -412,12 +412,12 @@ Double_t RooBs2PhiPhiFullPdf::t4() const
    //   return v.exp()*(-zsq.exp()/(zc*rootpi) + 1);
  }
 
- Double_t RooBs2PhiPhiFullPdf::ExpH() const 
+ Double_t RooBs2PhiPhiFullPdf::ExpH() const
  {
    Double_t v=0;
-   if(sigtime>0) {     
+   if(sigtime>0) {
      Double_t x = Gamma_H*(time-biastime) ;
-     Double_t c = Gamma_H*sigtime/sqrt(2.); 
+     Double_t c = Gamma_H*sigtime/sqrt(2.);
      Double_t u = (time-biastime)/(sqrt(2.)*sigtime);
      v= exp(c*c-x) * RooMath::erfc(c-u);
      v /=2 ;
@@ -438,9 +438,9 @@ Double_t RooBs2PhiPhiFullPdf::t4() const
    }
 
   Double_t v1=0;
-   if(sigtime>0) {     
+   if(sigtime>0) {
      Double_t x = Gamma_H*(time-biastime) ;
-     Double_t c = Gamma_H*sigtime2/sqrt(2.); 
+     Double_t c = Gamma_H*sigtime2/sqrt(2.);
      Double_t u = (time-biastime)/(sqrt(2.)*sigtime2);
      v1= exp(c*c-x) * RooMath::erfc(c-u);
      v1 /=2 ;
@@ -486,7 +486,7 @@ Double_t RooBs2PhiPhiFullPdf::t4() const
    }
 
    //   return v;
-   return (0.833*v + 0.167*v1); 
+   return (0.833*v + 0.167*v1);
  }
 
 
@@ -530,7 +530,7 @@ Double_t RooBs2PhiPhiFullPdf::t4() const
      v1 /= 4;
    }
 
-   return (0.833*v + 0.167*v1); 
+   return (0.833*v + 0.167*v1);
    //   return v;
  }
 
@@ -574,7 +574,7 @@ Double_t RooBs2PhiPhiFullPdf::ExpCos() const
      v1 += evalCerfRe(-wt,-u,c) ;
      v1 /= 4;
    }
-    return (0.833*v + 0.167*v1); 
+    return (0.833*v + 0.167*v1);
    //  return v;
  }
 
@@ -674,7 +674,7 @@ Double_t RooBs2PhiPhiFullPdf::SinTheta1() const
     }
     v1/=n;
   }
-  
+
   return (0.237*v1 + 0.763*v);
   //  return v;
 }
@@ -750,8 +750,8 @@ Double_t RooBs2PhiPhiFullPdf::SinTheta2() const
     }
     v1/=n;
   }
- 
-  return (0.237*v1 + 0.763*v); 
+
+  return (0.237*v1 + 0.763*v);
   //return v;
 }
 
@@ -788,8 +788,8 @@ Double_t RooBs2PhiPhiFullPdf::Sin2Theta1() const
     }
     v1/=n;
   }
-  
-  return (0.237*v1 + 0.763*v); 
+
+  return (0.237*v1 + 0.763*v);
   //  return v;
 }
 
@@ -828,7 +828,7 @@ Double_t RooBs2PhiPhiFullPdf::Sin2Theta2() const
     v1/=n;
   }
 
-  return (0.237*v1 + 0.763*v); 
+  return (0.237*v1 + 0.763*v);
   //  return v;
 }
 
@@ -866,7 +866,7 @@ Double_t RooBs2PhiPhiFullPdf::CosPhi() const
   v1/=n;
   }
 
-  return (0.439*v1 + 0.561*v); 
+  return (0.439*v1 + 0.561*v);
   //  return v;
 }
 
@@ -886,7 +886,7 @@ Double_t RooBs2PhiPhiFullPdf::SinPhi() const
     v+=sin(xi)*reso_phi(kai-xi,sigphi);
   }
   v/=n;
-  }  
+  }
 
  Double_t v1=0;
    if(sigphi==0) v=sin(kai);
@@ -902,9 +902,9 @@ Double_t RooBs2PhiPhiFullPdf::SinPhi() const
     v1+=sin(xi)*reso_phi(kai-xi,0.0625);
   }
   v1/=n;
-  }  
-  
-   return (0.439*v1 + 0.561*v); 
+  }
+
+   return (0.439*v1 + 0.561*v);
    //return v;
 }
 
@@ -924,8 +924,8 @@ Double_t RooBs2PhiPhiFullPdf::Cos2Phi() const
       v+=cos(2*xi)*reso_phi(kai-xi,sigphi);
     }
     v/=n;
-  } 
-  
+  }
+
  Double_t v1=0;
   if(sigphi==0) v=cos(2*kai);
   else{
@@ -940,8 +940,8 @@ Double_t RooBs2PhiPhiFullPdf::Cos2Phi() const
       v1+=cos(2*xi)*reso_phi(kai-xi,0.0625);
     }
     v1/=n;
-  } 
-  return (0.439*v1 + 0.561*v); 
+  }
+  return (0.439*v1 + 0.561*v);
   //return v;
 }
 Double_t RooBs2PhiPhiFullPdf::Sin2Phi() const
@@ -960,8 +960,8 @@ Double_t RooBs2PhiPhiFullPdf::Sin2Phi() const
       v+=sin(2*xi)*reso_phi(kai-xi,sigphi);
     }
     v/=n;
-  } 
- 
+  }
+
   Double_t v1=0;
   if(sigphi==0) v=sin(2*kai);
   else{
@@ -976,8 +976,8 @@ Double_t RooBs2PhiPhiFullPdf::Sin2Phi() const
       v1+=sin(2*xi)*reso_phi(kai-xi,0.0625);
     }
     v1/=n;
-  } 
-  
+  }
+
   return (0.439*v1 + 0.561*v);
   //return v;
 }

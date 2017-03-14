@@ -1,5 +1,5 @@
 
-[1mRooFit v3.55 -- Developed by Wouter Verkerke and David Kirkby[0m 
+[1mRooFit v3.55 -- Developed by Wouter Verkerke and David Kirkby[0m
                 Copyright (C) 2000-2012 NIKHEF, University of California & Stanford University
                 All rights reserved, please read http://roofit.sourceforge.net/license.txt
 
@@ -13,8 +13,8 @@ Built Against ROOT:	"5.34/05"
 Starting time:		Fri Sep 20 15:04:56 2013
 
 
-Current Runtime Arguments: 
-../../../bin/fitting -f final_1fb_XML.xml --SendOutput 1fb_JpsiKK_Output 
+Current Runtime Arguments:
+../../../bin/fitting -f final_1fb_XML.xml --SendOutput 1fb_JpsiKK_Output
 
 
 
@@ -47,7 +47,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -64,7 +64,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -85,7 +85,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -102,7 +102,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -123,7 +123,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -140,7 +140,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -161,7 +161,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -178,7 +178,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -199,7 +199,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -216,7 +216,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -237,7 +237,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -254,7 +254,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -275,7 +275,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -292,7 +292,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -313,7 +313,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -330,7 +330,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -351,7 +351,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -368,7 +368,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -389,7 +389,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -406,7 +406,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -427,7 +427,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -444,7 +444,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -465,7 +465,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -482,7 +482,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -503,7 +503,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -520,7 +520,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -541,7 +541,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -558,7 +558,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -579,7 +579,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -596,7 +596,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -617,7 +617,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -634,7 +634,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -655,7 +655,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -672,7 +672,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -693,7 +693,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -710,7 +710,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -731,7 +731,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -748,7 +748,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -769,7 +769,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -786,7 +786,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -807,7 +807,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -824,7 +824,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -845,7 +845,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -862,7 +862,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -883,7 +883,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -900,7 +900,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -921,7 +921,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -938,7 +938,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1DiMuon_Hlt2DiMuonDetached_Reweighted.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -959,7 +959,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -976,7 +976,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -997,7 +997,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1014,7 +1014,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1035,7 +1035,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1052,7 +1052,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1073,7 +1073,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1090,7 +1090,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1111,7 +1111,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1128,7 +1128,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1149,7 +1149,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1166,7 +1166,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1187,7 +1187,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1204,7 +1204,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1225,7 +1225,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1242,7 +1242,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1263,7 +1263,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1280,7 +1280,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1301,7 +1301,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1318,7 +1318,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1339,7 +1339,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1356,7 +1356,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1377,7 +1377,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1394,7 +1394,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1415,7 +1415,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1432,7 +1432,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1453,7 +1453,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1470,7 +1470,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1491,7 +1491,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1508,7 +1508,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1529,7 +1529,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1546,7 +1546,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1567,7 +1567,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1584,7 +1584,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1605,7 +1605,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1622,7 +1622,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1643,7 +1643,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1660,7 +1660,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1681,7 +1681,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1698,7 +1698,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1719,7 +1719,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1736,7 +1736,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1757,7 +1757,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1774,7 +1774,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1795,7 +1795,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1812,7 +1812,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 ====================================================================================================================
 PDFConfigurator: Config Parameters Passed to CommonPDF
@@ -1833,7 +1833,7 @@ PDFConfigurator: Additional Options Passed to this PDF
  PDFConfigurator::Param   [ UseTimeAcceptance : True ]
  PDFConfigurator::Param   [ UseEventResolution : True ]
  PDFConfigurator::Param   [ PlotComponents : True ]
-Constructing PDF: Bs2JpsiPhi_Signal_v6 
+Constructing PDF: Bs2JpsiPhi_Signal_v6
 Bs2JpsiPhi_Signal_v6:: Constructing angAcc using file: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 Looking For: 2011-1fbPaper/2011-AngularAcceptance-1fbPaper-UandB-30-20120706.root
 RAPIDFITROOT defined as: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../..
@@ -1850,7 +1850,7 @@ Opening: /afs/cern.ch/user/r/rcurrie/trunk/unittest/1fb_results/JpsiKK/../../../
 Time Acc Slices: 40
 Sliced Acceptance is using sorted horizontal slices
 Bs2JpsiPhi_Signal_v6:: Constructing timeAcc: using file: 2011-1fbPaper/Bs_HltPropertimeAcceptance_PhiMassWindow30MeV_NextBestPVCut_Data_40bins_Hlt1TrackAndTrackMuonExcl_Hlt2DiMuonDetached.txt
-PerEventResModel:: Instance created 
+PerEventResModel:: Instance created
 Bs2JpsiPhi_Signal_v6
 
 
@@ -2412,14 +2412,14 @@ Starting Fit!
  **    5 **MIGRAD       1e+05      0.0001
  **********
 
-[#1] INFO:Eval -- 
+[#1] INFO:Eval --
                        Writing table to cache file /tmp/RooMath_CERFcache_R0800_I1000_54830.dat
 Call: 1     NLL: 113277.37 minNLL: 0 EDM: 0.5   Status: 0                    Call: 2     NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 3     NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 4     NLL: 113277.3729 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 5     NLL: 113277.373 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 6     NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 7     NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 8     NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 9     NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 10    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 11    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 12    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 13    NLL: 113277.3702 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 14    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 15    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 16    NLL: 113277.3704 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 17    NLL: 113277.3705 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 18    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 19    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 20    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 21    NLL: 113277.3703 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 22    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 23    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 24    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 25    NLL: 113277.3702 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 26    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 27    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 28    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 29    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 30    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 31    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 32    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 33    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 34    NLL: 113277.3707 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 35    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 36    NLL: 113277.3999 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 37    NLL: 113277.3941 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 38    NLL: 113277.3702 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 39    NLL: 113277.3702 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 40    NLL: 113277.3885 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 41    NLL: 113277.3885 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 42    NLL: 113277.371 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 43    NLL: 113277.3727 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 44    NLL: 113277.3938 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 45    NLL: 113277.4003 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 46    NLL: 113277.3724 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 47    NLL: 113277.3728 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 48    NLL: 113277.3966 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 49    NLL: 113277.3977 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 50    NLL: 113277.3929 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 51    NLL: 113277.3934 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 52    NLL: 113277.4871 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 53    NLL: 113277.487 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 54    NLL: 113277.397 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 55    NLL: 113277.397 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 56    NLL: 113277.3699 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 57    NLL: 113277.3709 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 58    NLL: 113277.393 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 59    NLL: 113277.401 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 60    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 61    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 62    NLL: 113277.3754 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 63    NLL: 113277.3754 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 64    NLL: 113277.3751 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 65    NLL: 113277.3753 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 66    NLL: 113277.3969 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 67    NLL: 113277.3972 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 68    NLL: 113277.424 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 69    NLL: 113277.4241 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 70    NLL: 113277.3725 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 71    NLL: 113277.372 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 72    NLL: 113277.3973 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 73    NLL: 113277.3976 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 74    NLL: 113277.4543 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 75    NLL: 113277.4545 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 76    NLL: 113277.397 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 77    NLL: 113277.3971 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 78    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 79    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 80    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 81    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 82    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 83    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 84    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 85    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 86    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 87    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 88    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 89    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 90    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 91    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 92    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 93    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 94    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 95    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 96    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 97    NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 98    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 99    NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 100   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 101   NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 102   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 103   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 104   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 105   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 106   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 107   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 108   NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 109   NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 110   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 111   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 112   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 113   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 114   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 115   NLL: 113277.37 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 116   NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 117   NLL: 113277.3701 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 118   NLL: 113277.3693 minNLL: 113277.37 EDM: 0.5   Status: 0                    Call: 119   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 120   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 121   NLL: 113277.3714 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 122   NLL: 113277.3713 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 123   NLL: 113277.3806 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 124   NLL: 113277.38 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 125   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 126   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 127   NLL: 113277.3816 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 128   NLL: 113277.382 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 129   NLL: 113277.3793 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 130   NLL: 113277.3786 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 131   NLL: 113277.3694 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 132   NLL: 113277.3695 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 133   NLL: 113277.3699 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 134   NLL: 113277.3698 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 135   NLL: 113277.3958 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 136   NLL: 113277.3968 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 137   NLL: 113277.396 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 138   NLL: 113277.3966 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 139   NLL: 113277.3959 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 140   NLL: 113277.3968 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 141   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 142   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 143   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 144   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 145   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 146   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 147   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 148   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 149   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 150   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 151   NLL: 113277.3968 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 152   NLL: 113277.3959 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 153   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 154   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 155   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 156   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 157   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 158   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 159   NLL: 113277.3695 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 160   NLL: 113277.3696 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 161   NLL: 113277.3736 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 162   NLL: 113277.3735 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 163   NLL: 113277.3709 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 164   NLL: 113277.3712 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 165   NLL: 113277.3722 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 166   NLL: 113277.372 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 167   NLL: 113277.3705 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 168   NLL: 113277.3706 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 169   NLL: 113277.3747 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 170   NLL: 113277.3743 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 171   NLL: 113277.3695 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 172   NLL: 113277.3695 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 173   NLL: 113277.3759 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 174   NLL: 113277.3759 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 175   NLL: 113277.3694 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 176   NLL: 113277.3694 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 177   NLL: 113277.376 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 178   NLL: 113277.3756 minNLL: 113277.3693 EDM: 0.5   Status: 0                    Call: 179   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 180   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 181   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 182   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 183   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 184   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 185   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 186   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 187   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 188   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 189   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 190   NLL: 113277.398 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 191   NLL: 113277.3948 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 192   NLL: 113277.3956 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 193   NLL: 113277.3969 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 194   NLL: 113277.3752 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 195   NLL: 113277.3754 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 196   NLL: 113277.3915 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 197   NLL: 113277.4027 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 198   NLL: 113277.3967 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 199   NLL: 113277.3959 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 200   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 201   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 202   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 203   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 204   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 205   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 206   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 207   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 208   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 209   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 210   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 211   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 212   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 213   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 214   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 215   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 216   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 217   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 218   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 219   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 220   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 221   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 222   NLL: 113277.3851 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 223   NLL: 113277.3853 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 224   NLL: 113277.3956 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 225   NLL: 113277.3971 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 226   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 227   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 228   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 229   NLL: 113277.3966 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 230   NLL: 113277.3968 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 231   NLL: 113277.3958 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 232   NLL: 113277.3966 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 233   NLL: 113277.396 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 234   NLL: 113277.3853 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 235   NLL: 113277.385 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 236   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 237   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 238   NLL: 113277.3747 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 239   NLL: 113277.3748 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 240   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 241   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000176 Status: 0                    Call: 242   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 243   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 244   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 245   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 246   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 247   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 248   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 249   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 250   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 251   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 252   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                     MACHINE ACCURACY LIMITS FURTHER IMPROVEMENT.
  MIGRAD MINIMIZATION HAS CONVERGED.
  FCN=113277 FROM MIGRAD    STATUS=CONVERGED     251 CALLS         252 TOTAL
                      EDM=0.00096411    STRATEGY= 0  ERROR MATRIX UNCERTAINTY  29.8 per cent
-  EXT PARAMETER                APPROXIMATE        STEP         FIRST   
-  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+  EXT PARAMETER                APPROXIMATE        STEP         FIRST
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE
    1  gamma        6.71392e-01   4.31030e-03   0.00000e+00  -7.85987e-02
    2  deltaGamma   1.00005e-01   1.03632e-02  -0.00000e+00   1.99018e-03
    3  Aperp_sq     2.48672e-01   5.60539e-03  -0.00000e+00   3.35616e-02
@@ -2459,9 +2459,9 @@ Final NLL: 113277.369298131		Status: 1		Fri Sep 20 15:11:42 2013
  **    6 **HESSE       1e+05      0.0001
  **********
 Call: 253   NLL: 113277.3693 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 254   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 255   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 256   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 257   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 258   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 259   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 260   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 261   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 262   NLL: 113277.398 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 263   NLL: 113277.3948 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 264   NLL: 113277.3956 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 265   NLL: 113277.3969 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 266   NLL: 113277.3752 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 267   NLL: 113277.3754 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 268   NLL: 113277.3915 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 269   NLL: 113277.4027 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 270   NLL: 113277.3967 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 271   NLL: 113277.3959 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 272   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 273   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 274   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 275   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 276   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 277   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 278   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 279   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 280   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 281   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 282   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 283   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 284   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 285   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 286   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 287   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 288   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 289   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 290   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 291   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 292   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 293   NLL: 113277.3963 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 294   NLL: 113277.3851 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 295   NLL: 113277.3853 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 296   NLL: 113277.3956 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 297   NLL: 113277.3971 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 298   NLL: 113277.3964 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 299   NLL: 113277.3962 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 300   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 301   NLL: 113277.3966 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 302   NLL: 113277.3968 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 303   NLL: 113277.3958 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 304   NLL: 113277.3966 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 305   NLL: 113277.396 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 306   NLL: 113277.3853 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 307   NLL: 113277.385 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 308   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 309   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 310   NLL: 113277.3747 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 311   NLL: 113277.3748 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 312   NLL: 113277.3965 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 313   NLL: 113277.3961 minNLL: 113277.3693 EDM: 0.000964 Status: 1                    Call: 314   NLL: 113277.4326 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 315   NLL: 113277.4157 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 316   NLL: 113277.4498 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 317   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 318   NLL: 113277.4037 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 319   NLL: 113277.4387 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 320   NLL: 113277.4249 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 321   NLL: 113277.4345 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 322   NLL: 113277.4463 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 323   NLL: 113277.4327 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 324   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 325   NLL: 113277.4218 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 326   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 327   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 328   NLL: 113277.4064 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 329   NLL: 113277.4016 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 330   NLL: 113277.4042 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 331   NLL: 113277.4031 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 332   NLL: 113277.4021 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 333   NLL: 113277.4041 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 334   NLL: 113277.4013 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 335   NLL: 113277.4185 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 336   NLL: 113277.4189 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 337   NLL: 113277.4195 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 338   NLL: 113277.4186 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 339   NLL: 113277.4216 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 340   NLL: 113277.4273 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 341   NLL: 113277.4019 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 342   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 343   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 344   NLL: 113277.4241 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 345   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 346   NLL: 113277.4361 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 347   NLL: 113277.391 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 348   NLL: 113277.4025 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 349   NLL: 113277.4164 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 350   NLL: 113277.4214 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 351   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 352   NLL: 113277.4209 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 353   NLL: 113277.4246 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 354   NLL: 113277.4298 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 355   NLL: 113277.4103 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 356   NLL: 113277.4023 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 357   NLL: 113277.417 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 358   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 359   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 360   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 361   NLL: 113277.4243 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 362   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 363   NLL: 113277.4208 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 364   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 365   NLL: 113277.4019 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 366   NLL: 113277.4195 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 367   NLL: 113277.4272 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 368   NLL: 113277.421 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 369   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 370   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 371   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 372   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 373   NLL: 113277.4248 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 374   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 375   NLL: 113277.4022 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 376   NLL: 113277.4184 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 377   NLL: 113277.423 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 378   NLL: 113277.424 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 379   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 380   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 381   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 382   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 383   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 384   NLL: 113277.4251 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 385   NLL: 113277.4249 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 386   NLL: 113277.4021 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 387   NLL: 113277.4199 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 388   NLL: 113277.4222 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 389   NLL: 113277.4218 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 390   NLL: 113277.4217 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 391   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 392   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 393   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 394   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 395   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 396   NLL: 113277.4249 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 397   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 398   NLL: 113277.4022 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 399   NLL: 113277.4184 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 400   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 401   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 402   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 403   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 404   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 405   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 406   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 407   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 408   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 409   NLL: 113277.4261 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 410   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 411   NLL: 113277.4025 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 412   NLL: 113277.4192 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 413   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 414   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 415   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 416   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 417   NLL: 113277.4246 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 418   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 419   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 420   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 421   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 422   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 423   NLL: 113277.4251 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 424   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 425   NLL: 113277.4022 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 426   NLL: 113277.4186 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 427   NLL: 113277.4242 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 428   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 429   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 430   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 431   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 432   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 433   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 434   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 435   NLL: 113277.423 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 436   NLL: 113277.423 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 437   NLL: 113277.4228 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 438   NLL: 113277.4253 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 439   NLL: 113277.4243 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 440   NLL: 113277.4016 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 441   NLL: 113277.4175 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 442   NLL: 113277.4217 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 443   NLL: 113277.4247 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 444   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 445   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 446   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 447   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 448   NLL: 113277.4246 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 449   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 450   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 451   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 452   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 453   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 454   NLL: 113277.4249 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 455   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 456   NLL: 113277.4022 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 457   NLL: 113277.4184 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 458   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 459   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 460   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 461   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 462   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 463   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 464   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 465   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 466   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 467   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 468   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 469   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 470   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 471   NLL: 113277.426 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 472   NLL: 113277.4186 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 473   NLL: 113277.4029 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 474   NLL: 113277.4175 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 475   NLL: 113277.4262 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 476   NLL: 113277.426 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 477   NLL: 113277.4251 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 478   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 479   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 480   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 481   NLL: 113277.4248 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 482   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 483   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 484   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 485   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 486   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 487   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 488   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 489   NLL: 113277.4249 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 490   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 491   NLL: 113277.4022 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 492   NLL: 113277.4185 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 493   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 494   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 495   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 496   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 497   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 498   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 499   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 500   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 501   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 502   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 503   NLL: 113277.423 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 504   NLL: 113277.4101 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 505   NLL: 113277.4145 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 506   NLL: 113277.4148 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 507   NLL: 113277.4119 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 508   NLL: 113277.4157 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 509   NLL: 113277.4112 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 510   NLL: 113277.391 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 511   NLL: 113277.4073 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 512   NLL: 113277.4116 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 513   NLL: 113277.4132 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 514   NLL: 113277.4102 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 515   NLL: 113277.4121 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 516   NLL: 113277.412 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 517   NLL: 113277.4121 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 518   NLL: 113277.412 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 519   NLL: 113277.4124 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 520   NLL: 113277.4106 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 521   NLL: 113277.4121 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 522   NLL: 113277.4123 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 523   NLL: 113277.4121 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 524   NLL: 113277.4225 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 525   NLL: 113277.4251 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 526   NLL: 113277.4254 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 527   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 528   NLL: 113277.4242 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 529   NLL: 113277.426 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 530   NLL: 113277.4015 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 531   NLL: 113277.4178 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 532   NLL: 113277.4199 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 533   NLL: 113277.4217 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 534   NLL: 113277.4247 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 535   NLL: 113277.4225 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 536   NLL: 113277.4223 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 537   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 538   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 539   NLL: 113277.4223 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 540   NLL: 113277.424 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 541   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 542   NLL: 113277.4213 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 543   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 544   NLL: 113277.4366 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 545   NLL: 113277.4204 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 546   NLL: 113277.4246 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 547   NLL: 113277.4271 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 548   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 549   NLL: 113277.43 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 550   NLL: 113277.4215 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 551   NLL: 113277.4023 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 552   NLL: 113277.4186 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 553   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 554   NLL: 113277.4251 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 555   NLL: 113277.4138 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 556   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 557   NLL: 113277.4218 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 558   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 559   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 560   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 561   NLL: 113277.4209 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 562   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 563   NLL: 113277.4243 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 564   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 565   NLL: 113277.4122 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 566   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 567   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 568   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 569   NLL: 113277.4252 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 570   NLL: 113277.4243 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 571   NLL: 113277.426 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 572   NLL: 113277.4224 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 573   NLL: 113277.402 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 574   NLL: 113277.4184 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 575   NLL: 113277.4228 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 576   NLL: 113277.4244 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 577   NLL: 113277.4257 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 578   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 579   NLL: 113277.4242 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 580   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 581   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 582   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 583   NLL: 113277.4222 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 584   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 585   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 586   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 587   NLL: 113277.4119 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 588   NLL: 113277.4224 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 589   NLL: 113277.473 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 590   NLL: 113277.4208 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 591   NLL: 113277.4256 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 592   NLL: 113277.4261 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 593   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 594   NLL: 113277.4288 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 595   NLL: 113277.4277 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 596   NLL: 113277.4027 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 597   NLL: 113277.419 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 598   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 599   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 600   NLL: 113277.4267 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 601   NLL: 113277.4238 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 602   NLL: 113277.4245 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 603   NLL: 113277.4238 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 604   NLL: 113277.4244 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 605   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 606   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 607   NLL: 113277.4238 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 608   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 609   NLL: 113277.4238 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 610   NLL: 113277.4126 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 611   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 612   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 613   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 614   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 615   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 616   NLL: 113277.4226 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 617   NLL: 113277.4229 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 618   NLL: 113277.4251 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 619   NLL: 113277.4316 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 620   NLL: 113277.4025 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 621   NLL: 113277.4188 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 622   NLL: 113277.4192 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 623   NLL: 113277.4228 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 624   NLL: 113277.4248 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 625   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 626   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 627   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 628   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 629   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 630   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 631   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 632   NLL: 113277.4209 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 633   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 634   NLL: 113277.4124 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 635   NLL: 113277.4229 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 636   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 637   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 638   NLL: 113277.3944 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 639   NLL: 113277.41 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 640   NLL: 113277.4146 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 641   NLL: 113277.4137 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 642   NLL: 113277.4112 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 643   NLL: 113277.417 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 644   NLL: 113277.4109 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 645   NLL: 113277.3912 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 646   NLL: 113277.4075 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 647   NLL: 113277.4121 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 648   NLL: 113277.4101 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 649   NLL: 113277.41 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 650   NLL: 113277.4125 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 651   NLL: 113277.4119 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 652   NLL: 113277.4122 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 653   NLL: 113277.4122 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 654   NLL: 113277.4122 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 655   NLL: 113277.4116 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 656   NLL: 113277.4123 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 657   NLL: 113277.4124 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 658   NLL: 113277.4122 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 659   NLL: 113277.401 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 660   NLL: 113277.4115 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 661   NLL: 113277.4124 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 662   NLL: 113277.4121 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 663   NLL: 113277.4128 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 664   NLL: 113277.4126 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 665   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 666   NLL: 113277.4227 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 667   NLL: 113277.422 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 668   NLL: 113277.4225 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 669   NLL: 113277.4246 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 670   NLL: 113277.4258 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 671   NLL: 113277.4024 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 672   NLL: 113277.4187 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 673   NLL: 113277.4222 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 674   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 675   NLL: 113277.4215 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 676   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 677   NLL: 113277.4224 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 678   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 679   NLL: 113277.4239 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 680   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 681   NLL: 113277.4252 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 682   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 683   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 684   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 685   NLL: 113277.4122 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 686   NLL: 113277.4228 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 687   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 688   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 689   NLL: 113277.424 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 690   NLL: 113277.4238 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 691   NLL: 113277.3947 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 692   NLL: 113277.4006 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 693   NLL: 113277.4032 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 694   NLL: 113277.4023 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 695   NLL: 113277.4018 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 696   NLL: 113277.4041 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 697   NLL: 113277.4008 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 698   NLL: 113277.3806 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 699   NLL: 113277.3969 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 700   NLL: 113277.4029 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 701   NLL: 113277.4019 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 702   NLL: 113277.4001 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 703   NLL: 113277.4017 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 704   NLL: 113277.4013 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 705   NLL: 113277.4017 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 706   NLL: 113277.4016 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 707   NLL: 113277.4017 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 708   NLL: 113277.4016 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 709   NLL: 113277.4017 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 710   NLL: 113277.4017 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 711   NLL: 113277.4017 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 712   NLL: 113277.3904 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 713   NLL: 113277.4009 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 714   NLL: 113277.4018 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 715   NLL: 113277.4015 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 716   NLL: 113277.4022 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 717   NLL: 113277.402 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 718   NLL: 113277.3906 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 719   NLL: 113277.4018 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 720   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 721   NLL: 113277.422 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 722   NLL: 113277.4217 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 723   NLL: 113277.4228 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 724   NLL: 113277.4258 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 725   NLL: 113277.4272 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 726   NLL: 113277.4024 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 727   NLL: 113277.4187 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 728   NLL: 113277.4212 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 729   NLL: 113277.4232 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 730   NLL: 113277.4148 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 731   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 732   NLL: 113277.425 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 733   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 734   NLL: 113277.4245 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 735   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 736   NLL: 113277.4233 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 737   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 738   NLL: 113277.4231 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 739   NLL: 113277.4235 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 740   NLL: 113277.4123 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 741   NLL: 113277.4228 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 742   NLL: 113277.4236 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 743   NLL: 113277.4234 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 744   NLL: 113277.424 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 745   NLL: 113277.4238 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 746   NLL: 113277.4125 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 747   NLL: 113277.4237 minNLL: 113277.3693 EDM: 0.000964 Status: 3                    Call: 748   NLL: 113277.3942 minNLL: 113277.3693 EDM: 0.000964 Status: 3                     FCN=113277 FROM HESSE     STATUS=OK            496 CALLS         748 TOTAL
-                     EDM=0.00069545    STRATEGY= 0      ERROR MATRIX ACCURATE 
-  EXT PARAMETER                                INTERNAL      INTERNAL  
-  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+                     EDM=0.00069545    STRATEGY= 0      ERROR MATRIX ACCURATE
+  EXT PARAMETER                                INTERNAL      INTERNAL
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE
    1  gamma        6.71392e-01   4.85305e-03   1.06086e-03  -3.34829e-01
    2  deltaGamma   1.00005e-01   1.62510e-02   1.20458e-02   2.63752e-05
    3  Aperp_sq     2.48672e-01   8.82622e-03   5.16077e-03  -5.31136e-03
@@ -2512,54 +2512,54 @@ Compiling LaTeX output...
 
 Fit Review:		Status:	3		NLL:	113277.3693
 
-gamma                     : 0.67139        ±  0.004853     
-deltaGamma                : 0.10001        ±  0.016251     
-Aperp_sq                  : 0.24867        ±  0.0088262    
-Azero_sq                  : 0.52114        ±  0.0061428    
-delta_para                : 3.3069         ±  0.16037      
-delta_perp                : 3.0784         ±  0.21943      
-F_s990                    : 0.22699        ±  0.075688     
-delta_s990                : 1.3081         ±  0.66082      
-deltaM                    : 17.669         ±  0.076983     
-Phi_s                     : 0.067123       ±  0.091117     
-lambda                    : 0.94447        ±  0.035565     
-mistagP1_OS               : 1.0004         ±  0.022937     
-mistagP0_OS               : 0.39191        ±  0.0077904    
-mistagDeltaP0_OS          : 0.011051       ±  0.0033969    
-timeResolutionScale       : 1.4511         ±  0.059376     
-mistagP1_SS               : 1.0303         ±  0.15867      
-mistagP0_SS               : 0.3554         ±  0.016328     
-mistagDeltaP0_SS          : -0.018935      ±  0.0049995    
-mistagP0_OSSS             : 0.0048304      ±  0.024529     
-mistagDeltaP0_OSSS        : -0.011076      ±  0.0040007    
-F_s1008                   : 0.066776       ±  0.029256     
-delta_s1008               : 0.77009        ±  0.28877      
-F_s1016                   : 0.0081715      ±  0.022524     
-delta_s1016               : 0.48983        ±  0.90834      
-F_s1020                   : 0.016043       ±  0.010599     
-delta_s1020               : -0.51584       ±  0.25763      
-F_s1024                   : 0.055303       ±  0.025847     
-delta_s1024               : -0.45202       ±  0.20266      
-F_s1032                   : 0.16761        ±  0.041517     
-delta_s1032               : -0.653         ±  0.1988       
-delta_zero                : 0              ±  0            
-Csp990                    : 0.966          ±  0            
-mistagSetPoint_OS         : 0.392          ±  0            
-mistagDeltaP1_OS          : 0              ±  0            
-mistagDeltaSetPoint_OS    : 0              ±  0            
-mistagSetPoint_SS         : 0.35           ±  0            
-mistagDeltaP1_SS          : 0              ±  0            
-mistagDeltaSetPoint_SS    : 0              ±  0            
-mistagP1_OSSS             : 1              ±  0            
-mistagSetPoint_OSSS       : 0              ±  0            
-mistagDeltaP1_OSSS        : 0              ±  0            
-mistagDeltaSetPoint_OSSS  : 0              ±  0            
-Csp1008                   : 0.956          ±  0            
-Csp1016                   : 0.926          ±  0            
-Csp1020                   : 0.926          ±  0            
-Csp1024                   : 0.956          ±  0            
-Csp1032                   : 0.966          ±  0            
-timeOffset                : 0              ±  -2           
+gamma                     : 0.67139        ±  0.004853
+deltaGamma                : 0.10001        ±  0.016251
+Aperp_sq                  : 0.24867        ±  0.0088262
+Azero_sq                  : 0.52114        ±  0.0061428
+delta_para                : 3.3069         ±  0.16037
+delta_perp                : 3.0784         ±  0.21943
+F_s990                    : 0.22699        ±  0.075688
+delta_s990                : 1.3081         ±  0.66082
+deltaM                    : 17.669         ±  0.076983
+Phi_s                     : 0.067123       ±  0.091117
+lambda                    : 0.94447        ±  0.035565
+mistagP1_OS               : 1.0004         ±  0.022937
+mistagP0_OS               : 0.39191        ±  0.0077904
+mistagDeltaP0_OS          : 0.011051       ±  0.0033969
+timeResolutionScale       : 1.4511         ±  0.059376
+mistagP1_SS               : 1.0303         ±  0.15867
+mistagP0_SS               : 0.3554         ±  0.016328
+mistagDeltaP0_SS          : -0.018935      ±  0.0049995
+mistagP0_OSSS             : 0.0048304      ±  0.024529
+mistagDeltaP0_OSSS        : -0.011076      ±  0.0040007
+F_s1008                   : 0.066776       ±  0.029256
+delta_s1008               : 0.77009        ±  0.28877
+F_s1016                   : 0.0081715      ±  0.022524
+delta_s1016               : 0.48983        ±  0.90834
+F_s1020                   : 0.016043       ±  0.010599
+delta_s1020               : -0.51584       ±  0.25763
+F_s1024                   : 0.055303       ±  0.025847
+delta_s1024               : -0.45202       ±  0.20266
+F_s1032                   : 0.16761        ±  0.041517
+delta_s1032               : -0.653         ±  0.1988
+delta_zero                : 0              ±  0
+Csp990                    : 0.966          ±  0
+mistagSetPoint_OS         : 0.392          ±  0
+mistagDeltaP1_OS          : 0              ±  0
+mistagDeltaSetPoint_OS    : 0              ±  0
+mistagSetPoint_SS         : 0.35           ±  0
+mistagDeltaP1_SS          : 0              ±  0
+mistagDeltaSetPoint_SS    : 0              ±  0
+mistagP1_OSSS             : 1              ±  0
+mistagSetPoint_OSSS       : 0              ±  0
+mistagDeltaP1_OSSS        : 0              ±  0
+mistagDeltaSetPoint_OSSS  : 0              ±  0
+Csp1008                   : 0.956          ±  0
+Csp1016                   : 0.926          ±  0
+Csp1020                   : 0.926          ±  0
+Csp1024                   : 0.956          ±  0
+Csp1032                   : 0.966          ±  0
+timeOffset                : 0              ±  -2
 
 --------------------------------------------------
 
