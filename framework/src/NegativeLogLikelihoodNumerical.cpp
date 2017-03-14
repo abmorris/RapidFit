@@ -61,7 +61,7 @@ double NegativeLogLikelihoodNumerical::EvaluateDataSet( IPDF * FittingPDF, IData
 	if(FittingPDF->GetName()=="NormalisedSumPDF")
 	{
 		std::array<double,2> IntegralResult = static_cast<NormalisedSumPDF*>(FittingPDF)->GetCachedIntegrals(TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary());
-		for(auto PDF: stored_pdfs)
+		for(auto& PDF: stored_pdfs)
 			static_cast<NormalisedSumPDF*>(PDF)->SetCachedIntegrals(IntegralResult, TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary());
 	}
 
