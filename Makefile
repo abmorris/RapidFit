@@ -33,19 +33,15 @@ CXXFLAGS_BASE = $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectori
 #		Some Useful global variables, makes this file MUCH easier to maintain
 SRCEXT    = cpp
 HDREXT    = h
-UTILSSRCEXT=C
 SRCDIR    = framework/src
 SRCPDFDIR = pdfs/src
-UTILSSRC  = utils/src
 INCDIR    = framework/include
 INCPDFDIR = pdfs/include
-INCUTILS  = utils/include
 INCGSL    = $(shell if command -v gsl-config >/dev/null 2>&1; then echo "$(shell gsl-config --cflags)"; else echo ""; fi )
 LINKGSL   = $(shell if command -v gsl-config >/dev/null 2>&1; then echo "$(shell gsl-config --libs)"; else echo ""; fi )
 USE_GSL   = $(shell if command -v gsl-config >/dev/null 2>&1; then echo "-D__RAPIDFIT_USE_GSL"; else echo ""; fi )
 OBJDIR    = framework/build
 OBJPDFDIR = pdfs/build
-OBJUTILDIR= utils/build
 EXEDIR    = bin
 LIBDIR    = lib
 SRCDALITZEXT = cc
@@ -61,7 +57,6 @@ DALITZSRCS := $(shell find $(SRCDALITZDIR) -name '*.$(SRCDALITZEXT)' | grep -v '
 
 #	Absolute Paths of headers	ignoring the LinkDef written for ROOT and ignoring unused code
 HEADERS := $(shell find $(INCDIR) -name '*.$(HDREXT)' | grep -v 'unused' | grep -v 'LinkDef' )
-UTILHEADERS := $(shell find $(INCUTILS) -name '*.$(HDREXT)' | grep -v 'unused' | grep -v 'LinkDef' )
 PDFHEAD := $(shell find $(INCPDFDIR) -name '*.$(HDREXT)' )
 DALITZHEAD := $(shell find $(INCDALITZDIR) -name '*.$(HDRDALITZEXT)' )
 
@@ -78,18 +73,16 @@ LINKFLAGS = -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -lpthread
 LIBS=-lstdc++
 
 CXXFLAGS     = $(CXXFLAGS_BASE_COMMON) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$(INCGSL) -I$(COMHDRDIR) $(ROOTCFLAGS)
-CXXFLAGSUTIL = $(CXXFLAGS_BASE) -I$(INCUTILS) $(ROOTCFLAGS) -Iframework/include
 
 #CHECKGCCABI := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
 #ifeq ("$(CHECKGCCABI)","1")
 #	CXXFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
-#	CXXFLAGSUTIL+= -D_GLIBCXX_USE_CXX11_ABI=0
 #	LINKFLAGS+= -D_GLIBCXX_USE_CXX11_ABI=0
 #endif
 
 LINKFLAGS += $(USE_GSL) $(LINKGSL) $(ROOTLIBS) $(EXTRA_ROOTLIBS) $(COMLIBFLAGS) -Wl,-rpath,$(COMLIBDIR):$(ROOTLIBDIR)
 
-.PHONY : all clean utils extra lib $(COMMONDIR)
+.PHONY : all clean extra lib $(COMMONDIR)
 
 #	Default build command when someone asks for 'make'
 all : $(EXEDIR)/fitting $(COMMONDIR)
@@ -105,10 +98,6 @@ $(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT) $(DALITZOBJ
 	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
-$(OBJUTILDIR)/%.o : $(UTILSSRC)/%.$(UTILSSRCEXT) $(INCUTILS)/%.$(HDREXT)
-	@echo "Compiling $@"
-	@$(CXX) $(CXXFLAGSUTIL) $(USE_GSL) $(INCGSL) -c $< -o $@
-
 $(OBJDIR)/%.o : $(SRCDIR)/%.$(SRCEXT) $(INCDIR)/%.$(HDREXT)
 	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
@@ -121,69 +110,8 @@ $(EXEDIR)/fitting : $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o |
 
 #	Cleanup
 clean :
-	$(RM) $(EXEDIR)/* $(OBJDIR)/* $(OBJPDFDIR)/* $(OBJDALITZDIR)/* $(OBJUTILDIR)/* $(LIBDIR)/*
+	$(RM) $(EXEDIR)/* $(OBJDIR)/* $(OBJPDFDIR)/* $(OBJDALITZDIR)/* $(LIBDIR)/*
 	make -C $(COMMONDIR) clean
-
-#	Binaries sharing LOTS of useful code for processing/outputting results
-SHARED_UTIL_LIBS=$(OBJDIR)/StringProcessing.o $(OBJUTILDIR)/TTree_Processing.o $(OBJUTILDIR)/Mathematics.o  $(OBJUTILDIR)/ROOT_File_Processing.o $(OBJUTILDIR)/Histo_Processing.o $(OBJDIR)/EdStyle.o $(OBJUTILDIR)/StringOperations.o  $(OBJUTILDIR)/Template_Functions.o $(OBJUTILDIR)/RapidFit_Output_File.o $(OBJUTILDIR)/XMLUtilFunctions.o $(OBJUTILDIR)/utilsDict.o $(OBJUTILDIR)/RapidLL.o $(OBJUTILDIR)/Rapid2DLL.o $(OBJUTILDIR)/Toy_Study.o $(OBJUTILDIR)/print.o
-
-#       New mostly automated plotting tool taking the pain out of plotting RapidFit output
-$(EXEDIR)/RapidPlot: $(OBJUTILDIR)/RapidPlot.o $(OBJUTILDIR)/DoFCAnalysis.o $(OBJUTILDIR)/OutputPlots.o $(OBJUTILDIR)/CorrMatrix.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-$(EXEDIR)/RapidToyDiff: $(OBJUTILDIR)/RapidToyDiff.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-$(EXEDIR)/RapidDiff: $(OBJUTILDIR)/RapidDiff.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-###   Various tools for the utils directory
-
-#       Tool for printing information about a ROOT file and it's contents
-$(EXEDIR)/print: $(OBJUTILDIR)/print.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-###	Tool for extracting the angular distribution from the sidebands in JpsiPhi
-$(EXEDIR)/AngularDist: $(OBJUTILDIR)/AngularDist.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-###	Tool for making an exact comparison between 2 tuple branches and plotting the output
-$(EXEDIR)/tupleDiff: $(OBJUTILDIR)/tupleDiff.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-$(EXEDIR)/Compare: $(OBJUTILDIR)/Compare.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-$(EXEDIR)/ApplyWeights: $(OBJUTILDIR)/ApplyWeights.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-$(EXEDIR)/weighted: $(OBJUTILDIR)/weighted.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-###	Tool for calculating gamma/deltaGamma from angular momentum analysis
-$(EXEDIR)/lifetime_tool: $(OBJUTILDIR)/lifetime_tool.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAFS) $(ROOTLIBS)
-
-$(EXEDIR)/Per-Event: $(OBJUTILDIR)/Per-Event.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-#       Tool for printing information about a ROOT file and it's contents
-$(EXEDIR)/plotDists: $(OBJUTILDIR)/plotDists.o $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -o $@ $^ $(LINKFLAGS) $(ROOTLIBS)
-
-utils:	$(LIBDIR)/libUtils.so $(EXEDIR)/print $(EXEDIR)/RapidPlot $(EXEDIR)/RapidDiff $(EXEDIR)/RapidToyDiff
 
 extra:	$(EXEDIR)/Per-Event $(EXEDIR)/lifetime_tool $(EXEDIR)/weighted $(EXEDIR)/ApplyWeights $(EXEDIR)/Compare $(EXEDIR)/tupleDiff $(EXEDIR)/AngularDist $(EXEDIR)/plotDists
 
@@ -213,17 +141,4 @@ $(OBJDIR)/RapidRun.o: $(SRCDIR)/RapidRun.cpp
 $(LIBDIR)/libRapidRun.so: $(OBJDIR)/RapidRun.o $(OBJS) $(PDFOBJS) $(DALITZOBJS) $(OBJDIR)/rapidfit_dict.o
 	@echo "Linking $@"
 	@$(CXX) -shared $(OBJDIR)/*.o $(OBJPDFDIR)/*.o $(OBJDALITZDIR)/*.o -o $@ $(LINKFLAGS)
-
-$(OBJUTILDIR)/utilsDict.cpp: $(UTILHEADERS) $(INCUTILS)/LinkDef.h
-	@echo "Compiling $@"
-	@rootcint -f $(OBJUTILDIR)/utilsDict.cpp -c -I"$(PWD)" $^
-
-$(OBJUTILDIR)/utilsDict.o: $(OBJUTILDIR)/utilsDict.cpp
-	@echo "Compiling $@"
-	@$(CXX) $(CXXFLAGSUTIL) -o $@ -I"$(PWD)" -c $<
-
-#	This is the Utils library which exposes a LOT of pre-written useful functions to the user
-$(LIBDIR)/libUtils.so: $(SHARED_UTIL_LIBS)
-	@echo "Linking $@"
-	@$(CXX) -shared -o $@ $^ $(LINKFLAGS)
 
