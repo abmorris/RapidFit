@@ -215,17 +215,13 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint
 	const int nsteps = mKKresconfig.at("nsteps");
 	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint[0]-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
 	// If the integration region goes below threshold, don't do the convolution
-	if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
-	{
-		double Msq_conv = 0.;
-		const double stepsize = 2.*nsigma*resolution/nsteps;
-		// Integrate over range −nσ to +nσ
-		for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
+	double Msq_conv = 0.;
+	const double stepsize = 2.*nsigma*resolution/nsteps;
+	// Integrate over range −nσ to +nσ
+	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
+		if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
 			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize;
-		return Msq_conv;
-	}
-	else
-		return (this->*EvaluateMsq)(datapoint,compName);
+	return Msq_conv;
 }
 /*Stuff that factors out of the time integral*********************************/
 double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
