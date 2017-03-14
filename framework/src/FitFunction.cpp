@@ -389,10 +389,13 @@ double FitFunction::Evaluate()
 	//	exit(0);
 
 	//if( fit_calls == 2 ) exit(0);
-//	if(callNum%100 == 0)
+
+
+	if(callNum%10 == 0)
 	{
-		cout << "Call " << callNum << "\r";
+		cout << "Call " << callNum << ": NLL=" << minimiseValue << "\r" << std::flush;
 	}
+
 	return minimiseValue;
 }
 
