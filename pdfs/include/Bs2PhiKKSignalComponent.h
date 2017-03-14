@@ -19,7 +19,6 @@ class Bs2PhiKKSignalComponent
 		Bs2PhiKKSignalComponent& operator=(const Bs2PhiKKSignalComponent&);
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
-		double GetUnitarityViolation() const;
 		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays
 		Bs2PhiKK::amplitude_t Amplitude(const Bs2PhiKK::datapoint_t&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
 		Bs2PhiKK::amplitude_t Amplitude(const Bs2PhiKK::datapoint_t&, const std::string) const; // Same but with an option "even" or "odd"

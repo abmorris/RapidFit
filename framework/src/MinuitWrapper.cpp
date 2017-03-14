@@ -33,8 +33,6 @@ using std::left;
 using std::setw;
 using std::setprecision;
 
-
-
 //#define DOUBLE_TOLERANCE DBL_MIN
 #define DOUBLE_TOLERANCE 1E-6
 
@@ -258,9 +256,7 @@ void MinuitWrapper::Minimise()
 
 	arguments[0] = maxSteps;//MAXIMUM_MINIMISATION_STEPS
 	arguments[1] = bestTolerance;//FINAL_GRADIENT_TOLERANCE;
-
 	time_t timeNow, startfit, endfit;
-	time(&timeNow);
 	time(&startfit);
 
 	//	Now Do the minimisation
@@ -284,11 +280,10 @@ void MinuitWrapper::Minimise()
 
 	//int preHesseStatus = fitStatus;
 
-	time(&timeNow);
 	time(&endfit);
 	time_t duration = (endfit-startfit);
 	int ncalls = function->GetCallNum();
-	cout << "\nFinal NLL: " << setprecision(15) << minimumValue << "\t\tStatus: " << fitStatus << "\t\t" << ctime(&timeNow) << endl << endl;
+	cout << "\nFinal NLL: " << setprecision(15) << minimumValue << "\t\tStatus: " << fitStatus << "\t\t" << ctime(&endfit) << endl << endl;
 	cout << ncalls << " calls in " << duration << " s (" << std::setprecision(3) << duration/(double)ncalls << " s per call)" << endl << endl;
 
 	string NoHesse("NoHesse");
@@ -301,7 +296,7 @@ void MinuitWrapper::Minimise()
 	minuit->mnstat( minimumValue, fedm, errdef, variableParameters, parameterNumber, fitStatus );
 
 	string MinosOption("MinosErrors");
-	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 || fitStatus != 3)
+	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 )
 	{
 		vector<string> allFreeNames = function->GetParameterSet()->GetAllFloatNames();
 		for( unsigned int i=0; i< Options.size(); ++i )
@@ -587,8 +582,6 @@ void MinuitWrapper::Function( Int_t & npar, Double_t * grad, Double_t & fval, Do
 	}
 
 	LastSet->UpdatePhysicsParameters( (double*)xval, npar );
-	int ncalls = function->GetCallNum();
-	if(ncalls%100 == 0) cout << "Call " << ncalls << "\r" << flush;
 
 }
 

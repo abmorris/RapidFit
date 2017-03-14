@@ -161,7 +161,7 @@ void Minuit2Wrapper::Minimise()
 	vector<double> allMin, allMax;
 
 	string MinosOption("MinosErrors");
-	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 || fitStatus != 3)
+	if( StringProcessing::VectorContains( &Options, &MinosOption ) != -1 )
 	{
 		cout << "Minuit2 Starting MnMinos!" << endl;
 		MnMinos minos( *function, *minimum, 100000 );

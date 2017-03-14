@@ -42,10 +42,10 @@ ExternalConstraint::ExternalConstraint( string NewName, double NewValue, double 
 		wantedParameters.push_back( "Aperp_sq" );
 		wantedParameters.push_back( "Azero_sq" );
 	}
-	// Do something like "GENERIC:<space-delimited prefix list>:<space-delimited parameter list>:<TFormula expression>"
-	else if( name.find("GENERIC") != string::npos )
+	// Do something like "GENERIC;<space-delimited prefix list>;<space-delimited parameter list>;<TFormula expression>"
+	else if( name.find("GENERIC") != string::npos || name.find("UNITARITY") != string::npos )
 	{
-		std::vector<std::string> arguments = StringProcessing::SplitString(name,':');
+		std::vector<std::string> arguments = StringProcessing::SplitString(name,';');
 		std::vector<std::string> prefices = StringProcessing::SplitString(arguments[1],' ');
 		std::vector<std::string> paramnames = StringProcessing::SplitString(arguments[2],' ');
 		if(prefices.empty()) prefices.push_back("");
@@ -226,16 +226,28 @@ double ExternalConstraint::GetChi2() const
 	{
 		double Aperpsq = internalParameterSet->GetPhysicsParameter( "Aperp_sq" )->GetValue();
 		double Azerosq = internalParameterSet->GetPhysicsParameter( "Azero_sq" )->GetValue();
-		// double Assq =  internalParameterSet->GetPhysicsParameter(AsName)->GetValue();
-		double excess = ( value - Aperpsq - Azerosq); //-Assq) ;
-		double penalty=0.;
-		if (excess >= 0) penalty = 0;
-		else penalty = ( excess * excess ) / ( error*error );
+		double excess = Aperpsq + Azerosq - value;
+		double penalty = excess <= 0 ? 0 : (excess*excess) / (error*error);
 		returnable += penalty;
+	}
+	else if( name.find("UNITARITY") != string::npos )
+	{
+		// More generic version of the above ATOTAL constraint
+		std::vector<std::string> arguments = StringProcessing::SplitString(name,';');
+		std::vector<std::string> prefices = StringProcessing::SplitString(arguments[1],' ');
+		std::vector<std::string> paramnames = StringProcessing::SplitString(arguments[2],' ');
+		for(const auto& prefix: prefices)
+		{
+			double excess = -value;
+			for(const auto& param: paramnames)
+				excess += internalParameterSet->GetPhysicsParameter(prefix+param)->GetValue();
+			double penalty = excess <= 0 ? 0 : (excess*excess) / (error*error);
+			returnable += penalty;
+		}
 	}
 	else if( name.find("GENERIC") != string::npos )
 	{
-		std::vector<std::string> arguments = StringProcessing::SplitString(name,':');
+		std::vector<std::string> arguments = StringProcessing::SplitString(name,';');
 		std::vector<std::string> prefices = StringProcessing::SplitString(arguments[1],' ');
 		std::vector<std::string> paramnames = StringProcessing::SplitString(arguments[2],' ');
 		std::string expression = arguments[3];

@@ -442,8 +442,6 @@ class BasePDF : public BasePDF_Framework, public BasePDF_MCCaching, public IPDF
 
 		bool ReallyGetComponentStatus() const;
 
-		bool parametersoutofrange;
-
 	private:
 
 		unsigned int GetThisIndex( PhaseSpaceBoundary* NewBoundary, DataPoint* thisPoint );

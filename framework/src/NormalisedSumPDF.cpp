@@ -294,11 +294,6 @@ bool NormalisedSumPDF::SetPhysicsParameters( ParameterSet * NewParameterSet )
 			firstFraction = newFractionValue;
 			firstPDF->UpdatePhysicsParameters( NewParameterSet );
 			secondPDF->UpdatePhysicsParameters( NewParameterSet );
-			if(firstPDF->GetParametersOutOfRange() || secondPDF->GetParametersOutOfRange())
-			{
-				parametersoutofrange = true;
-				cerr << "Warning: one or both component PDFs declares it has unphysical parameters\n";
-			}
 			bool output = allParameters.SetPhysicsParameters( NewParameterSet );
 			return output;
 		}
@@ -324,7 +319,6 @@ double NormalisedSumPDF::Normalisation( DataPoint* NewDataPoint, PhaseSpaceBound
 //Return the function value at the given point
 double NormalisedSumPDF::Evaluate( DataPoint* NewDataPoint )
 {
-	if(parametersoutofrange) return 1e-100;
 	inEvaluate = true;
 	double termOne=0.;
 	double termTwo=0.;
@@ -365,7 +359,6 @@ double NormalisedSumPDF::GetSecondIntegral( DataPoint* NewDataPoint ) const
 //Return the function value at the given point
 double NormalisedSumPDF::EvaluateForNumericIntegral( DataPoint * NewDataPoint )
 {
-	if(parametersoutofrange) return 1e-100;
 	inEvaluate = true;
 	double termOne=0.;
 	double termTwo=0.;

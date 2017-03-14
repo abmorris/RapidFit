@@ -1,7 +1,5 @@
 // Self
 #include "Bs2PhiKKSignalComponent.h"
-// Std Libraries
-#include <stdexcept>
 // RapidFit Dalitz Plot Libraries
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
@@ -140,17 +138,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
 			break;
 	}
-	try
-	{
-		UpdateAmplitudes();
-	}
-	catch(std::out_of_range& e)
-	{
-		std::cerr << "Bs2PhiKKSignalComponent object being initialised with " << e.what() << std::endl;
-		for(auto& mag: magsqs)
-			std::cerr << mag.name.Name() << " = " << mag.value << "\t";
-		std::cerr << std::endl;
-	}
+	UpdateAmplitudes();
 	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
@@ -270,11 +258,7 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 	{
 		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
 		double Apara_mag = sqrt(1. - magsqs[0].value - magsqs[1].value);
-		if(std::isnan(Apara_mag))
-		{
-			Apara_mag = 0;
-			throw std::out_of_range("Σ|A|² > 1");
-		}
+		if(std::isnan(Apara_mag)) Apara_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
 		std::complex<double> Apara = std::polar(Apara_mag,phases[2].value);
 		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
 		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
@@ -310,19 +294,5 @@ vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 		for(const auto& par: {BsBFradius,KKBFradius})
 			parameters.push_back(par.name);
 	return parameters;
-}
-double Bs2PhiKKSignalComponent::GetUnitarityViolation() const
-{
-	if(Ahel.size() <= 1) return 0.; // non-resonant or S-wave
-	else if(Ahel.size() == 3)
-	{
-		double viol = magsqs[0].value + magsqs[1].value - 1.;
-		return viol > 0. ? viol : 0.;
-	}
-	else
-	{
-		std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << Ahel.size() << std::endl;
-		std::exit(-1);
-	}
 }
 

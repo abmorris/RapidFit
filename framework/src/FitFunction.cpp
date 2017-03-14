@@ -234,7 +234,6 @@ PhysicsBottle* FitFunction::GetPhysicsBottle() const
 void FitFunction::SetParameterSet( const ParameterSet * NewParameters )
 {
 	allData->SetParameterSet(NewParameters);
-
 	//Initialise the integrators
 	for ( int resultIndex = 0; resultIndex < allData->NumberResults(); ++resultIndex )
 	{
@@ -245,7 +244,6 @@ void FitFunction::SetParameterSet( const ParameterSet * NewParameters )
 		for( int i=0; i< Threads; ++i )
 		{
 			stored_pdfs[ (unsigned)(i + resultIndex*Threads) ]->UpdatePhysicsParameters( allData->GetParameterSet() );
-			//stored_pdfs[ (unsigned)(i + resultIndex*Threads) ]->UnsetCache();
 		}
 	}
 }
@@ -261,7 +259,6 @@ double FitFunction::Evaluate()
 	++callNum;
 	//time_t start, end;
 	//time(&start);
-
 #ifdef RAPIDFIT_USETGLTIMER
 	TGLStopwatch* thisWatch = NULL;
 	if( Fit_Tree !=NULL )
@@ -392,7 +389,10 @@ double FitFunction::Evaluate()
 	//	exit(0);
 
 	//if( fit_calls == 2 ) exit(0);
-
+//	if(callNum%100 == 0)
+	{
+		cout << "Call " << callNum << "\r";
+	}
 	return minimiseValue;
 }
 

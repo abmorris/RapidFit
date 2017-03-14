@@ -159,13 +159,6 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	// Verification
-	if(parametersoutofrange)
-	{
-		double penalty = 0;
-		for(const auto& comp: components)
-			penalty += comp.second.GetUnitarityViolation();
-		return 1e-100*std::pow(1000,-penalty); // Return a very small likelihood if the physics parameters were found to violate unitarity
-	}
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
 	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) throw std::out_of_range("Unphysical datapoint");  // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
