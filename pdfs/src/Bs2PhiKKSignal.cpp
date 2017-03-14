@@ -17,7 +17,6 @@ PDF_CREATOR( Bs2PhiKKSignal )
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
 	, acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
-	, outofrange(false)
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
@@ -74,8 +73,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	// Options
 	, acceptance_moments(copy.acceptance_moments)
 	, acceptance_histogram(copy.acceptance_histogram)
-	// Status
-	, outofrange(copy.outofrange)
 {
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
 	else if(acceptance_histogram) acc_h = copy.acc_h;
@@ -137,21 +134,11 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	UnsetCache();
-	outofrange = false;
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
 	for(auto* par: {&dGsGs, &phimass, &thraccscale, &mKKres_sigmazero})
 		par->Update(&allParameters);
 	for(auto& comp: components)
-	{
-		try
-		{
 			comp.second.SetPhysicsParameters(&allParameters);
-		}
-		catch(...)
-		{
-			outofrange = true;
-		}
-	}
 	return isOK;
 }
 /*Calculate the likelihood****************************************************/
@@ -162,7 +149,7 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	// Verification
 	if(compName.find_first_not_of("0123456789") == string::npos) return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) return 1e-100; // Check if the point is above threshold and |cos(θ)| <= 1
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) throw std::out_of_range("Unphysical datapoint"); // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
 	MsqFunc_t EvaluateMsq = compName=="interference"? &Bs2PhiKKSignal::InterferenceMsq : &Bs2PhiKKSignal::ComponentMsq; // Choose the function to calcualte the |M|²
 	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(datapoint,compName) : Convolve(EvaluateMsq,datapoint,compName); // Do the convolved or unconvolved |M|² calculation
@@ -172,9 +159,15 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	// Verification
-	if(outofrange) return 1e-100; // Return a very small likelihood if the physics parameters were found to violate unitarity
+	if(parametersoutofrange)
+	{
+		double penalty = 0;
+		for(const auto& comp: components)
+			penalty += comp.second.GetUnitarityViolation();
+		return 1e-100*std::pow(1000,-penalty); // Return a very small likelihood if the physics parameters were found to violate unitarity
+	}
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) return 1e-100;  // Check if the point is above threshold and |cos(θ)| <= 1
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) throw std::out_of_range("Unphysical datapoint");  // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
 	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(datapoint) : Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,""); // Do the convolved or unconvolved |M|² calculation
 	return Evaluate_Base(MatrixElementSquared, datapoint);

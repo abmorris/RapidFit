@@ -122,6 +122,8 @@ class IPDF : public virtual IPDF_NormalisationCaching, public virtual IPDF_MCCac
 		 */
 		virtual double EvaluateComponent( DataPoint*, ComponentRef* ) = 0;
 
+		virtual bool GetParametersOutOfRange() = 0;
+
 	protected:
 
 		/*!

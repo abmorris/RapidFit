@@ -27,7 +27,7 @@
 BasePDF::BasePDF() : BasePDF_Framework( this ), BasePDF_MCCaching(),
 	numericalNormalisation(false), allParameters( vector<string>() ), allObservables(), doNotIntegrateList(), observableDistNames(), observableDistributions(),
 	component_list(), requiresBoundary(false), cachingEnabled( true ), haveTestedIntegral( false ), discrete_Normalisation( false ), DiscreteCaches(new vector<double>()),
-	debug_mutex(NULL), can_remove_mutex(true), fixed_checked(false), isFixed(false), fixedID(0), _basePDFComponentStatus(false), stored_boundary(NULL), stored_point(NULL), stored_index(0)
+	debug_mutex(NULL), can_remove_mutex(true), fixed_checked(false), isFixed(false), fixedID(0), _basePDFComponentStatus(false), stored_boundary(NULL), stored_point(NULL), stored_index(0), parametersoutofrange(false)
 {
 	component_list.push_back( "0" );
 }
@@ -39,7 +39,7 @@ BasePDF::BasePDF( const BasePDF& input ) : BasePDF_Framework( input ), BasePDF_M
 	cachingEnabled( input.cachingEnabled ), haveTestedIntegral( input.haveTestedIntegral ),
 	discrete_Normalisation( input.discrete_Normalisation ), DiscreteCaches(NULL),
 	debug_mutex(input.debug_mutex), can_remove_mutex(false), fixed_checked(input.fixed_checked), isFixed(input.isFixed), fixedID(input.fixedID),
-	_basePDFComponentStatus(input._basePDFComponentStatus), stored_boundary(input.stored_boundary), stored_index(input.stored_index), stored_point(input.stored_point)
+	_basePDFComponentStatus(input._basePDFComponentStatus), stored_boundary(input.stored_boundary), stored_index(input.stored_index), stored_point(input.stored_point), parametersoutofrange(input.parametersoutofrange)
 {
 	allParameters.SetPhysicsParameters( &(input.allParameters) );
 	DiscreteCaches = new vector<double>( input.DiscreteCaches->size() );
@@ -194,8 +194,15 @@ void BasePDF::UpdatePhysicsParameters( ParameterSet* Input )
 		allParameters.AddPhysicsParameters( Input );
 		this->UnsetCache();
 	}
-
-	this->SetPhysicsParameters( Input );
+	parametersoutofrange = false;
+	try
+	{
+		this->SetPhysicsParameters( Input );
+	}
+	catch(std::out_of_range)
+	{
+		parametersoutofrange = true; // Let the overloaded Evaluate() functions check this if the PDF knows it has parameters that can go take unphysical combinations of values
+	}
 }
 
 //Set the function parameters
@@ -350,6 +357,11 @@ double BasePDF::Integral(DataPoint * NewDataPoint, PhaseSpaceBoundary * NewBound
 			{
 				NewDataPoint->SetPhaseSpaceBoundary( NewBoundary );
 				thisNumericalIntegral = this->GetPDFIntegrator()->NumericallyIntegrateDataPoint( NewDataPoint, NewBoundary, this->GetDoNotIntegrateList() );
+			}
+			catch(const std::exception &exc)
+			{
+				cerr << exc.what() << endl;
+				exit(1);
 			}
 			catch(...)
 			{
@@ -558,14 +570,19 @@ double BasePDF::EvaluateForNumericGeneration( DataPoint* NewDataPoint )
 	{
 		returnable = this->Evaluate( NewDataPoint );
 	}
+	catch(const std::exception &exc)
+	{
+		cerr << exc.what() << endl;
+		exit(1);
+	}
 	catch(...)
 	{
 		PDF_THREAD_LOCK
 			cerr << "BasePDF: Failed to Correctly Generate a Sensible Value here:" << endl;
-		NewDataPoint->Print();
-		cerr << "BasePDF: Returning 0.!!!" << endl;
+			NewDataPoint->Print();
+			cerr << "BasePDF: Returning 0.!!!" << endl;
 		PDF_THREAD_UNLOCK
-			return 0.;
+		return 0.;
 	}
 	return returnable;
 }
@@ -578,14 +595,19 @@ double BasePDF::EvaluateForNumericIntegral( DataPoint * NewDataPoint )
 	{
 		returnable = this->Evaluate( NewDataPoint );
 	}
+	catch(const std::exception &exc)
+	{
+		cerr << exc.what() << endl;
+		exit(1);
+	}
 	catch(...)
 	{
 		PDF_THREAD_LOCK
 			cerr << "BasePDF: Failed to Correctly Integrate a Sensible Value here:" << endl;
-		NewDataPoint->Print();
-		cerr << "BasePDF: Returning 0.!!!" << endl;
+			NewDataPoint->Print();
+			cerr << "BasePDF: Returning 0.!!!" << endl;
 		PDF_THREAD_UNLOCK
-			return 0.;
+		return 0.;
 	}
 	return returnable;
 }
@@ -644,5 +666,10 @@ string BasePDF::GetComponentName( ComponentRef* input )
 complex<double> BasePDF::EvaluteComplex( DataPoint* input )
 {
 	return complex<double>( this->Evaluate( input ), 0. );
+}
+
+bool BasePDF::GetParametersOutOfRange()
+{
+	return parametersoutofrange;
 }
 

@@ -140,7 +140,17 @@ void Bs2PhiKKSignalComponent::Initialise()
 			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
 			break;
 	}
-	UpdateAmplitudes();
+	try
+	{
+		UpdateAmplitudes();
+	}
+	catch(std::out_of_range& e)
+	{
+		std::cerr << "Bs2PhiKKSignalComponent object being initialised with " << e.what() << std::endl;
+		for(auto& mag: magsqs)
+			std::cerr << mag.name.Name() << " = " << mag.value << "\t";
+		std::cerr << std::endl;
+	}
 	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
@@ -300,5 +310,19 @@ vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 		for(const auto& par: {BsBFradius,KKBFradius})
 			parameters.push_back(par.name);
 	return parameters;
+}
+double Bs2PhiKKSignalComponent::GetUnitarityViolation() const
+{
+	if(Ahel.size() <= 1) return 0.; // non-resonant or S-wave
+	else if(Ahel.size() == 3)
+	{
+		double viol = magsqs[0].value + magsqs[1].value - 1.;
+		return viol > 0. ? viol : 0.;
+	}
+	else
+	{
+		std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << Ahel.size() << std::endl;
+		std::exit(-1);
+	}
 }
 

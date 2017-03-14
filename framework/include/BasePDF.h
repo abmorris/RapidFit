@@ -358,6 +358,8 @@ class BasePDF : public BasePDF_Framework, public BasePDF_MCCaching, public IPDF
 		 */
 		virtual double EvaluateComponent( DataPoint* InputDataPoint, ComponentRef* InputRef = NULL );
 
+		bool GetParametersOutOfRange();
+
 	protected:
 
 		/*!
@@ -439,6 +441,8 @@ class BasePDF : public BasePDF_Framework, public BasePDF_MCCaching, public IPDF
 		void ReallySetComponentStatus( const bool input );
 
 		bool ReallyGetComponentStatus() const;
+
+		bool parametersoutofrange;
 
 	private:
 
