@@ -25,7 +25,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	dGsGs = Bs2PhiKK::PhysPar(config,"dGsGs");
 	if(config->isTrue("convolve"))
 	{
-		for(std::string name: {"nsteps","nsigma"})
+		for(const std::string& name: {"nsteps","nsigma"})
 			mKKresconfig[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
 		mKKres_sigmazero = Bs2PhiKK::PhysPar(config,"mKKres_sigmazero");
 	}
@@ -49,7 +49,9 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
 		acc_h->SetDimScales({1.,0.1,1.,1.}); // TODO: read this from the file
 	}
-	Initialise();
+	// Enable numerical normalisation and disable caching
+	this->SetNumericalNormalisation( true );
+//	this->TurnCachingOff();
 	MakePrototypes();
 }
 /*****************************************************************************/
@@ -76,15 +78,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 {
 	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
 	else if(acceptance_histogram) acc_h = copy.acc_h;
-	Initialise();
-}
-/*****************************************************************************/
-// Code common to the constructors
-void Bs2PhiKKSignal::Initialise()
-{
-	// Enable numerical normalisation and disable caching
-	this->SetNumericalNormalisation( true );
-//	this->TurnCachingOff();
 }
 /*****************************************************************************/
 // Build a component object from a passed option
@@ -100,7 +93,13 @@ Bs2PhiKKSignalComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, 
 	std::string KKname = option.substr(0,option.find('('));
 	int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
 	std::string lineshape = option.substr(option.find(',')+1,2);
-	std::cout << "┃ " << KKname << "\t│    " << JKK << "\t│ " << lineshape << " shape \t┃\n";
+	std::cout << "┃ ";
+	std::cout << std::left << std::setw(13) << KKname;
+	std::cout << " │ ";
+	std::cout << std::right << std::setw(5) << JKK;
+	std::cout << " │ ";
+	std::cout << std::left << std::setw(13) << lineshape;
+	std::cout << " ┃\n";
 	return Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
@@ -113,8 +112,9 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	for(const auto& par: {dGsGs, phimass, thraccscale, mKKres_sigmazero})
+	for(const auto& par: {dGsGs, phimass, thraccscale})
 		parameterNames.push_back(par.name);
+	if(!mKKresconfig.empty()) parameterNames.push_back(mKKres_sigmazero.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
@@ -133,12 +133,12 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 // Set the physics parameters
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
-	UnsetCache();
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	for(auto* par: {&dGsGs, &phimass, &thraccscale, &mKKres_sigmazero})
+	for(auto* par: {&dGsGs, &phimass, &thraccscale})
 		par->Update(&allParameters);
+	if(!mKKresconfig.empty()) mKKres_sigmazero.Update(&allParameters);
 	for(auto& comp: components)
-			comp.second.SetPhysicsParameters(&allParameters);
+		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
 }
 /*Calculate the likelihood****************************************************/

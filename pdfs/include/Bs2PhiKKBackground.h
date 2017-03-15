@@ -27,7 +27,6 @@ class Bs2PhiKKBackground : public BasePDF, public Bs2PhiKK
 	private:
 		std::map<std::string,Bs2PhiKKBackgroundComponent> components; // Iterable list of amplitude components
 		// Stuff to do on creation
-		void Initialise();
 		void MakePrototypes();
 		Bs2PhiKKBackgroundComponent ParseComponent(PDFConfigurator*, std::string) const;
 };

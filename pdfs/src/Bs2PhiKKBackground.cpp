@@ -21,7 +21,9 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) : Bs2PhiKK(confi
 	}
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	MakePrototypes();
-	Initialise();
+	// Enable numerical normalisation and disable caching
+	this->SetNumericalNormalisation( true );
+//	this->TurnCachingOff();
 }
 // Copy constructor
 Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy)
@@ -30,13 +32,6 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy)
 	// PDF components
 	, components(copy.components)
 {
-	Initialise();
-}
-void Bs2PhiKKBackground::Initialise()
-{
-	// Enable numerical normalisation and disable caching
-	this->SetNumericalNormalisation( true );
-//	this->TurnCachingOff();
 }
 /*****************************************************************************/
 // Build a component object from a passed option
@@ -52,7 +47,11 @@ Bs2PhiKKBackgroundComponent Bs2PhiKKBackground::ParseComponent(PDFConfigurator* 
 	size_t closebracket = option.find(')');
 	std::string name = option.substr(0,openbracket);
 	std::string type = option.substr(openbracket+1,closebracket-openbracket-1);
-	std::cout << "┃ " << name << "\t│ " << type << "\t┃\n";
+	std::cout << "┃ ";
+	std::cout << std::left << std::setw(13) << name;
+	std::cout << " │ ";
+	std::cout << std::left << std::setw(13) << type;
+	std::cout << " ┃\n";
 	return Bs2PhiKKBackgroundComponent(config, name, type);
 }
 /*****************************************************************************/
@@ -73,7 +72,6 @@ void Bs2PhiKKBackground::MakePrototypes()
 /*****************************************************************************/
 bool Bs2PhiKKBackground::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
-	UnsetCache();
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
 	for(auto& comp: components)
 		comp.second.SetPhysicsParameters(&allParameters);

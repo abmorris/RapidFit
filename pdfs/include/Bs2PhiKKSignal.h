@@ -53,7 +53,6 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		double p1stp3(const double&) const;
 		double Acceptance(const Bs2PhiKK::datapoint_t&) const;
 		// Stuff to do on creation
-		void Initialise();
 		void MakePrototypes();
 		Bs2PhiKKSignalComponent ParseComponent(PDFConfigurator*, std::string, std::string) const;
 };
