@@ -42,7 +42,9 @@ ExternalConstraint::ExternalConstraint( string NewName, double NewValue, double 
 		wantedParameters.push_back( "Aperp_sq" );
 		wantedParameters.push_back( "Azero_sq" );
 	}
-	// Do something like "GENERIC;<space-delimited prefix list>;<space-delimited parameter list>;<TFormula expression>"
+	// Usage: "GENERIC;<space-delimited prefix list>;<space-delimited parameter list>;<TFormula expression>"
+	// Usage: "UNITARITY;<space-delimited prefix list>;<space-delimited parameter list>"
+	// Note the 'outer' delimiter is a semicolon because the TFormula syntax can take colons
 	else if( name.find("GENERIC") != string::npos || name.find("UNITARITY") != string::npos )
 	{
 		std::vector<std::string> arguments = StringProcessing::SplitString(name,';');
@@ -51,15 +53,18 @@ ExternalConstraint::ExternalConstraint( string NewName, double NewValue, double 
 		if(prefices.empty()) prefices.push_back("");
 		if(paramnames.empty()) paramnames.push_back("");
 		for(const auto& prefix: prefices)
+		{
 			for(const auto& param: paramnames)
-				wantedParameters.push_back(prefix+param);
+			{
+				std::string wantedParam = prefix+param;
+				if(wantedParam != "") wantedParameters.push_back(wantedParam);
+			}
+		}
 	}
 	else
 	{
 		wantedParameters.push_back( name );
 	}
-
-
 
 	internalParameterSet = new ParameterSet( wantedParameters );
 }
@@ -98,7 +103,6 @@ string ExternalConstraint::GetName() const
 {
 	return name;
 }
-
 
 void ExternalConstraint::SetPhysicsParameters( const ParameterSet* input )
 {
