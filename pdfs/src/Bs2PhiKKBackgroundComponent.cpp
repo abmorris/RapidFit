@@ -134,7 +134,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
 	if(std::isnan(angularPart)) std::cerr << "Angular part is nan" << std::endl;
 	if(angularPart < 0) std::cerr << "Angular part is negative" << std::endl;
-	return massPart * angularPart;
+	return fraction.value * massPart * angularPart;
 }
 /*****************************************************************************/
 void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
