@@ -125,6 +125,7 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 	int numEvents = dataSet->GetDataNumber();
 	// Calculate the coefficients by summing over the dataset
 	std::cout << "Sum over " << numEvents << " events" << std::endl;
+	if(mass_dependent) std::cout << "Divide by phase space" << std::endl;
 	for (int e = 0; e < numEvents; e++)
 	{
 		// Retrieve the data point
@@ -135,9 +136,9 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 		double mKK        = event->GetObservable(mKKname)->GetValue();
 		double mKK_mapped = (mKK - mKK_min)/(mKK_max-mKK_min)*2.+ (-1);
 		double val = 1;
-		// If not "mass dependent" then calculate phase space element (for acceptance)
+		// If "mass dependent" then calculate phase space element (for acceptance)
 		// Otherwise just keep it as 1 (for background)
-		if(!mass_dependent)
+		if(mass_dependent)
 		{
 			double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
 			double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);

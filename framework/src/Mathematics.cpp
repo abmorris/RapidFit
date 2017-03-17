@@ -604,9 +604,9 @@ namespace Mathematics
 			double mKK        = event->GetObservable("mKK")->GetValue();
 			// Calculate phase space element
 			double val = 1;
-			// If not "mass dependent" then calculate phase space element (for acceptance)
+			// If "mass dependent" then calculate phase space element (for acceptance)
 			// Otherwise just keep it as 1 (for background)
-			if(!mass_dependent)
+			if(mass_dependent)
 			{
 				double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
 				double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
