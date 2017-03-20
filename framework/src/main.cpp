@@ -1020,12 +1020,14 @@ int calculateFitFractions( RapidFitConfiguration* config )
 
 	vector<string> doNotIntegrate = pdf->GetDoNotIntegrateList();
 	vector<string> pdfComponents = pdf->PDFComponents();
+	vector<double> integrals;
 	for(auto component: pdfComponents)
 	{
 		ComponentRef thisRef( component, "dummyObservable" );
-		double integral = testIntegrator.NumericallyIntegratePhaseSpace( dataSet->GetBoundary(), doNotIntegrate, &thisRef );
-		std::cout << component << ": " << integral << std::endl;
+		integrals.push_back(testIntegrator.NumericallyIntegratePhaseSpace( dataSet->GetBoundary(), doNotIntegrate, &thisRef ));
 	}
+	for(unsigned i = 0; i < pdfComponents.size(); i++)
+		std::cout << pdfComponents[i] << ": " << integrals[i] << std::endl;
 
 	return 1;
 }
