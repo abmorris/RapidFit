@@ -115,7 +115,7 @@ void RapidFitExit()
 //	The 'meat' of the Code
 int RapidFit( vector<string> input )
 {
-	//  reduce root verbosity:
+	//  reduce root verbosity: // lol global varibales
 	//  gErrorIgnoreLevel = kInfo; // The default is kError
 	//  gErrorIgnoreLevel = kFatal; // Explicitly remove all messages
 	//  gErrorIgnoreLevel = kError; // Only error message (default)
@@ -123,7 +123,7 @@ int RapidFit( vector<string> input )
 	//  gErrorIgnoreLevel = kNote; // error, warning and note
 	//  gErrorIgnoreLevel = kInfo; // Display all information (same as -v)
 
-	RapidFitWelcome();
+//	RapidFitWelcome();
 
 	RapidFitConfiguration* thisConfig = new RapidFitConfiguration();
 
@@ -1011,54 +1011,22 @@ int calculateFitFractions( RapidFitConfiguration* config )
 {
 	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
 	ParameterSet * parset = config->GlobalResult->GetResultParameterSet()->GetDummyParameterSet();
-	parset->SetPhysicsParameter("BkgFraction", 0., 0., 0., 0., "BkgFraction", "");
-	pdfAndData->SetPhysicsParameters( parset );//config->GlobalResult->GetResultParameterSet()->GetDummyParameterSet() );
+	pdfAndData->SetPhysicsParameters( parset );
 
 	IDataSet * dataSet = pdfAndData->GetDataSet();
 	IPDF * pdf = pdfAndData->GetPDF();
 
-	RapidFitIntegrator * testIntegrator = new RapidFitIntegrator( pdf, true, true );
-	double total_integral(0.);
-	double integral(0.);
-	double fraction(0.);
-	double sumOfFractions(0.);
+	RapidFitIntegrator testIntegrator( pdf, true, true );
 
-	TFile * f = TFile::Open("fitFractions.root", "RECREATE");
-	TTree * tree = new TTree("tree", "tree containing fit fractions");
-
-	vector<double> fitFractions;
-	vector<string> doNotIntegrate;
+	vector<string> doNotIntegrate = pdf->GetDoNotIntegrateList();
 	vector<string> pdfComponents = pdf->PDFComponents();
-	pdfComponents = StringProcessing::MoveElementToStart( pdfComponents, "0" );
-	for( unsigned int i = 0; i < pdfComponents.size(); ++i )
+	for(auto component: pdfComponents)
 	{
-		ComponentRef * thisRef = new ComponentRef( pdfComponents[i], "dummyObservable" );
-		integral = testIntegrator->NumericallyIntegratePhaseSpace( dataSet->GetBoundary(), doNotIntegrate, thisRef );
-		if ( pdfComponents[i] == "0" )
-		{
-			total_integral = integral;
-			std::cout << "Total integral: " << total_integral << std::endl;
-		}
-		delete thisRef;
-		fraction = integral/total_integral;
-		if ( pdfComponents[i] != "0" && pdfComponents[i] != "1-Z" )
-		{
-			std::cout << pdfComponents[i] << "\t fraction: " << fraction << std::endl;
-			fitFractions.push_back( fraction );
-			sumOfFractions += fraction;
-		}
-		if ( pdfComponents[i] == "1-Z" ) std::cout << pdfComponents[i] << "\t fraction: " << 1. - fraction << std::endl;
+		ComponentRef thisRef( component, "dummyObservable" );
+		double integral = testIntegrator.NumericallyIntegratePhaseSpace( dataSet->GetBoundary(), doNotIntegrate, &thisRef );
+		std::cout << component << ": " << integral << std::endl;
 	}
-	std::cout << "Sum of fractions (not necessarily 1!): " << sumOfFractions << std::endl;
 
-	fitFractions.push_back( sumOfFractions );
-	tree->Branch("fractions", "std::vector<double>", &fitFractions);
-	tree->Fill();
-	f->Write();
-	f->Close();
-
-	delete testIntegrator;
-	delete pdfAndData;
 	return 1;
 }
 

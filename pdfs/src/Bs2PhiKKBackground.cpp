@@ -1,5 +1,6 @@
 // Std
 #include <algorithm>
+#include <iomanip>
 // RapidFit
 #include "Bs2PhiKKBackground.h"
 #include "StringProcessing.h"

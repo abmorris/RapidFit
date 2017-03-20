@@ -1727,7 +1727,7 @@ vector<double>* ComponentPlotter::ProjectObservableComponent( DataPoint* InputPo
 	for (int pointIndex = 0; pointIndex < PlotNumber; ++pointIndex )
 	{
 		//	Inform the user of how far we have got :D
-		cout << left << setw(5) << setprecision(3)  << (pointIndex+1.)/PlotNumber*100 << "\% Complete" << setw(20) << " " << "\r" << flush;
+		//cout << left << setw(5) << setprecision(3)  << (pointIndex+1.)/PlotNumber*100 << "\% Complete" << setw(20) << " " << "\r" << flush;
 
 		//	Value of Observable we want to evaluate for this step
 		observableValue = Minimum + ( PlotInterval * pointIndex );
