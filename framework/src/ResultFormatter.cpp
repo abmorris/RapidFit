@@ -932,9 +932,19 @@ void ResultFormatter::ReviewOutput( FitResult * OutputData )
 	vector<string> allNames = outputParameters->GetAllNames();
 	vector<string>::iterator nameIterator;
 
+	int ndatapoints = 0;
+	for(auto dataset: OutputData->GetPhysicsBottle()->GetAllDataSets()) ndatapoints += dataset->GetDataNumber();
+	int ndof = OutputData->GetCovarianceMatrix()->theseParameters.size();
+	double NLL = OutputData->GetMinimumValue();
+	double BIC = std::log(ndatapoints)*ndof + 2*NLL; // Bayesian information criterion
+	double AIC = 2*(ndof+NLL); // Akaike information criterion
+
 	cout << endl << endl;
 	cout << "--------------------------------------------------" <<endl;
-	cout << "\nFit Review:\t\tStatus:\t" <<OutputData->GetFitStatus()<<"\t\tNLL:\t"<<setprecision(10)<<OutputData->GetMinimumValue()<<endl<<endl;
+	cout << "\nFit Review:\t\tStatus:\t" <<OutputData->GetFitStatus()<<"\t\tNLL:\t"<<setprecision(10)<<NLL<<endl;
+	cout << "\t\tAIC:\t"<<setprecision(10)<<AIC;
+	cout << "\t\tBIC:\t"<<setprecision(10)<<BIC;
+	cout << endl << endl;
 
 	//Ouput each parameter
 	for( nameIterator = allNames.begin(); nameIterator != allNames.end(); ++nameIterator )
