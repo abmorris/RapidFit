@@ -4,3 +4,5 @@ After cloning, do:
 
         git submodule init
         git submodule clone
+
+[Video installation instructions](https://www.youtube.com/watch?v=GWwh1VEUh_0)
