@@ -1009,25 +1009,16 @@ TH1D* ProjectAxis( TH3* input_histo, TString axis, TString name )
 
 int calculateFitFractions( RapidFitConfiguration* config )
 {
+	// Get data and PDF. Set PDF parameters to the result of the fit
 	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
 	ParameterSet * parset = config->GlobalResult->GetResultParameterSet()->GetDummyParameterSet();
 	pdfAndData->SetPhysicsParameters( parset );
-
-	IDataSet * dataSet = pdfAndData->GetDataSet();
+	PhaseSpaceBoundary * boundary = pdfAndData->GetDataSet()->GetBoundary();
 	IPDF * pdf = pdfAndData->GetPDF();
-
-	RapidFitIntegrator testIntegrator( pdf, true, true );
-
-	vector<string> doNotIntegrate = pdf->GetDoNotIntegrateList();
-	vector<string> pdfComponents = pdf->PDFComponents();
-	vector<double> integrals;
-	for(auto component: pdfComponents)
-	{
-		ComponentRef thisRef( component, "dummyObservable" );
-		integrals.push_back(testIntegrator.NumericallyIntegratePhaseSpace( dataSet->GetBoundary(), doNotIntegrate, &thisRef ));
-	}
-	for(unsigned i = 0; i < pdfComponents.size(); i++)
-		std::cout << pdfComponents[i] << ": " << integrals[i] << std::endl;
+	// Calculate the fit fractions
+	FitFractionCalculator ffcalc(*pdf, *boundary);
+	ffcalc.Print();
+	ffcalc.WriteToFile("fitFractions.root");
 
 	return 1;
 }
