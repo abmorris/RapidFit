@@ -48,6 +48,7 @@
 #include "ResultFormatter.h"
 #include "MultiDimChi2.h"
 #include "RapidFitRandom.h"
+#include "FitFractionCalculator.h"
 ///  System Headers
 #include <string>
 #include <vector>
