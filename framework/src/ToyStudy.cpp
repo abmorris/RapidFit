@@ -121,8 +121,7 @@ void ToyStudy::DoWholeStudy( int OutputLevel )
 		}
 
 		allResults->AddFitResult( new_result );
-		FitFractionCalculator ffcalc(*pdfsAndData[0]->GetPDF(), *pdfsAndData[0]->GetDataSet()->GetBoundary());
-		ffcalc.WriteToFile("fitFractions_toys.root");
+
 	}
 }
 
