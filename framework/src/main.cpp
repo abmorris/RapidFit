@@ -934,20 +934,19 @@ int PerformMCStudy( RapidFitConfiguration* config )
 	}
 
 	//	Create Toy Study
-	MCStudy* newMCStudy = new MCStudy( config->xmlFile );
+	MCStudy newMCStudy( config->xmlFile );
 
 	//	Setup Toy Study
-	newMCStudy->SetNumRepeats( config->numberRepeats );
-	if( MCStep_int.size() != 0 ) { newMCStudy->SetStartingEntry( MCStart_int ); }
-	if( MCStart_int.size() != 0 ) { newMCStudy->SetNumEvents( MCStep_int ); }
+	newMCStudy.SetNumRepeats( config->numberRepeats );
+	if( MCStep_int.size() != 0 ) { newMCStudy.SetStartingEntry( MCStart_int ); }
+	if( MCStart_int.size() != 0 ) { newMCStudy.SetNumEvents( MCStep_int ); }
 
 
 	//	Perform Toy Study
-	newMCStudy->DoWholeStudy();
+	newMCStudy.DoWholeStudy();
 
-	ResultFormatter::WriteFlatNtuple( string( "MC_Study.root" ), newMCStudy->GetStudyResult(), config->xmlFile->GetXML(), config->runtimeArgs );
+	ResultFormatter::WriteFlatNtuple( string( "MC_Study.root" ), newMCStudy.GetStudyResult(), config->xmlFile->GetXML(), config->runtimeArgs );
 
-	delete newMCStudy;
 	return 0;
 }
 
@@ -956,16 +955,16 @@ int PerformToyStudy( RapidFitConfiguration* config )
 	vector<ConstraintFunction*> XMLConstraints = config->xmlFile->GetConstraints();
 
 	//Do the toy study
-	ToyStudy* newStudy = new ToyStudy( config->theMinimiser, config->theFunction, config->argumentParameterSet, config->pdfsAndData, XMLConstraints, config->numberRepeats );
+	ToyStudy newStudy( config->theMinimiser, config->theFunction, config->argumentParameterSet, config->pdfsAndData, XMLConstraints, config->numberRepeats );
 
-	if( config->fixedTotalToys ) newStudy->SetFixedNumberToys();
-	if( config->saveAllToys ) newStudy->setSaveAllToys();
+	if( config->fixedTotalToys ) newStudy.SetFixedNumberToys();
+	if( config->saveAllToys ) newStudy.setSaveAllToys();
 
 	if( config->OutputLevelSet == false ) config->OutputLevel = -999;
 
-	newStudy->DoWholeStudy( config->OutputLevel );
+	newStudy.DoWholeStudy( config->OutputLevel );
 
-	FitResultVector* fitResults = newStudy->GetStudyResult();
+	FitResultVector* fitResults = newStudy.GetStudyResult();
 
 	//Output results
 	//config->makeOutput->OutputToyResult( fitResults );
@@ -995,8 +994,6 @@ int PerformToyStudy( RapidFitConfiguration* config )
 			ffcalc.WriteToFile("fitFractions.root");
 		}
 	}
-	
-	delete newStudy;
 
 	return 0;
 }
