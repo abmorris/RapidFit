@@ -15,6 +15,7 @@
 #include "I_XMLConfigReader.h"
 #include "StringProcessing.h"
 #include "ResultFormatter.h"
+#include "FitFractionCalculator.h"
 //	System Headers
 #include <iostream>
 
@@ -120,6 +121,8 @@ void ToyStudy::DoWholeStudy( int OutputLevel )
 		}
 
 		allResults->AddFitResult( new_result );
+		FitFractionCalculator ffcalc(*pdfsAndData[0]->GetPDF(), *pdfsAndData[0]->GetDataSet()->GetBoundary());
+		ffcalc.WriteToFile("fitFractions_toys.root");
 	}
 }
 
