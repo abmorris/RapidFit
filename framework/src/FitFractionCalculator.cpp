@@ -62,7 +62,7 @@ void FitFractionCalculator::WriteToFile(std::string filename)
 				OutputTree->SetBranchAddress(branchname.c_str(),&fraction.second);
 		}
 		OutputTree->Fill();
-		OutputTree->Write();
+		OutputTree->Write("",TObject::kOverwrite);
 	}
 	OutputFile->Close();
 }
