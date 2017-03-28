@@ -165,7 +165,7 @@ int RapidFit( vector<string> input )
 		cout << "RapidFit has been Configured and initial objects in XML/CommandLine have been constructed" << endl;
 	}
 
-	int main_fitResult=0;
+	int main_fitResult=-1;
 
 	//	Work out what we want to do, now that everything is configured
 
@@ -1026,7 +1026,7 @@ TH1D* ProjectAxis( TH3* input_histo, TString axis, TString name )
 int calculateFitFractions( RapidFitConfiguration* config )
 {
 	// Get data and PDF. Set PDF parameters to the result of the fit
-	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
+	PDFWithData * pdfAndData = config->pdfsAndData[0];
 	ParameterSet * parset = config->GlobalResult->GetResultParameterSet()->GetDummyParameterSet();
 	pdfAndData->SetPhysicsParameters( parset );
 	PhaseSpaceBoundary * boundary = pdfAndData->GetDataSet()->GetBoundary();
