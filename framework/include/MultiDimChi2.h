@@ -30,35 +30,38 @@ class MultiDimChi2
 		MultiDimChi2( vector<PDFWithData*> allObjects, PhaseSpaceBoundary* thisBound, vector<string> wantedObservables );
 		void PerformMuiltDimTest();
 	private:
+		// Initialisation stuff
+		void ConstructAllCoordinates();
+		void AddCoordinates( unsigned int thisDim );
+		void ConstructBinCenters();
+		void ConstructBoundaries( PhaseSpaceBoundary* totalPhaseSpace, vector<string> );
+		void ConstructInternalHisto( vector<string> wantedObservables, PhaseSpaceBoundary* thisBound );
+		void populateAllObjects( vector<PDFWithData*> allObjects );
+		// Calculation helpers
+		double CalcChi2( vector<double> expected_events, vector<double> observed_events, vector<double> );
+		double CalculateTotalExpected( vector<double> thisBinCenter );
+		double CalculateRange( PhaseSpaceBoundary* thisBound );
+		double CorrectIntegral( double input_Integral, DataPoint* thisPoint, PhaseSpaceBoundary* thisPhaseSpace, RapidFitIntegrator* thisPDFIntegrator );
+		void ConstructIntegralsRatios( vector<string> wantedObservables );
+		double CorrectYield( IDataSet* thisSet, DataPoint* thisPoint );
+		double PDF2DataNormalisation( unsigned int PDFNum, const unsigned int combinationIndex, DataPoint* thisDataPoint );
+		// Member variables
 		vector<double> x_min;
 		vector<double> x_max;
 		vector<ObservableRef> goodObservables;
 		vector<int> x_bins;
 		std::unique_ptr<THnD> internalHisto; // Because THnD isn't copyable for no apparent reason
 		vector<ThisObsBinning> theseDimensions;
-		void ConstructBinCenters();
-		void ConstructInternalHisto( vector<string> wantedObservables, PhaseSpaceBoundary* thisBound );
-		void ConstructAllCoordinates();
 		unsigned int nDim;
-		vector<vector<double> >* allBinCenters;
-		void AddCoordinates( unsigned int thisDim );
+		vector<vector<double>> allBinCenters;
 		vector<IPDF*> allPDFs;
 		vector<IDataSet*> allDataSets;
 		vector<PDFWithData*> allPDFData;
 		vector<PhaseSpaceBoundary*> allBoundaries;
-		double CalcChi2( vector<double> expected_events, vector<double> observed_events, vector<double> );
-		double CalculateTotalExpected( vector<double> thisBinCenter );
-		void ConstructBoundaries( PhaseSpaceBoundary* totalPhaseSpace, vector<string> );
-		double PDF2DataNormalisation( unsigned int PDFNum, const unsigned int combinationIndex, DataPoint* thisDataPoint );
 		unsigned int data_binning;
 		vector<vector<double> > ratioOfIntegrals;
 		vector<vector<double> > combinationIntegrals;
 		vector<double> weightNorms;
-		void ConstructIntegralsRatios( vector<string> wantedObservables );
-		double CalculateRange( PhaseSpaceBoundary* thisBound );
-		void populateAllObjects( vector<PDFWithData*> allObjects );
-		double CorrectIntegral( double input_Integral, DataPoint* thisPoint, PhaseSpaceBoundary* thisPhaseSpace, RapidFitIntegrator* thisPDFIntegrator );
-		double CorrectYield( IDataSet* thisSet, DataPoint* thisPoint );
 };
 
 #endif

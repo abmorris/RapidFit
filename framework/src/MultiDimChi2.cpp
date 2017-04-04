@@ -16,8 +16,7 @@
 #include "RapidFitIntegratorConfig.h"
 #include "DebugClass.h"
 #include "TMath.h"
-MultiDimChi2::MultiDimChi2( vector<PDFWithData*> allObjects, PhaseSpaceBoundary* thisBound, vector<string> wantedObservables ) :
-	allBinCenters(NULL)
+MultiDimChi2::MultiDimChi2( vector<PDFWithData*> allObjects, PhaseSpaceBoundary* thisBound, vector<string> wantedObservables )
 {
 	//	Populate PDF, DataSets and PhaseSpaceBoundaries to be used in this analysis
 	cout << "MultiDimChi2 Hello!" << endl << endl;
@@ -116,7 +115,6 @@ void MultiDimChi2::ConstructInternalHisto( vector<string> wantedObservables, Pha
 	internalHisto = std::unique_ptr<THnD>(new THnD( "internal_Chi2nDim", "internal_Chi2nDim", (int)nDim, &(x_bins[0]), &(x_min[0]), &(x_max[0]) ));
 	vector<double> thisValues( goodObservables.size(), 0. );
 	double thisWeight = 0.;
-	DataPoint* thisPoint=NULL;
 	cout << "\tPopulating THnD" << endl;
 	ObservableRef weightName;
 	for( unsigned int i=0; i< allDataSets.size(); ++i )
@@ -124,7 +122,7 @@ void MultiDimChi2::ConstructInternalHisto( vector<string> wantedObservables, Pha
 		weightName = ObservableRef( allDataSets[i]->GetWeightName() );
 		for( unsigned int j=0; j< (unsigned)allDataSets[i]->GetDataNumber(); ++j )
 		{
-			thisPoint = allDataSets[i]->GetDataPoint( j );
+			DataPoint* thisPoint = allDataSets[i]->GetDataPoint( j );
 			cout << "data:" << endl;
 			for( unsigned int k=0; k< goodObservables.size(); ++k )
 			{
@@ -174,17 +172,17 @@ void MultiDimChi2::PerformMuiltDimTest()
 	cout << "MultiDimChi2: About to Perform Chi1 Calculation" << endl;
 	PhaseSpaceBoundary* thisBoundary=NULL;
 	(void) thisBoundary;
-	vector<double> expected_events( allBinCenters->size(), 0. );
-	vector<double> observed_events( allBinCenters->size(), 0. );
-	vector<double> error_events( allBinCenters->size(), 0. );
+	vector<double> expected_events( allBinCenters.size(), 0. );
+	vector<double> observed_events( allBinCenters.size(), 0. );
+	vector<double> error_events( allBinCenters.size(), 0. );
 	unsigned int histo_binNum=0;
-	vector<double> thisBinCenter( (*allBinCenters)[0].size(), 0. );
-	cout << "Looping over: " << allBinCenters->size()+1 << " coordianates!" << endl;
-	for( unsigned int binNum=0; binNum< allBinCenters->size(); ++binNum )
+	vector<double> thisBinCenter( (allBinCenters)[0].size(), 0. );
+	cout << "Looping over: " << allBinCenters.size()+1 << " coordianates!" << endl;
+	for( unsigned int binNum=0; binNum< allBinCenters.size(); ++binNum )
 	{
-		thisBinCenter = allBinCenters->at( binNum );
+		thisBinCenter = allBinCenters.at( binNum );
 		histo_binNum = (unsigned)internalHisto->GetBin( &(thisBinCenter[0]) );
-		cout << "Coordinate: " << binNum+1 << " of: " << allBinCenters->size() << endl;
+		cout << "Coordinate: " << binNum+1 << " of: " << allBinCenters.size() << endl;
 		cout << "Determining Number of Observed Events in Bin: " << histo_binNum << endl;
 		observed_events[binNum] = internalHisto->GetBinContent( histo_binNum );
 		cout << "Calculating Number of Expected Events in Bin: " << histo_binNum << endl;
@@ -199,7 +197,7 @@ void MultiDimChi2::PerformMuiltDimTest()
 	DebugClass::Dump2TTree( "file3.root", error_events, "TTree", "error" );
 	vector<double> pull; for( unsigned int i=0; i< expected_events.size(); ++i ) pull.push_back( (observed_events[i] - expected_events[i])/error_events[i] );
 	DebugClass::Dump2TTree( "file4.root", pull, "TTree", "pull" );
-	unsigned int freeNum = 28;//this->CountnDoF( finalSet );
+	unsigned int freeNum = 28;//this->CountnDoF( finalSet ); // XXX: stupid
 	double binz=1.;
 	for( unsigned int i=0; i< theseDimensions.size(); ++i ) binz *= (double)theseDimensions[i].theseBins;
 	double nDoF = binz - (double)freeNum;
@@ -346,14 +344,12 @@ double MultiDimChi2::CorrectYield( IDataSet* thisSet, DataPoint* thisPoint )
 void MultiDimChi2::ConstructAllCoordinates()
 {
 	vector<double> thisBinCenter( theseDimensions.size(), 0. );
-	vector<vector<double> > theseBinCenters;
 	unsigned int total_points = 1;
 	for( unsigned int i=0; i< theseDimensions.size(); ++i )
 	{
 		total_points*=theseDimensions[i].theseBins;
 	}
-	if( allBinCenters != NULL ) delete allBinCenters;
-	allBinCenters = new vector<vector<double> > ( total_points, thisBinCenter );
+	allBinCenters.assign( total_points, thisBinCenter );
 	for( unsigned int i=0; i< nDim; ++i )
 	{
 		this->AddCoordinates( i );
@@ -383,7 +379,7 @@ void MultiDimChi2::AddCoordinates( unsigned int thisDim )
 		{
 			for( unsigned int k=0; k< number_of_individual_repeats; ++k )
 			{
-				(*allBinCenters)[global_count][thisDim] = theseDimensions[thisDim].binCenters[j];
+				allBinCenters[global_count][thisDim] = theseDimensions[thisDim].binCenters[j];
 				++global_count;
 			}
 		}
