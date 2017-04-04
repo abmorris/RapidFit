@@ -934,7 +934,7 @@ void ResultFormatter::ReviewOutput( FitResult * OutputData )
 
 	int ndatapoints = 0;
 	for(auto dataset: OutputData->GetPhysicsBottle()->GetAllDataSets()) ndatapoints += dataset->GetDataNumber();
-	int ndof = OutputData->GetCovarianceMatrix()->theseParameters.size();
+	int ndof = outputParameters->GetAllFloatNames().size();
 	double NLL = OutputData->GetMinimumValue();
 	double BIC = std::log(ndatapoints)*ndof + 2*NLL; // Bayesian information criterion
 	double AIC = 2*(ndof+NLL); // Akaike information criterion
