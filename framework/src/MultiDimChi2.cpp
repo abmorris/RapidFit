@@ -82,73 +82,8 @@ void MultiDimChi2::ConstructIntegralsRatios( vector<string> wanted_params )
 
 		vector<DataPoint*> allCombinations = thisBound->GetDiscreteCombinations();
 
-		//thisBound->Print();
-
-
-		for( unsigned int i=0; i< allCombinations.size(); ++i )
-		{
-			thisratioOfIntegrals.push_back( 1. );
-			thisCombination_integral.push_back( 1. );
-
-			/*			cout << "\t\tCalculating Ratios for Combination: " << i+1 << " of " << allCombinations.size() << endl;
-			//allCombinations[i]->Print();
-			//
-			//   if( debug != NULL )
-			//   {
-			//   if( debug->DebugThisClass( "MultiDimChi2" ) )
-			//   {
-			//   cout << "MultiDimChi2:: Calculating Test integrals:\t" << i << endl;
-			//   }
-			//   }
-			pdfIntegrator->ForceTestStatus( false );
-
-			vector<string> doNotList = thisPDF->GetDoNotIntegrateList();
-			//doNotList = StringProcessing::CombineUniques( doNotList, wanted_params );
-			double thisIntegral = 0.;
-			try
-			{
-			//allCombinations[i]->SetPhaseSpaceBoundary( thisBound );
-			//cout << thisBound->DiscreteDescription( allCombinations[i] ) << endl;
-			thisIntegral = pdfIntegrator->NumericallyIntegrateDataPoint( allCombinations[i], thisBound, doNotList );
-			}
-			catch(...)
-			{
-			thisIntegral = 1.;
-			cout << endl << "CANNOT PROPERLY NORMALISE WHOLE PDF, THIS WILL LEAD TO NORMALISATION ISSUES OVER THE WHOLE PDF" << endl << endl;
-			}
-			//
-			//   if( debug != NULL )
-			//   {
-			//   if( debug->DebugThisClass( "MultiDimChi2" ) )
-			//   {
-			//   cout << "MultiDimChi2:: Finished Inetgral" << endl;
-			//   }
-			//   }
-
-			thisCombination_integral.push_back( thisIntegral );
-
-			if( thisPDF->GetNumericalNormalisation() == true ) thisratioOfIntegrals.push_back( 1. );
-			//else
-			//{
-			//	thisratioOfIntegrals.push_back( pdfIntegrator->GetRatioOfIntegrals() );
-			//}
-			thisratioOfIntegrals.push_back( 1. );
-
-*/
-		}
-
-		/*
-		   if( debug != NULL )
-		   {
-		   if( debug->DebugThisClass( "MultiDimChi2" ) )
-		   {
-		   cout << "MultiDimChi2:: Calculated the ratio of Integrals (analytic/numeric) to be:" << endl;
-		   for( unsigned int i=0; i< thisratioOfIntegrals.size(); ++i )
-		   {
-		   cout << thisratioOfIntegrals[i] << endl;
-		   }
-		   }
-		   }*/
+		thisratioOfIntegrals.assign(allCombinations.size(),1.);
+		thisCombination_integral.assign(allCombinations.size(),1.);
 		if( thisratioOfIntegrals.size() == 0 || thisratioOfIntegrals.empty() ) thisratioOfIntegrals =vector<double> ( 1, 1. );
 
 		ratioOfIntegrals.push_back( thisratioOfIntegrals );
