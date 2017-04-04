@@ -145,24 +145,13 @@ void MultiDimChi2::ConstructInternalHisto( vector<string> wantedObservables, Pha
 }
 void MultiDimChi2::ConstructBinCenters()
 {
-	double thisMin=0.;
-	double thisMax=0.;
-	int theseBins=0;
-	double thisCenter=0.;
-	double thisStepSize=0.;
-	double numSteps=0.;
 	for( unsigned int i=0; i< nDim; ++i )
 	{
 		vector<double> thisObservableBins;
-		thisMin = x_min[i];
-		thisMax = x_max[i];
-		theseBins = x_bins[i];
-		thisStepSize = (thisMax-thisMin)/((double)theseBins);
-		for( unsigned int j=1; j<= (unsigned)theseBins; ++j )
+		double thisStepSize = (x_max[i]-x_min[i])/((double)x_bins[i]);
+		for(int j=1; j<= x_bins[i]; ++j )
 		{
-			numSteps=(double)j; numSteps-=0.5;
-			thisCenter = thisMin+numSteps*thisStepSize;
-			thisObservableBins.push_back( thisCenter );
+			thisObservableBins.push_back( x_min[i] + (j - 0.5) * thisStepSize );
 		}
 		theseDimensions[i].binCenters = thisObservableBins;
 	}
