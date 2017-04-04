@@ -289,16 +289,6 @@ double MultiDimChi2::CalculateTotalExpected( vector<double> thisBinCenter )
 	cout << "\tReturning Expected Number of Events for this Coordinate" << endl;
 	return result_AllPDFs;
 }
-double MultiDimChi2::CorrectIntegral( double input_Integral, DataPoint* thisPoint, PhaseSpaceBoundary* thisPhaseSpace, RapidFitIntegrator* thisPDFIntegrator )
-{ // XXX What the fuck is the point of this function???? Just to generate compiler warnings?
-	double output_integral = input_Integral;
-	(void)thisPoint;
-	(void)thisPhaseSpace;
-	(void)thisPDFIntegrator;
-	//	Correct for Non Unitary PDF
-	output_integral /= 1.;//hisPDFIntegrator->TestIntegral( thisPoint, thisPhaseSpace );
-	return output_integral;
-}
 double MultiDimChi2::CorrectYield( IDataSet* thisSet, DataPoint* thisPoint )
 {
 	double total_yield = 0.;

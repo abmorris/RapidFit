@@ -41,7 +41,6 @@ class MultiDimChi2
 		double CalcChi2( vector<double> expected_events, vector<double> observed_events, vector<double> );
 		double CalculateTotalExpected( vector<double> thisBinCenter );
 		double CalculateRange( PhaseSpaceBoundary* thisBound );
-		double CorrectIntegral( double input_Integral, DataPoint* thisPoint, PhaseSpaceBoundary* thisPhaseSpace, RapidFitIntegrator* thisPDFIntegrator );
 		void ConstructIntegralsRatios( vector<string> wantedObservables );
 		double CorrectYield( IDataSet* thisSet, DataPoint* thisPoint );
 		double PDF2DataNormalisation( unsigned int PDFNum, const unsigned int combinationIndex, DataPoint* thisDataPoint );
