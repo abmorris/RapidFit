@@ -733,19 +733,8 @@ void MakeOutputFolder( RapidFitConfiguration* config )
 void PerformMultiDimChi2( RapidFitConfiguration* config )
 {
 	cout << "Passing over from main to MultiDimChi2 Test!" << endl;
-	vector<string> wantedObservables;
-
-	wantedObservables.push_back( "time" );
-
-//	wantedObservables.push_back( "helcosthetaK" );
-//	wantedObservables.push_back( "helcosthetaL" );
-	//wantedObservables.push_back( "helphi" );
-
-	vector<PDFWithData*> allObjects = config->pdfsAndData;
-	MultiDimChi2* thisTest = new MultiDimChi2( allObjects, wantedObservables );
-
-
-	thisTest->PerformMuiltDimTest();
+	MultiDimChi2 thisTest( config->pdfsAndData, {"mKK","ctheta_1","ctheta_2"} ); // TODO lol don't hardcode this
+	thisTest.PerformMuiltDimTest();
 }
 
 int PerformMainFit( RapidFitConfiguration* config )
