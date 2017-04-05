@@ -4,7 +4,6 @@
 #include "MultiDimChi2.h"
 MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<std::string> wantedObservables) : allObjects(_allObjects)
 {
-	std::cout << "MultiDimChi2 will fill " << allObjects.size() << " " << wantedObservables.size() << "D histogram(s)\n";
 	// Loop through each fit and bin each dataset
 	int obj_counter = 0; // Just to give each histogram a unique name
 	for(const auto PDFAndData: allObjects)
@@ -23,7 +22,7 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<
 				x_min.push_back(thisConstraint->GetMinimum());
 				x_max.push_back(thisConstraint->GetMaximum());
 				x_bins.push_back(5); // TODO: read from config
-				std::cout << x_bins.back() << " bins for observable " << observable << "\n";
+				std::cout << x_bins.back() << " bins for observable " << observable << " with range [" << x_min.back() << "," << x_max.back() << "]" << "\n";
 			}
 			else
 			{
@@ -33,13 +32,21 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<
 		}
 		// Construct the histogram and add it to the container
 		std::string histname = "BinnedData_"+std::to_string(obj_counter);
-		BinnedData.push_back(std::unique_ptr<THnD>(new THnD(histname.c_str(), "", x_bins.size(), x_bins.data(), x_min.data(), x_max.data())));
+		std::cout << "Creating a new THnD object called " << histname << "\n";
+		int nbins = 1;
+		for(unsigned i = 0; i < x_bins.size(); i++)
+		{
+			std::cout << "\t" << wantedObservables[i] << ": " << x_bins[i] << " bins in range [" << x_min[i] << "," << x_max[i] << "]" << "\n";
+			nbins *= x_bins[i];
+		}
+		std::cout << "Total of " << nbins << " bins\n";
+		BinnedData.push_back(std::unique_ptr<THnD>(new THnD(histname.c_str(), "", x_bins.size(), &x_bins[0], &x_min[0], &x_max[0])));
+		std::cout << "THn object with " << BinnedData.back()->GetNbins() << " bins\n";
 		// Get the weight name, if it exists
 		bool weighted = thisDataSet->GetWeightsWereUsed();
 		ObservableRef weightName;
 		if(weighted) weightName = ObservableRef(thisDataSet->GetWeightName());
 		// Fill the histogram
-		std::cout << "Filling histogram " << obj_counter << " with " << thisDataSet->GetDataNumber() << " points\n";
 		for(int i = 0; i < thisDataSet->GetDataNumber(); i++)
 		{
 			DataPoint* thisPoint = thisDataSet->GetDataPoint(i);
@@ -50,11 +57,9 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<
 			BinnedData.back()->Fill(values.data(), weight);
 		}
 	}
-	std::cout << "Filled histograms\n";
 	// Store the wanted observables locally
 	for(const auto& observable: wantedObservables)
 		Observables.push_back(ObservableRef(observable));
-	std::cout << "MultiDimChi2 successfully constructed" << std::endl;
 }
 
 void MultiDimChi2::PerformMuiltDimTest() const
