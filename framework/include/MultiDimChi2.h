@@ -22,7 +22,8 @@ class MultiDimChi2
 		std::vector<std::unique_ptr<THnD>> BinnedData; // THnD is neither copyable nor moveable so I have to resort to this nonsense. Thanks ROOT!
 		std::vector<PDFWithData*> allObjects;
 		// Helper functions
-		double CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const THnD& DataHist, int bindex) const;
+		double CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const THnD& DataHist, const std::vector<int>& indices) const;
+		std::vector<int> GetIndices(unsigned binNum, const THnD& DataHist) const;
 		double CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const std::vector<double>& errors) const;
 };
 
