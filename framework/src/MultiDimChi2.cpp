@@ -32,7 +32,7 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<
 		}
 		// Construct the histogram and add it to the container
 		std::string histname = "BinnedData_"+std::to_string(obj_counter);
-		BinnedData.push_back(std::make_unique<THnD>(histname.c_str(), "", x_bins.size(), x_bins.data(), x_min.data(), x_max.data()));
+		BinnedData.push_back(std::unique_ptr<THnD>(new THnD(histname.c_str(), "", x_bins.size(), x_bins.data(), x_min.data(), x_max.data())));
 		// Get the weight name, if it exists
 		ObservableRef weightName = ObservableRef(thisDataSet->GetWeightName());
 		// Fill the histogram
