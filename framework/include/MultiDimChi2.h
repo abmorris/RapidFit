@@ -14,7 +14,7 @@
 class MultiDimChi2
 {
 	public:
-		MultiDimChi2( const std::vector<PDFWithData*>& _allObjects, const vector<std::string>& wantedObservables );
+		MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<std::string> wantedObservables);
 		void PerformMuiltDimTest() const;
 	private:
 		// Stuff to store locally

@@ -2,11 +2,8 @@
 #include <iomanip>
 #include "TMath.h"
 #include "MultiDimChi2.h"
-MultiDimChi2::MultiDimChi2( const std::vector<PDFWithData*>& _allObjects, const vector<std::string>& wantedObservables ) : allObjects(_allObjects)
+MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<std::string> wantedObservables) : allObjects(_allObjects)
 {
-	// Store the wanted observables locally
-	for(const auto& observable: wantedObservables)
-		Observables.push_back( ObservableRef(observable) );
 	// Loop through each fit and bin each dataset
 	int obj_counter = 0; // Just to give each histogram a unique name
 	for(const auto PDFAndData: allObjects)
@@ -18,19 +15,19 @@ MultiDimChi2::MultiDimChi2( const std::vector<PDFWithData*>& _allObjects, const 
 		// Get the boundaries of each observable and construct the binning scheme
 		std::vector<double> x_min, x_max;
 		std::vector<int> x_bins;
-		for(const auto& observable: Observables)
+		for(const auto& observable: wantedObservables)
 		{
-			IConstraint* thisConstraint = thisBound->GetConstraint(observable);
+			IConstraint* thisConstraint = thisBound->GetConstraint(ObservableRef(observable));
 			if( !thisConstraint->IsDiscrete() )
 			{
-				x_min.push_back( thisConstraint->GetMinimum() );
-				x_max.push_back( thisConstraint->GetMaximum() );
-				x_bins.push_back( 5 ); // TODO: read from config
+				x_min.push_back(thisConstraint->GetMinimum());
+				x_max.push_back(thisConstraint->GetMaximum());
+				x_bins.push_back(5); // TODO: read from config
 			}
 			else
 			{
-				std::cerr << "Warning: discrete constraint on " << observable.Name() << " in this PhaseSpaceBoundary." << std::endl;
-				// I'm not sure what to do here. Something will probably fail anyway
+				std::cerr << "Warning: discrete constraint on " << observable << " in this PhaseSpaceBoundary. Removing it." << std::endl;
+				wantedObservables.erase(std::remove(wantedObservables.begin(), wantedObservables.end(), observable), wantedObservables.end());
 			}
 		}
 		// Construct the histogram and add it to the container
@@ -48,6 +45,9 @@ MultiDimChi2::MultiDimChi2( const std::vector<PDFWithData*>& _allObjects, const 
 			BinnedData.back()->Fill(values.data(), weight);
 		}
 	}
+	// Store the wanted observables locally
+	for(const auto& observable: wantedObservables)
+		Observables.push_back(ObservableRef(observable));
 }
 
 void MultiDimChi2::PerformMuiltDimTest() const
@@ -75,10 +75,13 @@ void MultiDimChi2::PerformMuiltDimTest() const
 		// Get the number of degrees of freedom
 		double nDoF = DataHist.GetNbins() - thisPDF->GetPhysicsParameters()->GetAllFloatNames().size();
 		// Print the result
-		std::cout << std::setw(12) << "chi2: " << TotalChi2 << std::endl;
-		std::cout << std::setw(12) << "nDoF: " << nDoF << std::endl;
-		std::cout << std::setw(12) << "chi2/nDoF: " << TotalChi2 / nDoF << std::endl;
-		std::cout << std::setw(12) << "p-value: " << TMath::Prob( TotalChi2, nDoF ) << std::endl;
+		std::cout << DataHist.GetNdimensions() << "D chi2 result";
+		if(allObjects.size() > 1) std::cout << " for fit #" << obj_counter;
+		std::cout << "\n";
+		std::cout << std::setw(12) << "chi2: " << TotalChi2 << "\n";
+		std::cout << std::setw(12) << "nDoF: " << nDoF << "\n";
+		std::cout << std::setw(12) << "chi2/nDoF: " << TotalChi2 / nDoF << "\n";
+		std::cout << std::setw(12) << "p-value: " << TMath::Prob( TotalChi2, nDoF ) << "\n";
 		std::cout << std::endl;
 	}
 	return;
