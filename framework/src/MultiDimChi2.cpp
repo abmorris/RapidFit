@@ -119,7 +119,6 @@ double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPh
 		double SampleSize = thisDataSet.GetDataNumber(combination);
 		ExpectedEvents += SampleSize*BinIntegral/TotalIntegral;
 	}
-	std::cout << "\tReturning Expected Number of Events for this Coordinate" << std::endl;
 	return ExpectedEvents;
 }
 
