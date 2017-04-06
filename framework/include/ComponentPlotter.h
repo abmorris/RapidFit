@@ -290,7 +290,7 @@ class ComponentPlotter
 		 *
 		 * @return This returns a pointer to a list of the integrals of the PDF for this given component at each of the requested coordinates in the Observable Space
 		 */
-		vector<double>* ProjectObservableComponent( DataPoint* InputDataPoint, string ObservableName, double min, int num_of_steps, double step_size, string compName );
+		vector<double> ProjectObservableComponent( DataPoint* InputDataPoint, string ObservableName, double min, int num_of_steps, double step_size, string compName );
 
 		/*!
 		 * @brief Generate the data for projection plots
@@ -313,7 +313,7 @@ class ComponentPlotter
 		 *
 		 * @return This returns the pointer to the vector of copies of all of the coordinates in X
 		 */
-		vector<vector<double>* >* MakeXProjectionData( unsigned int Input );
+		vector<vector<double>> MakeXProjectionData( unsigned int Input );
 
 		/*!
 		 * @brief Construct the y data points for all conditions for the projections of a requested Component
@@ -322,20 +322,7 @@ class ComponentPlotter
 		 *
 		 * @return This returns the Y coordinates of the various Projections in the chosen Observable
 		 */
-		vector<vector<double>* >* MakeYProjectionData( string Name );
-
-		/*!
-		 * @brief When we have more than 1 discrete component we need to create component 0 which contains the total PDF result at this coordinate
-		 *
-		 * This is best written as a separate function to make MakeYProjectionData a bit less cluttered
-		 *
-		 * @param input     This is a pointer to the projections for multiple discrete combinations of one component from one PDF
-		 *
-		 * @return This returns the input with a vector prepended to the start of the set which is a total of the vectors given at input
-		 */
-		vector<vector<double>* >* GenerateComponentZero( vector<vector<double>* >* new_dataset );
-
-
+		vector<vector<double>> MakeYProjectionData( string Name );
 
 		//	Functions for Plotting the output and putting it in a ROOT FILE
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,7 +338,7 @@ class ComponentPlotter
 		 *
 		 * @return Void
 		 */
-		void WriteOutput( vector<vector<vector<double>* >* >* X, vector<vector<vector<double>* >* >* Y, vector<string> combinationDescriptions  );
+		void WriteOutput( vector<vector<vector<double>>>& X, vector<vector<vector<double>>>& Y, vector<string> combinationDescriptions  );
 
 		/*!
 		 * @brief Get a TH1 containing this discrete combination
@@ -375,7 +362,7 @@ class ComponentPlotter
 		 *
 		 * @return Void
 		 */
-		static void WriteBranch( TTree* input_tree, TString Branch_Name, vector<double>* branch_data );
+		static void WriteBranch( TTree* input_tree, TString Branch_Name, vector<double>& branch_data );
 
 
 		//	Functions used internally within this class
@@ -412,7 +399,7 @@ class ComponentPlotter
 		 *
 		 * @return Void
 		 */
-		void Sanity_Check( vector<double>* pointValues, TString component );
+		void Sanity_Check( vector<double>& pointValues, TString component );
 
 
 
