@@ -113,7 +113,7 @@ void LegendreMomentShape::Save(const std::string filename)
 	outputTree->SaveAs(filename.c_str());
 	deletecoefficients(c);
 }
-void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* boundary, const std::string mKKname, const std::string phiname, const std::string ctheta_1name, const std::string ctheta_2name, const bool mass_dependent)
+void LegendreMomentShape::Generate(std::vector<DataPoint>& DataSet, const PhaseSpaceBoundary* boundary, const std::string mKKname, const std::string phiname, const std::string ctheta_1name, const std::string ctheta_2name, const bool mass_dependent)
 {
 	double**** c    = newcoefficients();
 	double**** c_sq = newcoefficients(); // Used in caclulating the error
@@ -122,18 +122,17 @@ void LegendreMomentShape::Generate(IDataSet* dataSet, const PhaseSpaceBoundary* 
 	const double mK  = 0.493677; // TODO: read these from config somehow
 	const double mBs  = 5.36677;
 	const double mPhi= 1.019461;
-	int numEvents = dataSet->GetDataNumber();
+	int numEvents = DataSet.size();
 	// Calculate the coefficients by summing over the dataset
 	std::cout << "Sum over " << numEvents << " events" << std::endl;
 	if(mass_dependent) std::cout << "Divide by phase space" << std::endl;
-	for (int e = 0; e < numEvents; e++)
+	for (auto& event: DataSet)
 	{
 		// Retrieve the data point
-		DataPoint * event = dataSet->GetDataPoint(e);
-		double phi        = event->GetObservable(phiname)->GetValue();
-		double ctheta_1   = event->GetObservable(ctheta_1name)->GetValue();
-		double ctheta_2   = event->GetObservable(ctheta_2name)->GetValue();
-		double mKK        = event->GetObservable(mKKname)->GetValue();
+		double phi        = event.GetObservable(phiname)->GetValue();
+		double ctheta_1   = event.GetObservable(ctheta_1name)->GetValue();
+		double ctheta_2   = event.GetObservable(ctheta_2name)->GetValue();
+		double mKK        = event.GetObservable(mKKname)->GetValue();
 		double mKK_mapped = (mKK - mKK_min)/(mKK_max-mKK_min)*2.+ (-1);
 		double val = 1;
 		// If "mass dependent" then calculate phase space element (for acceptance)

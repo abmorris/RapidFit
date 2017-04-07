@@ -15,7 +15,7 @@ class LegendreMomentShape
 		~LegendreMomentShape();
 		void Open(const std::string); // Load the coefficients from a file
 		void Save(const std::string); // Save generated coefficients to a file
-		void Generate(IDataSet*, const PhaseSpaceBoundary*, const std::string, const std::string, const std::string, const std::string, const bool); // strings are variable names: mass, phi, cosθ1, cosθ2. boolean is "mass_dependent": don't divide by phase space function if true
+		void Generate(std::vector<DataPoint>&, const PhaseSpaceBoundary*, const std::string, const std::string, const std::string, const std::string, const bool); // strings are variable names: mass, phi, cosθ1, cosθ2. boolean is "mass_dependent": don't divide by phase space function if true
 		void SetMax(const double _l_max, const double _i_max, const double _k_max, const double _j_max) // Only needed when generating coefficients; loaded from file otherwise
 		{
 			l_max = _l_max;

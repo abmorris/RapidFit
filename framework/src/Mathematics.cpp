@@ -575,81 +575,82 @@ namespace Mathematics
 			       ) / ( gamma_deltaM * gamma_deltaM );
 		}
 	}
-	int calculateAcceptanceCoefficients( IDataSet * dataSet, IPDF * PDF, bool mass_dependent = true)
+	int calculateAcceptanceCoefficients( IDataSet * inputDataSet, IPDF * PDF, bool mass_dependent = true)
 	{
 		(void)PDF; // TODO hopefully the config is stored here
-		// Implementation of the NIKHEF method for calculating the acceptance corefficients using Legendre polynomials and real valued spherical harmonics.
-		cout << "Calculating acceptance coefficients" << endl;
-		PhaseSpaceBoundary* boundary = dataSet->GetBoundary();
-		const int l_max = mass_dependent ? 6 : 0; // mKK
-		const int i_max(6); // cos(theta_1)
-		const int k_max(6); // phi
-		const int j_max(6); // cos(theta_2)
-		LegendreMomentShape lms; // All of the legwork is done in this class. Avoids duplicating lines of code.
-		lms.SetMax(l_max+1, i_max+1, k_max+1, j_max+1);
-		lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2", mass_dependent);
-		lms.Save("LegendreMoments.root");
-		TNtuple * dataacctree = new TNtuple("dataacctuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
-		const double mK  = 0.493677; // TODO: read these from config somehow
-		const double mBs  = 5.36677;
-		const double mPhi= 1.019461;
-		int numEvents = dataSet->GetDataNumber();
-		for (int e = 0; e < numEvents; e++)
+		PhaseSpaceBoundary* boundary = inputDataSet->GetBoundary();
+		int combination_counter = 0;
+		for(auto combination: boundary->GetDiscreteCombinations())
 		{
-			// Retrieve the data point
-			DataPoint * event = dataSet->GetDataPoint(e);
-			double phi        = event->GetObservable("phi")->GetValue();
-			double ctheta_1   = event->GetObservable("ctheta_1")->GetValue();
-			double ctheta_2   = event->GetObservable("ctheta_2")->GetValue();
-			double mKK        = event->GetObservable("mKK")->GetValue();
-			// Calculate phase space element
-			double val = 1;
-			// If "mass dependent" then calculate phase space element (for acceptance)
-			// Otherwise just keep it as 1 (for background)
-			if(mass_dependent)
+			combination_counter++;
+			std::vector<DataPoint> dataSet = inputDataSet->GetDiscreteSubSet(combination);
+			// Implementation of the NIKHEF method for calculating the acceptance corefficients using Legendre polynomials and real valued spherical harmonics.
+			cout << "Calculating acceptance coefficients for combination " << combination_counter << endl;
+			const int l_max = mass_dependent ? 6 : 0; // mKK
+			const int i_max(6); // cos(theta_1)
+			const int k_max(6); // phi
+			const int j_max(6); // cos(theta_2)
+			LegendreMomentShape lms; // All of the legwork is done in this class. Avoids duplicating lines of code.
+			lms.SetMax(l_max+1, i_max+1, k_max+1, j_max+1);
+			lms.Generate(dataSet, boundary, "mKK", "phi", "ctheta_1", "ctheta_2", mass_dependent);
+			lms.Save("LegendreMoments_" + std::to_string(combination_counter) + ".root");
+			TNtuple dataacctree("dataacctuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
+			const double mK  = 0.493677; // TODO: read these from config somehow
+			const double mBs  = 5.36677;
+			const double mPhi= 1.019461;
+			for(auto& event : dataSet)
 			{
-				double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
-				double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
-				val = p1_st*p3;
+				// Retrieve the data point
+				double phi        = event.GetObservable("phi")->GetValue();
+				double ctheta_1   = event.GetObservable("ctheta_1")->GetValue();
+				double ctheta_2   = event.GetObservable("ctheta_2")->GetValue();
+				double mKK        = event.GetObservable("mKK")->GetValue();
+				// Calculate phase space element
+				double val = 1;
+				// If "mass dependent" then calculate phase space element (for acceptance)
+				// Otherwise just keep it as 1 (for background)
+				if(mass_dependent)
+				{
+					double p1_st = DPHelpers::daughterMomentum(mKK, mK, mK);
+					double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
+					val = p1_st*p3;
+				}
+				dataacctree.Fill(mKK, phi, ctheta_1, ctheta_2, 1./val);
 			}
-			dataacctree->Fill(mKK, phi, ctheta_1, ctheta_2, 1./val);
-		}
-		// Now sample the acceptance surface so that we can make projections to check that it looks sensible
-		TNtuple * sampledtree = new TNtuple("sampledtuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
-		gsl_qrng * q = NULL;
-		try
-		{
-			q = gsl_qrng_alloc( gsl_qrng_sobol, 4);
-		}
-		catch(...)
-		{
-			cerr << "can't allocate random numbers for integration" << endl;
-			exit(123);
-		}
-		unsigned int nSample(500000);
-		vector<double> minima = {lms.mKK_min,-M_PI,-1,-1};
-		vector<double> maxima = {lms.mKK_max,+M_PI,+1,+1};
-		for ( int i = 0; i < (int)nSample; i++ )
-		{
-			double* point = new double[4];
-			double mKK, phi, ctheta_1, ctheta_2, weight;
-			vector<double*> point_mapped = {&mKK, &phi, &ctheta_1, &ctheta_2}; // So these can be looped over
-			gsl_qrng_get( q, point );
-			for ( int j = 0; j < 4; j++ )
+			// Now sample the acceptance surface so that we can make projections to check that it looks sensible
+			TNtuple sampledtree("sampledtuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
+			gsl_qrng * q;
+			try
 			{
-				*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
+				q = gsl_qrng_alloc( gsl_qrng_sobol, 4);
 			}
-			weight = std::erf(186*(mKK)-2*mK)*lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
-			sampledtree->Fill(mKK, phi, ctheta_1, ctheta_2, weight);
-			delete point;
+			catch(...)
+			{
+				cerr << "can't allocate random numbers for integration" << endl;
+				exit(123);
+			}
+			unsigned int nSample(500000);
+			vector<double> minima = {lms.mKK_min,-M_PI,-1,-1};
+			vector<double> maxima = {lms.mKK_max,+M_PI,+1,+1};
+			for ( int i = 0; i < (int)nSample; i++ )
+			{
+				double* point = new double[4];
+				double mKK, phi, ctheta_1, ctheta_2, weight;
+				vector<double*> point_mapped = {&mKK, &phi, &ctheta_1, &ctheta_2}; // So these can be looped over
+				gsl_qrng_get( q, point );
+				for ( int j = 0; j < 4; j++ )
+				{
+					*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
+				}
+				weight = std::erf(186*(mKK)-2*mK)*lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
+				sampledtree.Fill(mKK, phi, ctheta_1, ctheta_2, weight);
+				delete point;
+			}
+			auto acceptance_file = std::unique_ptr<TFile>(TFile::Open(("sampled_LegendreMomentShape_" + std::to_string(combination_counter) + ".root").c_str(),"RECREATE"));
+			sampledtree.Write();
+			dataacctree.Write();
+			acceptance_file->Close();
 		}
-		TFile * acceptance_file = TFile::Open("sampled_LegendreMomentShape.root","RECREATE");
-		sampledtree->Write();
-		dataacctree->Write();
-		acceptance_file->Close();
-		delete sampledtree;
-		delete dataacctree;
-		delete acceptance_file;
 		return 1.;
 	}
 
