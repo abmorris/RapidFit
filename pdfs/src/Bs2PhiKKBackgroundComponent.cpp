@@ -129,7 +129,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	{
 		massPart = std::norm(KKLineShape->massShape(mKK))*1e-4;
 	}
-	double angularPart = angulardistribution.Evaluate(datapoint);
+	double angularPart = angulardistribution.Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
 	if(std::isnan(massPart)) std::cerr << "Mass part is nan" << std::endl;
 	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
 	if(std::isnan(angularPart)) std::cerr << "Angular part is nan" << std::endl;

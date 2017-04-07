@@ -5,7 +5,7 @@ Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
 	// Dependent variable names
 	int i(0);
-	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2"})
+	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2", "TISTOS"})
 	{
 		ObservableNames[i] = config->getName(name);
 		i++;
@@ -31,7 +31,7 @@ void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
 Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
-	datapoint_t dp = {0,0,0,0};
+	datapoint_t dp = {0,0,0,0,0};
 	int i(0);
 	for(const auto& name: ObservableNames)
 	{

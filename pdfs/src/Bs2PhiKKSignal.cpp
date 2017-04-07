@@ -1,6 +1,7 @@
 // Std Libraries
 #include <stdexcept>
 #include <iomanip>
+#include <algorithm>
 // ROOT Libraries
 #include "TFile.h"
 #include "TTree.h"
@@ -17,7 +18,6 @@ PDF_CREATOR( Bs2PhiKKSignal )
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
-	, acceptance_histogram((std::string)config->getConfigurationValue("HistogramFile") != "")
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
@@ -42,13 +42,10 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	}
 	if(components.size() > 1) componentnames.push_back("interference");
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
-	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile")));
-	else if(acceptance_histogram)
+	if(acceptance_moments)
 	{
-		TFile* histfile = TFile::Open(config->getConfigurationValue("HistogramFile").c_str());
-		acc_h = std::shared_ptr<NDHist_Adaptive>(new NDHist_Adaptive(histfile));
-		acc_h->LoadFromTree((TTree*)histfile->Get("AccTree"));
-		acc_h->SetDimScales({1.,0.1,1.,1.}); // TODO: read this from the file
+		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFileTIS")));
+		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFileTOS")));
 	}
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
@@ -75,10 +72,12 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	, componentnames(copy.componentnames)
 	// Options
 	, acceptance_moments(copy.acceptance_moments)
-	, acceptance_histogram(copy.acceptance_histogram)
 {
-	if(acceptance_moments) acc_m = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m));
-	else if(acceptance_histogram) acc_h = copy.acc_h;
+	if(acceptance_moments)
+	{
+		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[0]));
+		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[1]));
+	}
 }
 /*****************************************************************************/
 // Build a component object from a passed option
@@ -231,18 +230,11 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 	if(acceptance_moments)
 	{
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m->Evaluate(datapoint);
+		acceptance = acc_m[(bool)datapoint[4]]->Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
 		// Multiply by a switch-on function
 		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
 //		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
 //		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK))*2.0/M_PI;
-	}
-	else if(acceptance_histogram)
-	{
-		std::vector<double> absdatapoint;
-		for(const auto& val: datapoint)
-			absdatapoint.push_back(std::abs(val));
-		acceptance = acc_h->Eval(absdatapoint);
 	}
 	if(std::isnan(acceptance)) std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;

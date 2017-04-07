@@ -19,7 +19,7 @@ class Bs2PhiKK
 		static constexpr double mBs = 5.36677;
 		static constexpr double mK = 0.493677;
 		static constexpr double mpi = 0.13957018;
-		typedef std::array<double,4> datapoint_t; // Datapoint type
+		typedef std::array<double,5> datapoint_t; // Datapoint type
 		typedef std::array<std::complex<double>,2> amplitude_t; // Two complex amplitudes (B and B̅)
 		static std::vector<std::string> LineShapeParameterNames(std::string name, std::string shape); // Return the necessary parameter names given a lineshape name
 		static bool IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t&); // Return whether or not this datapoint makes sense
@@ -40,7 +40,7 @@ class Bs2PhiKK
 		static void UpdateLineshape(const std::string&, DPMassShape&, const std::vector<PhysPar>&); // Update the parameters of a resonance line shape
 	protected:
 		void MakePrototypeDataPoint(std::vector<std::string>&); // Create a prototype datapoint to use in MakePrototypes() in the PDFs
-		std::array<ObservableRef,4> ObservableNames;// Datapoint stuff: K+K− mass and helicity angles
+		std::array<ObservableRef,5> ObservableNames;// Datapoint stuff: K+K− mass and helicity angles
 		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const; // Retrieve an array of doubles from a RapidFit Datapoint object
 };
 

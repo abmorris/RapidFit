@@ -9,7 +9,6 @@
 #endif
 #include "Bs2PhiKKSignalComponent.h"
 #include "LegendreMomentShape.h"
-#include "NDHist_Adaptive.h"
 
 class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 {
@@ -38,10 +37,8 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		std::map<std::string,double> mKKresconfig; // configuration parameters
 		// Options
 		bool acceptance_moments; // Use Legendre moments for acceptance
-		bool acceptance_histogram; // Use adaptively-binned histogram for acceptance
 		// Acceptance objects
-		std::unique_ptr<LegendreMomentShape> acc_m;
-		std::shared_ptr<NDHist_Adaptive> acc_h;
+		std::array<std::unique_ptr<LegendreMomentShape>,2> acc_m;
 		// Calculation of the matrix element
 		double TimeIntegratedMsq(const Bs2PhiKK::amplitude_t&) const; // Receive a complex amplitude and turn it into a |M|²
 		double TotalMsq(const Bs2PhiKK::datapoint_t&, const std::string& dummy = "") const; // Calculate the total |M|². An MsqFunc_t object can point to this
