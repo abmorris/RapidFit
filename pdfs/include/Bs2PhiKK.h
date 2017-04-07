@@ -40,7 +40,7 @@ class Bs2PhiKK
 		static void UpdateLineshape(const std::string&, DPMassShape&, const std::vector<PhysPar>&); // Update the parameters of a resonance line shape
 	protected:
 		void MakePrototypeDataPoint(std::vector<std::string>&); // Create a prototype datapoint to use in MakePrototypes() in the PDFs
-		std::array<ObservableRef,5> ObservableNames;// Datapoint stuff: K+K− mass and helicity angles
+		std::vector<ObservableRef> ObservableNames;// Datapoint stuff: K+K− mass and helicity angles
 		Bs2PhiKK::datapoint_t ReadDataPoint(DataPoint*) const; // Retrieve an array of doubles from a RapidFit Datapoint object
 };
 

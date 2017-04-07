@@ -81,7 +81,8 @@ void Bs2PhiKKBackgroundComponent::Initialise()
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
 	else if(lineshape=="NR")
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
-	else return; // Don't update the lineshape if it doesn't exist
+	else
+		return; // Don't update the lineshape if it doesn't exist
 	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
@@ -101,9 +102,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double absalpha = std::abs(alpha);
 		double A,B;
 		if(arg >= -absalpha)
-		{
 			massPart = std::exp(-0.5*arg*arg);
-		}
 		else
 		{
 			A = std::pow(n/absalpha,n) * std::exp(-0.5*absalpha*absalpha);
@@ -126,9 +125,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	else if(type == "histogram")
 		massPart = mKKhist.Eval({mKK});
 	else if(!lineshape.empty())
-	{
 		massPart = std::norm(KKLineShape->massShape(mKK))*1e-4;
-	}
 	double angularPart = angulardistribution.Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
 	if(std::isnan(massPart)) std::cerr << "Mass part is nan" << std::endl;
 	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
@@ -146,7 +143,8 @@ void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		if(std::isnan(par.value))
 			std::cerr << par.name.Name() << " is nan" << std::endl;
 	}
-	if(!lineshape.empty()) Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
+	if(!lineshape.empty())
+		Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 vector<ObservableRef> Bs2PhiKKBackgroundComponent::GetPhysicsParameters() const
 {

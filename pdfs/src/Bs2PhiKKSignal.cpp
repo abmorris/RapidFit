@@ -36,11 +36,13 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "┠───────────────┼───────┼───────────────┨\n";
 	for(const auto& name: reslist)
 	{
-		if(name=="") continue;
+		if(name=="")
+			continue;
 		components[name] = ParseComponent(config,phiname,name);
 		componentnames.push_back(name);
 	}
-	if(components.size() > 1) componentnames.push_back("interference");
+	if(components.size() > 1)
+		componentnames.push_back("interference");
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
@@ -114,7 +116,8 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Resonance parameters
 	for(const auto& par: {dGsGs, phimass, thraccscale})
 		parameterNames.push_back(par.name);
-	if(!mKKresconfig.empty()) parameterNames.push_back(mKKres_sigmazero.name);
+	if(!mKKresconfig.empty())
+		parameterNames.push_back(mKKres_sigmazero.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
@@ -147,9 +150,11 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 {
 	std::string compName = component->getComponentName();
 	// Verification
-	if(compName.find_first_not_of("0123456789") == string::npos) return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
+	if(compName.find_first_not_of("0123456789") == string::npos)
+		return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) throw std::out_of_range("Unphysical datapoint"); // Check if the point is above threshold and |cos(θ)| <= 1
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint))
+		throw std::out_of_range("Unphysical datapoint"); // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
 	MsqFunc_t EvaluateMsq = compName=="interference"? &Bs2PhiKKSignal::InterferenceMsq : &Bs2PhiKKSignal::ComponentMsq; // Choose the function to calcualte the |M|²
 	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(datapoint,compName) : Convolve(EvaluateMsq,datapoint,compName); // Do the convolved or unconvolved |M|² calculation
@@ -160,7 +165,8 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	// Verification
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint)) throw std::out_of_range("Unphysical datapoint");  // Check if the point is above threshold and |cos(θ)| <= 1
+	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint))
+		throw std::out_of_range("Unphysical datapoint");  // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
 	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(datapoint) : Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,""); // Do the convolved or unconvolved |M|² calculation
 	return Evaluate_Base(MatrixElementSquared, datapoint);
@@ -179,7 +185,11 @@ double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKK::datapoint_t& datapoint, const st
 	for(const auto& comp : components)
 	{
 		Bs2PhiKK::amplitude_t CompAmp = comp.second.Amplitude(datapoint);
-		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag())){ std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl; std::exit(1);}
+		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag()))
+		{
+			std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl;
+			std::exit(1);
+		}
 		TotalAmp[false] += CompAmp[false];
 		TotalAmp[true] += CompAmp[true];
 	}
@@ -195,8 +205,8 @@ double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKK::datapoint_t& datapoint, c
 {
 	(void)dummy;
 	double MatrixElementSquared = TotalMsq(datapoint);
-		for(const auto& comp : components)
-			MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(datapoint));
+	for(const auto& comp : components)
+		MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(datapoint));
 	return MatrixElementSquared;
 }
 // Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
@@ -236,7 +246,8 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 //		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
 //		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
-	if(std::isnan(acceptance)) std::cerr << "Acceptance evaluates to nan" << std::endl;
+	if(std::isnan(acceptance))
+		std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;
 }
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
@@ -244,7 +255,8 @@ double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
 	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, phimass.value);
 	double pRpB = pR * pB;
-	if(std::isnan(pRpB)) std::cerr << "p1stp3 evaluates to nan" << std::endl;
+	if(std::isnan(pRpB))
+		std::cerr << "p1stp3 evaluates to nan" << std::endl;
 	return pRpB;
 }
 /*****************************************************************************/

@@ -4,12 +4,8 @@
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
 	// Dependent variable names
-	int i(0);
 	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2", "TISTOS"})
-	{
-		ObservableNames[i] = config->getName(name);
-		i++;
-	}
+		ObservableNames.push_back(config->getName(name));
 }
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
 	// Dependent variable names
@@ -31,13 +27,9 @@ void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
 Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
-	datapoint_t dp = {0,0,0,0,0};
-	int i(0);
-	for(const auto& name: ObservableNames)
-	{
-		dp[i] = measurement->GetObservable(name)->GetValue();
-		i++;
-	}
+	datapoint_t dp;
+	for(unsigned i = 0; i < dp.size(); i++)
+		dp[i] = measurement->GetObservable(ObservableNames[i])->GetValue();
 	dp[1]+=M_PI;
 	return dp;
 }
@@ -51,19 +43,13 @@ std::vector<std::string> Bs2PhiKK::LineShapeParameterNames(std::string name, std
 {
 	// Breit Wigner
 	if(lineshape=="BW")
-	{
 		return {name+"_mass", name+"_width", "KKBFradius"};
-	}
 	// Flatte
 	else if(lineshape=="FT")
-	{
 		return {name+"_mass", name+"_gpipi", name+"_Rg"};
-	}
 	// Assume it's non-resonant
 	else
-	{
 		return {};
-	}
 }
 void Bs2PhiKK::UpdateLineshape(const std::string& lineshape, DPMassShape& KKLineShape, const std::vector<PhysPar>& KKpars)
 {
