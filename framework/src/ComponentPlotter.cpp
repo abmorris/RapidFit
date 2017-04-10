@@ -19,7 +19,6 @@
 #include "TSystem.h"
 #include "TGraph.h"
 #include "TGraphErrors.h"
-#include "TF1.h"
 #include "TLatex.h"
 #include "TPad.h"
 ///	RapidFit Headers
@@ -120,16 +119,7 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 		{
 			cout << "CANNOT USE Combination Number: " << config->ForceCombinationNumber << " Ignoring!" << endl;
 		}
-		int i=0;
-		for( auto thisCombination : allCombinations_input)
-		{
-			i++;
-			double thisNum = plotData->GetDataNumber( thisCombination );
-			if( fabs(thisNum) > 1E-5 && i == (config->ForceCombinationNumber-1) )
-			{
-				allCombinations.push_back( new DataPoint( *thisCombination ) );
-			}
-		}
+		allCombinations.push_back(*allCombinations_input[config->ForceCombinationNumber]);
 	}
 	else
 	{
@@ -138,11 +128,8 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 			double thisNum = plotData->GetDataNumber( thisCombination );
 			if( fabs(thisNum) > 1E-5 )
 			{
-				allCombinations.push_back( new DataPoint( *thisCombination ) );
+				allCombinations.push_back( *thisCombination );
 			}
-			//(*thisCombination)->Print();
-			//cout << thisNum << "  " << plotData->GetDataNumber() << endl;
-			//if( thisNum == 0 ) exit(0);
 		}
 	}
 	cout << endl << "All Combinations with Data:" << endl;
@@ -159,8 +146,8 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	// Hack to get the internal cached values for NormalisedSumPDF to work
 	if(plotPDF->GetName()=="NormalisedSumPDF")
 	{
-		for(auto combination: allCombinations)
-			plotPDF->GetPDFIntegrator()->Integral( combination, full_boundary );
+		for(auto& combination: allCombinations)
+			plotPDF->GetPDFIntegrator()->Integral( &combination, full_boundary );
 	}
 	for( unsigned int i=0; i< allCombinations.size(); ++i )
 	{
@@ -169,12 +156,12 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 			cout << "ComponentPlotter:: Calculating Test integrals:\t" << i << endl;
 		}
 		pdfIntegrator->ForceTestStatus( false );
-		allCombinations[i]->SetPhaseSpaceBoundary( full_boundary );
+		allCombinations[i].SetPhaseSpaceBoundary( full_boundary );
 		double thisIntegral = 0.;
 		try
 		{
-			allCombinations[i]->SetPhaseSpaceBoundary( full_boundary );
-			thisIntegral = pdfIntegrator->NumericallyIntegrateDataPoint( allCombinations[i], full_boundary, plotPDF->GetDoNotIntegrateList() );
+			allCombinations[i].SetPhaseSpaceBoundary( full_boundary );
+			thisIntegral = pdfIntegrator->NumericallyIntegrateDataPoint( &allCombinations[i], full_boundary, plotPDF->GetDoNotIntegrateList() );
 		}
 		catch(...)
 		{
@@ -237,11 +224,6 @@ ComponentPlotter::~ComponentPlotter()
 	// XXX many/all of these objects are copyable. what's with all the pointer abuse?
 	if( plotPDF != NULL )	delete plotPDF;
 	if( pdfIntegrator != NULL ) delete pdfIntegrator;
-	while( !allCombinations.empty() )
-	{
-		if( allCombinations.back() != NULL ) delete allCombinations.back();
-		allCombinations.pop_back();
-	}
 	delete format;
 	if( initialBoundary != NULL ) delete initialBoundary;
 	if( full_boundary != NULL ) delete full_boundary;
@@ -318,7 +300,7 @@ vector<vector<double>> ComponentPlotter::MakeYProjectionData( string component_s
 	for( unsigned int combinationIndex = 0; combinationIndex < allCombinations.size(); ++combinationIndex )
 	{
 		cout << "Constructing PDF Integral of: " << observableName << " Combination: " << combinationIndex+1 << " of " << allCombinations.size() << ". For component: " << component_str <<" .\t";
-		allCombinations[combinationIndex]->SetPhaseSpaceBoundary( full_boundary );
+		allCombinations[combinationIndex].SetPhaseSpaceBoundary( full_boundary );
 		cout << observableName << ": " << boundary_min << " <-> " << boundary_min + ( step_size * (total_points-1) ) << endl;
 		cout << "Starting Projection: " << combinationIndex+1 << " of " << allCombinations.size() <<"."<< endl;
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,7 +308,7 @@ vector<vector<double>> ComponentPlotter::MakeYProjectionData( string component_s
 		//Calculate the projection for this combination
 		vector<double> projectionValueArray =
 			//	DataPoint with all information on this configuration,
-			this->ProjectObservableComponent( allCombinations[combinationIndex],
+			this->ProjectObservableComponent( &allCombinations[combinationIndex],
 					//	minimum of range in Observable,	num of points in range,	plot_interval,	component of interest
 					observableName, boundary_min, total_points, step_size, component_str );
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -641,11 +623,10 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 			{
 				cout << endl;
 				cout << "Calculating Chi^2:" << endl;
-				TF1 fitting_function( "total_PDF", this, boundary_min, boundary_max, 1, "" );        //      I REFUSE to pass the class name
 				for( unsigned int i=0; i< (unsigned) binned_data[0]->GetN(); ++i )
 				{
 					double bin_center = binned_data[combinationIndex]->GetX()[i];
-					double this_bin = fitting_function.Eval( bin_center );
+					double this_bin = (*this)( bin_center );
 					double actual_bin = binned_data[combinationIndex]->GetY()[i];
 					double this_chi = actual_bin-this_bin;
 					this_chi/=binned_data[combinationIndex]->GetEY()[i];
@@ -663,13 +644,11 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 			{
 				cout << endl;
 				cout << "Calculating Pull Values" << endl;
-				TString TF1_Name( "total_PDF_" ); TF1_Name.Append( desc );
-				TF1 PDF_function( TF1_Name, this, boundary_min, boundary_max, 1, "" );        //      I REFUSE to pass the class name
 				if( allPullData.size() != (unsigned)binned_data[combinationIndex]->GetN() ) allPullData.resize( (unsigned)binned_data[combinationIndex]->GetN(), 0. );
 				for( unsigned int i=0; i< (unsigned)binned_data[combinationIndex]->GetN(); ++i )
 				{
 					double bin_center = binned_data[combinationIndex]->GetX()[i];
-					double this_bin = PDF_function.Eval( bin_center );
+					double this_bin = (*this)( bin_center );
 					allPullData[i]+= this_bin;
 				}
 				TString desc_pull( desc );
@@ -1246,7 +1225,7 @@ void ComponentPlotter::SetupCombinationDescriptions()
 			vector<double> values_for_this_combination;
 			for( unsigned int paramIndex=0; paramIndex< discreteNames.size(); ++paramIndex )
 			{
-				values_for_this_combination.push_back( allCombinations[combinationIndex]->GetObservable( discreteNames[paramIndex] )->GetValue() );
+				values_for_this_combination.push_back( allCombinations[combinationIndex].GetObservable( discreteNames[paramIndex] )->GetValue() );
 			}
 			//              Get all data which falls within this paramreter set
 			data_subsets.push_back( plotData->GetDiscreteSubSet( discreteNames, values_for_this_combination ) );
@@ -1394,36 +1373,39 @@ vector<vector<TGraph*> > ComponentPlotter::GetComponents()
 {
 	return total_components;
 }
-double ComponentPlotter::operator() (double *x, double *p)
+
+double ComponentPlotter::operator() (double x) const
 {
-	(void) p;			//	NOT USED OR UNDERSTOOD IN THIS CONTEXT
-	double fixed_obs_val = x[0];
 	double integral_value=0.;
 	ComponentRef comp_obj( "0", observableName );
 	unsigned int comb_num=0;
-	for( auto comb_i : allCombinations)
+	for( const auto& comb_i : allCombinations)
 	{
-		comb_num++;
-		DataPoint InputPoint( *comb_i );
-		Observable* oldObs = InputPoint.GetObservable( observableName );
-		Observable newObs( observableName, fixed_obs_val, oldObs->GetUnit() );
-		InputPoint.SetObservable( observableName, &newObs );
-		//delete oldObs;
-		double PDFProjection = pdfIntegrator->ProjectObservable( &InputPoint, full_boundary, observableName, &comp_obj );
+		// Make a new datapoint object from the stored prototype
+		DataPoint InputPoint = comb_i;
+		// Set the value of the observable in this datapoint to be the passed argument of the functor
+		InputPoint.SetObservable( observableName, x, "DummyUnit" );
 		double PDFNormalisation = this->PDF2DataNormalisation( comb_num );
+		double PDFProjection = pdfIntegrator->ProjectObservable( &InputPoint, full_boundary, observableName, &comp_obj );
 		integral_value += PDFProjection*PDFNormalisation;
+		comb_num++;
 	}
-	cout << "Value At: " << left << setw(5) << setprecision(3) << x[0] << "\t is:\t" << setprecision(4) << integral_value << setw(20) << " " <<  "\r" << flush;
+	cout << "Value At: " << left << setw(5) << setprecision(3) << x << "\t is:\t" << setprecision(4) << integral_value << setw(20) << " " <<  "\r" << flush;
 	return integral_value;
 }
+
 double ComponentPlotter::PDF2DataNormalisation( const unsigned int combinationIndex ) const
 {
-	double normalisation=1.;
-	normalisation *= fabs(ratioOfIntegrals[ combinationIndex ]);			//	Attempt to correct for Numerical != analytical due to any constant factor due to numerical inaccuracy
-	//	(some constant close to 1. exactly 1. for numerical PDFs)
+	double normalisation=fabs(ratioOfIntegrals[ combinationIndex ]);			//	Attempt to correct for Numerical != analytical due to any constant factor due to numerical inaccuracy
+	if(combinationIndex >= allCombinations.size())
+	{
+		cerr << "Can't get combination " << combinationIndex << " of " << allCombinations.size() << endl;
+		exit(-1);
+	}
+	DataPoint PrototypeCombinationDatapoint = allCombinations[combinationIndex];
 	double dataNum = 0.;
-	if( allCombinations.empty() || allCombinations.size() == 1 ) dataNum = plotData->GetDataNumber( NULL );
-	else dataNum = plotData->GetDataNumber( allCombinations[combinationIndex] );
+	if( allCombinations.empty() || allCombinations.size() == 1 ) dataNum = plotData->GetDataNumber();
+	else dataNum = plotData->GetDataNumber( &PrototypeCombinationDatapoint );
 	normalisation *= dataNum / (double) data_binning;				//	Normalise to this density of events	(Num of events per bin in flatPDF)
 	double range = fabs( boundary_max-boundary_min );
 	normalisation *= range;								//	Correct for the range of the dataset	(absolute range of Observable being projected)
@@ -1436,7 +1418,7 @@ double ComponentPlotter::PDF2DataNormalisation( const unsigned int combinationIn
 	{
 		cout << endl;
 		cout << "fabs(ratioOfIntegrals[ combinationIndex ]) : " << fabs(ratioOfIntegrals[ combinationIndex ]) << endl;
-		cout << "plotData->GetDataNumber( allCombinations[combinationIndex] ) : " << plotData->GetDataNumber( allCombinations[combinationIndex] ) << endl;
+		cout << "plotData->GetDataNumber( allCombinations[combinationIndex] ) : " << plotData->GetDataNumber( &PrototypeCombinationDatapoint ) << endl;
 		cout << "combinationIndex of allCombinations.size() : " << combinationIndex << " of " << allCombinations.size() << endl;
 		cout << "data_binning : " << data_binning << endl;
 		cout << "fabs( boundary_max-boundary_min ) : " << fabs( boundary_max-boundary_min ) << endl;
