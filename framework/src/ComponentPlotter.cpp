@@ -98,15 +98,13 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	vector<DataPoint*> allCombinations_input;
 	if( !config->plotAllCombinations )
 	{
-		vector<string> DiscreteObs = full_boundary->GetDiscreteNames();
-		for( unsigned int i=0; i< DiscreteObs.size(); ++i )
+		for( const auto& DiscreteObs: full_boundary->GetDiscreteNames() )
 		{
-			if( full_boundary->GetConstraint( DiscreteObs[i] )->GetValues().size() > 1 )
+			if( full_boundary->GetConstraint( DiscreteObs )->GetValues().size() > 1 )
 			{
-				full_boundary->RemoveConstraint( DiscreteObs[i] );
-				IConstraint* thisConstraint = (IConstraint*) new ObservableDiscreteConstraint( DiscreteObs[i], vector<double>(1,config->defaultCombinationValue), " ", "" );
-				full_boundary->AddConstraint( DiscreteObs[i], thisConstraint );
-				delete thisConstraint;
+				full_boundary->RemoveConstraint( DiscreteObs );
+				ObservableDiscreteConstraint thisConstraint( DiscreteObs, {config->defaultCombinationValue}, " ", "" );
+				full_boundary->AddConstraint( DiscreteObs, &thisConstraint );
 			}
 		}
 		plotPDF->ChangePhaseSpace( full_boundary );
@@ -1383,7 +1381,7 @@ double ComponentPlotter::operator() (double x) const
 	return integral_value;
 }
 
-double ComponentPlotter::PDF2DataNormalisation( const unsigned int combinationIndex ) const
+double ComponentPlotter::PDF2DataNormalisation( const unsigned int combinationIndex ) const // I swear this is obfuscating something much simpler. TODO Work out what it is.
 {
 	double normalisation=fabs(ratioOfIntegrals[ combinationIndex ]);			//	Attempt to correct for Numerical != analytical due to any constant factor due to numerical inaccuracy
 	if(combinationIndex >= allCombinations.size())
