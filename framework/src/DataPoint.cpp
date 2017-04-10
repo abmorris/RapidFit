@@ -25,67 +25,40 @@ using std::cerr;
 using std::endl;
 using std::numeric_limits;
 
-//	Required for Sorting
-DataPoint::DataPoint() : allObservables(), allNames(), myPhaseSpaceBoundary(NULL), thisDiscreteIndex(-1),
-	WeightValue(1.), storedID(0), initialNLL( numeric_limits<double>::quiet_NaN() ), PerEventData(), nameIndex(), DiscreteIndexMap()
-{
-}
-
 //Constructor with correct arguments
-DataPoint::DataPoint( vector<string> NewNames ) : allObservables(), allNames(), myPhaseSpaceBoundary(NULL),
-	thisDiscreteIndex(-1), WeightValue(1.), storedID(0), initialNLL( numeric_limits<double>::quiet_NaN() ),
-	PerEventData(), nameIndex(), DiscreteIndexMap()
+DataPoint::DataPoint( vector<string> NewNames )
+ : myPhaseSpaceBoundary(NULL)
+ , thisDiscreteIndex(-1)
+ , WeightValue(1.)
+ , storedID(0)
+ , initialNLL( numeric_limits<double>::quiet_NaN() )
+ , PerEventData()
+ , DiscreteIndexMap()
 {
-	allObservables.reserve( NewNames.size() );
-	//Populate the map
-	for( nameIndex = 0; nameIndex < (int)NewNames.size(); ++nameIndex )
-	{
-		allObservables.push_back( Observable(NewNames[(unsigned)nameIndex]) );
-	}
+	for( const auto& NewName: NewNames )
+		allObservables.push_back( Observable(NewName) );
 	vector<string> duplicates;
 	allNames = StringProcessing::RemoveDuplicates( NewNames, duplicates );
 	if( allNames.size() != NewNames.size() )
 	{
 		cerr << "WARNING: Cannot Generate a DataPoint with 2 Occurances of the same Observable" << endl;
-		for( vector<string>::iterator str_i = duplicates.begin(); str_i != duplicates.end(); ++str_i )
-		{
-			cout << *str_i << endl;
-		}
+		for( const auto& dupe: duplicates )
+			cout << dupe << endl;
 		cerr << "This is harmless, but you will now have some merged Observable(s)" << endl;
 	}
 }
 
-//Assignment operator
-DataPoint& DataPoint::operator=( const DataPoint& NewPoint )
+DataPoint::DataPoint( const DataPoint& input )
+ : allObservables(input.allObservables)
+ , allNames(input.allNames)
+ , myPhaseSpaceBoundary(input.myPhaseSpaceBoundary)
+ , thisDiscreteIndex(input.thisDiscreteIndex)
+ , WeightValue(input.WeightValue)
+ , storedID(input.storedID)
+ , initialNLL(input.initialNLL)
+ , PerEventData(input.PerEventData)
+ , DiscreteIndexMap(input.DiscreteIndexMap)
 {
-	if( &NewPoint != this )
-	{
-		this->allNames = NewPoint.allNames;
-		this->myPhaseSpaceBoundary = NewPoint.myPhaseSpaceBoundary;
-		this->thisDiscreteIndex = NewPoint.thisDiscreteIndex;
-		this->WeightValue = NewPoint.WeightValue;
-		this->storedID = NewPoint.storedID;
-		this->initialNLL = NewPoint.initialNLL;
-		this->PerEventData = NewPoint.PerEventData;
-		this->nameIndex = NewPoint.nameIndex;
-		for( unsigned int i=0; i< NewPoint.allObservables.size(); ++i )
-		{
-			this->allObservables.push_back( Observable( (NewPoint.allObservables[i]) ) );
-		}
-		this->DiscreteIndexMap = NewPoint.DiscreteIndexMap;
-	}
-	return *(this);
-}
-
-DataPoint::DataPoint( const DataPoint& input ) :
-	allObservables(), allNames(input.allNames), myPhaseSpaceBoundary(input.myPhaseSpaceBoundary),
-	thisDiscreteIndex(input.thisDiscreteIndex), WeightValue(input.WeightValue), storedID(input.storedID),
-	initialNLL( input.initialNLL ), PerEventData(input.PerEventData), nameIndex(), DiscreteIndexMap(input.DiscreteIndexMap)
-{
-	for( unsigned int i=0; i< input.allObservables.size(); ++i )
-	{
-		allObservables.push_back( Observable( (input.allObservables[i])) );
-	}
 }
 
 //Destructor
@@ -123,7 +96,13 @@ void DataPoint::RemoveObservable( const string input )
 
 Observable* DataPoint::GetObservable( unsigned int wanted )
 {
-	return &(allObservables[ wanted ]);
+	if(wanted < allObservables.size())
+		return &(allObservables[ wanted ]);
+	else
+	{
+		cerr << "Observable with index " << wanted << " of " << allObservables.size() << " not found" << endl;
+		throw(-20);
+	}
 }
 
 //Retrieve an observable by its name
@@ -131,8 +110,8 @@ Observable* DataPoint::GetObservable( unsigned int wanted )
 Observable* DataPoint::GetObservable(string const Name, const bool silence )
 {
 	//Check if the name is stored in the map
-	nameIndex = StringProcessing::VectorContains( &allNames, &Name );
-	if( nameIndex == -1 )
+	int nameIndex = StringProcessing::VectorContains( &allNames, &Name );
+	if( nameIndex < 0 )
 	{
 		if( !silence ) cerr << "Observable name " << Name << " not found (2)" << endl;
 		//this->Print();
@@ -141,22 +120,21 @@ Observable* DataPoint::GetObservable(string const Name, const bool silence )
 	}
 	else
 	{
-		return &(allObservables[(unsigned)nameIndex]);
+		return GetObservable(nameIndex);
 	}
 }
 
 Observable* DataPoint::GetObservable( const ObservableRef& object, const bool silence )
 {
-	if( object.GetIndex() < 0 )
+	int index = object.GetIndex();
+	if( index < 0 )
 	{
 		object.SetIndex( StringProcessing::VectorContains( &allNames, object.NameRef()) );
-		if( object.GetIndex() >= 0 ) return &(allObservables[ (unsigned) object.GetIndex() ]);
+		index = object.GetIndex();
 	}
-	else
-	{
-		return &(allObservables[ (unsigned) object.GetIndex() ]);
-	}
-	if( !silence ) cerr << "Observable name " << object.Name().c_str() << " not found (3)" << endl;
+	if( index >= 0 )
+		return GetObservable(index);
+	else if( !silence ) cerr << "Observable name " << object.Name().c_str() << " not found (3)" << endl;
 	throw(-20);
 }
 
@@ -164,8 +142,8 @@ Observable* DataPoint::GetObservable( const ObservableRef& object, const bool si
 bool DataPoint::SetObservable( string Name, Observable * NewObservable )
 {
 	//Check if the name is stored in the map
-	nameIndex = StringProcessing::VectorContains( &allNames, &Name );
-	if ( nameIndex == -1 )
+	int nameIndex = StringProcessing::VectorContains( &allNames, &Name );
+	if ( nameIndex < 0 )
 	{
 		cerr << "Observable name " << Name << " not found (4)" << endl;
 		throw(438);
@@ -184,8 +162,8 @@ bool DataPoint::SetObservable( ObservableRef& Name, Observable * NewObservable )
 	if( Name.GetIndex() == -1 )
 	{
 		string thisName = Name.Name();
-		nameIndex = StringProcessing::VectorContains( &allNames, &thisName );
-		if( nameIndex == -1 )
+		int nameIndex = StringProcessing::VectorContains( &allNames, &thisName );
+		if( nameIndex < 0 )
 		{
 			cerr << "Observable name " << thisName << " not found (5)" << endl;
 			throw(4389);

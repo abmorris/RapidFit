@@ -30,15 +30,9 @@ class DataPoint
 {
 	public:
 		/*!
-		 * @brief Default Constructor Required for Sorting
-		 */
-		DataPoint();
-
-		/*!
 		 * @brief Correct Copy Constructor for DataPoints
 		 */
 		DataPoint( const DataPoint& );
-		DataPoint& operator= ( const DataPoint& );
 
 		/*!
 		 * @brief Correct Constructor which contains the name of all of the observables the class knows about
@@ -304,8 +298,6 @@ class DataPoint
 		size_t storedID;
 
 		double WeightValue;
-
-		mutable int nameIndex;
 
 		map< size_t, int > DiscreteIndexMap;
 };
