@@ -64,18 +64,6 @@ class IDataSet
 
 		/*!
 		 * @brief Interface Function:
-		 *        Sort the DataSet by a chosen parameter
-		 *
-		 * This allows you to sort the DataSet according to Where each DataPoint lies in a single Observable i.e. sort each event by 'time'
-		 *
-		 * @param ObsName   This is the Name of the Observable you wish to sort the DataPoints by
-		 *
-		 * @return Void
-		 */
-		virtual void SortBy( string ObsName ) = 0;
-
-		/*!
-		 * @brief Interface Function:
 		 *        Get a discrete subset from within this dataset which matches the conditions passed as the input
 		 *
 		 * @param Names     These are the Names of the Observables which are Discrete

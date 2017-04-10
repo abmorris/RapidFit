@@ -162,36 +162,6 @@ void MemoryDataSet::Clear()
 	allData.swap(empty);
 }
 
-void MemoryDataSet::SortBy( string parameter )
-{
-
-	cout << "Sorting" << endl;
-	if( allData.size() > 0 )
-	{
-		vector<pair<DataPoint,ObservableRef> > allData_sort;
-
-		for( vector<DataPoint>::iterator data_i = allData.begin(); data_i != allData.end(); ++data_i )
-		{
-			allData_sort.push_back( make_pair( *data_i, ObservableRef( parameter ) ) );
-		}
-
-		//cout << "hello" << endl;
-		sort( allData_sort.begin(), allData_sort.end(), DataPoint() );
-		cout << "sorted" << endl;
-		//	Sort the data in memory
-
-		while( !allData.empty() ) allData.pop_back();
-
-		for( vector<pair<DataPoint,ObservableRef> >::iterator sort_i = allData_sort.begin(); sort_i != allData_sort.end(); ++sort_i )
-		{
-			allData.push_back( sort_i->first );
-		}
-
-		cout << allData.size() << endl;
-	}
-	cout << "Sorted" << endl;
-}
-
 IDataSet* MemoryDataSet::GetDiscreteDataSet( const vector<ObservableRef> discreteParam, const vector<double> discreteVal ) const
 {
 	return (IDataSet*) new MemoryDataSet( this->GetBoundary(), GetDiscreteSubSet( discreteParam, discreteVal ) );

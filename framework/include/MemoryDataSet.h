@@ -35,8 +35,6 @@ class MemoryDataSet : public IDataSet
 		virtual PhaseSpaceBoundary * GetBoundary() const;
 		virtual void SetBoundary( const PhaseSpaceBoundary* );
 
-		virtual void SortBy( string );
-
 		virtual IDataSet* GetDiscreteDataSet( const vector<ObservableRef> discreteParam, const vector<double> discreteVal ) const;
 
 		virtual vector<DataPoint> GetDiscreteSubSet( const vector<ObservableRef> discreteParam, const vector<double> discreteVal ) const;
