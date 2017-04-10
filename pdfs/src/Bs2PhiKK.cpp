@@ -4,7 +4,7 @@
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
 	// Dependent variable names
-	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2", "TISTOS"})
+	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2", "TIS"})
 		ObservableNames.push_back(config->getName(name));
 }
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
