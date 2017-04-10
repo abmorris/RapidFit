@@ -138,7 +138,7 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	{
 		cout << "ComponentPlotter:: Setting up Combination Descriptions based on XML" << endl;
 	}
-	this->SetupCombinationDescriptions();
+	SetupCombinationDescriptions();
 	if( config != NULL )
 	{
 		if( !config->combination_names.empty() ) combinationDescriptions = config->combination_names;
@@ -244,7 +244,7 @@ void ComponentPlotter::ProjectObservable()
 	{
 		//Do the projecting of the pdfs
 		cout << "Projecting " << observableName << endl;
-		this->GenerateProjectionData();
+		GenerateProjectionData();
 	}
 	else
 	{
@@ -308,7 +308,7 @@ vector<vector<double>> ComponentPlotter::MakeYProjectionData( string component_s
 		//Calculate the projection for this combination
 		vector<double> projectionValueArray =
 			//	DataPoint with all information on this configuration,
-			this->ProjectObservableComponent( &allCombinations[combinationIndex],
+			ProjectObservableComponent( &allCombinations[combinationIndex],
 					//	minimum of range in Observable,	num of points in range,	plot_interval,	component of interest
 					observableName, boundary_min, total_points, step_size, component_str );
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,9 +317,9 @@ vector<vector<double>> ComponentPlotter::MakeYProjectionData( string component_s
 		if( DebugClass::DebugThisClass( "ComponentPlotter" ) )
 		{
 			cout << "ComponentPlotter:: Normalising the PDF component: " << combinationIndex << endl;
-			cout << "ComponentPlotter:: Normalisation: " << this->PDF2DataNormalisation( combinationIndex );
+			cout << "ComponentPlotter:: Normalisation: " << PDF2DataNormalisation( combinationIndex );
 		}
-		double PDFNormalisation = this->PDF2DataNormalisation( combinationIndex );
+		double PDFNormalisation = PDF2DataNormalisation( combinationIndex );
 		//	Perform Normalisation
 		std::transform(projectionValueArray.begin(),projectionValueArray.end(),projectionValueArray.begin(),std::bind1st(std::multiplies<double>(), PDFNormalisation));
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,15 +371,7 @@ void ComponentPlotter::GenerateProjectionData()
 	{
 		PDF_Components = plotPDF->PDFComponents();
 		if( StringProcessing::VectorContains( PDF_Components, string("0") ) == -1 )
-		{
-			vector<string> temp_PDF_Components( 1, "0" );
-			for(const auto& comb_i: PDF_Components)
-			{
-				temp_PDF_Components.push_back( comb_i );
-			}
-			PDF_Components = temp_PDF_Components;
-		}
-		PDF_Components = StringProcessing::MoveElementToStart( PDF_Components, "0" );
+			PDF_Components.insert(PDF_Components.begin(),"0");
 	}
 	cout << endl << "Components: " << PDF_Components.size() << endl;
 	// This is still quite bad, but you should see the old version
@@ -405,7 +397,7 @@ void ComponentPlotter::GenerateProjectionData()
 	cout << endl << "Writing Combinations:" << endl;
 	for( unsigned int i=0; i< combinationDescriptions.size(); ++i ) cout << combinationDescriptions[i] << endl;
 	cout << endl;
-	this->WriteOutput( X_values, Y_values, combinationDescriptions );
+	WriteOutput( X_values, Y_values, combinationDescriptions );
 	here->cd();
 	return;
 }
@@ -487,27 +479,27 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 				{
 					for( unsigned int i=0; i< X_values[componentIndex].size()-1; ++i )
 					{
-						Normalisation += this->PDF2DataNormalisation( i );
+						Normalisation += PDF2DataNormalisation( i );
 					}
 				}
 				else
 				{
-					Normalisation = this->PDF2DataNormalisation( combinationIndex-1 );
+					Normalisation = PDF2DataNormalisation( combinationIndex-1 );
 				}
 			}
 			else
 			{
-				Normalisation = this->PDF2DataNormalisation( 0 );
+				Normalisation = PDF2DataNormalisation( 0 );
 			}
 			for( const auto& num_i : Y_values[componentIndex][combinationIndex])
 			{
 				unnormalised.push_back( num_i / Normalisation );
 				normalisation.push_back( Normalisation );
 			}
-			this->WriteBranch( this_data, "X_data", X_values[componentIndex][combinationIndex] );
-			this->WriteBranch( this_data, "Y_data", Y_values[componentIndex][combinationIndex] );
-			this->WriteBranch( this_data, "Y_data_unNormalised", unnormalised );
-			this->WriteBranch( this_data, "Y_data_Normalisation", normalisation );
+			WriteBranch( this_data, "X_data", X_values[componentIndex][combinationIndex] );
+			WriteBranch( this_data, "Y_data", Y_values[componentIndex][combinationIndex] );
+			WriteBranch( this_data, "Y_data_unNormalised", unnormalised );
+			WriteBranch( this_data, "Y_data_Normalisation", normalisation );
 			this_data->Write( "", TObject::kOverwrite );
 			TString Data_Name("Raw_Data_"); Data_Name+=componentIndex; Data_Name.Append("_");Data_Name+=combinationIndex;
 			TString Data_Title( Data_Name );
@@ -519,9 +511,9 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 			{
 				real_raw_data.push_back( point_i.GetObservable( tempref )->GetValue() );
 			}
-			this->WriteBranch( raw_data, "Value", real_raw_data );
+			WriteBranch( raw_data, "Value", real_raw_data );
 			//	Bin the data for this combination
-			TH1* data_plot = this->FormatData( combinationIndex );
+			TH1* data_plot = FormatData( combinationIndex );
 			TString ext("_"); ext+=componentIndex; ext.Append("_"); ext+=combinationIndex;
 			ext.Append("_"); ext+=RapidFitRandom::GetFrameworkRandomFunction()->Rndm();
 			string cleanExt( ext.Data() );
@@ -577,24 +569,21 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 	//
 	for( unsigned int combinationIndex=0; combinationIndex < X_values[0].size(); ++combinationIndex )
 	{
-		TString combinationIndexstr;combinationIndexstr+=combinationIndex;
 		vector<TGraph*> these_components;
 		//	Objects must have unqiue names, even though they exist in different memory locations, THANK YOU ROOT GARBAGE COLLECTION!!! (this is the singally worst idea ever to grace c++!)
 		for( unsigned int componentIndex=0; componentIndex < X_values.size(); ++componentIndex )
 		{
 			TGraph* data_graph = new TGraph( total_points, X_values[componentIndex][combinationIndex].data(),  Y_values[componentIndex][combinationIndex].data() );
-			TString data_name("data_"+combinationIndexstr+"_");data_name+=componentIndex;
-			data_name.Append("_"); data_name+=RapidFitRandom::GetFrameworkRandomFunction()->Rndm();
-			string dataCleanName( data_name );
-			replace( dataCleanName.begin(), dataCleanName.end(), '.', '_' );
-			data_graph->SetName( dataCleanName.c_str() ); data_graph->SetTitle( dataCleanName.c_str() );
+			string data_name = "data_" + std::to_string(combinationIndex) + "_" + std::to_string(componentIndex) + "_" + std::to_string(RapidFitRandom::GetFrameworkRandomFunction()->Rndm());
+			replace( data_name.begin(), data_name.end(), '.', '_' );
+			data_graph->SetName( data_name.c_str() ); data_graph->SetTitle( data_name.c_str() );
 			data_graph->SetLineColor( (Color_t)(componentIndex+1) );
 			data_graph->SetLineWidth( (Width_t)3 );
 			data_graph->SetMarkerColor( (Color_t)(componentIndex+1) );
 			these_components.push_back( data_graph );
 		}
 		total_components.push_back( these_components );
-		TH1* data_plot = this->FormatData( combinationIndex );
+		TH1* data_plot = FormatData( combinationIndex );
 		TString ext("_"); ext+=combinationIndex; ext.Append("_"); ext+=RapidFitRandom::GetFrameworkRandomFunction()->Rndm();
 		string cleanExt( ext.Data() );
 		replace( cleanExt.begin(), cleanExt.end(), '.', '_' );
@@ -616,7 +605,7 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 		temp.logY = logY;
 		temp.logX = logX;
 		//	Static function so has to be told everything about what you want to plot!
-		this->OutputPlot( binned_data.back(), these_components, observableName, desc, plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp );
+		OutputPlot( binned_data.back(), these_components, observableName, desc, plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp );
 		if( this_config != NULL )
 		{
 			if( combinationIndex == 0 && this_config->CalcChi2 == true )
@@ -655,16 +644,16 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 				desc_pull.Append("_pull");
 				cout << endl << "Making Plots" << endl;
 				TGraphErrors* pullPlot = ComponentPlotter::PullPlot1D( allPullData, binned_data.back(), observableName, desc_pull.Data(), RapidFitRandom::GetFrameworkRandomFunction(), this_config );
-				this->OutputPlot( binned_data.back(), these_components, observableName, string(desc_pull.Data()), plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp, allPullData );
+				OutputPlot( binned_data.back(), these_components, observableName, string(desc_pull.Data()), plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp, allPullData );
 				(void)pullPlot;
 			}
 		}
 	}
 	//	If there is more than 1 combination it's useful to plot the total's on the same graph with total component 0
-	if( this->GetComponents().size() > 1 )
+	if( GetComponents().size() > 1 )
 	{
 		vector<TGraph*> allZerothComponents;
-		vector<vector<TGraph*> > allGraphs = this->GetComponents();
+		vector<vector<TGraph*> > allGraphs = GetComponents();
 		for( unsigned int i=0; i< allGraphs.size(); ++i )
 		{
 			allZerothComponents.push_back( allGraphs[i][0] );
@@ -1297,7 +1286,7 @@ vector<double> ComponentPlotter::ProjectObservableComponent( DataPoint* InputPoi
 	{
 		cout << endl << "ComponentPlotter: Performing Sanity Check" << endl;
 	}
-	this->Sanity_Check( pointValues, component );
+	Sanity_Check( pointValues, component );
 	return pointValues;
 }
 //	Check that the passed vector of points aren't all NULL if they are print some debug information
@@ -1385,7 +1374,7 @@ double ComponentPlotter::operator() (double x) const
 		DataPoint InputPoint = comb_i;
 		// Set the value of the observable in this datapoint to be the passed argument of the functor
 		InputPoint.SetObservable( observableName, x, "DummyUnit" );
-		double PDFNormalisation = this->PDF2DataNormalisation( comb_num );
+		double PDFNormalisation = PDF2DataNormalisation( comb_num );
 		double PDFProjection = pdfIntegrator->ProjectObservable( &InputPoint, full_boundary, observableName, &comp_obj );
 		integral_value += PDFProjection*PDFNormalisation;
 		comb_num++;
