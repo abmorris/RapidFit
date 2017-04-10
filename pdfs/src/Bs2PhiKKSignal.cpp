@@ -17,7 +17,7 @@ PDF_CREATOR( Bs2PhiKKSignal )
 /*****************************************************************************/
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
-	, acceptance_moments((std::string)config->getConfigurationValue("CoefficientsFile") != "")
+	, acceptance_moments(config->isTrue("UseAcceptance"))
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
@@ -46,8 +46,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
-		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFileTIS")));
-		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFileTOS")));
+		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFilenotTIS")));
+		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFileTIS")));
 	}
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
