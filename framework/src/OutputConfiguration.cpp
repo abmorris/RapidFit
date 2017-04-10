@@ -14,7 +14,6 @@
 #include "TCanvas.h"
 #include "TMath.h"
 #include "TH1.h"
-#include "TF1.h"
 //	RapidFit Headers
 #include "OutputConfiguration.h"
 #include "ResultFormatter.h"
@@ -407,72 +406,6 @@ void OutputConfiguration::MergeProjectionResults( vector<ComponentPlotter*>& all
 
 	delete datasets_config;
 
-}
-
-void OutputConfiguration::Chi2XCheck( FitResult* thisResult, vector<ComponentPlotter*> thesePlotters, string thisObservable, int nBins )
-{
-	vector<IDataSet*> theseDataSets = thisResult->GetPhysicsBottle()->GetAllDataSets();
-
-	cout << "here" << endl;
-
-	TString complete = "Complete_DataSet_";
-	complete.Append( thisObservable );
-
-	PhaseSpaceBoundary* thisBound = theseDataSets[0]->GetBoundary();
-	IConstraint* thisConst = thisBound->GetConstraint( thisObservable );
-
-	TH1* thisHisto = new TH1D( complete, complete, nBins, thisConst->GetMinimum(), thisConst->GetMaximum() );
-
-	ObservableRef thisObsRef = ObservableRef( thisObservable );
-	bool weightsWereUsed = false;
-	for( unsigned int i=0; i< theseDataSets.size(); ++i )
-	{
-		weightsWereUsed = theseDataSets[i]->GetWeightsWereUsed();
-		ObservableRef weightRef;
-		if( weightsWereUsed )
-		{
-			weightRef = ObservableRef( theseDataSets[i]->GetWeightName() );
-		}
-		for( unsigned int j=0; j< (unsigned)theseDataSets[i]->GetDataNumber(); ++j )
-		{
-			if( weightsWereUsed  )
-			{
-				thisHisto->Fill( theseDataSets[i]->GetDataPoint(j)->GetObservable( thisObsRef )->GetValue(),
-						theseDataSets[i]->GetDataPoint(j)->GetObservable( weightRef )->GetValue() );
-			}
-			else
-			{
-				thisHisto->Fill( theseDataSets[i]->GetDataPoint(j)->GetObservable( thisObsRef )->GetValue() );
-			}
-		}
-	}
-
-	MultiComponentPlotter* multiFunction = new MultiComponentPlotter( thesePlotters );
-
-	TString completeF = "Complete_Function_";
-	completeF.Append( thisObservable );
-	TF1* completeFunction = new TF1( completeF, multiFunction, thisConst->GetMinimum(), thisConst->GetMaximum(), 1, "" );
-
-	TGraph* thisData = new TGraph( thisHisto );
-
-	double thisCompleteChi2 = thisData->Chisquare( completeFunction );
-
-	double nDoF=(double) nBins;
-
-	vector<string> paramList = thisResult->GetResultParameterSet()->GetAllNames();
-
-	for( unsigned int i=0; i< paramList.size(); ++i )
-	{
-		if( thisResult->GetResultParameterSet()->GetResultParameter( paramList[i] )->GetError() > 1E-99 ) --nDoF;
-	}
-
-	cout << endl;
-	cout << "\t\tChi2 X-check for " << thisObservable << ":" << endl;
-	cout << "\tChi2: " << thisCompleteChi2 << endl;
-	cout << "\tnDoF: " << nDoF << endl;
-	cout << "\tChi2/nDoF: " << thisCompleteChi2 / nDoF << endl;
-	cout << "\tp-value: " << TMath::Prob( thisCompleteChi2, nDoF ) << endl;
-	cout << endl;
 }
 
 void OutputConfiguration::OutputCompProjections( FitResult* TheResult )
