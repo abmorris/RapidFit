@@ -732,9 +732,9 @@ void MakeOutputFolder( RapidFitConfiguration* config )
 
 void PerformMultiDimChi2( RapidFitConfiguration* config )
 {
-	cout << "Passing over from main to MultiDimChi2 Test!" << endl;
-	MultiDimChi2 thisTest( config->pdfsAndData, {"mKK","ctheta_1","ctheta_2"} ); // TODO lol don't hardcode this
-	thisTest.PerformMuiltDimTest();
+	cout << "Performing multi-dimensional poisson chi^2 test" << endl;
+	MultiDimChi2 thisTest( config->pdfsAndData, {{5,"mKK"},{5,"ctheta_1"},{5,"ctheta_2"}} ); // TODO lol don't hardcode this
+	thisTest.PerformMuiltDimTest(true);
 }
 
 int PerformMainFit( RapidFitConfiguration* config )

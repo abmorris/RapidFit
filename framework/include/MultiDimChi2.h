@@ -14,8 +14,15 @@
 class MultiDimChi2
 {
 	public:
-		MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<std::string> wantedObservables);
-		void PerformMuiltDimTest() const;
+		MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, std::vector<std::pair<int, std::string>> wantedObservables);
+		struct Result
+		{
+			Result(double _chi2, int _ndof) : chi2(_chi2), ndof(_ndof) {}
+			double chi2;
+			int ndof;
+		};
+		std::vector<MultiDimChi2::Result> PerformMuiltDimTest(bool poisson) const;
+		static double CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const bool poisson);
 	private:
 		// Stuff to store locally
 		vector<ObservableRef> Observables;
@@ -24,7 +31,6 @@ class MultiDimChi2
 		// Helper functions
 		double CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const THnD& DataHist, const std::vector<int>& indices) const;
 		std::vector<int> GetIndices(unsigned binNum, const THnD& DataHist) const;
-		double CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const std::vector<double>& errors) const;
 };
 
 #endif

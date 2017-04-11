@@ -2,7 +2,7 @@
 #include <iomanip>
 #include "TMath.h"
 #include "MultiDimChi2.h"
-MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<std::string> wantedObservables) : allObjects(_allObjects)
+MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, std::vector<std::pair<int, std::string>> wantedObservables) : allObjects(_allObjects)
 {
 	// Loop through each fit and bin each dataset
 	int obj_counter = 0; // Just to give each histogram a unique name
@@ -16,17 +16,17 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<
 		std::vector<int> x_bins;
 		for(const auto& observable: wantedObservables)
 		{
-			IConstraint* thisConstraint = thisBound->GetConstraint(ObservableRef(observable));
+			IConstraint* thisConstraint = thisBound->GetConstraint(ObservableRef(observable.second));
 			if( !thisConstraint->IsDiscrete() )
 			{
 				x_min.push_back(thisConstraint->GetMinimum());
 				x_max.push_back(thisConstraint->GetMaximum());
-				x_bins.push_back(5); // TODO: read from config
-				std::cout << x_bins.back() << " bins for observable " << observable << " with range [" << x_min.back() << "," << x_max.back() << "]" << "\n";
+				x_bins.push_back(observable.first);
+				std::cout << observable.first << " bins for observable " << observable.second << " with range [" << x_min.back() << "," << x_max.back() << "]" << "\n";
 			}
 			else
 			{
-				std::cerr << "Warning: discrete constraint on " << observable << " in this PhaseSpaceBoundary. Removing it." << std::endl;
+				std::cerr << "Warning: discrete constraint on " << observable.second << " in this PhaseSpaceBoundary. Removing it." << std::endl;
 				wantedObservables.erase(std::remove(wantedObservables.begin(), wantedObservables.end(), observable), wantedObservables.end());
 			}
 		}
@@ -43,18 +43,19 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, vector<
 			DataPoint* thisPoint = thisDataSet->GetDataPoint(i);
 			std::vector<double> values;
 			for(const auto& observable: wantedObservables)
-				values.push_back(thisPoint->GetObservable(observable)->GetValue());
+				values.push_back(thisPoint->GetObservable(observable.second)->GetValue());
 			double weight = weighted ? thisPoint->GetObservable(weightName)->GetValue() : 1.;
 			BinnedData.back()->Fill(values.data(), weight);
 		}
 	}
 	// Store the wanted observables locally
 	for(const auto& observable: wantedObservables)
-		Observables.push_back(ObservableRef(observable));
+		Observables.push_back(ObservableRef(observable.second));
 }
 
-void MultiDimChi2::PerformMuiltDimTest() const
-{
+std::vector<MultiDimChi2::Result> MultiDimChi2::PerformMuiltDimTest(bool poisson) const
+{	
+	std::vector<MultiDimChi2::Result> results;
 	int obj_counter = 0;
 	for(const auto PDFAndData: allObjects)
 	{
@@ -66,21 +67,18 @@ void MultiDimChi2::PerformMuiltDimTest() const
 		IDataSet* thisDataSet = PDFAndData->GetDataSet();
 		PhaseSpaceBoundary* thisBound = thisDataSet->GetBoundary();
 		// Get the observed and expected number of events per bin
-		std::vector<double> observed_events, error_events, expected_events;
+		std::vector<double> observed_events, expected_events;
 		unsigned nbins = 1;
 		for(unsigned iobs = 0; iobs < Observables.size(); iobs++)
-		{
 			nbins *= DataHist.GetAxis(iobs)->GetNbins();
-		}
 		for(unsigned binNum = 0; binNum < nbins; binNum++)
 		{
 			std::vector<int> indices = GetIndices(binNum, DataHist);
 			observed_events.push_back(DataHist.GetBinContent(indices.data()));
-			error_events.push_back(DataHist.GetBinError(indices.data()));
 			expected_events.push_back(CalculateExpected(*thisPDF, *thisBound, *thisDataSet, DataHist, indices));
 		}
 		// Calculate the chi2 by summing over all bins
-		double TotalChi2 = CalcChi2(expected_events, observed_events, error_events);
+		double TotalChi2 = CalcChi2(expected_events, observed_events, poisson);
 		// Get the number of degrees of freedom
 		double nDoF = nbins - thisPDF->GetPhysicsParameters()->GetAllFloatNames().size();
 		// Print the result
@@ -92,8 +90,9 @@ void MultiDimChi2::PerformMuiltDimTest() const
 		std::cout << std::setw(12) << "chi2/nDoF: " << TotalChi2 / nDoF << "\n";
 		std::cout << std::setw(12) << "p-value: " << TMath::Prob( TotalChi2, nDoF ) << "\n";
 		std::cout << std::endl;
+		results.push_back(Result(TotalChi2, nDoF));
 	}
-	return;
+	return results;
 }
 std::vector<int> MultiDimChi2::GetIndices(unsigned binNum, const THnD& DataHist) const
 {
@@ -106,17 +105,20 @@ std::vector<int> MultiDimChi2::GetIndices(unsigned binNum, const THnD& DataHist)
 	}
 	return indices;
 }
-double MultiDimChi2::CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const std::vector<double>& errors) const
+double MultiDimChi2::CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const bool poisson)
 {
-	(void)errors; // XXX why?
 	double Chi2Value = 0;
-	for(unsigned i=0; i < expected_events.size(); i++)
+	for(unsigned i = 0; i < expected_events.size() && i < observed_events.size(); i++)
 	{
-		double thisChi2 = expected_events[i] - observed_events[i] + observed_events[i] * std::log( observed_events[i] / expected_events[i] );
+		double thisChi2;
+		if(poisson)
+			thisChi2 = 2.0 * (expected_events[i] + observed_events[i] * (std::log(observed_events[i]/expected_events[i]) - 1));
+		else
+			thisChi2 = std::pow(expected_events[i] - observed_events[i],2) / expected_events[i];
 		if( !std::isnan(thisChi2) && !std::isinf(thisChi2) )
 			Chi2Value += thisChi2;
 	}
-	return 2.*Chi2Value;
+	return Chi2Value;
 }
 double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const THnD& DataHist, const std::vector<int>& indices) const
 {
