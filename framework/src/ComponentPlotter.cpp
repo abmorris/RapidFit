@@ -31,6 +31,7 @@
 #include "ComponentRef.h"
 #include "ObservableDiscreteConstraint.h"
 #include "RapidFitRandom.h"
+#include "MultiDimChi2.h"
 ///	System Headers
 #include <iostream>
 #include <iomanip>
@@ -610,16 +611,15 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 			{
 				cout << endl;
 				cout << "Calculating Chi^2:" << endl;
-				for( unsigned int i=0; i< (unsigned) binned_data[0]->GetN(); ++i )
+				std::vector<double> expected, observed;
+				for( unsigned int i=0; i< (unsigned) binned_data[combinationIndex]->GetN(); ++i )
 				{
 					double bin_center = binned_data[combinationIndex]->GetX()[i];
-					double this_bin = (*this)( bin_center );
-					double actual_bin = binned_data[combinationIndex]->GetY()[i];
-					double this_chi = actual_bin-this_bin;
-					this_chi/=binned_data[combinationIndex]->GetEY()[i];
-					this_chi*=this_chi;
-					if( this_chi < 1./0. ) chi2+=this_chi;
+					double bin_err = binned_data[combinationIndex]->GetEX()[i]; // This is half the bin width. I know this is stupid, but the data is in a TGraphErrors not a TH1 for some reason.
+					expected.push_back(Expected(bin_center-bin_err, bin_center+bin_err, combinationIndex));
+					observed.push_back(binned_data[combinationIndex]->GetY()[i]);
 				}
+				chi2 = MultiDimChi2::CalcChi2(expected, observed, false);
 				//	dof = num Populated Bins - ndof in PDF
 				N =  binned_data.back()->GetXaxis()->GetNbins();
 				for( unsigned int i=0; i< (unsigned) binned_data[0]->GetN(); ++i ) if( fabs(binned_data[combinationIndex]->GetY()[i]) <= 0 ) --N;
@@ -1381,7 +1381,21 @@ double ComponentPlotter::operator() (double x) const
 	return integral_value;
 }
 
-double ComponentPlotter::PDF2DataNormalisation( const unsigned int combinationIndex ) const // I swear this is obfuscating something much simpler. TODO Work out what it is.
+double ComponentPlotter::Expected(const double x_min, const double x_max, const unsigned combinationIndex)
+{
+	DataPoint PrototypeCombinationDatapoint = allCombinations[combinationIndex];
+	double norm = fabs(ratioOfIntegrals[ combinationIndex ]) * weight_norm;
+	norm *= pdfIntegrator->Integral(&PrototypeCombinationDatapoint, full_boundary);
+	double dataNum = 0.;
+	if( allCombinations.empty() || allCombinations.size() == 1 ) dataNum = plotData->GetDataNumber();
+	else dataNum = plotData->GetDataNumber( &PrototypeCombinationDatapoint );
+	PhaseSpaceBoundary binPhaseSpace(*full_boundary);
+	binPhaseSpace.SetConstraint(observableName, x_min, x_max, "noUnits_Chi2");
+	double BinIntegral = pdfIntegrator->NumericallyIntegrateDataPoint(&PrototypeCombinationDatapoint, &binPhaseSpace, plotPDF->GetDoNotIntegrateList());
+	return dataNum*BinIntegral/norm;
+}
+
+double ComponentPlotter::PDF2DataNormalisation( const unsigned combinationIndex ) const // I swear this is obfuscating something much simpler. TODO Work out what it is.
 {
 	double normalisation=fabs(ratioOfIntegrals[ combinationIndex ]);			//	Attempt to correct for Numerical != analytical due to any constant factor due to numerical inaccuracy
 	if(combinationIndex >= allCombinations.size())
