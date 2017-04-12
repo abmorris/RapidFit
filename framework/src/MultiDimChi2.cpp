@@ -54,7 +54,7 @@ MultiDimChi2::MultiDimChi2(const std::vector<PDFWithData*>& _allObjects, std::ve
 }
 
 std::vector<MultiDimChi2::Result> MultiDimChi2::PerformMuiltDimTest(bool poisson) const
-{	
+{
 	std::vector<MultiDimChi2::Result> results;
 	int obj_counter = 0;
 	for(const auto PDFAndData: allObjects)
@@ -75,7 +75,7 @@ std::vector<MultiDimChi2::Result> MultiDimChi2::PerformMuiltDimTest(bool poisson
 		{
 			std::vector<int> indices = GetIndices(binNum, DataHist);
 			observed_events.push_back(DataHist.GetBinContent(indices.data()));
-			expected_events.push_back(CalculateExpected(*thisPDF, *thisBound, *thisDataSet, DataHist, indices));
+			expected_events.push_back(CalculateExpected(*thisPDF, *thisBound, *thisDataSet, Observables, GetBinBoundaries(DataHist, indices)));
 		}
 		// Calculate the chi2 by summing over all bins
 		double TotalChi2 = CalcChi2(expected_events, observed_events, poisson);
@@ -105,6 +105,17 @@ std::vector<int> MultiDimChi2::GetIndices(unsigned binNum, const THnD& DataHist)
 	}
 	return indices;
 }
+std::vector<std::pair<double, double>> MultiDimChi2::GetBinBoundaries(const THnD& DataHist, const std::vector<int>& indices) const
+{
+	std::vector<std::pair<double, double>> binboundaries;
+	for(unsigned iobs = 0; iobs < Observables.size(); iobs++)
+	{
+		double xMin = DataHist.GetAxis(iobs)->GetBinLowEdge(indices[iobs]);
+		double xMax = DataHist.GetAxis(iobs)->GetBinUpEdge(indices[iobs]);
+		binboundaries.push_back({xMin, xMax});
+	}
+	return binboundaries;
+}
 double MultiDimChi2::CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const bool poisson)
 {
 	double Chi2Value = 0;
@@ -120,8 +131,10 @@ double MultiDimChi2::CalcChi2(const std::vector<double>& expected_events, const 
 	}
 	return Chi2Value;
 }
-double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const THnD& DataHist, const std::vector<int>& indices) const
+double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const std::vector<ObservableRef>& theseObservables, const std::vector<std::pair<double, double>>& boundaries)
 {
+	if(theseObservables.size() != boundaries.size())
+		std::cout << "Number of bin boundaries (" << boundaries.size() << ") does not match number of observables (" << theseObservables.size() << "). Proceeding to loop over the smallest number." << std::endl;
 	double ExpectedEvents = 0;
 	for(auto& combination: fullPhaseSpace.GetDiscreteCombinations())
 	{
@@ -129,12 +142,8 @@ double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPh
 		double TotalIntegral = thisPDF.GetPDFIntegrator()->Integral(combination, &fullPhaseSpace);
 		// Set the observable constraints to the bin boundaries
 		PhaseSpaceBoundary binPhaseSpace(fullPhaseSpace);
-		for(unsigned iobs = 0; iobs < Observables.size(); iobs++)
-		{
-			double newMin = DataHist.GetAxis(iobs)->GetBinLowEdge(indices[iobs]);
-			double newMax = DataHist.GetAxis(iobs)->GetBinUpEdge(indices[iobs]);
-			binPhaseSpace.SetConstraint(Observables[iobs], newMin, newMax, "noUnits_Chi2");
-		}
+		for(unsigned iobs = 0; iobs < theseObservables.size() && iobs < boundaries.size(); iobs++)
+			binPhaseSpace.SetConstraint(theseObservables[iobs], boundaries[iobs].first, boundaries[iobs].second, "noUnits_Chi2");
 		// Get the integral over the bin
 		double BinIntegral = thisPDF.GetPDFIntegrator()->NumericallyIntegrateDataPoint(combination, &binPhaseSpace, thisPDF.GetDoNotIntegrateList());
 		// Multiply by the size of the sample to get the expected events in this bin

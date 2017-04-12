@@ -23,13 +23,14 @@ class MultiDimChi2
 		};
 		std::vector<MultiDimChi2::Result> PerformMuiltDimTest(bool poisson) const;
 		static double CalcChi2(const std::vector<double>& expected_events, const std::vector<double>& observed_events, const bool poisson);
+		static double CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const std::vector<ObservableRef>& theseObservables, const std::vector<std::pair<double, double>>& boundaries);
 	private:
 		// Stuff to store locally
 		vector<ObservableRef> Observables;
 		std::vector<std::unique_ptr<THnD>> BinnedData; // THnD is neither copyable nor moveable so I have to resort to this nonsense. Thanks ROOT!
 		std::vector<PDFWithData*> allObjects;
 		// Helper functions
-		double CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const THnD& DataHist, const std::vector<int>& indices) const;
+		std::vector<std::pair<double, double>> GetBinBoundaries(const THnD& DataHist, const std::vector<int>& indices) const;
 		std::vector<int> GetIndices(unsigned binNum, const THnD& DataHist) const;
 };
 
