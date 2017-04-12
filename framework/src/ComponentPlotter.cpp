@@ -607,16 +607,16 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 		OutputPlot( binned_data.back(), these_components, observableName, desc, plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp );
 		if( this_config != NULL )
 		{
-			if( combinationIndex == 0 && this_config->CalcChi2 == true )
+			if( this_config->CalcChi2 == true )
 			{
 				cout << endl;
-				cout << "Calculating Chi^2:" << endl;
+				cout << "Calculating Chi^2 for combination " << combinationIndex << ":" << endl;
 				std::vector<double> expected, observed;
 				for( unsigned int i=0; i< (unsigned) binned_data[combinationIndex]->GetN(); ++i )
 				{
 					double bin_center = binned_data[combinationIndex]->GetX()[i];
 					double bin_err = binned_data[combinationIndex]->GetEX()[i]; // This is half the bin width. I know this is stupid, but the data is in a TGraphErrors not a TH1 for some reason.
-					expected.push_back(Expected(bin_center-bin_err, bin_center+bin_err, combinationIndex));
+					expected.push_back(MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, {&allCombinations[combinationIndex]}, *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}}));
 					observed.push_back(binned_data[combinationIndex]->GetY()[i]);
 				}
 				chi2 = MultiDimChi2::CalcChi2(expected, observed, false);
@@ -1379,20 +1379,6 @@ double ComponentPlotter::operator() (double x) const
 	}
 	cout << "Value At: " << left << setw(5) << setprecision(3) << x << "\t is:\t" << setprecision(4) << integral_value << setw(20) << " " <<  "\r" << flush;
 	return integral_value;
-}
-
-double ComponentPlotter::Expected(const double x_min, const double x_max, const unsigned combinationIndex)
-{
-	DataPoint PrototypeCombinationDatapoint = allCombinations[combinationIndex];
-	double norm = fabs(ratioOfIntegrals[ combinationIndex ]) * weight_norm;
-	norm *= pdfIntegrator->Integral(&PrototypeCombinationDatapoint, full_boundary);
-	double dataNum = 0.;
-	if( allCombinations.empty() || allCombinations.size() == 1 ) dataNum = plotData->GetDataNumber();
-	else dataNum = plotData->GetDataNumber( &PrototypeCombinationDatapoint );
-	PhaseSpaceBoundary binPhaseSpace(*full_boundary);
-	binPhaseSpace.SetConstraint(observableName, x_min, x_max, "noUnits_Chi2");
-	double BinIntegral = pdfIntegrator->NumericallyIntegrateDataPoint(&PrototypeCombinationDatapoint, &binPhaseSpace, plotPDF->GetDoNotIntegrateList());
-	return dataNum*BinIntegral/norm;
 }
 
 double ComponentPlotter::PDF2DataNormalisation( const unsigned combinationIndex ) const // I swear this is obfuscating something much simpler. TODO Work out what it is.

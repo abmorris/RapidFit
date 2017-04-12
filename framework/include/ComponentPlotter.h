@@ -243,7 +243,6 @@ class ComponentPlotter
 
 
 		double operator() (double x) const;
-		double Expected(const double x_min, const double x_max, const unsigned combinationIndex);
 
 		static string XML( const int projectionType=1 );
 
