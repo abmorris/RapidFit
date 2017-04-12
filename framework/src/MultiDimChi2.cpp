@@ -75,7 +75,7 @@ std::vector<MultiDimChi2::Result> MultiDimChi2::PerformMuiltDimTest(bool poisson
 		{
 			std::vector<int> indices = GetIndices(binNum, DataHist);
 			observed_events.push_back(DataHist.GetBinContent(indices.data()));
-			expected_events.push_back(CalculateExpected(*thisPDF, *thisBound, *thisDataSet, Observables, GetBinBoundaries(DataHist, indices)));
+			expected_events.push_back(CalculateExpected(*thisPDF, *thisBound, thisBound->GetDiscreteCombinations(), *thisDataSet, Observables, GetBinBoundaries(DataHist, indices)));
 		}
 		// Calculate the chi2 by summing over all bins
 		double TotalChi2 = CalcChi2(expected_events, observed_events, poisson);
@@ -131,12 +131,12 @@ double MultiDimChi2::CalcChi2(const std::vector<double>& expected_events, const 
 	}
 	return Chi2Value;
 }
-double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const IDataSet& thisDataSet, const std::vector<ObservableRef>& theseObservables, const std::vector<std::pair<double, double>>& boundaries)
+double MultiDimChi2::CalculateExpected(IPDF& thisPDF, PhaseSpaceBoundary& fullPhaseSpace, const std::vector<DataPoint*>& combinations, const IDataSet& thisDataSet, const std::vector<ObservableRef>& theseObservables, const std::vector<std::pair<double, double>>& boundaries)
 {
 	if(theseObservables.size() != boundaries.size())
 		std::cout << "Number of bin boundaries (" << boundaries.size() << ") does not match number of observables (" << theseObservables.size() << "). Proceeding to loop over the smallest number." << std::endl;
 	double ExpectedEvents = 0;
-	for(auto& combination: fullPhaseSpace.GetDiscreteCombinations())
+	for(auto& combination: combinations)
 	{
 		// Get the integral over the full phase space
 		double TotalIntegral = thisPDF.GetPDFIntegrator()->Integral(combination, &fullPhaseSpace);
