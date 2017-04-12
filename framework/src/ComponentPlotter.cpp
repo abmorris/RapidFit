@@ -32,6 +32,7 @@
 #include "ObservableDiscreteConstraint.h"
 #include "RapidFitRandom.h"
 #include "MultiDimChi2.h"
+#include "NormalisedSumPDF.h"
 ///	System Headers
 #include <iostream>
 #include <iomanip>
@@ -145,8 +146,15 @@ ComponentPlotter::ComponentPlotter( IPDF * NewPDF, IDataSet * NewDataSet, TStrin
 	// Hack to get the internal cached values for NormalisedSumPDF to work
 	if(plotPDF->GetName()=="NormalisedSumPDF")
 	{
+		int combination_counter = 0;
 		for(auto& combination: allCombinations)
-			plotPDF->GetPDFIntegrator()->Integral( &combination, full_boundary );
+		{
+			double integral = plotPDF->GetPDFIntegrator()->Integral( &combination, full_boundary );
+			std::array<double,2> CachedIntegrals = ((NormalisedSumPDF*)plotPDF)->GetCachedIntegrals( &combination, full_boundary );
+			std::cout << "Combination " << combination_counter << "\n\ttotal: " << integral << ", PDF 1: " << CachedIntegrals[0] << ", PDF 2: " << CachedIntegrals[1] << endl;
+			combination_counter++;
+		}
+		
 	}
 	for( unsigned int i=0; i< allCombinations.size(); ++i )
 	{
@@ -605,18 +613,18 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 		temp.logX = logX;
 		//	Static function so has to be told everything about what you want to plot!
 		OutputPlot( binned_data.back(), these_components, observableName, desc, plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp );
-		if( this_config != NULL )
+		if( this_config != NULL && combinationIndex == 0 ) // only do this for the zeroth ("total") combination
 		{
 			if( this_config->CalcChi2 == true )
 			{
 				cout << endl;
-				cout << "Calculating Chi^2 for combination " << combinationIndex << ":" << endl;
+				cout << "Calculating Chi^2:" << endl;
 				std::vector<double> expected, observed;
 				for( unsigned int i=0; i< (unsigned) binned_data[combinationIndex]->GetN(); ++i )
 				{
 					double bin_center = binned_data[combinationIndex]->GetX()[i];
 					double bin_err = binned_data[combinationIndex]->GetEX()[i]; // This is half the bin width. I know this is stupid, but the data is in a TGraphErrors not a TH1 for some reason.
-					expected.push_back(MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, {&allCombinations[combinationIndex]}, *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}}));
+					expected.push_back(MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, full_boundary->GetDiscreteCombinations(), *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}}));
 					observed.push_back(binned_data[combinationIndex]->GetY()[i]);
 				}
 				chi2 = MultiDimChi2::CalcChi2(expected, observed, false);
@@ -627,7 +635,7 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 				double denominator = (double)(N - n - 1. );
 				cout << endl << "Chi^2/ndof :\t" << setprecision(10) << chi2 / denominator << endl;
 			}
-			if( combinationIndex == 0 && this_config->DrawPull == true )
+			if( this_config->DrawPull == true )
 			{
 				cout << endl;
 				cout << "Calculating Pull Values" << endl;
