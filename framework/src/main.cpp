@@ -778,11 +778,6 @@ int PerformMainFit( RapidFitConfiguration* config )
 
 	config->GlobalFitResult->AddFitResult( config->GlobalResult );
 
-	if( config->saveFitXML == true || config->generateToyXML == true )
-	{
-		SaveXML( config );
-	}
-
 	if( config->BuildConstraints )
 	{
 		BuildTheseConstraints( config );
@@ -830,6 +825,11 @@ int PerformMainFit( RapidFitConfiguration* config )
 	}
 
 	//ResultFormatter::FlatNTuplePullPlots( string("Global_Fit.root"), GlobalFitResult );
+
+	if( config->saveFitXML == true || config->generateToyXML == true )
+	{
+		SaveXML( config );
+	}
 
 	cout << "\n\n\t\tFit Output:" <<endl;
 
