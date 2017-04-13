@@ -56,13 +56,20 @@ double NegativeLogLikelihoodNumerical::EvaluateDataSet( IPDF * FittingPDF, IData
 	(void) FittingPDF;
 
 	//	Have to provide a datapoint even though one is _not_ expected to be explicitly used for this fittting function
-	double this_integral = FittingPDF->GetPDFIntegrator()->Integral( TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary() );
-
-	if(FittingPDF->GetName()=="NormalisedSumPDF")
+	std::map<int,double> this_integral;
+	
+	PhaseSpaceBoundary* this_boundary = TotalDataSet->GetBoundary();
+	std::vector<DataPoint*> allCombinations = this_boundary->GetDiscreteCombinations();
+	for(DataPoint* combination : allCombinations)
 	{
-		std::array<double,2> IntegralResult = static_cast<NormalisedSumPDF*>(FittingPDF)->GetCachedIntegrals(TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary());
-		for(auto& PDF: stored_pdfs)
-			static_cast<NormalisedSumPDF*>(PDF)->SetCachedIntegrals(IntegralResult, TotalDataSet->GetDataPoint(0), TotalDataSet->GetBoundary());
+		int dpindex = this_boundary->GetDiscreteIndex(combination);
+		this_integral[dpindex] = FittingPDF->GetPDFIntegrator()->Integral( combination, this_boundary );
+		if(FittingPDF->GetName()=="NormalisedSumPDF")
+		{
+			std::array<double,2> IntegralResult = static_cast<NormalisedSumPDF*>(FittingPDF)->GetCachedIntegrals(combination, this_boundary);
+			for(auto& PDF: stored_pdfs)
+				static_cast<NormalisedSumPDF*>(PDF)->SetCachedIntegrals(IntegralResult, combination, this_boundary);
+		}
 	}
 
 	if( TotalDataSet->GetDataNumber() == 0 ) return 0.;
@@ -174,7 +181,8 @@ void* NegativeLogLikelihoodNumerical::ThreadWork( void *input_data )
 
 		try
 		{
-			integral = thread_input->stored_integral;// ResultIntegrator->Integral( *data_i, thread_input->FitBoundary );
+			int index = thread_input->FitBoundary->GetDiscreteIndex( *data_i );
+			integral = thread_input->stored_integral.at(index);// ResultIntegrator->Integral( *data_i, thread_input->FitBoundary );
 		}
 		catch( ... )
 		{
