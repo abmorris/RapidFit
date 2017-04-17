@@ -241,9 +241,6 @@ class ComponentPlotter
 		 */
 		static void WriteData( TGraphErrors* Total_BinnedData, vector<TGraph*> Total_Components, TString destination );
 
-
-		double operator() (double x) const;
-
 		static string XML( const int projectionType=1 );
 
 	private:

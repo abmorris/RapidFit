@@ -643,7 +643,8 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 				for( unsigned int i=0; i< (unsigned)binned_data[combinationIndex]->GetN(); ++i )
 				{
 					double bin_center = binned_data[combinationIndex]->GetX()[i];
-					double this_bin = (*this)( bin_center );
+					double bin_err = binned_data[combinationIndex]->GetEX()[i];
+					double this_bin = MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, full_boundary->GetDiscreteCombinations(), *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}});// (*this)( bin_center );
 					allPullData[i]+= this_bin;
 				}
 				TString desc_pull( desc );
@@ -1368,27 +1369,6 @@ vector<vector<TGraph*> > ComponentPlotter::GetComponents()
 {
 	return total_components;
 }
-
-double ComponentPlotter::operator() (double x) const
-{
-	double integral_value=0.;
-	ComponentRef comp_obj( "0", observableName );
-	unsigned int comb_num=0;
-	for( const auto& comb_i : allCombinations)
-	{
-		// Make a new datapoint object from the stored prototype
-		DataPoint InputPoint = comb_i;
-		// Set the value of the observable in this datapoint to be the passed argument of the functor
-		InputPoint.SetObservable( observableName, x, "DummyUnit" );
-		double PDFNormalisation = PDF2DataNormalisation( comb_num );
-		double PDFProjection = pdfIntegrator->ProjectObservable( &InputPoint, full_boundary, observableName, &comp_obj );
-		integral_value += PDFProjection*PDFNormalisation;
-		comb_num++;
-	}
-	cout << "Value At: " << left << setw(5) << setprecision(3) << x << "\t is:\t" << setprecision(4) << integral_value << setw(20) << " " <<  "\r" << flush;
-	return integral_value;
-}
-
 double ComponentPlotter::PDF2DataNormalisation( const unsigned combinationIndex ) const // I swear this is obfuscating something much simpler. TODO Work out what it is.
 {
 	double normalisation=fabs(ratioOfIntegrals[ combinationIndex ]);			//	Attempt to correct for Numerical != analytical due to any constant factor due to numerical inaccuracy
