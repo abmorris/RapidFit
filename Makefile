@@ -4,11 +4,11 @@ UNAME=$(shell uname -s )
 CC=g++ -fdiagnostics-color=always
 
 # Location of compiled "common" libraries from ssh://git@gitlab.cern.ch:7999/admorris/common.git
-COMMONDIR  = $(PWD)/common
-COMHDRDIR  = $(COMMONDIR)/include
-COMLIBDIR  = $(COMMONDIR)/lib
-COMHDRS   := $(shell find $(COMHDRDIR) -name '*.h')
-COMLIBFLAGS = -L$(COMLIBDIR) $(shell make -sC $(COMMONDIR) libflags)
+COMMONDIR   = common
+COMCXXFLAGS = $(shell make -sC $(COMMONDIR) cflags)
+COMLIBS     = $(shell make -sC $(COMMONDIR) libs)
+COMLIBDIR   = $(shell make -sC $(COMMONDIR) libdir)
+COMLIBFLAGS = -L$(COMLIBDIR) -Wl,--as-needed $(COMLIBS) -Wl,-rpath,$(COMLIBDIR)
 
 #		Include Root files as system headers as they're NOT standards complient and we do not want to waste time fixing them!
 #		ROOT has some broken backwards compatability for OSX so won't claim to be a set of system headers
@@ -72,7 +72,7 @@ LINKFLAGS = -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -lpthread
 
 LIBS=-lstdc++
 
-CXXFLAGS     = $(CXXFLAGS_BASE_COMMON) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$(INCGSL) -I$(COMHDRDIR) $(ROOTCFLAGS)
+CXXFLAGS     = $(CXXFLAGS_BASE_COMMON) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$(INCGSL) $(ROOTCFLAGS) $(COMCXXFLAGS)
 
 #CHECKGCCABI := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
 #ifeq ("$(CHECKGCCABI)","1")
@@ -94,7 +94,7 @@ $(OBJDALITZDIR)/%.o : $(SRCDALITZDIR)/%.$(SRCDALITZEXT) $(INCDALITZDIR)/%.$(HDRD
 	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
-$(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT) $(DALITZOBJS) $(COMHDRS)
+$(OBJPDFDIR)/%.o : $(SRCPDFDIR)/%.$(SRCEXT) $(INCPDFDIR)/%.$(HDREXT) $(DALITZOBJS)
 	@echo "Compiling $@"
 	@$(CXX) $(CXXFLAGS) $(USE_GSL) $(INCGSL) -c $< -o $@
 
