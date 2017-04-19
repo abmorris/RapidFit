@@ -1031,7 +1031,6 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 	unsigned int num=0;
 	for( auto comp_i : input_components )
 	{
-		num++;
 		if( !Style_Key.empty() )
 		{
 			if( num < Style_Key.size() )
@@ -1075,6 +1074,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 				}
 			}
 		}
+		num++;
 	}
 	if( final_chi2 > 0 )
 	{
