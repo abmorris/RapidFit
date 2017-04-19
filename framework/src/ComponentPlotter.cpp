@@ -826,7 +826,6 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		{
 			logy=true;
 			c1->SetLogy( true );
-			//c1->Update();
 		}
 		if( conf->logX )
 		{
@@ -1012,66 +1011,31 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 	TLegend* leg = NULL;
 	if( conf->useLegend )
 	{
-		if( conf->TopRightLegend )
-		{
-			leg = EdStyle::LHCbLegend();
-		} else if( conf->TopLeftLegend )
-		{
-			leg = EdStyle::LHCbLeftLegend();
-		} else if( conf->BottomRightLegend )
-		{
-			leg = EdStyle::LHCbBottomLegend();
-		} else if( conf->BottomLeftLegend )
-		{
-			leg = EdStyle::LHCbBottomLeftLegend();
-		}
+		if( conf->TopRightLegend ) leg = EdStyle::LHCbLegend();
+		else if( conf->TopLeftLegend ) leg = EdStyle::LHCbLeftLegend();
+		else if( conf->BottomRightLegend ) leg = EdStyle::LHCbBottomLegend();
+		else if( conf->BottomLeftLegend ) leg = EdStyle::LHCbBottomLeftLegend();
 	}
 	if( leg != NULL ) leg->SetTextSize( (Float_t) legend_size );
 	if( leg != NULL ) leg->AddEntry( input_data, "Data", "pl" );
 	unsigned int num=0;
 	for( auto comp_i : input_components )
 	{
-		if( !Style_Key.empty() )
-		{
-			if( num < Style_Key.size() )
-			{
+		if( !Style_Key.empty() && num < Style_Key.size() )
 				comp_i->SetLineStyle( (Style_t)Style_Key[num] );
-			}
-		}
-		if( !Color_Key.empty() )
-		{
-			if( num < Color_Key.size() )
-			{
+		if( !Color_Key.empty() && num < Color_Key.size() )
 				comp_i->SetLineColor( (Color_t)Color_Key[num] );
-			}
-		}
-		if( !Width_Key.empty() )
-		{
-			if( num < Width_Key.size() )
-			{
+		if( !Width_Key.empty() && num < Width_Key.size() )
 				comp_i->SetLineWidth( (Width_t)Width_Key[num] );
-			}
-		}
 		if( comp_i->GetLineWidth() != 0 )
 		{
-			if( drawSpline )
-			{
-				comp_i->Draw("C");
-			}
-			else
-			{
-				comp_i->Draw("L");
-			}
-			if( !component_names.empty() )
+			comp_i->Draw(drawSpline? "C" : "L");
+			if( !component_names.empty() && leg != NULL )
 			{
 				if( num < component_names.size() )
-				{
-					if( leg != NULL ) leg->AddEntry( comp_i, TString(component_names[num]), "l" );
-				}
+					leg->AddEntry( comp_i, TString(component_names[num]), "l" );
 				else
-				{
-					if( leg != NULL ) leg->AddEntry( comp_i, "Unnamed", "l" );
-				}
+					leg->AddEntry( comp_i, "Unnamed", "l" );
 			}
 		}
 		num++;
