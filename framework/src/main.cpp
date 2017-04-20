@@ -210,10 +210,12 @@ int RapidFit( vector<string> input )
 	{
 		PerformToyStudy( thisConfig );
 	}
-
+	else if( thisConfig->calculateFitFractionsFlag ) calculateFitFractions( thisConfig );
 	//	8)	MC Study
 	//	9)
 	else if( !thisConfig->FC_LL_PART_Flag ) main_fitResult = PerformMainFit( thisConfig );
+	
+	
 
 	//	10)
 	//	Do LL scan
@@ -230,7 +232,7 @@ int RapidFit( vector<string> input )
 	//	Do the main work of the FC scan
 	if( main_fitResult>-1 && (thisConfig->doFC_Flag && !thisConfig->doLLscanFlag )) PerformFCStudy( thisConfig );
 
-	if( main_fitResult > -1 && thisConfig->calculateFitFractionsFlag ) calculateFitFractions( thisConfig );
+
 
 	//	Should only happen under the condition that no CV fit was performed or anything else
 	//if( thisConfig->GlobalFitResult == NULL )
@@ -1015,7 +1017,8 @@ int calculateFitFractions( RapidFitConfiguration* config )
 {
 	// Get data and PDF. Set PDF parameters to the result of the fit
 	PDFWithData * pdfAndData = config->pdfsAndData[0];
-	ParameterSet * parset = config->GlobalResult->GetResultParameterSet()->GetDummyParameterSet();
+//	ParameterSet * parset = config->GlobalResult->GetResultParameterSet()->GetDummyParameterSet();
+	ParameterSet * parset = config->argumentParameterSet;
 	pdfAndData->SetPhysicsParameters( parset );
 	PhaseSpaceBoundary * boundary = pdfAndData->GetDataSet()->GetBoundary();
 	IPDF * pdf = pdfAndData->GetPDF();
