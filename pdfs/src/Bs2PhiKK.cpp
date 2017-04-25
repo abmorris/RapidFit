@@ -48,7 +48,7 @@ std::vector<std::string> Bs2PhiKK::LineShapeParameterNames(std::string name, std
 	// Flatte
 	else if(lineshape == "FT")
 		return {name+"_mass", name+"_gpipi", name+"_Rg"};
-	else if(lineshape == "spline")
+	else if(lineshape == "SP")
 	{
 		std::vector<std::string> parnames;
 		for(const auto& KKname: StringProcessing::SplitString(name, ':'))
@@ -81,7 +81,7 @@ void Bs2PhiKK::UpdateLineshape(const std::string& lineshape, DPMassShape& KKLine
 		respars.push_back(KKpars[1].value); // gpipi
 		respars.push_back(KKpars[1].value*KKpars[2].value); // gKK = gpipi*Rg
 	}
-	else if(lineshape == "spline")
+	else if(lineshape == "SP")
 	{
 		respars = {2*Bs2PhiKK::mK,0,0};
 		for(const auto& par: KKpars)

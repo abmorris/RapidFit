@@ -15,7 +15,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	, JKK(_JKK)
 	, lineshape(_lineshape)
 {
-	if(lineshape != "spline")
+	if(lineshape != "SP")
 		fraction = Bs2PhiKK::PhysPar(config,KKname+"_fraction");
 	// Barrier factors
 	if(lineshape != "NR")
@@ -36,7 +36,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	// Helicity amplitude observables
 	int lambda_max = std::min(1, _JKK); // Maximum helicity
 	std::vector<int> helicities;
-	if(lineshape != "NR" && lineshape != "spline")
+	if(lineshape != "NR" && lineshape != "SP")
 		for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
 	long unsigned int n = helicities.size();
@@ -119,7 +119,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 	// Flatte
 	else if(lineshape=="FT")
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
-	else if(lineshape=="spline")
+	else if(lineshape=="SP")
 	{
 		std::vector<double> breakpoints = {2*Bs2PhiKK::mK};
 		for(unsigned i = 0; i < KKpars.size(); i+=3)
@@ -179,7 +179,7 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 {
 	if(mKK < 2*Bs2PhiKK::mK)
 		return 0;
-	if(lineshape=="NR" || lineshape == "spline")
+	if(lineshape=="NR" || lineshape == "SP")
 		return 1;
 	// Momenta
 	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
@@ -200,7 +200,7 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
 {
 	std::complex<double> massPart = KKLineShape->massShape(mKK);
-	if(lineshape != "spline")
+	if(lineshape != "SP")
 	{
 		if(std::isnan(fraction.value))
 			std::cerr << "\tFraction is nan" << std::endl;
@@ -255,7 +255,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	// Update the parameters objects first
-	if(lineshape != "spline")
+	if(lineshape != "SP")
 		fraction.Update(fitpars);
 	phimass.Update(fitpars);
 	if(lineshape != "NR")
@@ -318,7 +318,7 @@ vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 		for(const auto& par: {BsBFradius,KKBFradius})
 			parameters.push_back(par.name);
 	// Add fraction if this isn't a spline shape
-	if(lineshape != "spline")
+	if(lineshape != "SP")
 		parameters.push_back(fraction.name);
 	return parameters;
 }
