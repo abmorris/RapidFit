@@ -5,7 +5,7 @@
 class DPNonresonant: public virtual DPMassShape
 {
 	public:
-		DPNonresonant() {}
+		DPNonresonant() : DPMassShape() {}
 		DPNonresonant(const DPNonresonant& other) : DPMassShape(other) {}
 		~DPNonresonant() {}
 		std::complex<double> massShape(const double m) const;

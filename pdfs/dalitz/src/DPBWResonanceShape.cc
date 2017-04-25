@@ -2,8 +2,8 @@
 #include "DPHelpers.hh"
 #include <iostream>
 
-DPBWResonanceShape::DPBWResonanceShape(double mRR, double gammaRR, int L, double mm1, double mm2, double RR):
-	 mR(mRR)
+DPBWResonanceShape::DPBWResonanceShape(double mRR, double gammaRR, int L, double mm1, double mm2, double RR) : DPMassShape()
+	,mR(mRR)
 	,gammaR(gammaRR)
 	,LR(L)
 	,m1(mm1)

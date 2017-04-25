@@ -1,7 +1,7 @@
 #include "DPFlatteShape.hh"
 #include <complex>
-DPFlatteShape::DPFlatteShape(const double in_mean, const double in_g0, const double in_m0a, const double in_m0b, const double in_g1, const double in_m1a, const double in_m1b) :
-	  mean(in_mean)
+DPFlatteShape::DPFlatteShape(const double in_mean, const double in_g0, const double in_m0a, const double in_m0b, const double in_g1, const double in_m1a, const double in_m1b) : DPMassShape()
+	, mean(in_mean)
 	, g0(in_g0)
 	, m0a(in_m0a)
 	, m0b(in_m0b)

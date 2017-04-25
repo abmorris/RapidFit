@@ -4,8 +4,8 @@
 
 #define DOUBLE_TOLERANCE 1E-6
 
-DPLassShape::DPLassShape(double mRR, double gammaRR, int L, double mm1, double mm2, double RR, double aa, double rr):
-	 mR(mRR)
+DPLassShape::DPLassShape(double mRR, double gammaRR, int L, double mm1, double mm2, double RR, double aa, double rr) : DPMassShape()
+	,mR(mRR)
 	,gammaR(gammaRR)
 	,LR(L)
 	,m1(mm1)
