@@ -46,8 +46,8 @@ int DPComplexSpline::check(const std::vector<complex_knot>& pars)
 	const int npi = ImSpline.GetNp();
 	if(n != npr || n != npi)
 		throw std::out_of_range("DPComplexSpline ERROR: " + std::to_string(n) + " pars, "
-		                                           + std::to_string(npr) + " real knots, "
-		                                           + std::to_string(npi) + " imaginary knots.");
+		                                                  + std::to_string(npr) + " real knots, "
+		                                                  + std::to_string(npi) + " imaginary knots.");
 	else
 		return n;
 }
