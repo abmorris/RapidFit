@@ -83,7 +83,6 @@ void Bs2PhiKK::UpdateLineshape(const std::string& lineshape, DPMassShape& KKLine
 	}
 	else if(lineshape == "SP")
 	{
-		respars = {2*Bs2PhiKK::mK,0,0};
 		for(const auto& par: KKpars)
 			respars.push_back(par.value);
 	}
