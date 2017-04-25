@@ -163,15 +163,18 @@ std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const double P
 std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const double phi, const double ctheta_1, const double ctheta_2) const
 {
 	std::complex<double> angularPart(0, 0);
-	if(Ahel.empty())
+	if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
+		angularPart = F(0, phi, ctheta_1, ctheta_2);
+	else if(Ahel.empty())
 		return std::complex<double>(1, 0); // Must be non-resonant
-	for(const auto& A : Ahel)
-	{
-		int lambda = A.first;
-		if(std::isnan(A.second.real()) || std::isnan(A.second.imag()))
-			std::cerr << "\tA(" << lambda << ") is " << A.second << std::endl;
-		angularPart += A.second * F(lambda, phi, ctheta_1, ctheta_2);
-	}
+	else
+		for(const auto& A : Ahel)
+		{
+			int lambda = A.first;
+			if(std::isnan(A.second.real()) || std::isnan(A.second.imag()))
+				std::cerr << "\tA(" << lambda << ") is " << A.second << std::endl;
+			angularPart += A.second * F(lambda, phi, ctheta_1, ctheta_2);
+		}
 	return angularPart;
 }
 // Orbital and barrier factor
