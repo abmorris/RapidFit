@@ -6,14 +6,15 @@
 class DPComplexSpline: public virtual DPMassShape
 {
 	public:
-		DPComplexSpline(std::vector<double>& _breakpoints);
+		DPComplexSpline(std::vector<double> breakpoints);
 		DPComplexSpline(const DPComplexSpline&);
 		~DPComplexSpline() {}
 		typedef std::pair<double, std::complex<double>> complex_knot;
 		std::complex<double> massShape(const double) const;
 		void setParameters(const std::vector<double>&); // alternating triplets of masses, magnitudes and phases
-		void setParameters(const std::vector<complex_knot>&);
+		void setParameters(std::vector<complex_knot>);
 	private:
+		static bool compare_knot(const DPComplexSpline::complex_knot&, const DPComplexSpline::complex_knot&);
 		TSpline3 ReSpline;
 		TSpline3 ImSpline;
 };
