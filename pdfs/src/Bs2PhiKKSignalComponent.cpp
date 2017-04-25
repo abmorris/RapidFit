@@ -4,6 +4,7 @@
 #include "DPBWResonanceShape.hh"
 #include "DPFlatteShape.hh"
 #include "DPNonresonant.hh"
+#include "DPComplexSpline.hh"
 #include "DPHelpers.hh"
 #include "DPWignerFunctionJ0.hh"
 #include "DPWignerFunctionJ1.hh"
@@ -11,10 +12,11 @@
 // Constructor
 Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string _phiname, std::string KKname, int _JKK, std::string _lineshape)
 	: phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
-	, fraction(Bs2PhiKK::PhysPar(config,KKname+"_fraction"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
 {
+	if(lineshape != "spline")
+		fraction = Bs2PhiKK::PhysPar(config,KKname+"_fraction");
 	// Barrier factors
 	if(lineshape != "NR")
 	{
@@ -34,7 +36,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	// Helicity amplitude observables
 	int lambda_max = std::min(1, _JKK); // Maximum helicity
 	std::vector<int> helicities;
-	if(lineshape!="NR")
+	if(lineshape != "NR" && lineshape != "spline")
 		for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
 	long unsigned int n = helicities.size();
@@ -117,6 +119,13 @@ void Bs2PhiKKSignalComponent::Initialise()
 	// Flatte
 	else if(lineshape=="FT")
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
+	else if(lineshape=="spline")
+	{
+		std::vector<double> breakpoints = {2*Bs2PhiKK::mK};
+		for(unsigned i = 0; i < KKpars.size(); i+=3)
+			breakpoints.push_back(KKpars[i].value);
+		KKLineShape = std::unique_ptr<DPComplexSpline>(new DPComplexSpline(breakpoints));
+	}
 	else
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
 	// Build the barrier factor and Wigner function objects
@@ -170,7 +179,7 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 {
 	if(mKK < 2*Bs2PhiKK::mK)
 		return 0;
-	if(lineshape=="NR")
+	if(lineshape=="NR" || lineshape == "spline")
 		return 1;
 	// Momenta
 	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
@@ -187,6 +196,20 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 		std::cerr << "\tBarrier factor evaluates to nan" << std::endl;
 	return orbitalFactor*barrierFactor;
 }
+// Mass-dependent part
+std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
+{
+	std::complex<double> massPart = KKLineShape->massShape(mKK);
+	if(lineshape != "spline")
+	{
+		if(std::isnan(fraction.value))
+			std::cerr << "\tFraction is nan" << std::endl;
+		massPart *= fraction.value * OFBF(mKK);
+	}
+	if(std::isnan(massPart.real()) || std::isnan(massPart.imag()))
+		std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
+	return massPart;
+}
 // The full amplitude.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint) const
 {
@@ -195,10 +218,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 	double ctheta_1 = datapoint[2];
 	double ctheta_2 = datapoint[3];
 	Bs2PhiKK::amplitude_t angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
-	std::complex<double> massPart = KKLineShape->massShape(mKK);
-	if(std::isnan(fraction.value)) std::cerr << "\tFraction is nan" << std::endl;
-	if(std::isnan(massPart.real()) || std::isnan(massPart.imag())) std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
-	massPart *= fraction.value * OFBF(mKK);
+	std::complex<double> massPart = MassPart(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
@@ -227,12 +247,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 		angularPart[false] += HelAmp[lambda+1] * F(lambda, phi, ctheta_1, ctheta_2);
 		angularPart[true] += HelAmp[lambda+1] * F(lambda, -phi, -ctheta_1, -ctheta_2);
 	}
-	std::complex<double> massPart = KKLineShape->massShape(mKK);
-	if(std::isnan(fraction.value))
-		std::cerr << "\tFraction is nan" << std::endl;
-	if(std::isnan(massPart.real()) || std::isnan(massPart.imag()))
-		std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
-	massPart *= fraction.value * OFBF(mKK);
+	std::complex<double> massPart = MassPart(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 /*****************************************************************************/
@@ -240,7 +255,8 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	// Update the parameters objects first
-	fraction.Update(fitpars);
+	if(lineshape != "spline")
+		fraction.Update(fitpars);
 	phimass.Update(fitpars);
 	if(lineshape != "NR")
 	{
@@ -294,13 +310,16 @@ void Bs2PhiKKSignalComponent::UpdateBarriers()
 vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(const auto& set: {{fraction,phimass},magsqs,phases,KKpars})
+	for(const auto& set: {{phimass},magsqs,phases,KKpars})
 		for(const auto& par: set)
 			parameters.push_back(par.name);
 	// Add barrier factors if this is a resonant component
 	if(lineshape != "NR")
 		for(const auto& par: {BsBFradius,KKBFradius})
 			parameters.push_back(par.name);
+	// Add fraction if this isn't a spline shape
+	if(lineshape != "spline")
+		parameters.push_back(fraction.name);
 	return parameters;
 }
 

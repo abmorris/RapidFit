@@ -36,13 +36,14 @@ class Bs2PhiKKSignalComponent
 		std::vector<Bs2PhiKK::PhysPar> KKpars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
 		int Jphi; // Spin of the phi (P-wave, 1)
 		int JKK; // Spin of the KK resonance (0, 1 or 2)
-		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"
+		std::string lineshape; // Choose the resonance shape: "spline", "BW", "FT" or "NR"
 		// Helper functions
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateBarriers();
 		std::complex<double> F(const int, const double, const double, const double) const; // Angular distribution: helicity, phi, costheta1, costheta2
 		std::complex<double> AngularPart(const double, const double, const double) const; // index, phi, costheta1, costheta2
+		std::complex<double> MassPart(const double) const; // mKK
 		double OFBF(const double) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
 		std::unique_ptr<DPWignerFunction> wignerKK {};

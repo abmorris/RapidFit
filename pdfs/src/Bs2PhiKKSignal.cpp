@@ -31,15 +31,52 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		mKKres_sigmazero = Bs2PhiKK::PhysPar(config,"mKKres_sigmazero");
 	}
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
+	std::vector<std::string> swave_spline_knots;
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
 	std::cout << "┃ Component     │ Spin  │ Lineshape     ┃\n";
 	std::cout << "┠───────────────┼───────┼───────────────┨\n";
-	for(const auto& name: reslist)
+	for(const auto& option: reslist)
 	{
-		if(name=="")
+		if(option=="")
 			continue;
-		components[name] = ParseComponent(config,phiname,name);
-		componentnames.push_back(name);
+		// Syntax: <resonance name>(<spin>,<lineshape>)
+		// - the list is space-delimited: no extra spaces, please!
+		// - resonance name must be alphanumeric
+		// - spin must be a single digit 0, 1 or 2, or you have to implement the code for higher spins
+		// - lineshape name must be 2 capital letters
+		// - see Bs2PhiKKSignalComponent.cpp for implemented lineshapes (BW, FT, NR... but more can be added)
+		// Example: "phi1020(1,BW)"
+		std::string KKname = option.substr(0,option.find('('));
+		int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
+		std::string lineshape = option.substr(option.find(',')+1,2);
+		if(lineshape == "spline")
+		{
+			if(JKK == 0)
+				swave_spline_knots.push_back(KKname);
+			else
+				std::cerr << "Spin>0 splines not implemented. Ignoring component " << option << std::endl;
+			continue;
+		}
+		// Print a line in the table
+		std::cout << "┃ ";
+		std::cout << std::left << std::setw(13) << KKname;
+		std::cout << " │ ";
+		std::cout << std::right << std::setw(5) << JKK;
+		std::cout << " │ ";
+		std::cout << std::left << std::setw(13) << lineshape;
+		std::cout << " ┃\n";
+		// Store the component and its name
+		components[KKname] = Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape);
+		componentnames.push_back(KKname);
+	}
+	if(swave_spline_knots.size() > 0)
+	{
+		std::string knotnames;
+		std::string KKname = "S-wave";
+		for(const auto& knot: swave_spline_knots)
+			knotnames += ":" + knot;
+		components[KKname] = Bs2PhiKKSignalComponent(config, phiname, knotnames, 0, "spline");
+		componentnames.push_back(KKname);
 	}
 	if(components.size() > 1)
 		componentnames.push_back("interference");
@@ -80,29 +117,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[0]));
 		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[1]));
 	}
-}
-/*****************************************************************************/
-// Build a component object from a passed option
-Bs2PhiKKSignalComponent Bs2PhiKKSignal::ParseComponent(PDFConfigurator* config, std::string phiname, std::string option) const
-{
-	// Syntax: <resonance name>(<spin>,<lineshape>)
-	// - the list is space-delimited: no extra spaces, please!
-	// - resonance name must be alphanumeric
-	// - spin must be a single digit 0, 1 or 2, or you have to implement the code for higher spins
-	// - lineshape name must be 2 capital letters
-	// - see Bs2PhiKKSignalComponent.cpp for implemented lineshapes (BW, FT, NR... but more can be added)
-	// Example: "phi1020(1,BW)"
-	std::string KKname = option.substr(0,option.find('('));
-	int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
-	std::string lineshape = option.substr(option.find(',')+1,2);
-	std::cout << "┃ ";
-	std::cout << std::left << std::setw(13) << KKname;
-	std::cout << " │ ";
-	std::cout << std::right << std::setw(5) << JKK;
-	std::cout << " │ ";
-	std::cout << std::left << std::setw(13) << lineshape;
-	std::cout << " ┃\n";
-	return Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape);
 }
 /*****************************************************************************/
 // Make the data point and parameter set

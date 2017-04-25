@@ -1,5 +1,6 @@
 #include "Bs2PhiKK.h"
 #include "DPHelpers.hh"
+#include "StringProcessing.h"
 
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
@@ -42,11 +43,24 @@ bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
 std::vector<std::string> Bs2PhiKK::LineShapeParameterNames(std::string name, std::string lineshape)
 {
 	// Breit Wigner
-	if(lineshape=="BW")
+	if(lineshape == "BW")
 		return {name+"_mass", name+"_width", "KKBFradius"};
 	// Flatte
-	else if(lineshape=="FT")
+	else if(lineshape == "FT")
 		return {name+"_mass", name+"_gpipi", name+"_Rg"};
+	else if(lineshape == "spline")
+	{
+		std::vector<std::string> parnames;
+		for(const auto& KKname: StringProcessing::SplitString(name, ':'))
+		{
+			if(KKname == "")
+				continue;
+			parnames.push_back(KKname+"_mass"); // x-value of spline knot
+			parnames.push_back(KKname+"_fraction"); // magnitude of y-value of spline knot
+			parnames.push_back(KKname+"_deltazero"); // phase of y-value of spline knot
+		}
+		return parnames;
+	}
 	// Assume it's non-resonant
 	else
 		return {};
@@ -66,6 +80,12 @@ void Bs2PhiKK::UpdateLineshape(const std::string& lineshape, DPMassShape& KKLine
 		respars.push_back(KKpars[0].value); // mass
 		respars.push_back(KKpars[1].value); // gpipi
 		respars.push_back(KKpars[1].value*KKpars[2].value); // gKK = gpipi*Rg
+	}
+	else if(lineshape == "spline")
+	{
+		respars = {2*Bs2PhiKK::mK,0,0};
+		for(const auto& par: KKpars)
+			respars.push_back(par.value);
 	}
 	KKLineShape.setParameters(respars);
 }
