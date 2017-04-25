@@ -32,6 +32,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	}
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::vector<std::string> swave_spline_knots;
+	// Print the table heading
 	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
 	std::cout << "┃ Component     │ Spin  │ Lineshape     ┃\n";
 	std::cout << "┠───────────────┼───────┼───────────────┨\n";
@@ -49,14 +50,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::string KKname = option.substr(0,option.find('('));
 		int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
 		std::string lineshape = option.substr(option.find(',')+1,2);
-		if(lineshape == "spline")
-		{
-			if(JKK == 0)
-				swave_spline_knots.push_back(KKname);
-			else
-				std::cerr << "Spin>0 splines not implemented. Ignoring component " << option << std::endl;
-			continue;
-		}
 		// Print a line in the table
 		std::cout << "┃ ";
 		std::cout << std::left << std::setw(13) << KKname;
@@ -65,10 +58,20 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::cout << " │ ";
 		std::cout << std::left << std::setw(13) << lineshape;
 		std::cout << " ┃\n";
+		// Add knots to the spline, if there are any
+		if(lineshape == "spline")
+		{
+			if(JKK == 0)
+				swave_spline_knots.push_back(KKname);
+			else
+				std::cerr << "Spin>0 splines not implemented. Ignoring component " << option << std::endl;
+			continue; // The spline component will be created later
+		}
 		// Store the component and its name
 		components[KKname] = Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape);
 		componentnames.push_back(KKname);
 	}
+	// If there are spline knots, then create a spline shape
 	if(swave_spline_knots.size() > 0)
 	{
 		std::string knotnames;

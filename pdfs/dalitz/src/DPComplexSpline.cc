@@ -31,7 +31,7 @@ void DPComplexSpline::setParameters(const std::vector<double>& pars)
 		complex_params.push_back({pars[i],std::polar<double>(pars[i+1],pars[i+2])});
 	setParameters(complex_params);
 }
-// Set the poitions and values of the complex knots
+// Set the positions and values of the complex knots
 // If you want to merge this function with the other setParameters function, be careful to reproduce the conversion from std::polar to std::complex
 void DPComplexSpline::setParameters(const std::vector<complex_knot>& pars)
 {
