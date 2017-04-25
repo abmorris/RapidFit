@@ -14,13 +14,14 @@ DPComplexSpline::DPComplexSpline(const DPComplexSpline& other) : DPMassShape(oth
 	, ImSpline(other.ImSpline)
 {
 }
-// 
+// Return the amplitude as calculated by the splines
 std::complex<double> DPComplexSpline::massShape(const double m) const
 {
 	double re = ReSpline.Eval(m);
 	double im = ImSpline.Eval(m);
 	return std::complex<double>(re,im);
 }
+// Construct the complex knots {mass, magnitude*exp(i*phase)} from triplets of real numbers
 void DPComplexSpline::setParameters(const std::vector<double>& pars)
 {
 	if(pars.size() % 3 != 0 )
@@ -30,25 +31,22 @@ void DPComplexSpline::setParameters(const std::vector<double>& pars)
 		complex_params.push_back({pars[i],std::polar<double>(pars[i+1],pars[i+2])});
 	setParameters(complex_params);
 }
+// Set the poitions and values of the complex knots
+// If you want to merge this function with the other setParameters function, be careful to reproduce the conversion from std::polar to std::complex
 void DPComplexSpline::setParameters(const std::vector<complex_knot>& pars)
 {
-	int n = check(pars);
+	const int n = pars.size();
+	// Make sure the vector of complex knot values has the same size as there are knots in the real and imaginary splines
+	const int npr = ReSpline.GetNp(), npi = ImSpline.GetNp();
+	if(n != npr || n != npi)
+		throw std::out_of_range("DPComplexSpline ERROR: " + std::to_string(n) + " pars, "
+		                                                  + std::to_string(npr) + " real knots, "
+		                                                  + std::to_string(npi) + " imaginary knots.");
+	// Set the knot values in the component splines
 	for(int i = 0; i < n; i++)
 	{
 		ReSpline.SetPoint(i, pars[i].first, pars[i].second.real());
 		ImSpline.SetPoint(i, pars[i].first, pars[i].second.imag());
 	}
-}
-int DPComplexSpline::check(const std::vector<complex_knot>& pars)
-{
-	const int n = pars.size();
-	const int npr = ReSpline.GetNp();
-	const int npi = ImSpline.GetNp();
-	if(n != npr || n != npi)
-		throw std::out_of_range("DPComplexSpline ERROR: " + std::to_string(n) + " pars, "
-		                                                  + std::to_string(npr) + " real knots, "
-		                                                  + std::to_string(npi) + " imaginary knots.");
-	else
-		return n;
 }
 

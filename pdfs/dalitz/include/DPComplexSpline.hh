@@ -16,7 +16,6 @@ class DPComplexSpline: public virtual DPMassShape
 	private:
 		TSpline3 ReSpline;
 		TSpline3 ImSpline;
-		int check(const std::vector<complex_knot>&);
 };
 #endif
 
