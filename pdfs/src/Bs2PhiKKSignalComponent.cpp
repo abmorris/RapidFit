@@ -121,7 +121,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
 	else if(lineshape=="SP")
 	{
-		std::vector<double> breakpoints = {2*Bs2PhiKK::mK};
+		std::vector<double> breakpoints;
 		for(unsigned i = 0; i < KKpars.size(); i+=3)
 			breakpoints.push_back(KKpars[i].value);
 		KKLineShape = std::unique_ptr<DPComplexSpline>(new DPComplexSpline(breakpoints));
