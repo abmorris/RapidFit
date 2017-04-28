@@ -6,8 +6,8 @@ DPComplexSpline::DPComplexSpline(std::vector<double> breakpoints) : DPMassShape(
 {
 	std::vector<double> dummy_yvalues(breakpoints.size(),0);
 	std::sort(breakpoints.begin(),breakpoints.end());
-	ReSpline = TSpline3("mag",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
-	ImSpline = TSpline3("arg",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
+	ReSpline = TSpline3("real",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
+	ImSpline = TSpline3("imag",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
 }
 // This constructor calls the other one and also sets starting parameters to the passed ones
 DPComplexSpline::DPComplexSpline(std::vector<complex_knot> knots) : DPMassShape()
@@ -61,8 +61,8 @@ void DPComplexSpline::setParameters(std::vector<complex_knot> pars)
 		real.push_back(knot.second.real());
 		imag.push_back(knot.second.imag());
 	}
-	ReSpline = TSpline3("mag",mass.data(),real.data(),n);
-	ImSpline = TSpline3("arg",mass.data(),imag.data(),n);
+	ReSpline = TSpline3("real",mass.data(),real.data(),n);
+	ImSpline = TSpline3("imag",mass.data(),imag.data(),n);
 }
 // Comparison function to aid in sorting knots from lowest to highest mass
 bool DPComplexSpline::compare_knot(const DPComplexSpline::complex_knot& left, const DPComplexSpline::complex_knot& right)
