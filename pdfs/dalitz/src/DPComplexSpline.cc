@@ -48,8 +48,8 @@ void DPComplexSpline::setParameters(std::vector<complex_knot> pars)
 	// Set the knot values in the component splines
 	for(int i = 0; i < n; i++)
 	{
-		ReSpline.SetPoint(i, pars[i].first, pars[i].second.abs());
-		ImSpline.SetPoint(i, pars[i].first, pars[i].second.arg());
+		ReSpline.SetPoint(i, pars[i].first, std::abs(pars[i].second));
+		ImSpline.SetPoint(i, pars[i].first, std::arg(pars[i].second));
 	}
 }
 // Comparison function to aid in sorting knots from lowest to highest mass
