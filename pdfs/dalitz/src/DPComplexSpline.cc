@@ -20,7 +20,7 @@ std::complex<double> DPComplexSpline::massShape(const double m) const
 {
 	double re = ReSpline.Eval(m);
 	double im = ImSpline.Eval(m);
-	return std::complex<double>(re,im);
+	return std::polar<double>(re,im);
 }
 // Construct the complex knots {mass, magnitude*exp(i*phase)} from triplets of real numbers
 void DPComplexSpline::setParameters(const std::vector<double>& pars)
@@ -48,8 +48,8 @@ void DPComplexSpline::setParameters(std::vector<complex_knot> pars)
 	// Set the knot values in the component splines
 	for(int i = 0; i < n; i++)
 	{
-		ReSpline.SetPoint(i, pars[i].first, pars[i].second.real());
-		ImSpline.SetPoint(i, pars[i].first, pars[i].second.imag());
+		ReSpline.SetPoint(i, pars[i].first, pars[i].second.abs());
+		ImSpline.SetPoint(i, pars[i].first, pars[i].second.arg());
 	}
 }
 // Comparison function to aid in sorting knots from lowest to highest mass
