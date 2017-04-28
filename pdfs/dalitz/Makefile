@@ -1,108 +1,61 @@
-#--------------------------------------------------------------------------------------------------------------
-# get the correct root configuration
-#
-ROOTCFLAGS   := $(shell root-config --cflags)
-ROOTLIBS     := $(shell root-config --libs)
+# Compiler and shell
+CC         = g++
+SHELL      = /bin/bash
+RM         = rm -f
 
-SYSTEM=$(shell uname -s)
+# ROOT
+ROOTCFLAGS = $(shell root-config --cflags)
+ROOTLIBS   = $(shell root-config --libs)
+ROOTLIBDIR = $(shell root-config --libdir)
+#EXTRA_ROOTLIBS = -lRooFit -lRooStats -lRooFitCore
 
-HEADERS=$(wildcard include/*.hh)
-SOURCES=$(wildcard src/*.cc)
-OBJECTS=$(patsubst src/%.cc, tmp/%.o, $(SOURCES))
+# Extensions
+SRCEXT     = cc
+HDREXT     = hh
+OBJEXT     = o
+LIBEXT     = so
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
-# lib to be built
-#
-LIB=lib/libDPAmpCalc.so
-TBIN=test/test.exe test/refAxisTest.exe
+# Directories
+TSRCDIR    = test/src
+BINDIR     = test/bin
+TOBJDIR    = test/build
+DSRCDIR    = src
+OBJDIR     = build
+HDRDIR     = include
+LIBDIR     = test/lib
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
-#
-# binaries to be built
-#
-default: lib bin
+# Get files and make list of objects and libraries
+TSRCS     := $(shell find $(TSRCDIR) -name '*.$(SRCEXT)')
+DSRCS     := $(shell find $(DSRCDIR) -name '*.$(SRCEXT)')
+HDRS      := $(shell find $(HDRDIR) -name '*.$(HDREXT)')
+OBJS      := $(patsubst $(DSRCDIR)/%.$(SRCEXT),$(OBJDIR)/%.$(OBJEXT),$(DSRCS))
+BINS      := $(patsubst $(TSRCDIR)/%.$(SRCEXT),$(BINDIR)/%,$(TSRCS))
 
-lib: $(LIB)
+# Where the output is
+OUTPUT     = $(OBJDIR)/*.$(OBJEXT) $(LIBDIR)/*.$(LIBEXT) $(BINDIR)/*
 
-bin: lib $(TBIN)
+# Compiler flags
+CXXFLAGS   = -Wall -Werror -Wno-reorder -fPIC -I$(HDRDIR) $(ROOTCFLAGS)
+LIBFLAGS   = -Wl,--as-needed $(ROOTLIBS) $(EXTRA_ROOTLIBS) -Wl,-rpath,$(ROOTLIBDIR)
 
-#-----------------------------------------------------------------------------------------
-#
-# compile flags
-#
-CXX	    = g++
-#CXXFLAGS    = -g -O -fPIC -Wall $(ROOTCFLAGS) -I.  -Iinclude
-CXXFLAGS    = -pg -g  -fPIC -Wall $(ROOTCFLAGS) -I.  -Iinclude
-
-#--------------------------------------------------------------------------------------------------------------------------------------------
-#
-# set the linker options
-#
-LD	    = g++
-LDFLAGS     = -O -g
-
-LIBS        = -L. $(ROOTLIBS) $(SYSLIBS) -lstdc++ -Llib \
-              -lDPAmpCalc
-SOFLAGS     = -dynamiclib
-ifeq ($(SYSTEM),Darwin)
-	SOFLAGS+=  -undefined dynamic_lookup
-endif
-#SOFLAGS     = -bundle -undefined dynamic_lookup
-
-
-#------------------------------------------------------------------------------
-# executables
-PRINTLINK=@echo "<*** linking $< ***>"
-
-test/%.exe: tmp/%.o
-	$(PRINTLINK); $(LD) $(LDFLAGS) $(LIBS) $< -o $@
-
-#-----------------------------------------------------------------------------------------------------------------------------------------
-# implicite rule for default object files
-#
-PRINT=@echo "<*** compiling $< ***>"
-
-tmp/%.o: src/%.cc
-	$(PRINT); $(CXX) $(CXXFLAGS) -c $< -o $@
-
-tmp/%.o: test/%.cc
-	$(PRINT); $(CXX) $(CXXFLAGS) -c $< -o $@
-
-#-----------------------------------------------------------------------------------------------------------------------------------------
-# how to build lib
-#
-$(LIB): $(OBJECTS) tmp/dict.o
-	$(LD) $(CXXFLAGS) $(SOFLAGS) -o $@ $^
-#	@echo "<*** build lib ***>"; $(LD) $(CXXFLAGS) $(SOFLAGS) -o $@ $^
-
-
-#-----------------------------------------------------------------------------------------------------------------------------------------
-# rootcint stuff
-#
-CINTINCLUDE=-Iinclude -I$(ROOTSYS)/include
-
-LINKDEFFILE=include/linkdef.h
-
-tmp/dict.o: tmp/dict.cxx $(LINKDEFFILE)
-	$(PRINT); $(CXX) $(CXXFLAGS) -c $< -o $@
-
-tmp/dict.cxx: $(HEADERS) $(LINKDEFFILE)
-	@echo "<*** rootcint ***>"; rm -f tmp/dict.cxx tmp/dict.h; rootcint tmp/dict.cxx -c $(CINTINCLUDE) $^
-
-#----------------------------------------------------------------------------------------------------------------------------------------
-
-clean:
-	rm -f tmp/*.o $(FITLIB) tmp/dict.* test/*.exe
-
-binclean:
-	rm -f  bin/*.exe
-
-veryclean: clean binclean
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-
-#doc: macros/doc.cc src/*cc include/*hh
-#	root -b -q macros/doc.cc
-doc: $(SOURCES) $(HEADERS) doc/doxygen.config
-	doxygen doc/doxygen.config
-#------------------------------------------------------------------------------------------------------------------------------------------
+# Make the libraries
+all: $(BINS)
+# Build binaries
+$(BINDIR)/%: $(TOBJDIR)/%.$(OBJEXT) $(LIBDIR)/libDP.$(LIBEXT) | $(BINDIR)
+	@echo "Linking $@"
+	@$(CC) $< -o $@ $(LIBFLAGS) -Wl,--as-needed -L$(LIBDIR) -lDP -Wl,-rpath,$(shell pwd)/$(LIBDIR)
+$(TOBJDIR)/%.$(OBJEXT): $(TSRCDIR)/%.$(SRCEXT) $(HDRS) | $(TOBJDIR)
+	@echo "Compiling $@"
+	@$(CC) $(CXXFLAGS) -c $< -o $@
+$(LIBDIR)/libDP.$(LIBEXT): $(OBJS) | $(LIBDIR)
+	@$(CC) -shared $^ -o $@ $(LIBFLAGS)
+# Build objects
+$(OBJDIR)/%.$(OBJEXT): $(DSRCDIR)/%.$(SRCEXT) $(HDRS)
+	@echo "Compiling $@"
+	@$(CC) $(CXXFLAGS) -c $< -o $@
+$(BINDIR) $(LIBDIR) $(TOBJDIR):
+	mkdir -p $@
+# Remove all the output
+clean :
+	$(RM) $(OUTPUT)
+.PHONY : all clean objects cflags libs libdir

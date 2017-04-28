@@ -6,8 +6,17 @@ DPComplexSpline::DPComplexSpline(std::vector<double> breakpoints) : DPMassShape(
 {
 	std::vector<double> dummy_yvalues(breakpoints.size(),0);
 	std::sort(breakpoints.begin(),breakpoints.end());
-	ReSpline = TSpline3("real",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
-	ImSpline = TSpline3("imag",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
+	ReSpline = TSpline3("mag",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
+	ImSpline = TSpline3("arg",breakpoints.data(),dummy_yvalues.data(),breakpoints.size());
+}
+// This constructor calls the other one and also sets starting parameters to the passed ones
+DPComplexSpline::DPComplexSpline(std::vector<complex_knot> knots) : DPMassShape()
+{
+	std::vector<double> breakpoints;
+	for(const auto& knot: knots)
+		breakpoints.push_back(knot.first);
+	*this = DPComplexSpline(breakpoints);
+	this->setParameters(knots);
 }
 // Copy constructor
 DPComplexSpline::DPComplexSpline(const DPComplexSpline& other) : DPMassShape(other)
@@ -20,7 +29,7 @@ std::complex<double> DPComplexSpline::massShape(const double m) const
 {
 	double re = ReSpline.Eval(m);
 	double im = ImSpline.Eval(m);
-	return std::polar<double>(re,im);
+	return std::complex<double>(re,im);
 }
 // Construct the complex knots {mass, magnitude*exp(i*phase)} from triplets of real numbers
 void DPComplexSpline::setParameters(const std::vector<double>& pars)
@@ -45,12 +54,15 @@ void DPComplexSpline::setParameters(std::vector<complex_knot> pars)
 		                                                  + std::to_string(npi) + " imaginary knots.");
 	// Sort the knots from lowest to highest mass
 	std::sort(pars.begin(), pars.end(), compare_knot);
-	// Set the knot values in the component splines
-	for(int i = 0; i < n; i++)
+	std::vector<double> mass, real, imag;
+	for(const auto& knot: pars)
 	{
-		ReSpline.SetPoint(i, pars[i].first, std::abs(pars[i].second));
-		ImSpline.SetPoint(i, pars[i].first, std::arg(pars[i].second));
+		mass.push_back(knot.first);
+		real.push_back(knot.second.real());
+		imag.push_back(knot.second.imag());
 	}
+	ReSpline = TSpline3("mag",mass.data(),real.data(),n);
+	ImSpline = TSpline3("arg",mass.data(),imag.data(),n);
 }
 // Comparison function to aid in sorting knots from lowest to highest mass
 bool DPComplexSpline::compare_knot(const DPComplexSpline::complex_knot& left, const DPComplexSpline::complex_knot& right)
