@@ -153,7 +153,6 @@ vector<string> XMLTag::GetValue() const
 			new_value[0] = value[0];
 		}
 	}
-	if( forbidden != NULL ) if( !forbidden->empty() ) cout << "XMLTag- USING: " << path << "\t\t" << name << "\t\t" << new_value[0] << endl;
 	if( value.empty() )
 	{
 	//	cerr << "Requested value of tag " << name << ", but the value is empty" << endl;
