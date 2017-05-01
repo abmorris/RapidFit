@@ -253,7 +253,7 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint
 /*Stuff that factors out of the time integral*********************************/
 double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double acceptance;
+	double acceptance = 1;
 	if(acceptance_moments)
 	{
 		// Get the shape from stored Legendre moments
