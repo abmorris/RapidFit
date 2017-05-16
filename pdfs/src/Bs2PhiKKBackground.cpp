@@ -19,7 +19,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) : Bs2PhiKK(confi
 	{
 		if(name=="")
 			continue;
-		components[name] = ParseComponent(config,name);
+		components.emplace(name,ParseComponent(config,name));
 	}
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	MakePrototypes();

@@ -19,23 +19,6 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 	else if(type == "combinatorial")
 		for(std::string suffix: {"A", "B", "C"})
 			KKpars.push_back(Bs2PhiKK::PhysPar(config,name+"_"+suffix));
-	else if(type.find("resonant")!=std::string::npos)
-	{
-		std::regex pattern("resonant,([0-3]),([A-Z][A-Z])");
-		std::smatch result;
-		bool match = std::regex_match(type, result, pattern);
-		if(!match) std::cerr << "The option for this resonant background is malformed: " << type << std::endl;
-		JKK = std::stoi(result[1].str());
-		lineshape = result[2].str();
-		string prefix = "combinatorial";
-		for(string par: Bs2PhiKK::LineShapeParameterNames(name.substr(name.find(prefix)+prefix.length()),lineshape))
-			KKpars.push_back(Bs2PhiKK::PhysPar(config,par));
-		if(KKpars.empty() && lineshape!="NR")
-		{
-			lineshape = "NR";
-			std::cerr << "Bs2PhiKKBackgroundComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant.\n";
-		}
-	}
 	else if(type == "histogram")
 	{
 		std::string histfilename = config->getConfigurationValue(name+"_HistFile");
@@ -44,46 +27,16 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(PDFConfigurator* config
 	}
 	else
 		std::cerr << "Bs2PhiKKBackgroundComponent WARNING: unrecognised background type:" << type << ". This will be treated as flat in mass.\n";
-	Initialise();
 }
 // Copy constructor
 Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroundComponent& other)
 	: fraction(other.fraction)
 	, type(other.type)
-	, lineshape(other.lineshape)
 	, JKK(other.JKK)
 	, KKpars(other.KKpars)
 	, mKKhist(other.mKKhist)
 	, angulardistribution(other.angulardistribution)
 {
-	Initialise();
-}
-// Copy by assignment
-Bs2PhiKKBackgroundComponent& Bs2PhiKKBackgroundComponent::operator=(const Bs2PhiKKBackgroundComponent& other)
-{
-	fraction = other.fraction;
-	type = other.type;
-	lineshape = other.lineshape;
-	JKK = other.JKK;
-	KKpars = other.KKpars;
-	mKKhist = other.mKKhist;
-	angulardistribution = other.angulardistribution;
-	Initialise();
-	return *this;
-}
-void Bs2PhiKKBackgroundComponent::Initialise()
-{
-	// Breit Wigner
-	if(lineshape=="BW")
-		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
-	// Flatte
-	else if(lineshape=="FT")
-		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
-	else if(lineshape=="NR")
-		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
-	else
-		return; // Don't update the lineshape if it doesn't exist
-	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
 double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapoint) const
@@ -124,8 +77,6 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	}
 	else if(type == "histogram")
 		massPart = mKKhist.Eval({mKK});
-	else if(!lineshape.empty())
-		massPart = std::norm(KKLineShape->massShape(mKK))*1e-4;
 	double angularPart = angulardistribution.Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
 	if(std::isnan(massPart)) std::cerr << "Mass part is nan" << std::endl;
 	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
@@ -143,8 +94,6 @@ void Bs2PhiKKBackgroundComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		if(std::isnan(par.value))
 			std::cerr << par.name.Name() << " is nan" << std::endl;
 	}
-	if(!lineshape.empty())
-		Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 vector<ObservableRef> Bs2PhiKKBackgroundComponent::GetPhysicsParameters() const
 {
