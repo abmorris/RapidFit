@@ -168,7 +168,7 @@ void LegendreMomentShape::Generate(std::vector<DataPoint>& DataSet, const PhaseS
 					}
 					double error = sqrt(1./numEvents/numEvents * ( c_sq[l][i][k][j] - c[l][i][k][j]*c[l][i][k][j]/numEvents) );
 					double signif = std::abs(c[l][i][k][j]/numEvents)/error;
-					if ( signif > threshold )
+					if ( signif > threshold || (l == 0 && i == 0 && k == 0 && j == 0) || std::isnan(1/error) )
 					{
 						printf("c[%d][%d][%d][%d] = %f;// ± %f with significance %fσ\n", l, i, k, j, c[l][i][k][j]/numEvents, error, signif );
 						c[l][i][k][j] /= numEvents;
