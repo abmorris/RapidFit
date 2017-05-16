@@ -50,16 +50,15 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		double sigma = KKpars[1].value;
 		double alpha = KKpars[2].value;
 		double n     = KKpars[3].value;
-		double arg = (mKK-mean)/sigma;
+		double arg   = (mKK-mean)/sigma;
 		if(alpha<0) arg *= -1;
 		double absalpha = std::abs(alpha);
-		double A,B;
 		if(arg >= -absalpha)
 			massPart = std::exp(-0.5*arg*arg);
 		else
 		{
-			A = std::pow(n/absalpha,n) * std::exp(-0.5*absalpha*absalpha);
-			B = n/absalpha - absalpha;
+			double A = std::pow(n/absalpha,n) * std::exp(-0.5*absalpha*absalpha);
+			double B = n/absalpha - absalpha;
 			massPart = A / std::pow(B - arg,n);
 		}
 	}

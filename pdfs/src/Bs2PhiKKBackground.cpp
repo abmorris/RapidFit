@@ -80,7 +80,7 @@ bool Bs2PhiKKBackground::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	return isOK;
 }
 /*****************************************************************************/
-vector<string> Bs2PhiKKBackground::PDFComponents()
+std::vector<std::string> Bs2PhiKKBackground::PDFComponents()
 {
 	// Avoid redundant plotting for single-component PDFs
 	if(components.size() == 1)

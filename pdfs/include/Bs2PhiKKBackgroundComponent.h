@@ -13,7 +13,6 @@
 class Bs2PhiKKBackgroundComponent
 {
 	public:
-/*		Bs2PhiKKBackgroundComponent() {}*/
 		Bs2PhiKKBackgroundComponent(PDFConfigurator*, std::string, std::string); // config, name, type
 		Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroundComponent&);
 		~Bs2PhiKKBackgroundComponent() {}
