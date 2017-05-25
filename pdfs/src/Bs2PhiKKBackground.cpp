@@ -19,7 +19,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) : Bs2PhiKK(confi
 	{
 		if(name=="")
 			continue;
-		components[name] = ParseComponent(config,name);
+		components.emplace(name,ParseComponent(config,name));
 	}
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	MakePrototypes();
@@ -80,7 +80,7 @@ bool Bs2PhiKKBackground::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	return isOK;
 }
 /*****************************************************************************/
-vector<string> Bs2PhiKKBackground::PDFComponents()
+std::vector<std::string> Bs2PhiKKBackground::PDFComponents()
 {
 	// Avoid redundant plotting for single-component PDFs
 	if(components.size() == 1)
