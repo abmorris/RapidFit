@@ -14,6 +14,8 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	: phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
+	, Bsbarrier(DPBarrierFactor(Bs2PhiKK::JBs,1.0,0))
+	, KKbarrier(DPBarrierFactor(JKK,3.0,0))
 {
 	if(lineshape != "SP")
 		fraction = Bs2PhiKK::PhysPar(config,KKname+"_fraction");
@@ -22,8 +24,6 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	{
 		BsBFradius = Bs2PhiKK::PhysPar(config,"BsBFradius");
 		KKBFradius = Bs2PhiKK::PhysPar(config,"KKBFradius");
-		Bsbarrier = DPBarrierFactor(  0,1.0,0);
-		KKbarrier = DPBarrierFactor(JKK,3.0,0);
 	}
 	// KK resonance parameters
 	for(string KKpar: Bs2PhiKK::LineShapeParameterNames(KKname,lineshape))
@@ -88,28 +88,6 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 {
 	Initialise();
 }
-// Copy by assignment
-Bs2PhiKKSignalComponent& Bs2PhiKKSignalComponent::operator=(const Bs2PhiKKSignalComponent& other)
-{
-	// Floatable parameters
-	fraction = other.fraction;
-	Ahel = other.Ahel;
-	magsqs = other.magsqs;
-	phases = other.phases;
-	phimass = other.phimass;
-	KKpars = other.KKpars;
-	BsBFradius = other.BsBFradius;
-	KKBFradius = other.KKBFradius;
-	// Fixed parameters
-	JKK = other.JKK;
-	// DP objects
-	Bsbarrier = other.Bsbarrier;
-	KKbarrier = other.KKbarrier;
-	// Options
-	lineshape = other.lineshape;
-	Initialise();
-	return *this;
-}
 /*****************************************************************************/
 void Bs2PhiKKSignalComponent::Initialise()
 {
@@ -154,10 +132,6 @@ std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const double P
 {
 	const double d_phi = wignerPhi->function(ctheta_1, lambda, 0);
 	const double d_KK = wignerKK->function(ctheta_2, lambda, 0);
-	if(std::isnan(d_phi))
-		std::cerr << "\tWigner function for the phi evaluates to nan" << std::endl;
-	if(std::isnan(d_phi))
-		std::cerr << "\tWigner function for the KK resonance evaluates to nan" << std::endl;
 	return d_phi * d_KK * std::polar<double>(1, lambda*Phi);
 }
 std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const double phi, const double ctheta_1, const double ctheta_2) const
@@ -171,8 +145,6 @@ std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const double phi, cons
 		for(const auto& A : Ahel)
 		{
 			int lambda = A.first;
-			if(std::isnan(A.second.real()) || std::isnan(A.second.imag()))
-				std::cerr << "\tA(" << lambda << ") is " << A.second << std::endl;
 			angularPart += A.second * F(lambda, phi, ctheta_1, ctheta_2);
 		}
 	return angularPart;
@@ -188,15 +160,11 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
 	double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
 	// Orbital factor
-	double orbitalFactor = //std::pow(pBs/mBs,   0)* // == 1 so don't bother
+	double orbitalFactor = std::pow(pBs/Bs2PhiKK::mBs, Bs2PhiKK::JBs)*
 	                       std::pow(pKK/KKpars[0].value, JKK);
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs)*
 	                       KKbarrier.barrier(pKK);
-	if(std::isnan(orbitalFactor))
-		std::cerr << "\tOrbital factor evaluates to nan" << std::endl;
-	if(std::isnan(barrierFactor))
-		std::cerr << "\tBarrier factor evaluates to nan" << std::endl;
 	return orbitalFactor*barrierFactor;
 }
 // Mass-dependent part
@@ -205,12 +173,8 @@ std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
 	std::complex<double> massPart = KKLineShape->massShape(mKK);
 	if(lineshape != "SP")
 	{
-		if(std::isnan(fraction.value))
-			std::cerr << "\tFraction is nan" << std::endl;
 		massPart *= fraction.value * OFBF(mKK);
 	}
-	if(std::isnan(massPart.real()) || std::isnan(massPart.imag()))
-		std::cerr << "\tLineshape evaluates to " << massPart << std::endl;
 	return massPart;
 }
 // The full amplitude.

@@ -4,7 +4,6 @@
 class DPBarrierFactor
 {
 	public:
-		DPBarrierFactor();
 		DPBarrierFactor(const unsigned spin, const double radius, const double p0);
 		DPBarrierFactor(const DPBarrierFactor& other) : spin(other.spin), function(other.function), precalcFF(other.precalcFF), radius(other.radius) {}
 		~DPBarrierFactor() {}

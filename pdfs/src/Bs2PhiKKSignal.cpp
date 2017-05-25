@@ -68,7 +68,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 			continue; // The spline component will be created later
 		}
 		// Store the component and its name
-		components[KKname] = Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape);
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape));
 		componentnames.push_back(KKname);
 	}
 	// If there are spline knots, then create a spline shape
@@ -78,7 +78,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::string KKname = "S-wave";
 		for(const auto& knot: swave_spline_knots)
 			knotnames += ":" + knot;
-		components[KKname] = Bs2PhiKKSignalComponent(config, phiname, knotnames, 0, "SP");
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, phiname, knotnames, 0, "SP"));
 		componentnames.push_back(KKname);
 	}
 	if(components.size() > 1)

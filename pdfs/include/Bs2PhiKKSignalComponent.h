@@ -12,11 +12,9 @@
 class Bs2PhiKKSignalComponent
 {
 	public:
-		Bs2PhiKKSignalComponent() {}
 		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, std::string, int, std::string); // config, phi name, resonance name, spin
 		Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent&);
 		~Bs2PhiKKSignalComponent() {}
-		Bs2PhiKKSignalComponent& operator=(const Bs2PhiKKSignalComponent&);
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays

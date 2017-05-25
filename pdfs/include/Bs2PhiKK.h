@@ -16,6 +16,7 @@ class Bs2PhiKK
 		Bs2PhiKK(const Bs2PhiKK&);
 		~Bs2PhiKK() {}
 		// Fixed mass values
+		static constexpr int JBs = 0;
 		static constexpr double mBs = 5.36677;
 		static constexpr double mK = 0.493677;
 		static constexpr double mpi = 0.13957018;

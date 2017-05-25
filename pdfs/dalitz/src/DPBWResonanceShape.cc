@@ -8,9 +8,9 @@ DPBWResonanceShape::DPBWResonanceShape(double mRR, double gammaRR, int L, double
 	,LR(L)
 	,m1(mm1)
 	,m2(mm2)
+	,pR0(DPHelpers::daughterMomentum(mR,m1,m2))
+	,barrier(DPBarrierFactor(LR,RR,pR0))
 {
-	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
-	barrier = DPBarrierFactor(LR,RR,pR0);
 }
 
 DPBWResonanceShape::DPBWResonanceShape( const DPBWResonanceShape& other ) : DPMassShape(other)

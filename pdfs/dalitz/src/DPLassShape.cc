@@ -12,9 +12,9 @@ DPLassShape::DPLassShape(double mRR, double gammaRR, int L, double mm1, double m
 	,m2(mm2)
 	,a(aa)
 	,r(rr)
+	,pR0(DPHelpers::daughterMomentum(mR,m1,m2))
+	,barrier(DPBarrierFactor(LR,RR,pR0))
 {
-	pR0=DPHelpers::daughterMomentum(mR,m1,m2);
-	barrier = DPBarrierFactor(LR,RR,pR0);
 }
 
 DPLassShape::DPLassShape(const DPLassShape& other) : DPMassShape(other)
