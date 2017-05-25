@@ -133,7 +133,7 @@ void Minuit2Wrapper::Minimise()
 
 		for( unsigned int i=0; i< RapidFunction->GetParameterSet()->GetAllFloatNames().size(); ++i )
 		{
-			cout << RapidFunction->GetParameterSet()->GetAllFloatNames()[i] << "\t±\t" << minimisedParameters->Error( RapidFunction->GetParameterSet()->GetAllFloatNames()[i] ) << endl;
+			cout << RapidFunction->GetParameterSet()->GetAllFloatNames()[i] << "\t  " << minimisedParameters->Value( RapidFunction->GetParameterSet()->GetAllFloatNames()[i] ) << " ± " << minimisedParameters->Error( RapidFunction->GetParameterSet()->GetAllFloatNames()[i] ) << endl;
 		}
 
 		//Work out the fit status - possibly dodgy
