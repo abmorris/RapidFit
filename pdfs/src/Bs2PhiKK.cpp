@@ -4,17 +4,12 @@
 
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
+	std::vector<std::pair<dim, std::string>> wantednames = {{_mKK_, "mKK"}, {_phi_, "phi"}, {_ctheta_1_, "ctheta_1"}, {_ctheta_2_, "ctheta_2"}, {_trigger_, "trigger"}};
 	// Dependent variable names
-	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2"})
-		ObservableNames.push_back(config->getName(name));
-	// If the phase space boundary has a "trigger" observable, then add it too
-	// Generator-level events won't have this, and it's only needed to decide which acceptance function to use
-	for(const auto& name: config->GetPhaseSpaceBoundary()->GetAllNames())
-		if(name == "trigger")
-		{
-			ObservableNames.push_back(config->getName("trigger"));
-			break;
-		}
+	for(const auto& psbname: config->GetPhaseSpaceBoundary()->GetAllNames())
+		for(const auto& name: wantednames)
+			if(psbname == name.second)
+				ObservableNames.emplace(name.first, config->getName(name.second));
 }
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
 	// Dependent variable names
@@ -30,22 +25,24 @@ void Bs2PhiKK::PhysPar::Update(const ParameterSet* pars)
 void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
 {
 	// The ordering here matters. It has to be the same as the XML file, apparently.
-	for(auto name: ObservableNames)
-		allObservables.push_back(name.Name());
+	// The order should be as in the enum declaration in this class.
+	for(const auto& name: ObservableNames)
+		allObservables.push_back(name.second.Name());
 }
 Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
-	datapoint_t dp {0,0,0,0,0};
-	for(unsigned i = 0; i < ObservableNames.size(); i++)
-		dp[i] = measurement->GetObservable(ObservableNames[i])->GetValue();
-	dp[1]+=M_PI; // TODO: get rid of the need for this
+	datapoint_t dp;
+	for(const auto& name: ObservableNames)
+		dp[name.first] = measurement->GetObservable(name.second)->GetValue();
+	if(ObservableNames.find(_phi_) != ObservableNames.end())
+		dp[_phi_]+=M_PI; // TODO: get rid of the need for this
 	return dp;
 }
 
 bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
 {
-	return datapoint[0] > 2*Bs2PhiKK::mK && std::abs(datapoint[2]) <= 1 && std::abs(datapoint[3]) <= 1;
+	return datapoint.at(_mKK_) > 2*Bs2PhiKK::mK && std::abs(datapoint.at(_ctheta_1_)) <= 1 && std::abs(datapoint.at(_ctheta_2_)) <= 1;
 }
 
 std::vector<std::string> Bs2PhiKK::LineShapeParameterNames(std::string name, std::string lineshape)

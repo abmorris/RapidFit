@@ -180,10 +180,10 @@ std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
 // The full amplitude.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double mKK = datapoint[0];
-	double phi = datapoint[1];
-	double ctheta_1 = datapoint[2];
-	double ctheta_2 = datapoint[3];
+	double mKK = datapoint.at(Bs2PhiKK::_mKK_);
+	double phi = datapoint.at(Bs2PhiKK::_phi_);
+	double ctheta_1 = datapoint.at(Bs2PhiKK::_ctheta_1_);
+	double ctheta_2 = datapoint.at(Bs2PhiKK::_ctheta_2_);
 	Bs2PhiKK::amplitude_t angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
 	std::complex<double> massPart = MassPart(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
@@ -192,10 +192,10 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint, const std::string option) const
 {
 	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos ) return Amplitude(datapoint);
-	double mKK = datapoint[0];
-	double phi = datapoint[1];
-	double ctheta_1 = datapoint[2];
-	double ctheta_2 = datapoint[3];
+	double mKK = datapoint.at(Bs2PhiKK::_mKK_);
+	double phi = datapoint.at(Bs2PhiKK::_phi_);
+	double ctheta_1 = datapoint.at(Bs2PhiKK::_ctheta_1_);
+	double ctheta_2 = datapoint.at(Bs2PhiKK::_ctheta_2_);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);

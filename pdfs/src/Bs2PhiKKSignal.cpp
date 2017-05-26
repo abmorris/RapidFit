@@ -191,7 +191,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 // The stuff common to both Evaluate() and EvaluateComponent()
 double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	return MatrixElementSquared * p1stp3(datapoint[0]) * Acceptance(datapoint);
+	return MatrixElementSquared * p1stp3(datapoint.at(Bs2PhiKK::_mKK_)) * Acceptance(datapoint);
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes
@@ -240,14 +240,18 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint
 {
 	const double nsigma = mKKresconfig.at("nsigma");
 	const int nsteps = mKKresconfig.at("nsteps");
-	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint[0]-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
+	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
 	// If the integration region goes below threshold, don't do the convolution
 	double Msq_conv = 0.;
 	const double stepsize = 2.*nsigma*resolution/nsteps;
 	// Integrate over range −nσ to +nσ
 	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-		if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
-			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize;
+		if(datapoint.at(Bs2PhiKK::_mKK_) - nsigma*resolution > 2*Bs2PhiKK::mK)
+		{
+			datapoint_t tmpdatapoint = datapoint;
+			tmpdatapoint[_mKK_] = datapoint.at(Bs2PhiKK::_mKK_)-x;
+			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)(tmpdatapoint,compName) * stepsize;
+		}
 	return Msq_conv;
 }
 /*Stuff that factors out of the time integral*********************************/
@@ -257,11 +261,11 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 	if(acceptance_moments)
 	{
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m[(bool)datapoint[4]]->Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
+		acceptance = acc_m[(bool)datapoint.at(Bs2PhiKK::_trigger_)]->Evaluate({datapoint.at(Bs2PhiKK::_mKK_),datapoint.at(Bs2PhiKK::_phi_),datapoint.at(Bs2PhiKK::_ctheta_1_),datapoint.at(Bs2PhiKK::_ctheta_2_)});
 		// Multiply by a switch-on function
-		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
-//		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
-//		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK))*2.0/M_PI;
+		acceptance *= std::erf(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
+//		acceptance *= std::tanh(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
+//		acceptance *= std::atan(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	if(std::isnan(acceptance))
 		std::cerr << "Acceptance evaluates to nan" << std::endl;

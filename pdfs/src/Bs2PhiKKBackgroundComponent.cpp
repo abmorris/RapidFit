@@ -42,7 +42,7 @@ Bs2PhiKKBackgroundComponent::Bs2PhiKKBackgroundComponent(const Bs2PhiKKBackgroun
 double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	double massPart(1.0);
-	double mKK = datapoint[0];
+	double mKK = datapoint.at(Bs2PhiKK::_mKK_);
 	if(type == "peaking")
 	{
 		// Crystal Ball function
@@ -76,7 +76,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 	}
 	else if(type == "histogram")
 		massPart = mKKhist.Eval({mKK});
-	double angularPart = angulardistribution.Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
+	double angularPart = angulardistribution.Evaluate({datapoint.at(Bs2PhiKK::_mKK_),datapoint.at(Bs2PhiKK::_phi_),datapoint.at(Bs2PhiKK::_ctheta_1_),datapoint.at(Bs2PhiKK::_ctheta_2_)});
 	if(std::isnan(massPart)) std::cerr << "Mass part is nan" << std::endl;
 	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
 	if(std::isnan(angularPart)) std::cerr << "Angular part is nan" << std::endl;
