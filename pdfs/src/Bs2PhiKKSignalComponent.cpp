@@ -36,8 +36,12 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	// Helicity amplitude observables
 	int lambda_max = std::min(1, JKK); // Maximum helicity
 	std::vector<int> helicities;
+	bool usephi = false;
+	for(const auto& name: config->GetPhaseSpaceBoundary()->GetAllNames())
+		if(name == "phi")
+			usephi = true;
 	if(lineshape != "NR" && lineshape != "SP")
-		for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
+		for(int lambda = usephi ? -lambda_max : 0; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
 	long unsigned int n = helicities.size();
 	std::vector<std::string> phasesuffices;
@@ -48,6 +52,10 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 			break;
 		case 1:
 			phasesuffices = {"deltazero"};
+			break;
+		case 2:
+			magsqsuffices = {"Aperpsq","Azerosq"};
+			phasesuffices = {"deltaperp","deltazero"};
 			break;
 		case 3:
 			magsqsuffices = {"Aperpsq","Azerosq"};
@@ -128,24 +136,29 @@ void Bs2PhiKKSignalComponent::Initialise()
 }
 /*****************************************************************************/
 // Angular part of the amplitude
-std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const double Phi, const double ctheta_1, const double ctheta_2) const
+std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	const double d_phi = wignerPhi->function(ctheta_1, lambda, 0);
-	const double d_KK = wignerKK->function(ctheta_2, lambda, 0);
-	return d_phi * d_KK * std::polar<double>(1, lambda*Phi);
+	std::complex<double> returnval;
+	const double d_phi = wignerPhi->function(datapoint.at(Bs2PhiKK::_ctheta_1_), lambda, 0);
+	const double d_KK = wignerKK->function(datapoint.at(Bs2PhiKK::_ctheta_2_), lambda, 0);
+	returnval = d_phi * d_KK;
+	if(datapoint.find(Bs2PhiKK::_phi_) != datapoint.end())
+		returnval *= std::polar<double>(1, lambda*datapoint.at(Bs2PhiKK::_phi_));
+	return returnval;
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const double phi, const double ctheta_1, const double ctheta_2) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	std::complex<double> angularPart(0, 0);
 	if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
-		angularPart = F(0, phi, ctheta_1, ctheta_2);
+		angularPart = F(0, datapoint);
 	else if(Ahel.empty())
 		return std::complex<double>(1, 0); // Must be non-resonant
 	else
 		for(const auto& A : Ahel)
 		{
 			int lambda = A.first;
-			angularPart += A.second * F(lambda, phi, ctheta_1, ctheta_2);
+			if(Ahel.size() == 3)
+			angularPart += A.second * F(lambda, datapoint);
 		}
 	return angularPart;
 }
@@ -180,22 +193,17 @@ std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
 // The full amplitude.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double mKK = datapoint.at(Bs2PhiKK::_mKK_);
-	double phi = datapoint.at(Bs2PhiKK::_phi_);
-	double ctheta_1 = datapoint.at(Bs2PhiKK::_ctheta_1_);
-	double ctheta_2 = datapoint.at(Bs2PhiKK::_ctheta_2_);
-	Bs2PhiKK::amplitude_t angularPart = {AngularPart(phi, ctheta_1, ctheta_2), AngularPart(-phi, -ctheta_1, -ctheta_2)};
-	std::complex<double> massPart = MassPart(mKK);
+	Bs2PhiKK::amplitude_t angularPart = {AngularPart(datapoint), AngularPart(Bs2PhiKK::Parity(datapoint))};
+	std::complex<double> massPart(1, 0);
+	if(datapoint.find(Bs2PhiKK::_mKK_) != datapoint.end())
+		massPart = MassPart(datapoint.at(Bs2PhiKK::_mKK_));
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint, const std::string option) const
 {
-	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos ) return Amplitude(datapoint);
-	double mKK = datapoint.at(Bs2PhiKK::_mKK_);
-	double phi = datapoint.at(Bs2PhiKK::_phi_);
-	double ctheta_1 = datapoint.at(Bs2PhiKK::_ctheta_1_);
-	double ctheta_2 = datapoint.at(Bs2PhiKK::_ctheta_2_);
+	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || datapoint.find(Bs2PhiKK::_phi_) == datapoint.end())
+		return Amplitude(datapoint);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
@@ -211,10 +219,12 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 	for(const auto& A : Ahel)
 	{
 		int lambda = A.first;
-		angularPart[false] += HelAmp[lambda+1] * F(lambda, phi, ctheta_1, ctheta_2);
-		angularPart[true] += HelAmp[lambda+1] * F(lambda, -phi, -ctheta_1, -ctheta_2);
+		angularPart[false] += HelAmp[lambda+1] * F(lambda, datapoint);
+		angularPart[true] += HelAmp[lambda+1] * F(lambda, Bs2PhiKK::Parity(datapoint));
 	}
-	std::complex<double> massPart = MassPart(mKK);
+	std::complex<double> massPart(1, 0);
+	if(datapoint.find(Bs2PhiKK::_mKK_) != datapoint.end())
+		massPart = MassPart(datapoint.at(Bs2PhiKK::_mKK_));
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 /*****************************************************************************/
@@ -244,6 +254,11 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		return;
 	else if(Ahel.size() == 1)
 		Ahel[0] = std::polar<double>(1.0,phases[0].value);
+	else if(Ahel.size() == 2)
+	{
+		Ahel[0] = std::polar(sqrt(magsqs[1].value),phases[1].value); // Yes, the indices look weird but it's the right order
+		Ahel[1] = std::polar(sqrt(magsqs[0].value),phases[0].value); // Check agreement in the constructor
+	}
 	else if(Ahel.size() == 3)
 	{
 		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
@@ -251,7 +266,7 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		if(std::isnan(Apara_mag)) Apara_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
 		std::complex<double> Apara = std::polar(Apara_mag,phases[2].value);
 		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
-		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);;
+		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);
 		Ahel[+1] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
 	}
 	else

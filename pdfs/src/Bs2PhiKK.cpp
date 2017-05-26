@@ -45,6 +45,15 @@ bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
 	return datapoint.at(_mKK_) > 2*Bs2PhiKK::mK && std::abs(datapoint.at(_ctheta_1_)) <= 1 && std::abs(datapoint.at(_ctheta_2_)) <= 1;
 }
 
+Bs2PhiKK::datapoint_t Bs2PhiKK::Parity(const Bs2PhiKK::datapoint_t& datapoint)
+{
+	datapoint_t returnval = datapoint;
+	for(const auto& angle : {_phi_, _ctheta_1_, _ctheta_2_})
+		if(returnval.find(angle) != returnval.end())
+			returnval[angle] *= -1;
+	return returnval;
+}
+
 std::vector<std::string> Bs2PhiKK::LineShapeParameterNames(std::string name, std::string lineshape)
 {
 	// Breit Wigner

@@ -24,7 +24,8 @@ class Bs2PhiKK
 		typedef std::map<dim, double> datapoint_t;
 		typedef std::array<std::complex<double>,2> amplitude_t; // Two complex amplitudes (B and B̅)
 		static std::vector<std::string> LineShapeParameterNames(std::string name, std::string shape); // Return the necessary parameter names given a lineshape name
-		static bool IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t&); // Return whether or not this datapoint makes sense
+		static bool IsPhysicalDataPoint(const datapoint_t&); // Return whether or not this datapoint makes sense
+		static datapoint_t Parity(const datapoint_t&); // Return the datapoint with a parity operation applied
 		// Simplify the case where a value and a name correspond 1:1
 		struct PhysPar
 		{
