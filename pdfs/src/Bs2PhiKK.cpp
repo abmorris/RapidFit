@@ -5,8 +5,16 @@
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
 	// Dependent variable names
-	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2", "trigger"})
+	for(const auto name: {"mKK", "phi", "ctheta_1", "ctheta_2"})
 		ObservableNames.push_back(config->getName(name));
+	// If the phase space boundary has a "trigger" observable, then add it too
+	// Generator-level events won't have this, and it's only needed to decide which acceptance function to use
+	for(const auto& name: config->GetPhaseSpaceBoundary()->GetAllNames())
+		if(name == "trigger")
+		{
+			ObservableNames.push_back(config->getName("trigger"));
+			break;
+		}
 }
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
 	// Dependent variable names
@@ -28,10 +36,10 @@ void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
 Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 {
 	// Get values from the datapoint
-	datapoint_t dp;
-	for(unsigned i = 0; i < dp.size(); i++)
+	datapoint_t dp {0,0,0,0,0};
+	for(unsigned i = 0; i < ObservableNames.size(); i++)
 		dp[i] = measurement->GetObservable(ObservableNames[i])->GetValue();
-	dp[1]+=M_PI;
+	dp[1]+=M_PI; // TODO: get rid of the need for this
 	return dp;
 }
 

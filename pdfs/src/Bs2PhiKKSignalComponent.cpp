@@ -14,8 +14,8 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	: phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
-	, Bsbarrier(DPBarrierFactor(Bs2PhiKK::JBs,1.0,0))
-	, KKbarrier(DPBarrierFactor(JKK,3.0,0))
+	, Bsbarrier(DPBarrierFactor(abs(JKK-1), 1.0, 0)) // Min L_B approximation
+	, KKbarrier(DPBarrierFactor(JKK, 3.0, 0))
 {
 	if(lineshape != "SP")
 		fraction = Bs2PhiKK::PhysPar(config,KKname+"_fraction");
@@ -34,7 +34,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 		std::cerr << "Bs2PhiKKSignalComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << std::endl;
 	}
 	// Helicity amplitude observables
-	int lambda_max = std::min(1, _JKK); // Maximum helicity
+	int lambda_max = std::min(1, JKK); // Maximum helicity
 	std::vector<int> helicities;
 	if(lineshape != "NR" && lineshape != "SP")
 		for(int lambda = -lambda_max; lambda <= lambda_max; lambda++)
@@ -160,7 +160,7 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
 	double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
 	// Orbital factor
-	double orbitalFactor = std::pow(pBs/Bs2PhiKK::mBs, Bs2PhiKK::JBs)*
+	double orbitalFactor = std::pow(pBs/Bs2PhiKK::mBs, abs(JKK-1))* // Min L_B approximation
 	                       std::pow(pKK/KKpars[0].value, JKK);
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs)*
