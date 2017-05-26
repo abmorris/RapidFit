@@ -543,45 +543,44 @@ void ComponentPlotter::WriteOutput( vector<vector<vector<double>>>& X_values, ve
 			combs = full_boundary->GetDiscreteCombinations();
 		else
 			combs.push_back(&allCombinations[combinationIndex-1]);
-		
-			if( this_config->CalcChi2 == true && combinationIndex == 0 )
+		if( this_config->CalcChi2 == true && combinationIndex == 0 )
+		{
+			cout << endl;
+			cout << "Calculating Chi^2:" << endl;
+			std::vector<double> expected, observed;
+			for( unsigned int i=0; i< (unsigned) binned_data[combinationIndex]->GetN(); ++i )
 			{
-				cout << endl;
-				cout << "Calculating Chi^2:" << endl;
-				std::vector<double> expected, observed;
-				for( unsigned int i=0; i< (unsigned) binned_data[combinationIndex]->GetN(); ++i )
-				{
-					double bin_center = binned_data[combinationIndex]->GetX()[i];
-					double bin_err = binned_data[combinationIndex]->GetEX()[i]; // This is half the bin width. I know this is stupid, but the data is in a TGraphErrors not a TH1 for some reason.
-					expected.push_back(MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, combs, *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}}));
-					observed.push_back(binned_data[combinationIndex]->GetY()[i]);
-				}
-				chi2 = MultiDimChi2::CalcChi2(expected, observed, false);
-				//	dof = num Populated Bins - ndof in PDF
-				N =  binned_data.back()->GetXaxis()->GetNbins();
-				for( unsigned int i=0; i< (unsigned) binned_data[0]->GetN(); ++i ) if( fabs(binned_data[combinationIndex]->GetY()[i]) <= 0 ) --N;
-				double n = (double) plotPDF->GetPhysicsParameters()->GetAllFloatNames().size();
-				double denominator = (double)(N - n - 1. );
-				cout << endl << "Chi^2/ndof :\t" << setprecision(10) << chi2 / denominator << endl;
+				double bin_center = binned_data[combinationIndex]->GetX()[i];
+				double bin_err = binned_data[combinationIndex]->GetEX()[i]; // This is half the bin width. I know this is stupid, but the data is in a TGraphErrors not a TH1 for some reason.
+				expected.push_back(MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, combs, *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}}));
+				observed.push_back(binned_data[combinationIndex]->GetY()[i]);
 			}
-			if( this_config->DrawPull == true )
+			chi2 = MultiDimChi2::CalcChi2(expected, observed, false);
+			//	dof = num Populated Bins - ndof in PDF
+			N =  binned_data.back()->GetXaxis()->GetNbins();
+			for( unsigned int i=0; i< (unsigned) binned_data[0]->GetN(); ++i ) if( fabs(binned_data[combinationIndex]->GetY()[i]) <= 0 ) --N;
+			double n = (double) plotPDF->GetPhysicsParameters()->GetAllFloatNames().size();
+			double denominator = (double)(N - n - 1. );
+			cout << endl << "Chi^2/ndof :\t" << setprecision(10) << chi2 / denominator << endl;
+		}
+		if( this_config->DrawPull == true )
+		{
+			cout << endl;
+			cout << "Calculating Pull Values" << endl;
+			std::vector<double> localPullData;
+			for( unsigned int i=0; i< (unsigned)binned_data[combinationIndex]->GetN(); ++i )
 			{
-				cout << endl;
-				cout << "Calculating Pull Values" << endl;
-				std::vector<double> localPullData;
-				for( unsigned int i=0; i< (unsigned)binned_data[combinationIndex]->GetN(); ++i )
-				{
-					double bin_center = binned_data[combinationIndex]->GetX()[i];
-					double bin_err = binned_data[combinationIndex]->GetEX()[i];
-					double this_bin = MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, combs, *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}});// (*this)( bin_center );
-					localPullData.push_back(this_bin);
-				}
-				TString desc_pull( desc );
-				desc_pull.Append("_pull");
-				cout << endl << "Making Plots" << endl;
-				OutputPlot( binned_data.back(), these_components, observableName, string(desc_pull.Data()), plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp, localPullData );
-				if( this_config != NULL && combinationIndex == 0 ) allPullData = localPullData;
+				double bin_center = binned_data[combinationIndex]->GetX()[i];
+				double bin_err = binned_data[combinationIndex]->GetEX()[i];
+				double this_bin = MultiDimChi2::CalculateExpected(*plotPDF, *full_boundary, combs, *plotData, {observableName}, {{bin_center-bin_err,bin_center+bin_err}});// (*this)( bin_center );
+				localPullData.push_back(this_bin);
 			}
+			TString desc_pull( desc );
+			desc_pull.Append("_pull");
+			cout << endl << "Making Plots" << endl;
+			OutputPlot( binned_data.back(), these_components, observableName, string(desc_pull.Data()), plotData->GetBoundary(), RapidFitRandom::GetFrameworkRandomFunction(), &temp, localPullData );
+			if( this_config != NULL && combinationIndex == 0 ) allPullData = localPullData;
+		}
 	}
 	//	If there is more than 1 combination it's useful to plot the total's on the same graph with total component 0
 	if( GetComponents().size() > 1 )
