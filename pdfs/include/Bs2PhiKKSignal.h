@@ -29,7 +29,8 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		std::map<std::string,Bs2PhiKKSignalComponent> components; // Iterable list of amplitude components
 		std::vector<std::string> componentnames; // List of names for plotting purposes only
 		// Parameters used outside the amplitude calculation
-		Bs2PhiKK::PhysPar dGsGs; // Bs width splitting
+		Bs2PhiKK::PhysPar GH, GL; // Bs width splitting
+		Bs2PhiKK::PhysPar tlow; // Lower limit of time integral
 		Bs2PhiKK::PhysPar phimass; // phi(1020) mass
 		Bs2PhiKK::PhysPar thraccscale; // threshold mass acceptance
 		// Mass resolution variables
