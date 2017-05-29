@@ -86,8 +86,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
-		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile0")));
-		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile1")));
+		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile0")));
+		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile1")));
 	}
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
@@ -117,8 +117,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 {
 	if(acceptance_moments)
 	{
-		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[0]));
-		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[1]));
+		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[0]));
+		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[1]));
 	}
 }
 /*****************************************************************************/
@@ -191,7 +191,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 // The stuff common to both Evaluate() and EvaluateComponent()
 double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	return MatrixElementSquared * p1stp3(datapoint.at(Bs2PhiKK::_mKK_)) * Acceptance(datapoint);
+	return MatrixElementSquared * p1stp3(datapoint) * Acceptance(datapoint);
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes
@@ -271,10 +271,12 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;
 }
-double Bs2PhiKKSignal::p1stp3(const double& mKK) const
+double Bs2PhiKKSignal::p1stp3(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
-	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, phimass.value);
+//	if(datapoint.find(Bs2PhiKK::_ctheta_1_) == datapoint.end() || datapoint.find(Bs2PhiKK::_ctheta_2_) == datapoint.end())
+//		return 1.0;
+	double pR = DPHelpers::daughterMomentum(datapoint.at(Bs2PhiKK::_mKK_), Bs2PhiKK::mK, Bs2PhiKK::mK);
+	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, datapoint.at(Bs2PhiKK::_mKK_), phimass.value);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB))
 		std::cerr << "p1stp3 evaluates to nan" << std::endl;

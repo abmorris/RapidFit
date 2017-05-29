@@ -14,7 +14,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	: phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
 	, JKK(_JKK)
 	, lineshape(_lineshape)
-	, Bsbarrier(DPBarrierFactor(abs(JKK-1), 1.0, 0)) // Min L_B approximation
+	, Bsbarrier(DPBarrierFactor(std::abs(JKK-1), 1.0, 0)) // Min L_B approximation
 	, KKbarrier(DPBarrierFactor(JKK, 3.0, 0))
 {
 	if(lineshape != "SP")
@@ -54,12 +54,12 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 			phasesuffices = {"deltazero"};
 			break;
 		case 2:
-			magsqsuffices = {"Aperpsq","Azerosq"};
-			phasesuffices = {"deltaperp","deltazero"};
+			magsqsuffices = {"Azerosq"};
+			phasesuffices = {"deltazero","deltaplus"};
 			break;
 		case 3:
-			magsqsuffices = {"Aperpsq","Azerosq"};
-			phasesuffices = {"deltaperp","deltazero","deltapara"};
+			magsqsuffices = {"Azerosq","Aplussq"};
+			phasesuffices = {"deltazero","deltaplus","deltaminus"};
 			break;
 		default:
 			std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << n << std::endl;
@@ -72,7 +72,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 		phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
 	// Make the helicity amplitude vector
 	for(const auto& lambda: helicities)
-		Ahel[lambda] = std::polar<double>(sqrt(1. / (double)n), 0);
+		Ahel[lambda] = std::polar<double>(std::sqrt(1. / (double)n), 0);
 	Initialise();
 }
 // Copy constructor
@@ -101,34 +101,34 @@ void Bs2PhiKKSignalComponent::Initialise()
 {
 	// Breit Wigner
 	if(lineshape=="BW")
-		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
+		KKLineShape = std::make_unique<DPBWResonanceShape>(DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
 	// Flatte
 	else if(lineshape=="FT")
-		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
+		KKLineShape = std::make_unique<DPFlatteShape>(DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
 	else if(lineshape=="SP")
 	{
 		std::vector<double> breakpoints;
 		for(unsigned i = 0; i < KKpars.size(); i+=3)
 			breakpoints.push_back(KKpars[i].value);
-		KKLineShape = std::unique_ptr<DPComplexSpline>(new DPComplexSpline(breakpoints));
+		KKLineShape = std::make_unique<DPComplexSpline>(DPComplexSpline(breakpoints));
 	}
 	else
-		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
+		KKLineShape = std::make_unique<DPNonresonant>(DPNonresonant());
 	// Build the barrier factor and Wigner function objects
-	wignerPhi = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+	wignerPhi = std::make_unique<DPWignerFunctionJ1>(DPWignerFunctionJ1());
 	switch (JKK) // I hate this but I'd rather it just worked...
 	{
 		case 0:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
+			wignerKK  = std::make_unique<DPWignerFunctionJ0>(DPWignerFunctionJ0());
 			break;
 		case 1:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+			wignerKK  = std::make_unique<DPWignerFunctionJ1>(DPWignerFunctionJ1());
 			break;
 		case 2:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
+			wignerKK  = std::make_unique<DPWignerFunctionJ2>(DPWignerFunctionJ2());
 			break;
 		default:
-			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
+			wignerKK  = std::make_unique<DPWignerFunctionGeneral>(DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
 			break;
 	}
 	UpdateAmplitudes();
@@ -149,10 +149,10 @@ std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK
 std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	std::complex<double> angularPart(0, 0);
-	if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
+	if(Ahel.empty() || datapoint.find(Bs2PhiKK::_ctheta_1_) == datapoint.end() || datapoint.find(Bs2PhiKK::_ctheta_2_) == datapoint.end())
+		return std::complex<double>(1, 0); // Either nonresonant or helicity angles not present
+	else if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
 		angularPart = F(0, datapoint);
-	else if(Ahel.empty())
-		return std::complex<double>(1, 0); // Must be non-resonant
 	else
 		for(const auto& A : Ahel)
 		{
@@ -173,7 +173,7 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
 	double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
 	// Orbital factor
-	double orbitalFactor = std::pow(pBs/Bs2PhiKK::mBs, abs(JKK-1))* // Min L_B approximation
+	double orbitalFactor = std::pow(pBs/Bs2PhiKK::mBs, std::abs(JKK-1))* // Min L_B approximation
 	                       std::pow(pKK/KKpars[0].value, JKK);
 	// Barrier factors
 	double barrierFactor = Bsbarrier.barrier(pBs)*
@@ -206,16 +206,16 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 		return Amplitude(datapoint);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
-	std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
-	std::complex<double> Apara = std::polar(sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
+	std::complex<double> Aperp = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
+	std::complex<double> Apara = std::polar<double>(std::sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
 	// Temporary helicity amplitudes
 	std::vector<std::complex<double>> HelAmp;
 	// CP-odd component
 	if(option.find("odd") != std::string::npos)
-		HelAmp = {-Aperp/sqrt(2.), std::complex<double>(0, 0), Aperp/sqrt(2.)};
+		HelAmp = {-Aperp/std::sqrt(2.), std::complex<double>(0, 0), Aperp/std::sqrt(2.)};
 	// CP-even component
 	else
-		HelAmp = {Apara/sqrt(2.), Ahel.at(0), Apara/sqrt(2.)};
+		HelAmp = {Apara/std::sqrt(2.), Ahel.at(0), Apara/std::sqrt(2.)};
 	for(const auto& A : Ahel)
 	{
 		int lambda = A.first;
@@ -256,18 +256,18 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		Ahel[0] = std::polar<double>(1.0,phases[0].value);
 	else if(Ahel.size() == 2)
 	{
-		Ahel[0] = std::polar(sqrt(magsqs[1].value),phases[1].value); // Yes, the indices look weird but it's the right order
-		Ahel[1] = std::polar(sqrt(magsqs[0].value),phases[0].value); // Check agreement in the constructor
+		double Aplus_mag = std::sqrt(1. - magsqs[0].value);
+		if(std::isnan(Aplus_mag)) Aplus_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
+		Ahel[ 0] = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
+		Ahel[+1] = std::polar<double>(Aplus_mag,phases[1].value);
 	}
 	else if(Ahel.size() == 3)
 	{
-		std::complex<double> Aperp = std::polar(sqrt(magsqs[0].value),phases[0].value);
-		double Apara_mag = sqrt(1. - magsqs[0].value - magsqs[1].value);
-		if(std::isnan(Apara_mag)) Apara_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
-		std::complex<double> Apara = std::polar(Apara_mag,phases[2].value);
-		Ahel[-1] = (Apara - Aperp)/sqrt(2.); // A− = (A‖ − A⊥)/sqrt(2)
-		Ahel[ 0] = std::polar(sqrt(magsqs[1].value),phases[1].value);
-		Ahel[+1] = (Apara + Aperp)/sqrt(2.); // A+ = (A‖ + A⊥)/sqrt(2)
+		double Aminus_mag = std::sqrt(1. - magsqs[0].value - magsqs[1].value);
+		if(std::isnan(Aminus_mag)) Aminus_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
+		Ahel[ 0] = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
+		Ahel[+1] = std::polar<double>(std::sqrt(magsqs[1].value),phases[1].value);
+		Ahel[-1] = std::polar<double>(Aminus_mag,phases[2].value);
 	}
 	else
 	{

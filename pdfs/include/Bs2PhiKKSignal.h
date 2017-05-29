@@ -47,7 +47,7 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		double Convolve(MsqFunc_t, const Bs2PhiKK::datapoint_t&, const std::string&) const; // Take one of the three above functions and convolve it with a double Gaussian for m(KK) resolution
 		// Turn the matrix element into the PDF
 		double Evaluate_Base(const double, const Bs2PhiKK::datapoint_t&) const;
-		double p1stp3(const double&) const;
+		double p1stp3(const Bs2PhiKK::datapoint_t&) const;
 		double Acceptance(const Bs2PhiKK::datapoint_t&) const;
 		// Stuff to do on creation
 		void MakePrototypes();

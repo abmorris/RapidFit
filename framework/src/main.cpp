@@ -735,7 +735,11 @@ void MakeOutputFolder( RapidFitConfiguration* config )
 void PerformMultiDimChi2( RapidFitConfiguration* config )
 {
 	cout << "Performing multi-dimensional poisson chi^2 test" << endl;
-	MultiDimChi2 thisTest( config->pdfsAndData, {{5,"mKK"},{5,"ctheta_1"},{5,"ctheta_2"}} ); // TODO lol don't hardcode this
+	std::vector<std::pair<int, std::string>> dimensions;
+	for(const auto& observable : config->pdfsAndData[0]->GetPDF()->GetPrototypeDataPoint())
+		if(observable != "phi")
+			dimensions.push_back({5, observable});
+	MultiDimChi2 thisTest( config->pdfsAndData, dimensions);
 	thisTest.PerformMuiltDimTest(true);
 }
 

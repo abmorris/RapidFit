@@ -26,8 +26,13 @@ void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
 {
 	// The ordering here matters. It has to be the same as the XML file, apparently.
 	// The order should be as in the enum declaration in this class.
+	std::cout << "Prototype datapoint: ";
 	for(const auto& name: ObservableNames)
+	{
+		std::cout << name.second.Name();
 		allObservables.push_back(name.second.Name());
+	}
+	std::cout << std::endl;
 }
 Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 {
@@ -42,7 +47,13 @@ Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 
 bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
 {
-	return datapoint.at(_mKK_) > 2*Bs2PhiKK::mK && std::abs(datapoint.at(_ctheta_1_)) <= 1 && std::abs(datapoint.at(_ctheta_2_)) <= 1;
+	bool isphysical = true;
+	if(datapoint.find(_mKK_) != datapoint.end())
+		isphysical = isphysical && datapoint.at(_mKK_) > 2*Bs2PhiKK::mK;
+	for(const auto& angle : {_ctheta_1_, _ctheta_2_})
+		if(datapoint.find(angle) != datapoint.end())
+			isphysical = isphysical && std::abs(datapoint.at(angle)) <= 1;
+	return isphysical;
 }
 
 Bs2PhiKK::datapoint_t Bs2PhiKK::Parity(const Bs2PhiKK::datapoint_t& datapoint)
