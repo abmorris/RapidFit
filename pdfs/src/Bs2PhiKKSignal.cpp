@@ -88,8 +88,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
-		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile0")));
-		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile1")));
+		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile0")));
+		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile1")));
 	}
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
@@ -122,8 +122,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 {
 	if(acceptance_moments)
 	{
-		acc_m[0] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[0]));
-		acc_m[1] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[1]));
+		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[0]));
+		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[1]));
 	}
 }
 /*****************************************************************************/
