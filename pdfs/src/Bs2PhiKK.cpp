@@ -10,6 +10,16 @@ Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 		for(const auto& name: wantednames)
 			if(psbname == name.second)
 				ObservableNames.emplace(name.first, config->getName(name.second));
+	if((ObservableNames.find(_ctheta_1_) != ObservableNames.end()) ^ (ObservableNames.find(_ctheta_2_) != ObservableNames.end()))
+	{
+		std::cerr << "WARNING: the XML contains one θ angle but not the other." << std::endl;
+		throw std::runtime_error("The PDF is unable to handle a datapoint of this type");
+	}
+	if(ObservableNames.find(_phi_) != ObservableNames.end() && !(ObservableNames.find(_ctheta_1_) != ObservableNames.end() && ObservableNames.find(_ctheta_2_) != ObservableNames.end()))
+	{
+		std::cerr << "WARNING: the XML contains Φ but not the other angles." << std::endl;
+		throw std::runtime_error("The PDF is unable to handle a datapoint of this type");
+	}
 }
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
 	// Dependent variable names
