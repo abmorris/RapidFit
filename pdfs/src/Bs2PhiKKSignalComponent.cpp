@@ -93,34 +93,34 @@ void Bs2PhiKKSignalComponent::Initialise()
 {
 	// Breit Wigner
 	if(lineshape=="BW")
-		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
+		KKLineShape = std::make_unique<DPBWResonanceShape>(DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
 	// Flatte
 	else if(lineshape=="FT")
-		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
+		KKLineShape = std::make_unique<DPFlatteShape>(DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
 	else if(lineshape=="SP")
 	{
 		std::vector<double> breakpoints;
 		for(unsigned i = 0; i < KKpars.size(); i+=3)
 			breakpoints.push_back(KKpars[i].value);
-		KKLineShape = std::unique_ptr<DPComplexSpline>(new DPComplexSpline(breakpoints));
+		KKLineShape = std::make_unique<DPComplexSpline>(DPComplexSpline(breakpoints));
 	}
 	else
-		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
+		KKLineShape = std::make_unique<DPNonresonant>(DPNonresonant());
 	// Build the barrier factor and Wigner function objects
-	wignerPhi = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+	wignerPhi = std::make_unique<DPWignerFunctionJ1>(DPWignerFunctionJ1());
 	switch (JKK) // I hate this but I'd rather it just worked...
 	{
 		case 0:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
+			wignerKK  = std::make_unique<DPWignerFunctionJ0>(DPWignerFunctionJ0());
 			break;
 		case 1:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+			wignerKK  = std::make_unique<DPWignerFunctionJ1>(DPWignerFunctionJ1());
 			break;
 		case 2:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
+			wignerKK  = std::make_unique<DPWignerFunctionJ2>(DPWignerFunctionJ2());
 			break;
 		default:
-			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
+			wignerKK  = std::make_unique<DPWignerFunctionGeneral>(DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
 			break;
 	}
 	UpdateAmplitudes();
