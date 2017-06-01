@@ -273,7 +273,7 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 }
 double Bs2PhiKKSignal::p1stp3(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-//	if(datapoint.find(Bs2PhiKK::_ctheta_1_) == datapoint.end() || datapoint.find(Bs2PhiKK::_ctheta_2_) == datapoint.end())
+//	if(datapoint.count(Bs2PhiKK::_ctheta_1_) == 0 || datapoint.count(Bs2PhiKK::_ctheta_2_) == 0)
 //		return 1.0;
 	double pR = DPHelpers::daughterMomentum(datapoint.at(Bs2PhiKK::_mKK_), Bs2PhiKK::mK, Bs2PhiKK::mK);
 	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, datapoint.at(Bs2PhiKK::_mKK_), phimass.value);

@@ -142,14 +142,14 @@ std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK
 	const double d_phi = wignerPhi->function(datapoint.at(Bs2PhiKK::_ctheta_1_), lambda, 0);
 	const double d_KK = wignerKK->function(datapoint.at(Bs2PhiKK::_ctheta_2_), lambda, 0);
 	returnval = d_phi * d_KK;
-	if(datapoint.find(Bs2PhiKK::_phi_) != datapoint.end())
+	if(datapoint.count(Bs2PhiKK::_phi_) == 1)
 		returnval *= std::polar<double>(1, lambda*datapoint.at(Bs2PhiKK::_phi_));
 	return returnval;
 }
 std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	std::complex<double> angularPart(0, 0);
-	if(Ahel.empty() || datapoint.find(Bs2PhiKK::_ctheta_1_) == datapoint.end() || datapoint.find(Bs2PhiKK::_ctheta_2_) == datapoint.end())
+	if(Ahel.empty() || datapoint.count(Bs2PhiKK::_ctheta_1_) == 0 || datapoint.count(Bs2PhiKK::_ctheta_2_) == 0)
 		return std::complex<double>(1, 0); // Either nonresonant or helicity angles not present
 	else if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
 		angularPart = F(0, datapoint);
@@ -195,14 +195,14 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 {
 	Bs2PhiKK::amplitude_t angularPart = {AngularPart(datapoint), AngularPart(Bs2PhiKK::Parity(datapoint))};
 	std::complex<double> massPart(1, 0);
-	if(datapoint.find(Bs2PhiKK::_mKK_) != datapoint.end())
+	if(datapoint.count(Bs2PhiKK::_mKK_) == 1)
 		massPart = MassPart(datapoint.at(Bs2PhiKK::_mKK_));
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint, const std::string option) const
 {
-	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || datapoint.find(Bs2PhiKK::_phi_) == datapoint.end())
+	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || datapoint.count(Bs2PhiKK::_phi_) == 0)
 		return Amplitude(datapoint);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
@@ -223,7 +223,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 		angularPart[true] += HelAmp[lambda+1] * F(lambda, Bs2PhiKK::Parity(datapoint));
 	}
 	std::complex<double> massPart(1, 0);
-	if(datapoint.find(Bs2PhiKK::_mKK_) != datapoint.end())
+	if(datapoint.count(Bs2PhiKK::_mKK_) == 1)
 		massPart = MassPart(datapoint.at(Bs2PhiKK::_mKK_));
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }

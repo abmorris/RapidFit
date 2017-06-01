@@ -10,12 +10,12 @@ Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 		for(const auto& name: wantednames)
 			if(psbname == name.second)
 				ObservableNames.emplace(name.first, config->getName(name.second));
-	if((ObservableNames.find(_ctheta_1_) != ObservableNames.end()) ^ (ObservableNames.find(_ctheta_2_) != ObservableNames.end()))
+	if((ObservableNames.count(_ctheta_1_) == 1) ^ (ObservableNames.count(_ctheta_2_) == 1))
 	{
 		std::cerr << "WARNING: the XML contains one θ angle but not the other." << std::endl;
 		throw std::runtime_error("The PDF is unable to handle a datapoint of this type");
 	}
-	if(ObservableNames.find(_phi_) != ObservableNames.end() && !(ObservableNames.find(_ctheta_1_) != ObservableNames.end() && ObservableNames.find(_ctheta_2_) != ObservableNames.end()))
+	if(ObservableNames.count(_phi_) == 1 && !(ObservableNames.count(_ctheta_1_) == 1 && ObservableNames.count(_ctheta_2_) == 1))
 	{
 		std::cerr << "WARNING: the XML contains Φ but not the other angles." << std::endl;
 		throw std::runtime_error("The PDF is unable to handle a datapoint of this type");
@@ -50,7 +50,7 @@ Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 	datapoint_t dp;
 	for(const auto& name: ObservableNames)
 		dp[name.first] = measurement->GetObservable(name.second)->GetValue();
-	if(ObservableNames.find(_phi_) != ObservableNames.end())
+	if(ObservableNames.count(_phi_) == 1)
 		dp[_phi_]+=M_PI; // TODO: get rid of the need for this
 	return dp;
 }
@@ -58,10 +58,10 @@ Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
 {
 	bool isphysical = true;
-	if(datapoint.find(_mKK_) != datapoint.end())
+	if(datapoint.count(_mKK_) == 1)
 		isphysical = isphysical && datapoint.at(_mKK_) > 2*Bs2PhiKK::mK;
 	for(const auto& angle : {_ctheta_1_, _ctheta_2_})
-		if(datapoint.find(angle) != datapoint.end())
+		if(datapoint.count(angle) == 1)
 			isphysical = isphysical && std::abs(datapoint.at(angle)) <= 1;
 	return isphysical;
 }
@@ -70,7 +70,7 @@ Bs2PhiKK::datapoint_t Bs2PhiKK::Parity(const Bs2PhiKK::datapoint_t& datapoint)
 {
 	datapoint_t returnval = datapoint;
 	for(const auto& angle : {_phi_, _ctheta_1_, _ctheta_2_})
-		if(returnval.find(angle) != returnval.end())
+		if(returnval.count(angle) == 1)
 			returnval[angle] *= -1;
 	return returnval;
 }
