@@ -93,7 +93,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	}
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
-//	this->TurnCachingOff();
+	this->TurnCachingOff();
 	MakePrototypes();
 }
 /*****************************************************************************/
