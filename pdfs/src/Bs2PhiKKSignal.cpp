@@ -18,12 +18,14 @@ PDF_CREATOR( Bs2PhiKKSignal )
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments(config->isTrue("UseAcceptance"))
+	, thraccscale(config,"thraccscale")
+	, GH(config,"GH")
+	, GL(config,"GL")
+	, tlow(config,"tlow")
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	std::string phiname = config->getConfigurationValue("phiname");
-	thraccscale = Bs2PhiKK::PhysPar(config,"thraccscale");
 	phimass = Bs2PhiKK::PhysPar(config,phiname+"_mass");
-	dGsGs = Bs2PhiKK::PhysPar(config,"dGsGs");
 	if(config->isTrue("convolve"))
 	{
 		for(const std::string& name: {"nsteps","nsigma"})
@@ -100,7 +102,10 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	: BasePDF((BasePDF)copy)
 	, Bs2PhiKK((Bs2PhiKK)copy)
 	// Width splitting
-	, dGsGs(copy.dGsGs)
+	, GH(copy.GH)
+	, GL(copy.GL)
+	// time integral lower bound
+	, tlow(copy.tlow)
 	// Phi mass
 	, phimass(copy.phimass)
 	// threshold acceptance scale
@@ -131,7 +136,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	for(const auto& par: {dGsGs, phimass, thraccscale})
+	for(const auto& par: {GH, GL, tlow, phimass, thraccscale})
 		parameterNames.push_back(par.name);
 	if(!mKKresconfig.empty())
 		parameterNames.push_back(mKKres_sigmazero.name);
@@ -154,7 +159,7 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	for(auto* par: {&dGsGs, &phimass, &thraccscale})
+	for(auto* par: {&GH, &GL, &tlow, &phimass, &thraccscale})
 		par->Update(&allParameters);
 	if(!mKKresconfig.empty()) mKKres_sigmazero.Update(&allParameters);
 	for(auto& comp: components)
@@ -229,11 +234,12 @@ double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKK::datapoint_t& datapoint, c
 // Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
 double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKK::amplitude_t& Amp) const
 {
-	double GH = (2 - dGsGs.value); // Actually Γ/2ΓH but who cares about an overall factor Γ?
-	double GL = (2 + dGsGs.value); // Actually Γ/2ΓL
-	double termone = (std::norm(Amp[false]) + std::norm(Amp[true])) * (1./GL + 1./GH);
-	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false])) * (1./GL - 1./GH);
-	return termone + termtwo;
+	double termone = (std::norm(Amp[true]) + std::norm(Amp[false]));
+	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false]));
+	double factor0 = std::exp(-tlow.value * (GH.value + GL.value)) / (2 * GH.value * GL.value);
+	double factorH = GH.value * std::exp(tlow.value * GH.value);
+	double factorL = GL.value * std::exp(tlow.value * GL.value);
+	return factor0 * (factorH * (termone + termtwo) + factorL * (termone - termtwo));
 }
 // Convolution of the matrix element function with a Gaussian... the slow integral way
 double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
