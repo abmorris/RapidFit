@@ -16,9 +16,10 @@ class Bs2PhiKK
 		Bs2PhiKK(const Bs2PhiKK&);
 		~Bs2PhiKK() {}
 		// Fixed mass values
-		static constexpr double mBs = 5.36677;
-		static constexpr double mK = 0.493677;
-		static constexpr double mpi = 0.13957018;
+		static constexpr double mBs  = 5.36689;
+		static constexpr double mphi = 1.019460;
+		static constexpr double mK   = 0.493677;
+		static constexpr double mpi  = 0.13957061;
 		typedef std::array<double,5> datapoint_t; // Datapoint type
 		typedef std::array<std::complex<double>,2> amplitude_t; // Two complex amplitudes (B and B̅)
 		static std::vector<std::string> LineShapeParameterNames(std::string name, std::string shape); // Return the necessary parameter names given a lineshape name

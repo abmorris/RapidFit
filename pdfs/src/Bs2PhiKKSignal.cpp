@@ -18,14 +18,11 @@ PDF_CREATOR( Bs2PhiKKSignal )
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments(config->isTrue("UseAcceptance"))
-	, thraccscale(config,"thraccscale")
 	, GH(config,"GH")
 	, GL(config,"GL")
 	, tlow(config,"tlow")
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
-	std::string phiname = config->getConfigurationValue("phiname");
-	phimass = Bs2PhiKK::PhysPar(config,phiname+"_mass");
 	if(config->isTrue("convolve"))
 	{
 		for(const std::string& name: {"nsteps","nsigma"})
@@ -70,7 +67,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 			continue; // The spline component will be created later
 		}
 		// Store the component and its name
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, phiname, KKname, JKK, lineshape));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, KKname, JKK, lineshape));
 		componentnames.push_back(KKname);
 	}
 	// If there are spline knots, then create a spline shape
@@ -80,7 +77,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::string KKname = "S-wave";
 		for(const auto& knot: swave_spline_knots)
 			knotnames += ":" + knot;
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, phiname, knotnames, 0, "SP"));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, knotnames, 0, "SP"));
 		componentnames.push_back(KKname);
 	}
 	if(components.size() > 1)
@@ -88,6 +85,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
+		thraccscale = Bs2PhiKK::PhysPar(config,"thraccscale");
 		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile0")));
 		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile1")));
 	}
@@ -106,8 +104,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	, GL(copy.GL)
 	// time integral lower bound
 	, tlow(copy.tlow)
-	// Phi mass
-	, phimass(copy.phimass)
 	// threshold acceptance scale
 	, thraccscale(copy.thraccscale)
 	// mass resolution parameters
@@ -136,7 +132,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	for(const auto& par: {GH, GL, tlow, phimass, thraccscale})
+	for(const auto& par: {GH, GL, tlow, thraccscale})
 		parameterNames.push_back(par.name);
 	if(!mKKresconfig.empty())
 		parameterNames.push_back(mKKres_sigmazero.name);
@@ -159,7 +155,7 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	for(auto* par: {&GH, &GL, &tlow, &phimass, &thraccscale})
+	for(auto* par: {&GH, &GL, &tlow, &thraccscale})
 		par->Update(&allParameters);
 	if(!mKKresconfig.empty()) mKKres_sigmazero.Update(&allParameters);
 	for(auto& comp: components)
@@ -276,7 +272,7 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
 	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
-	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, phimass.value);
+	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, Bs2PhiKK::mphi);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB))
 		std::cerr << "p1stp3 evaluates to nan" << std::endl;

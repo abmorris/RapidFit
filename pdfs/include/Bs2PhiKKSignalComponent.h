@@ -12,7 +12,7 @@
 class Bs2PhiKKSignalComponent
 {
 	public:
-		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, std::string, int, std::string); // config, phi name, resonance name, spin
+		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, int, std::string); // config, resonance name, spin
 		Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent&);
 		~Bs2PhiKKSignalComponent() {}
 		void SetPhysicsParameters(ParameterSet* pars);
@@ -23,7 +23,6 @@ class Bs2PhiKKSignalComponent
 	private:
 		// Floatable parameters
 		Bs2PhiKK::PhysPar fraction; // Unnormalised variable to control the relative contribution of each resonance. Do not use as the fit fraction!!
-		Bs2PhiKK::PhysPar phimass; // For use when calculating the orbital factor
 		Bs2PhiKK::PhysPar BsBFradius; // Bs barrier factor radius
 		Bs2PhiKK::PhysPar KKBFradius; // KK barrier factor radius
 		// Polarisation amplitude components (perp, zero, para)

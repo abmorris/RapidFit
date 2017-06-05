@@ -10,9 +10,8 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 // Constructor
-Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string _phiname, std::string KKname, int _JKK, std::string _lineshape)
-	: phimass(Bs2PhiKK::PhysPar(config,_phiname+"_mass"))
-	, JKK(_JKK)
+Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string KKname, int _JKK, std::string _lineshape)
+	: JKK(_JKK)
 	, lineshape(_lineshape)
 	, Bsbarrier(DPBarrierFactor(abs(JKK-1), 1.0, 0)) // Min L_B approximation
 	, KKbarrier(DPBarrierFactor(JKK, 3.0, 0))
@@ -74,7 +73,6 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 	, Ahel(other.Ahel)
 	, magsqs(other.magsqs)
 	, phases(other.phases)
-	, phimass(other.phimass)
 	, KKpars(other.KKpars)
 	, BsBFradius(other.BsBFradius)
 	, KKBFradius(other.KKBFradius)
@@ -157,14 +155,17 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	if(lineshape=="NR" || lineshape == "SP")
 		return 1;
 	// Momenta
-	double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
-	double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
+	const double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, Bs2PhiKK::mphi, mKK);
+	const double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
+	// Masses
+	const double mBs0 = Bs2PhiKK::mBs;
+	const double mKK0 = KKpars[0].value;
 	// Orbital factor
-	double orbitalFactor = std::pow(pBs/Bs2PhiKK::mBs, abs(JKK-1))* // Min L_B approximation
-	                       std::pow(pKK/KKpars[0].value, JKK);
+	const double orbitalFactor = std::pow(pBs/mBs0, abs(JKK-1))* // Min L_B approximation
+	                             std::pow(pKK/mKK0, JKK);
 	// Barrier factors
-	double barrierFactor = Bsbarrier.barrier(pBs)*
-	                       KKbarrier.barrier(pKK);
+	const double barrierFactor = Bsbarrier.barrier(pBs)*
+	                             KKbarrier.barrier(pKK);
 	return orbitalFactor*barrierFactor;
 }
 // Mass-dependent part
@@ -224,7 +225,6 @@ void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 	// Update the parameters objects first
 	if(lineshape != "SP")
 		fraction.Update(fitpars);
-	phimass.Update(fitpars);
 	if(lineshape != "NR")
 	{
 		KKBFradius.Update(fitpars);
@@ -264,7 +264,7 @@ void Bs2PhiKKSignalComponent::UpdateBarriers()
 {
 	if(lineshape == "NR")
 		return;
-	double mphi = phimass.value;
+	double mphi = Bs2PhiKK::mphi;
 	double Mres = KKpars[0].value;
 	double m_min  = Bs2PhiKK::mK + Bs2PhiKK::mK;
 	double m_max  = Bs2PhiKK::mBs - mphi;
@@ -277,7 +277,7 @@ void Bs2PhiKKSignalComponent::UpdateBarriers()
 vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(const auto& set: {{phimass},magsqs,phases,KKpars})
+	for(const auto& set: {magsqs,phases,KKpars})
 		for(const auto& par: set)
 			parameters.push_back(par.name);
 	// Add barrier factors if this is a resonant component
