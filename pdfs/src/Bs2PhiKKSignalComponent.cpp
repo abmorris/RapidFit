@@ -162,7 +162,6 @@ std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const Bs2PhiKK::datapo
 		for(const auto& A : Ahel)
 		{
 			int lambda = A.first;
-			if(Ahel.size() == 3)
 			angularPart += A.second * F(lambda, datapoint);
 		}
 	return angularPart;
