@@ -17,6 +17,7 @@ class Bs2PhiKK
 		~Bs2PhiKK() {}
 		// Fixed mass values
 		static constexpr double mBs = 5.36677;
+		static constexpr double mphi = 1.019461;
 		static constexpr double mK = 0.493677;
 		static constexpr double mpi = 0.13957018;
 		// Datapoint type

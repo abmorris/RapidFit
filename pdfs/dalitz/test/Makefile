@@ -16,13 +16,13 @@ OBJEXT     = o
 LIBEXT     = so
 
 # Directories
-TSRCDIR    = test/src
-BINDIR     = test/bin
-TOBJDIR    = test/build
-DSRCDIR    = src
-OBJDIR     = build
-HDRDIR     = include
-LIBDIR     = test/lib
+TSRCDIR    = src
+BINDIR     = bin
+TOBJDIR    = build
+DSRCDIR    = ../src
+OBJDIR     = ../build
+HDRDIR     = ../include
+LIBDIR     = lib
 
 # Get files and make list of objects and libraries
 TSRCS     := $(shell find $(TSRCDIR) -name '*.$(SRCEXT)')

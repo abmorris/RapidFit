@@ -25,7 +25,7 @@ Bs2PhiKKBackground::Bs2PhiKKBackground(PDFConfigurator* config) : Bs2PhiKK(confi
 	MakePrototypes();
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
-//	this->TurnCachingOff();
+	this->TurnCachingOff();
 }
 // Copy constructor
 Bs2PhiKKBackground::Bs2PhiKKBackground(const Bs2PhiKKBackground& copy)
