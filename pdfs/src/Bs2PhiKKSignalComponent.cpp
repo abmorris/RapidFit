@@ -35,43 +35,50 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	// Helicity amplitude observables
 	int lambda_max = std::min(1, JKK); // Maximum helicity
 	std::vector<int> helicities;
-	bool usephi = false;
+	bool usephi = false, usect1 = false, usect2 = false;
 	for(const auto& name: config->GetPhaseSpaceBoundary()->GetAllNames())
 		if(name == "phi")
 			usephi = true;
+		else if(name == "ctheta_1")
+			usect1 = true;
+		else if(name == "ctheta_2")
+			usect2 = true;
 	if(lineshape != "NR" && lineshape != "SP")
 		for(int lambda = usephi ? -lambda_max : 0; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
-	long unsigned int n = helicities.size();
-	std::vector<std::string> phasesuffices;
-	std::vector<std::string> magsqsuffices;
-	switch(n)
+	if(usect1 && usect2)
 	{
-		case 0:
-			break;
-		case 1:
-			phasesuffices = {"deltazero"};
-			break;
-		case 2:
-			magsqsuffices = {"Azerosq"};
-			phasesuffices = {"deltazero","deltaplus"};
-			break;
-		case 3:
-			magsqsuffices = {"Azerosq","Aplussq"};
-			phasesuffices = {"deltazero","deltaplus","deltaminus"};
-			break;
-		default:
-			std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << n << std::endl;
-			std::exit(-1);
-			break;
+		long unsigned int n = helicities.size();
+		std::vector<std::string> phasesuffices;
+		std::vector<std::string> magsqsuffices;
+		switch(n)
+		{
+			case 0:
+				break;
+			case 1:
+				phasesuffices = {"deltazero"};
+				break;
+			case 2:
+				magsqsuffices = {"Azerosq"};
+				phasesuffices = {"deltazero","deltaplus"};
+				break;
+			case 3:
+				magsqsuffices = {"Azerosq","Aplussq"};
+				phasesuffices = {"deltazero","deltaplus","deltaminus"};
+				break;
+			default:
+				std::cerr << "Bs2PhiKKSignalComponent can't handle this many helicities: " << n << std::endl;
+				std::exit(-1);
+				break;
+		}
+		for(std::string suffix: magsqsuffices)
+			magsqs.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
+		for(std::string suffix: phasesuffices)
+			phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
+		// Make the helicity amplitude vector
+		for(const auto& lambda: helicities)
+			Ahel[lambda] = std::polar<double>(std::sqrt(1. / (double)n), 0);
 	}
-	for(std::string suffix: magsqsuffices)
-		magsqs.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
-	for(std::string suffix: phasesuffices)
-		phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
-	// Make the helicity amplitude vector
-	for(const auto& lambda: helicities)
-		Ahel[lambda] = std::polar<double>(std::sqrt(1. / (double)n), 0);
 	Initialise();
 }
 // Copy constructor

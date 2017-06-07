@@ -132,15 +132,19 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	for(const auto& par: {GH, GL, tlow, thraccscale})
+	for(const auto& par: {GH, GL, tlow})
 		parameterNames.push_back(par.name);
 	if(!mKKresconfig.empty())
-		parameterNames.push_back(mKKres_sigmazero.name);
+		for(const auto& par: {thraccscale, mKKres_sigmazero})
+			parameterNames.push_back(par.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
 	std::sort(parameterNames.begin(),parameterNames.end());
 	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
+	std::cout << "Floated parameters:" << std::endl;
+	for(const auto& par: parameterNames)
+		std::cout << "\t" << par << std::endl;
 	allParameters = ParameterSet(parameterNames);
 }
 // List of components
@@ -155,9 +159,11 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	for(auto* par: {&GH, &GL, &tlow, &thraccscale})
+	for(auto* par: {&GH, &GL, &tlow})
 		par->Update(&allParameters);
-	if(!mKKresconfig.empty()) mKKres_sigmazero.Update(&allParameters);
+	if(!mKKresconfig.empty())
+		for(auto* par: {&mKKres_sigmazero, &thraccscale})
+			par->Update(&allParameters);
 	for(auto& comp: components)
 		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
@@ -206,6 +212,8 @@ double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKK::datapoint_t& datapoint, const st
 		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag()))
 		{
 			std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl;
+			for(const auto& par: allParameters.GetAllNames())
+				std::cout << par << " = " << allParameters.GetPhysicsParameter(par)->GetValue() << std::endl;
 			std::exit(1);
 		}
 		TotalAmp[false] += CompAmp[false];

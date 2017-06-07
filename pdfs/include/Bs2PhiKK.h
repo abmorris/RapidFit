@@ -30,12 +30,8 @@ class Bs2PhiKK
 		// Simplify the case where a value and a name correspond 1:1
 		struct PhysPar
 		{
-			// Construct this however you want
 			PhysPar() {}
-			PhysPar(ObservableRef _name) : name(_name), value(0) {}
-			PhysPar(ObservableRef _name, double _value) : name(_name), value(_value) {}
 			PhysPar(PDFConfigurator* config, std::string _name) : name(config->getName(_name)), value(0) {}
-			PhysPar(PDFConfigurator* config, std::string _name, double _value) : name(config->getName(_name)), value(_value) {}
 			PhysPar(const PhysPar& other) : value(other.value), name(other.name) {}
 			void Update(const ParameterSet* pars);
 			double value;
