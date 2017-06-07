@@ -135,8 +135,9 @@ void Bs2PhiKKSignal::MakePrototypes()
 	for(const auto& par: {GH, GL, tlow})
 		parameterNames.push_back(par.name);
 	if(!mKKresconfig.empty())
-		for(const auto& par: {thraccscale, mKKres_sigmazero})
-			parameterNames.push_back(par.name);
+		parameterNames.push_back(mKKres_sigmazero.name);
+	if(acceptance_moments)
+		parameterNames.push_back(thraccscale.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
@@ -162,8 +163,9 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	for(auto* par: {&GH, &GL, &tlow})
 		par->Update(&allParameters);
 	if(!mKKresconfig.empty())
-		for(auto* par: {&mKKres_sigmazero, &thraccscale})
-			par->Update(&allParameters);
+		mKKres_sigmazero.Update(&allParameters);
+	if(acceptance_moments)
+		thraccscale.Update(&allParameters);
 	for(auto& comp: components)
 		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
