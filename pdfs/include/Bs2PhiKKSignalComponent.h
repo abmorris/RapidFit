@@ -37,8 +37,8 @@ class Bs2PhiKKSignalComponent
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateBarriers();
-		std::complex<double> F(const int, const double, const double, const double) const; // Angular distribution: helicity, phi, costheta1, costheta2
-		std::complex<double> AngularPart(const double, const double, const double) const; // index, phi, costheta1, costheta2
+		std::complex<double> F(const int, const Bs2PhiKK::datapoint_t&) const; // Angular distribution: helicity, datapoint
+		std::complex<double> AngularPart(const Bs2PhiKK::datapoint_t&) const;
 		std::complex<double> MassPart(const double) const; // mKK
 		double OFBF(const double) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part

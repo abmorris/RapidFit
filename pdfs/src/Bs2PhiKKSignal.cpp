@@ -132,15 +132,19 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	for(const auto& par: {GH, GL, tlow, thraccscale})
+	for(const auto& par: {GH, GL, tlow})
 		parameterNames.push_back(par.name);
 	if(!mKKresconfig.empty())
-		parameterNames.push_back(mKKres_sigmazero.name);
+		for(const auto& par: {thraccscale, mKKres_sigmazero})
+			parameterNames.push_back(par.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
 	std::sort(parameterNames.begin(),parameterNames.end());
 	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
+	std::cout << "Floated parameters:" << std::endl;
+	for(const auto& par: parameterNames)
+		std::cout << "\t" << par << std::endl;
 	allParameters = ParameterSet(parameterNames);
 }
 // List of components
@@ -155,9 +159,11 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	for(auto* par: {&GH, &GL, &tlow, &thraccscale})
+	for(auto* par: {&GH, &GL, &tlow})
 		par->Update(&allParameters);
-	if(!mKKresconfig.empty()) mKKres_sigmazero.Update(&allParameters);
+	if(!mKKresconfig.empty())
+		for(auto* par: {&mKKres_sigmazero, &thraccscale})
+			par->Update(&allParameters);
 	for(auto& comp: components)
 		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
@@ -192,7 +198,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 // The stuff common to both Evaluate() and EvaluateComponent()
 double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	return MatrixElementSquared * p1stp3(datapoint[0]) * Acceptance(datapoint);
+	return MatrixElementSquared * p1stp3(datapoint) * Acceptance(datapoint);
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes
@@ -206,6 +212,8 @@ double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKK::datapoint_t& datapoint, const st
 		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag()))
 		{
 			std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl;
+			for(const auto& par: allParameters.GetAllNames())
+				std::cout << par << " = " << allParameters.GetPhysicsParameter(par)->GetValue() << std::endl;
 			std::exit(1);
 		}
 		TotalAmp[false] += CompAmp[false];
@@ -242,14 +250,18 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint
 {
 	const double nsigma = mKKresconfig.at("nsigma");
 	const int nsteps = mKKresconfig.at("nsteps");
-	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint[0]-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
+	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
 	// If the integration region goes below threshold, don't do the convolution
 	double Msq_conv = 0.;
 	const double stepsize = 2.*nsigma*resolution/nsteps;
 	// Integrate over range −nσ to +nσ
 	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-		if(datapoint[0] - nsigma*resolution > 2*Bs2PhiKK::mK)
-			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)({datapoint[0]-x,datapoint[1],datapoint[2],datapoint[3]},compName) * stepsize;
+		if(datapoint.at(Bs2PhiKK::_mKK_) - nsigma*resolution > 2*Bs2PhiKK::mK)
+		{
+			datapoint_t tmpdatapoint = datapoint;
+			tmpdatapoint[_mKK_] = datapoint.at(Bs2PhiKK::_mKK_)-x;
+			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)(tmpdatapoint,compName) * stepsize;
+		}
 	return Msq_conv;
 }
 /*Stuff that factors out of the time integral*********************************/
@@ -259,20 +271,20 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 	if(acceptance_moments)
 	{
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m[(bool)datapoint[4]]->Evaluate({datapoint[0],datapoint[1],datapoint[2],datapoint[3]});
+		acceptance = acc_m[(bool)datapoint.at(Bs2PhiKK::_trigger_)]->Evaluate({datapoint.at(Bs2PhiKK::_mKK_),datapoint.at(Bs2PhiKK::_phi_),datapoint.at(Bs2PhiKK::_ctheta_1_),datapoint.at(Bs2PhiKK::_ctheta_2_)});
 		// Multiply by a switch-on function
-		acceptance *= std::erf(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
-//		acceptance *= std::tanh(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK));
-//		acceptance *= std::atan(thraccscale.value*(datapoint[0]-2*Bs2PhiKK::mK))*2.0/M_PI;
+		acceptance *= std::erf(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
+//		acceptance *= std::tanh(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
+//		acceptance *= std::atan(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	if(std::isnan(acceptance))
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;
 }
-double Bs2PhiKKSignal::p1stp3(const double& mKK) const
+double Bs2PhiKKSignal::p1stp3(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
-	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, Bs2PhiKK::mphi);
+	double pR = DPHelpers::daughterMomentum(datapoint.at(Bs2PhiKK::_mKK_), Bs2PhiKK::mK, Bs2PhiKK::mK);
+	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, datapoint.at(Bs2PhiKK::_mKK_), Bs2PhiKK::mphi);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB))
 		std::cerr << "p1stp3 evaluates to nan" << std::endl;
