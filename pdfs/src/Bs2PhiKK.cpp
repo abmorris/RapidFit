@@ -39,7 +39,7 @@ void Bs2PhiKK::MakePrototypeDataPoint(std::vector<std::string>& allObservables)
 	std::cout << "Prototype datapoint: ";
 	for(const auto& name: ObservableNames)
 	{
-		std::cout << name.second.Name();
+		std::cout << name.second.Name() << " ";
 		allObservables.push_back(name.second.Name());
 	}
 	std::cout << std::endl;
