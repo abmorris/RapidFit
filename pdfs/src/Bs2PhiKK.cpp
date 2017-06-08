@@ -57,13 +57,14 @@ Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 
 bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
 {
-	bool isphysical = true;
 	if(datapoint.count(_mKK_) == 1)
-		isphysical = isphysical && datapoint.at(_mKK_) > 2*Bs2PhiKK::mK;
+		if(datapoint.at(_mKK_) < 2*mK)
+			return false;
 	for(const auto& angle : {_ctheta_1_, _ctheta_2_})
 		if(datapoint.count(angle) == 1)
-			isphysical = isphysical && std::abs(datapoint.at(angle)) <= 1;
-	return isphysical;
+			if(std::abs(datapoint.at(angle)) > 1)
+				return false;
+	return true;
 }
 
 Bs2PhiKK::datapoint_t Bs2PhiKK::Parity(const Bs2PhiKK::datapoint_t& datapoint)
