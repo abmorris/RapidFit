@@ -88,7 +88,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		for(const unsigned trig : {0, 1})
 		{
 			thraccscale[trig] = Bs2PhiKK::PhysPar(config,"thraccscale"+std::to_string(trig));
-			acc_m[trig] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"+std::to_string(trig))));
+			acc_m[trig] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"+std::to_string(trig))));
 		}
 	}
 	// Enable numerical normalisation and disable caching
@@ -120,7 +120,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 {
 	if(acceptance_moments)
 		for(const unsigned trig : {0, 1})
-			acc_m[trig] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[trig]));
+			acc_m[trig] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[trig]));
 }
 /*****************************************************************************/
 // Make the data point and parameter set
