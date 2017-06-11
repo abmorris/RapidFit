@@ -1037,11 +1037,12 @@ int calculateFitFractions( RapidFitConfiguration* config )
 int calculateAcceptanceCoefficients( RapidFitConfiguration* config, bool massdependent )
 {
 	PDFWithData * pdfAndData = config->xmlFile->GetPDFsAndData()[0];
-	pdfAndData->SetPhysicsParameters( config->xmlFile->GetFitParameters() );
+	ParameterSet* params = config->xmlFile->GetFitParameters();
+	pdfAndData->SetPhysicsParameters( params );
 	IDataSet * dataSet = pdfAndData->GetDataSet();
 	IPDF * pdf = pdfAndData->GetPDF();
 
-	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, massdependent);
+	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, params, massdependent);
 }
 
 

@@ -30,7 +30,7 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		// Parameters used outside the amplitude calculation
 		Bs2PhiKK::PhysPar GH, GL; // Bs mass eigenstate widths
 		Bs2PhiKK::PhysPar tlow; // Lower limit of time integral
-		Bs2PhiKK::PhysPar thraccscale; // threshold mass acceptance
+		std::array<Bs2PhiKK::PhysPar,2> thraccscale; // threshold mass acceptance
 		// Mass resolution variables
 		Bs2PhiKK::PhysPar mKKres_sigmazero; // variable that parameterises the mass resolution
 		std::map<std::string,double> mKKresconfig; // configuration parameters

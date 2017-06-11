@@ -85,9 +85,11 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
-		thraccscale = Bs2PhiKK::PhysPar(config,"thraccscale");
-		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile0")));
-		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile1")));
+		for(const unsigned trig : {0, 1})
+		{
+			thraccscale[trig] = Bs2PhiKK::PhysPar(config,"thraccscale"+std::to_string(trig));
+			acc_m[trig] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"+std::to_string(trig))));
+		}
 	}
 	// Enable numerical normalisation and disable caching
 	this->SetNumericalNormalisation( true );
@@ -117,10 +119,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	, acceptance_moments(copy.acceptance_moments)
 {
 	if(acceptance_moments)
-	{
-		acc_m[0] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[0]));
-		acc_m[1] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[1]));
-	}
+		for(const unsigned trig : {0, 1})
+			acc_m[trig] = std::make_unique<LegendreMomentShape>(LegendreMomentShape(*copy.acc_m[trig]));
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -137,15 +137,16 @@ void Bs2PhiKKSignal::MakePrototypes()
 	if(!mKKresconfig.empty())
 		parameterNames.push_back(mKKres_sigmazero.name);
 	if(acceptance_moments)
-		parameterNames.push_back(thraccscale.name);
+		for(const auto& par: thraccscale)
+			parameterNames.push_back(par.name);
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
 	std::sort(parameterNames.begin(),parameterNames.end());
 	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
-	std::cout << "Floated parameters:" << std::endl;
+	std::cout << "Parameters:" << std::endl;
 	for(const auto& par: parameterNames)
-		std::cout << "\t" << par << std::endl;
+		std::cout << "\t" << par << "\n";
 	allParameters = ParameterSet(parameterNames);
 }
 // List of components
@@ -165,7 +166,8 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 	if(!mKKresconfig.empty())
 		mKKres_sigmazero.Update(&allParameters);
 	if(acceptance_moments)
-		thraccscale.Update(&allParameters);
+		for(auto& par: thraccscale)
+			par.Update(&allParameters);
 	for(auto& comp: components)
 		comp.second.SetPhysicsParameters(&allParameters);
 	return isOK;
@@ -272,12 +274,13 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 	double acceptance = 1;
 	if(acceptance_moments)
 	{
+		unsigned trig = datapoint.at(Bs2PhiKK::_trigger_);
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m[(bool)datapoint.at(Bs2PhiKK::_trigger_)]->Evaluate({datapoint.at(Bs2PhiKK::_mKK_),datapoint.at(Bs2PhiKK::_phi_),datapoint.at(Bs2PhiKK::_ctheta_1_),datapoint.at(Bs2PhiKK::_ctheta_2_)});
+		acceptance = acc_m[trig]->Evaluate({datapoint.at(Bs2PhiKK::_mKK_),datapoint.at(Bs2PhiKK::_phi_),datapoint.at(Bs2PhiKK::_ctheta_1_),datapoint.at(Bs2PhiKK::_ctheta_2_)});
 		// Multiply by a switch-on function
-		acceptance *= std::erf(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
-//		acceptance *= std::tanh(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
-//		acceptance *= std::atan(thraccscale.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK))*2.0/M_PI;
+		acceptance *= std::erf(thraccscale[trig].value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
+//		acceptance *= std::tanh(thraccscale[trig].value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
+//		acceptance *= std::atan(thraccscale[trig].value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	if(std::isnan(acceptance))
 		std::cerr << "Acceptance evaluates to nan" << std::endl;

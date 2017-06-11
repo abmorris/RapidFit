@@ -575,7 +575,7 @@ namespace Mathematics
 			       ) / ( gamma_deltaM * gamma_deltaM );
 		}
 	}
-	int calculateAcceptanceCoefficients( IDataSet * inputDataSet, IPDF * PDF, bool mass_dependent = true)
+	int calculateAcceptanceCoefficients( IDataSet * inputDataSet, IPDF * PDF, ParameterSet* params, bool mass_dependent = true)
 	{
 		(void)PDF; // TODO hopefully the config is stored here
 		PhaseSpaceBoundary* boundary = inputDataSet->GetBoundary();
@@ -598,6 +598,7 @@ namespace Mathematics
 			const double mK  = 0.493677; // TODO: read these from config somehow
 			const double mBs  = 5.36677;
 			const double mPhi= 1.019461;
+			unsigned trigger  = dataSet.begin()->GetObservable("trigger")->GetValue();
 			for(auto& event : dataSet)
 			{
 				// Retrieve the data point
@@ -642,7 +643,8 @@ namespace Mathematics
 				{
 					*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
 				}
-				weight = std::erf(186*(mKK)-2*mK)*lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
+				double thraccscale = params->GetPhysicsParameter("thraccscale"+std::to_string(trigger))->GetValue();
+				weight = std::erf(thraccscale*(mKK)-2*mK)*lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
 				sampledtree.Fill(mKK, phi, ctheta_1, ctheta_2, weight);
 				delete point;
 			}
