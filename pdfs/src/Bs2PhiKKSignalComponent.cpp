@@ -145,10 +145,12 @@ std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK
 {
 	std::complex<double> returnval;
 	const double d_phi = wignerPhi->function(datapoint.at(Bs2PhiKK::_ctheta_1_), lambda, 0);
-	const double d_KK = wignerKK->function(datapoint.at(Bs2PhiKK::_ctheta_2_), lambda, 0);
+	const double d_KK  = wignerKK ->function(datapoint.at(Bs2PhiKK::_ctheta_2_), lambda, 0);
 	returnval = d_phi * d_KK;
 	if(datapoint.count(Bs2PhiKK::_phi_) == 1)
 		returnval *= std::polar<double>(1, lambda*datapoint.at(Bs2PhiKK::_phi_));
+	else if(lambda != 0)
+		returnval *= 2.; // Account for the missing helicity state
 	return returnval;
 }
 std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const Bs2PhiKK::datapoint_t& datapoint) const
@@ -265,7 +267,7 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		double Aplus_mag = std::sqrt(1. - magsqs[0].value);
 		if(std::isnan(Aplus_mag)) Aplus_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
 		Ahel[ 0] = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
-		Ahel[+1] = std::polar<double>(Aplus_mag,phases[1].value);
+		Ahel[+1] = std::polar<double>(Aplus_mag,                 phases[1].value);
 	}
 	else if(Ahel.size() == 3)
 	{
@@ -273,7 +275,7 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		if(std::isnan(Aminus_mag)) Aminus_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
 		Ahel[ 0] = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
 		Ahel[+1] = std::polar<double>(std::sqrt(magsqs[1].value),phases[1].value);
-		Ahel[-1] = std::polar<double>(Aminus_mag,phases[2].value);
+		Ahel[-1] = std::polar<double>(Aminus_mag,                phases[2].value);
 	}
 	else
 	{
