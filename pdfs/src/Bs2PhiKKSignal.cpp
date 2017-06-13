@@ -20,7 +20,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments(config->isTrue("UseAcceptance"))
 	, GH(config,"GH")
 	, GL(config,"GL")
-	, tlow(config,"tlow")
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	if(config->isTrue("convolve"))
@@ -104,8 +103,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	// Width splitting
 	, GH(copy.GH)
 	, GL(copy.GL)
-	// time integral lower bound
-	, tlow(copy.tlow)
 	// threshold acceptance scale
 	, thraccscale(copy.thraccscale)
 	// mass resolution parameters
@@ -132,7 +129,7 @@ void Bs2PhiKKSignal::MakePrototypes()
 	// Make the parameter set
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
-	for(const auto& par: {GH, GL, tlow})
+	for(const auto& par: {GH, GL})
 		parameterNames.push_back(par.name);
 	if(!mKKresconfig.empty())
 		parameterNames.push_back(mKKres_sigmazero.name);
@@ -161,7 +158,7 @@ std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
-	for(auto* par: {&GH, &GL, &tlow})
+	for(auto* par: {&GH, &GL})
 		par->Update(&allParameters);
 	if(!mKKresconfig.empty())
 		mKKres_sigmazero.Update(&allParameters);
@@ -242,12 +239,9 @@ double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKK::datapoint_t& datapoint, c
 // Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
 double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKK::amplitude_t& Amp) const
 {
-	double termone = (std::norm(Amp[true]) + std::norm(Amp[false]));
-	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false]));
-	double factor0 = std::exp(-tlow.value * (GH.value + GL.value)) / (2 * GH.value * GL.value);
-	double factorH = GH.value * std::exp(tlow.value * GH.value);
-	double factorL = GL.value * std::exp(tlow.value * GL.value);
-	return factor0 * (factorH * (termone + termtwo) + factorL * (termone - termtwo));
+	double termone = (std::norm(Amp[true]) + std::norm(Amp[false])) * (1./GL.value + 1./GH.value);
+	double termtwo = 2*std::real(Amp[true] * std::conj(Amp[false])) * (1./GL.value - 1./GH.value);
+	return termone + termtwo;
 }
 // Convolution of the matrix element function with a Gaussian... the slow integral way
 double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
