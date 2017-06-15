@@ -178,36 +178,46 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	if(compName.find_first_not_of("0123456789") == string::npos)
 		return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
+	const double mKK = datapoint[Bs2PhiKK::_mKK_];
+	const double ctheta_1 = datapoint[Bs2PhiKK::_ctheta_1_];
+	const double ctheta_2 = datapoint[Bs2PhiKK::_ctheta_2_];
+	const double phi = datapoint[Bs2PhiKK::_phi_];
+	const double trigger = datapoint[Bs2PhiKK::_trigger_];
 	// Evaluation
 	MsqFunc_t EvaluateMsq = compName=="interference"? &Bs2PhiKKSignal::InterferenceMsq : &Bs2PhiKKSignal::ComponentMsq; // Choose the function to calcualte the |M|²
-	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(datapoint,compName) : Convolve(EvaluateMsq,datapoint,compName); // Do the convolved or unconvolved |M|² calculation
-	return Evaluate_Base(MatrixElementSquared, datapoint);
+	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(mKK, ctheta_1, ctheta_2, phi,compName) : Convolve(EvaluateMsq,mKK, ctheta_1, ctheta_2, phi,compName); // Do the convolved or unconvolved |M|² calculation
+	return Evaluate_Base(MatrixElementSquared, trigger, mKK, ctheta_1, ctheta_2, phi);
 }
 // Evaluate the entire PDF
 double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	// Verification
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
+	const double mKK = datapoint[Bs2PhiKK::_mKK_];
+	const double ctheta_1 = datapoint[Bs2PhiKK::_ctheta_1_];
+	const double ctheta_2 = datapoint[Bs2PhiKK::_ctheta_2_];
+	const double phi = datapoint[Bs2PhiKK::_phi_];
+	const double trigger = datapoint[Bs2PhiKK::_trigger_];
 	// Evaluation
-	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(datapoint) : Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,""); // Do the convolved or unconvolved |M|² calculation
+	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(mKK, ctheta_1, ctheta_2, phi) : Convolve(&Bs2PhiKKSignal::TotalMsq,mKK, ctheta_1, ctheta_2, phi,""); // Do the convolved or unconvolved |M|² calculation
 	if(std::isnan(MatrixElementSquared))
 		std::cerr << "Matrix element is not a number" << std::endl;
-	return Evaluate_Base(MatrixElementSquared, datapoint);
+	return Evaluate_Base(MatrixElementSquared, trigger, mKK, ctheta_1, ctheta_2, phi);
 }
 // The stuff common to both Evaluate() and EvaluateComponent()
-double Bs2PhiKKSignal::Evaluate_Base(const double MatrixElementSquared, const Bs2PhiKK::datapoint_t& datapoint) const
+double Bs2PhiKKSignal::Evaluate_Base(const double& MatrixElementSquared, const unsigned& trig, const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
-	return MatrixElementSquared * p1stp3(datapoint) * Acceptance(datapoint);
+	return MatrixElementSquared * p1stp3(mKK) * Acceptance(trig, mKK, ctheta_1, ctheta_2, phi);
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes
-double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKK::datapoint_t& datapoint, const std::string& dummy) const
+double Bs2PhiKKSignal::TotalMsq(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi, const std::string& dummy) const
 {
 	(void)dummy;
 	Bs2PhiKK::amplitude_t TotalAmp = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	for(const auto& comp : components)
 	{
-		Bs2PhiKK::amplitude_t CompAmp = comp.second.Amplitude(datapoint);
+		Bs2PhiKK::amplitude_t CompAmp = comp.second.Amplitude(mKK, ctheta_1, ctheta_2, phi);
 		if(std::isnan(CompAmp[0].real()) || std::isnan(CompAmp[0].imag()))
 		{
 			std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl;
@@ -221,17 +231,17 @@ double Bs2PhiKKSignal::TotalMsq(const Bs2PhiKK::datapoint_t& datapoint, const st
 	return TimeIntegratedMsq(TotalAmp);
 }
 // Single-component |M|²
-double Bs2PhiKKSignal::ComponentMsq(const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
+double Bs2PhiKKSignal::ComponentMsq(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi, const std::string& compName) const
 {
-	return TimeIntegratedMsq(components.at(compName).Amplitude(datapoint, compName));
+	return TimeIntegratedMsq(components.at(compName).Amplitude(mKK, ctheta_1, ctheta_2, phi, compName));
 }
 // Interference |M|²: difference between incoherent and coherent sums of components
-double Bs2PhiKKSignal::InterferenceMsq(const Bs2PhiKK::datapoint_t& datapoint, const std::string& dummy) const
+double Bs2PhiKKSignal::InterferenceMsq(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi, const std::string& dummy) const
 {
 	(void)dummy;
-	double MatrixElementSquared = TotalMsq(datapoint);
+	double MatrixElementSquared = TotalMsq(mKK, ctheta_1, ctheta_2, phi);
 	for(const auto& comp : components)
-		MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(datapoint));
+		MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(mKK, ctheta_1, ctheta_2, phi));
 	return MatrixElementSquared;
 }
 // Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
@@ -242,46 +252,41 @@ double Bs2PhiKKSignal::TimeIntegratedMsq(const Bs2PhiKK::amplitude_t& Amp) const
 	return termone + termtwo;
 }
 // Convolution of the matrix element function with a Gaussian... the slow integral way
-double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint_t& datapoint, const std::string& compName) const
+double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi, const std::string& compName) const
 {
 	const double nsigma = mKKresconfig.at("nsigma");
 	const int nsteps = mKKresconfig.at("nsteps");
-	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
+	const double resolution = std::sqrt(mKKres_sigmazero.value*(mKK-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
 	// If the integration region goes below threshold, don't do the convolution
 	double Msq_conv = 0.;
 	const double stepsize = 2.*nsigma*resolution/nsteps;
 	// Integrate over range −nσ to +nσ
 	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-		if(datapoint[Bs2PhiKK::_mKK_] - nsigma*resolution > 2*Bs2PhiKK::mK)
-		{
-			datapoint_t tmpdatapoint = datapoint;
-			tmpdatapoint[_mKK_] = datapoint[Bs2PhiKK::_mKK_]-x;
-			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)(tmpdatapoint,compName) * stepsize;
-		}
+		if(mKK - nsigma*resolution > 2*Bs2PhiKK::mK)
+			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)(mKK-x, ctheta_1, ctheta_2, phi,compName) * stepsize;
 	return Msq_conv;
 }
 /*Stuff that factors out of the time integral*********************************/
-double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
+double Bs2PhiKKSignal::Acceptance(const unsigned& trig, const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
 	double acceptance = 1;
 	if(acceptance_moments)
 	{
-		unsigned trig = datapoint[Bs2PhiKK::_trigger_];
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m[trig]->Evaluate({datapoint[Bs2PhiKK::_mKK_],datapoint[Bs2PhiKK::_phi_],datapoint[Bs2PhiKK::_ctheta_1_],datapoint[Bs2PhiKK::_ctheta_2_]});
+		acceptance = acc_m[trig]->Evaluate({mKK,phi,ctheta_1,ctheta_2});
 		// Multiply by a switch-on function
-		acceptance *= std::erf(thraccscale[trig].value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK));
-//		acceptance *= std::tanh(thraccscale[trig].value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK));
-//		acceptance *= std::atan(thraccscale[trig].value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK))*2.0/M_PI;
+		acceptance *= std::erf(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK));
+//		acceptance *= std::tanh(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK));
+//		acceptance *= std::atan(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	if(std::isnan(acceptance))
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
 	return acceptance;
 }
-double Bs2PhiKKSignal::p1stp3(const Bs2PhiKK::datapoint_t& datapoint) const
+double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 {
-	double pR = DPHelpers::daughterMomentum(datapoint[Bs2PhiKK::_mKK_], Bs2PhiKK::mK, Bs2PhiKK::mK);
-	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, datapoint[Bs2PhiKK::_mKK_], Bs2PhiKK::mphi);
+	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
+	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, Bs2PhiKK::mphi);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB))
 		std::cerr << "p1stp3 evaluates to nan" << std::endl;

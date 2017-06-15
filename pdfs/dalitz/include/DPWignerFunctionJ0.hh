@@ -4,7 +4,7 @@
 class DPWignerFunctionJ0
 {
   public:
-    static double function(double cosTheta, double m, double n);
+    static double function(double cosTheta, int m);
 };
 
 #endif

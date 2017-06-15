@@ -1,10 +1,9 @@
 #include "DPWignerFunctionJ0.hh"
 
-double DPWignerFunctionJ0::function(double theta, double m, double n)
+double DPWignerFunctionJ0::function(double theta, int m)
 {
   (void)theta;
   (void)m;
-  (void)n;
   return 1;
 }
 

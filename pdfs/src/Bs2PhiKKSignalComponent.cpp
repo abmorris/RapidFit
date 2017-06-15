@@ -157,43 +157,47 @@ void Bs2PhiKKSignalComponent::Initialise()
 }
 /*****************************************************************************/
 // Angular part of the amplitude
-double Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK::datapoint_t& datapoint) const
+double Bs2PhiKKSignalComponent::F(const int& lambda, const double& ctheta_1, const double& ctheta_2) const
 {
-	const double d_phi = wignerPhi(datapoint[Bs2PhiKK::_ctheta_1_], lambda, 0);
-	const double d_KK  = wignerKK (datapoint[Bs2PhiKK::_ctheta_2_], lambda, 0);
+	const double d_phi = wignerPhi(ctheta_1, lambda);
+	const double d_KK  = wignerKK (ctheta_2, lambda);
 	return d_phi * d_KK;
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartNonRes(const Bs2PhiKK::datapoint_t& datapoint) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartNonRes(const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
-	(void)datapoint;
+	(void)ctheta_1;
+	(void)ctheta_2;
+	(void)phi;
 	return std::complex<double>(1, 0); // Either nonresonant or helicity angles not present
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartSpline(const Bs2PhiKK::datapoint_t& datapoint) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartSpline(const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
-	return F(0, datapoint);
+	(void)phi;
+	return F(0, ctheta_1, ctheta_2);
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const Bs2PhiKK::datapoint_t& datapoint) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
+	(void)phi;
 	std::complex<double> angularPart(0, 0);
 	for(const auto& A : Ahel)
 	{
 		int lambda = A.first;
-		angularPart += A.second * F(lambda, datapoint) * std::abs(2. * lambda);
+		angularPart += A.second * F(lambda, ctheta_1, ctheta_2) * std::abs(2. * lambda);
 	}
 	return angularPart;
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartDefault(const Bs2PhiKK::datapoint_t& datapoint) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartDefault(const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
 	std::complex<double> angularPart(0, 0);
 	for(const auto& A : Ahel)
 	{
-		int lambda = A.first;
-		angularPart += A.second * F(lambda, datapoint) * std::polar<double>(1, lambda*datapoint[Bs2PhiKK::_phi_]);
+		const int lambda = A.first;
+		angularPart += A.second * F(lambda, ctheta_1, ctheta_2) * std::polar<double>(1.0, lambda*phi);
 	}
 	return angularPart;
 }
 // Orbital and barrier factor
-double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
+double Bs2PhiKKSignalComponent::OFBF(const double& mKK) const
 {
 	if(mKK < 2*Bs2PhiKK::mK)
 		return 0;
@@ -212,33 +216,34 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	return orbitalFactor*barrierFactor;
 }
 // Mass-dependent part
-std::complex<double> Bs2PhiKKSignalComponent::MassPartNonRes(const double mKK) const
+std::complex<double> Bs2PhiKKSignalComponent::MassPartNonRes(const double& mKK) const
 {
 	(void)mKK;
 	return std::complex<double>(1,0);
 }
 
-std::complex<double> Bs2PhiKKSignalComponent::MassPartSpline(const double mKK) const
+std::complex<double> Bs2PhiKKSignalComponent::MassPartSpline(const double& mKK) const
 {
 	return KKLineShape->massShape(mKK);
 }
 
-std::complex<double> Bs2PhiKKSignalComponent::MassPartResonant(const double mKK) const
+std::complex<double> Bs2PhiKKSignalComponent::MassPartResonant(const double& mKK) const
 {
 	return KKLineShape->massShape(mKK) * fraction.value * OFBF(mKK);
 }
 // The full amplitude.
-Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint) const
+Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
-	Bs2PhiKK::amplitude_t angularPart = {(this->*AngularPart)(datapoint), (this->*AngularPart)(Bs2PhiKK::Parity(datapoint))};
-	std::complex<double> massPart = (this->*MassPart)(datapoint[Bs2PhiKK::_mKK_]);
-	return {massPart*angularPart[false], massPart*angularPart[true]};
+	std::complex<double> angularPartBs    = (this->*AngularPart)( ctheta_1,  ctheta_2,  phi);
+	std::complex<double> angularPartBsbar = (this->*AngularPart)(-ctheta_1, -ctheta_2, -phi);
+	std::complex<double> massPart = (this->*MassPart)(mKK);
+	return {massPart*angularPartBs, massPart*angularPartBsbar};
 }
 // The full amplitude with an option.
-Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint, const std::string option) const
+Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi, const std::string option) const
 {
 	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || !UseObservable[Bs2PhiKK::_phi_])
-		return Amplitude(datapoint);
+		return Amplitude(mKK, ctheta_1, ctheta_2, phi);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
 	std::complex<double> Aperp = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
@@ -254,11 +259,11 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 	for(const auto& A : Ahel)
 	{
 		int lambda = A.first;
-		angularPart[false] += HelAmp[lambda+1] * F(lambda, datapoint);
-		angularPart[true] += HelAmp[lambda+1] * F(lambda, Bs2PhiKK::Parity(datapoint));
+		angularPart[false] += HelAmp[lambda+1] * F(lambda, ctheta_1, ctheta_2) * std::polar<double>(1, lambda*phi);
+		angularPart[true] += HelAmp[lambda+1] * F(lambda, -ctheta_1, -ctheta_2) * std::polar<double>(1, -lambda*phi);
 	}
 	std::complex<double> massPart(1, 0);
-	massPart = (this->*MassPart)(datapoint[Bs2PhiKK::_mKK_]);
+	massPart = (this->*MassPart)(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 /*****************************************************************************/

@@ -17,8 +17,8 @@ class Bs2PhiKKSignalComponent
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays
-		Bs2PhiKK::amplitude_t Amplitude(const Bs2PhiKK::datapoint_t&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
-		Bs2PhiKK::amplitude_t Amplitude(const Bs2PhiKK::datapoint_t&, const std::string) const; // Same but with an option "even" or "odd"
+		Bs2PhiKK::amplitude_t Amplitude(const double&, const double&, const double&, const double&) const; // KK_M, Phi_angle, cos_theta1, cos_theta2
+		Bs2PhiKK::amplitude_t Amplitude(const double&, const double&, const double&, const double&, const std::string) const; // Same but with an option "even" or "odd"
 	private:
 		const std::vector<bool> UseObservable; // Cache whether or not we use each dimension. Saves a lot of cycles compared to repeatedly calling ObservableNames.count()
 		// Floatable parameters
@@ -37,20 +37,20 @@ class Bs2PhiKKSignalComponent
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateBarriers();
-		double F(const int, const Bs2PhiKK::datapoint_t&) const; // Angular distribution: helicity, datapoint
-		std::complex<double> (Bs2PhiKKSignalComponent::*AngularPart)(const Bs2PhiKK::datapoint_t&) const;
-		std::complex<double> AngularPartNonRes(const Bs2PhiKK::datapoint_t&) const;
-		std::complex<double> AngularPartSpline(const Bs2PhiKK::datapoint_t&) const;
-		std::complex<double> AngularPartNoPhi(const Bs2PhiKK::datapoint_t&) const;
-		std::complex<double> AngularPartDefault(const Bs2PhiKK::datapoint_t&) const;
-		std::complex<double> (Bs2PhiKKSignalComponent::*MassPart)(const double) const;
-		std::complex<double> MassPartNonRes(const double) const;
-		std::complex<double> MassPartSpline(const double) const;
-		std::complex<double> MassPartResonant(const double) const;
-		double OFBF(const double) const; // Product of orbital and barrier factors
+		double F(const int&, const double&, const double&) const; // Angular distribution: helicity, datapoint
+		std::complex<double> (Bs2PhiKKSignalComponent::*AngularPart)(const double&, const double&, const double&) const;
+		std::complex<double> AngularPartNonRes(const double&, const double&, const double&) const;
+		std::complex<double> AngularPartSpline(const double&, const double&, const double&) const;
+		std::complex<double> AngularPartNoPhi(const double&, const double&, const double&) const;
+		std::complex<double> AngularPartDefault(const double&, const double&, const double&) const;
+		std::complex<double> (Bs2PhiKKSignalComponent::*MassPart)(const double&) const;
+		std::complex<double> MassPartNonRes(const double&) const;
+		std::complex<double> MassPartSpline(const double&) const;
+		std::complex<double> MassPartResonant(const double&) const;
+		double OFBF(const double&) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
-		double (*wignerKK)(double, double, double);
-		double (*wignerPhi)(double, double, double);
+		double (*wignerKK)(double, int);
+		double (*wignerPhi)(double, int);
 		// Blatt-Weisskopf barrier penetration factors
 		DPBarrierFactor Bsbarrier;
 		DPBarrierFactor KKbarrier;
