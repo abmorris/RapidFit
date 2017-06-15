@@ -7,12 +7,11 @@
 // RapidFit
 #include "Bs2PhiKK.h"
 #include "DPBarrierFactor.hh"
-#include "DPWignerFunctionGeneral.hh"
 
 class Bs2PhiKKSignalComponent
 {
 	public:
-		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, int, std::string); // config, resonance name, spin
+		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, int, std::string, const std::vector<bool>&); // config, resonance name, spin, info about datapoint dimensions
 		Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent&);
 		~Bs2PhiKKSignalComponent() {}
 		void SetPhysicsParameters(ParameterSet* pars);
@@ -21,6 +20,7 @@ class Bs2PhiKKSignalComponent
 		Bs2PhiKK::amplitude_t Amplitude(const Bs2PhiKK::datapoint_t&) const; // {KK_M, Phi_angle, cos_theta1, cos_theta2}
 		Bs2PhiKK::amplitude_t Amplitude(const Bs2PhiKK::datapoint_t&, const std::string) const; // Same but with an option "even" or "odd"
 	private:
+		const std::vector<bool> UseObservable; // Cache whether or not we use each dimension. Saves a lot of cycles compared to repeatedly calling ObservableNames.count()
 		// Floatable parameters
 		Bs2PhiKK::PhysPar fraction; // Unnormalised variable to control the relative contribution of each resonance. Do not use as the fit fraction!!
 		Bs2PhiKK::PhysPar BsBFradius; // Bs barrier factor radius
@@ -37,13 +37,20 @@ class Bs2PhiKKSignalComponent
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateBarriers();
-		std::complex<double> F(const int, const Bs2PhiKK::datapoint_t&) const; // Angular distribution: helicity, datapoint
-		std::complex<double> AngularPart(const Bs2PhiKK::datapoint_t&) const;
-		std::complex<double> MassPart(const double) const; // mKK
+		double F(const int, const Bs2PhiKK::datapoint_t&) const; // Angular distribution: helicity, datapoint
+		std::complex<double> (Bs2PhiKKSignalComponent::*AngularPart)(const Bs2PhiKK::datapoint_t&) const;
+		std::complex<double> AngularPartNonRes(const Bs2PhiKK::datapoint_t&) const;
+		std::complex<double> AngularPartSpline(const Bs2PhiKK::datapoint_t&) const;
+		std::complex<double> AngularPartNoPhi(const Bs2PhiKK::datapoint_t&) const;
+		std::complex<double> AngularPartDefault(const Bs2PhiKK::datapoint_t&) const;
+		std::complex<double> (Bs2PhiKKSignalComponent::*MassPart)(const double) const;
+		std::complex<double> MassPartNonRes(const double) const;
+		std::complex<double> MassPartSpline(const double) const;
+		std::complex<double> MassPartResonant(const double) const;
 		double OFBF(const double) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
-		std::unique_ptr<DPWignerFunction> wignerKK {};
-		std::unique_ptr<DPWignerFunction> wignerPhi {};
+		double (*wignerKK)(double, double, double);
+		double (*wignerPhi)(double, double, double);
 		// Blatt-Weisskopf barrier penetration factors
 		DPBarrierFactor Bsbarrier;
 		DPBarrierFactor KKbarrier;

@@ -1,10 +1,7 @@
-#include "TMath.h"
-#include <iostream>
-
 #include "DPWignerFunctionJ1.hh"
+#include <cmath>
 
-// parameter theta is actually cos(theta)
-double DPWignerFunctionJ1::function(double theta, double mm, double nn)
+double DPWignerFunctionJ1::function(double cosTheta, double mm, double nn)
 {
 
   int m=(int)mm;
@@ -13,11 +10,11 @@ double DPWignerFunctionJ1::function(double theta, double mm, double nn)
   {
     switch (n)
     {
-      case 0: return d00(theta);
+      case 0: return d00(cosTheta);
               break;
-      case 1: return -dp10(theta);
+      case 1: return -dp10(cosTheta);
               break;
-      case -1: return dp10(theta);
+      case -1: return dp10(cosTheta);
               break;
     }
   }
@@ -25,11 +22,11 @@ double DPWignerFunctionJ1::function(double theta, double mm, double nn)
   {
     switch (n)
     {
-      case 0: return dp10(theta);
+      case 0: return dp10(cosTheta);
               break;
-      case 1: return dp1p1(theta);
+      case 1: return dp1p1(cosTheta);
               break;
-      case -1: return dp1m1(theta);
+      case -1: return dp1m1(cosTheta);
               break;
     }
   }
@@ -37,16 +34,14 @@ double DPWignerFunctionJ1::function(double theta, double mm, double nn)
   {
     switch (n)
     {
-      case 0: return -dp10(theta);
+      case 0: return -dp10(cosTheta);
               break;
-      case 1: return dp1m1(theta);
+      case 1: return dp1m1(cosTheta);
               break;
-      case -1: return dp1p1(theta);
+      case -1: return dp1p1(cosTheta);
               break;
     }
   }
-
-  std::cerr<<"What is going on? For spin 1, m and n has to be 0, 1 or -1\n";
 
   return -1000; // Give crazy number, alternatively we can exit or throw exception
 }
@@ -58,8 +53,8 @@ double DPWignerFunctionJ1::d00(double cosTheta)
 
 double DPWignerFunctionJ1::dp10(double cosTheta)
 {
-  double sinTheta=TMath::Sqrt(1-cosTheta*cosTheta);
-  return -sinTheta/TMath::Sqrt(2);
+  double sinTheta=std::sqrt(1-cosTheta*cosTheta);
+  return -sinTheta/std::sqrt(2.);
 }
 
 double DPWignerFunctionJ1::dp1p1(double cosTheta)

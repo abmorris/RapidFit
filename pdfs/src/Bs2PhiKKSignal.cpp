@@ -66,7 +66,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 			continue; // The spline component will be created later
 		}
 		// Store the component and its name
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, KKname, JKK, lineshape));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, KKname, JKK, lineshape, UseObservable));
 		componentnames.push_back(KKname);
 	}
 	// If there are spline knots, then create a spline shape
@@ -76,7 +76,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::string KKname = "S-wave";
 		for(const auto& knot: swave_spline_knots)
 			knotnames += ":" + knot;
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, knotnames, 0, "SP"));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, knotnames, 0, "SP", UseObservable));
 		componentnames.push_back(KKname);
 	}
 	if(components.size() > 1)
@@ -178,8 +178,6 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	if(compName.find_first_not_of("0123456789") == string::npos)
 		return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint))
-		throw std::out_of_range("Unphysical datapoint"); // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
 	MsqFunc_t EvaluateMsq = compName=="interference"? &Bs2PhiKKSignal::InterferenceMsq : &Bs2PhiKKSignal::ComponentMsq; // Choose the function to calcualte the |M|²
 	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(datapoint,compName) : Convolve(EvaluateMsq,datapoint,compName); // Do the convolved or unconvolved |M|² calculation
@@ -190,10 +188,10 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 {
 	// Verification
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
-	if(!Bs2PhiKK::IsPhysicalDataPoint(datapoint))
-		throw std::out_of_range("Unphysical datapoint");  // Check if the point is above threshold and |cos(θ)| <= 1
 	// Evaluation
 	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(datapoint) : Convolve(&Bs2PhiKKSignal::TotalMsq,datapoint,""); // Do the convolved or unconvolved |M|² calculation
+	if(std::isnan(MatrixElementSquared))
+		std::cerr << "Matrix element is not a number" << std::endl;
 	return Evaluate_Base(MatrixElementSquared, datapoint);
 }
 // The stuff common to both Evaluate() and EvaluateComponent()
@@ -248,16 +246,16 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const Bs2PhiKK::datapoint
 {
 	const double nsigma = mKKresconfig.at("nsigma");
 	const int nsteps = mKKresconfig.at("nsteps");
-	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
+	const double resolution = std::sqrt(mKKres_sigmazero.value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
 	// If the integration region goes below threshold, don't do the convolution
 	double Msq_conv = 0.;
 	const double stepsize = 2.*nsigma*resolution/nsteps;
 	// Integrate over range −nσ to +nσ
 	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
-		if(datapoint.at(Bs2PhiKK::_mKK_) - nsigma*resolution > 2*Bs2PhiKK::mK)
+		if(datapoint[Bs2PhiKK::_mKK_] - nsigma*resolution > 2*Bs2PhiKK::mK)
 		{
 			datapoint_t tmpdatapoint = datapoint;
-			tmpdatapoint[_mKK_] = datapoint.at(Bs2PhiKK::_mKK_)-x;
+			tmpdatapoint[_mKK_] = datapoint[Bs2PhiKK::_mKK_]-x;
 			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)(tmpdatapoint,compName) * stepsize;
 		}
 	return Msq_conv;
@@ -268,13 +266,13 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 	double acceptance = 1;
 	if(acceptance_moments)
 	{
-		unsigned trig = datapoint.at(Bs2PhiKK::_trigger_);
+		unsigned trig = datapoint[Bs2PhiKK::_trigger_];
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m[trig]->Evaluate({datapoint.at(Bs2PhiKK::_mKK_),datapoint.at(Bs2PhiKK::_phi_),datapoint.at(Bs2PhiKK::_ctheta_1_),datapoint.at(Bs2PhiKK::_ctheta_2_)});
+		acceptance = acc_m[trig]->Evaluate({datapoint[Bs2PhiKK::_mKK_],datapoint[Bs2PhiKK::_phi_],datapoint[Bs2PhiKK::_ctheta_1_],datapoint[Bs2PhiKK::_ctheta_2_]});
 		// Multiply by a switch-on function
-		acceptance *= std::erf(thraccscale[trig].value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
-//		acceptance *= std::tanh(thraccscale[trig].value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK));
-//		acceptance *= std::atan(thraccscale[trig].value*(datapoint.at(Bs2PhiKK::_mKK_)-2*Bs2PhiKK::mK))*2.0/M_PI;
+		acceptance *= std::erf(thraccscale[trig].value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK));
+//		acceptance *= std::tanh(thraccscale[trig].value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK));
+//		acceptance *= std::atan(thraccscale[trig].value*(datapoint[Bs2PhiKK::_mKK_]-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	if(std::isnan(acceptance))
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
@@ -282,8 +280,8 @@ double Bs2PhiKKSignal::Acceptance(const Bs2PhiKK::datapoint_t& datapoint) const
 }
 double Bs2PhiKKSignal::p1stp3(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	double pR = DPHelpers::daughterMomentum(datapoint.at(Bs2PhiKK::_mKK_), Bs2PhiKK::mK, Bs2PhiKK::mK);
-	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, datapoint.at(Bs2PhiKK::_mKK_), Bs2PhiKK::mphi);
+	double pR = DPHelpers::daughterMomentum(datapoint[Bs2PhiKK::_mKK_], Bs2PhiKK::mK, Bs2PhiKK::mK);
+	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, datapoint[Bs2PhiKK::_mKK_], Bs2PhiKK::mphi);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB))
 		std::cerr << "p1stp3 evaluates to nan" << std::endl;

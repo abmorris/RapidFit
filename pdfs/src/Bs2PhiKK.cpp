@@ -5,17 +5,24 @@
 Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 {
 	std::vector<std::pair<dim, std::string>> wantednames = {{_mKK_, "mKK"}, {_phi_, "phi"}, {_ctheta_1_, "ctheta_1"}, {_ctheta_2_, "ctheta_2"}, {_trigger_, "trigger"}};
+	UseObservable.resize(wantednames.size(), false);
 	// Dependent variable names
-	for(const auto& psbname: config->GetPhaseSpaceBoundary()->GetAllNames())
-		for(const auto& name: wantednames)
+	for(const auto& name: wantednames)
+	{
+		for(const auto& psbname: config->GetPhaseSpaceBoundary()->GetAllNames())
 			if(psbname == name.second)
+			{
 				ObservableNames.emplace(name.first, config->getName(name.second));
-	if((ObservableNames.count(_ctheta_1_) == 1) ^ (ObservableNames.count(_ctheta_2_) == 1))
+				UseObservable[name.first] = true;
+				std::cout << "Using " << name.second << std::endl;
+			}
+	}
+	if(UseObservable[_ctheta_1_] ^ UseObservable[_ctheta_2_])
 	{
 		std::cerr << "WARNING: the XML contains one θ angle but not the other." << std::endl;
 		throw std::runtime_error("The PDF is unable to handle a datapoint of this type");
 	}
-	if(ObservableNames.count(_phi_) == 1 && !(ObservableNames.count(_ctheta_1_) == 1 && ObservableNames.count(_ctheta_2_) == 1))
+	if(UseObservable[_phi_] && !(UseObservable[_ctheta_1_] && UseObservable[_ctheta_2_]))
 	{
 		std::cerr << "WARNING: the XML contains Φ but not the other angles." << std::endl;
 		throw std::runtime_error("The PDF is unable to handle a datapoint of this type");
@@ -24,6 +31,8 @@ Bs2PhiKK::Bs2PhiKK(PDFConfigurator* config)
 Bs2PhiKK::Bs2PhiKK(const Bs2PhiKK& copy)
 	// Dependent variable names
 	: ObservableNames(copy.ObservableNames)
+	// Which observables to expect in the datapoint
+	, UseObservable(copy.UseObservable)
 {
 }
 void Bs2PhiKK::PhysPar::Update(const ParameterSet* pars)
@@ -50,29 +59,16 @@ Bs2PhiKK::datapoint_t Bs2PhiKK::ReadDataPoint(DataPoint* measurement) const
 	datapoint_t dp;
 	for(const auto& name: ObservableNames)
 		dp[name.first] = measurement->GetObservable(name.second)->GetValue();
-	if(ObservableNames.count(_phi_) == 1)
+	if(UseObservable[_phi_])
 		dp[_phi_]+=M_PI; // TODO: get rid of the need for this
 	return dp;
-}
-
-bool Bs2PhiKK::IsPhysicalDataPoint(const Bs2PhiKK::datapoint_t& datapoint)
-{
-	if(datapoint.count(_mKK_) == 1)
-		if(datapoint.at(_mKK_) < 2*mK)
-			return false;
-	for(const auto& angle : {_ctheta_1_, _ctheta_2_})
-		if(datapoint.count(angle) == 1)
-			if(std::abs(datapoint.at(angle)) > 1)
-				return false;
-	return true;
 }
 
 Bs2PhiKK::datapoint_t Bs2PhiKK::Parity(const Bs2PhiKK::datapoint_t& datapoint)
 {
 	datapoint_t returnval = datapoint;
 	for(const auto& angle : {_phi_, _ctheta_1_, _ctheta_2_})
-		if(returnval.count(angle) == 1)
-			returnval[angle] *= -1;
+		returnval[angle] *= -1;
 	return returnval;
 }
 

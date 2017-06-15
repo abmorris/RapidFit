@@ -10,11 +10,14 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 // Constructor
-Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string KKname, int _JKK, std::string _lineshape)
+Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string KKname, int _JKK, std::string _lineshape, const std::vector<bool>& _UseObservable)
 	: JKK(_JKK)
 	, lineshape(_lineshape)
 	, Bsbarrier(DPBarrierFactor(std::abs(JKK-1), 1.0, 0)) // Min L_B approximation
 	, KKbarrier(DPBarrierFactor(JKK, 3.0, 0))
+	, UseObservable(_UseObservable)
+	, MassPart(&Bs2PhiKKSignalComponent::MassPartResonant)
+	, AngularPart(&Bs2PhiKKSignalComponent::AngularPartDefault)
 {
 	if(lineshape != "SP")
 		fraction = Bs2PhiKK::PhysPar(config,KKname+"_fraction");
@@ -98,6 +101,9 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 	, KKbarrier(other.KKbarrier)
 	// Options
 	, lineshape(other.lineshape)
+	, UseObservable(other.UseObservable)
+	, MassPart(&Bs2PhiKKSignalComponent::MassPartResonant)
+	, AngularPart(&Bs2PhiKKSignalComponent::AngularPartDefault)
 {
 	Initialise();
 }
@@ -120,52 +126,70 @@ void Bs2PhiKKSignalComponent::Initialise()
 	else
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
 	// Build the barrier factor and Wigner function objects
-	wignerPhi = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+	wignerPhi = &DPWignerFunctionJ1::function;
 	switch (JKK) // I hate this but I'd rather it just worked...
 	{
 		case 0:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ0>(new DPWignerFunctionJ0());
+			wignerKK  = &DPWignerFunctionJ0::function;
 			break;
 		case 1:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ1>(new DPWignerFunctionJ1());
+			wignerKK  = &DPWignerFunctionJ1::function;
 			break;
 		case 2:
-			wignerKK  = std::unique_ptr<DPWignerFunctionJ2>(new DPWignerFunctionJ2());
+			wignerKK  = &DPWignerFunctionJ2::function;
 			break;
 		default:
-			wignerKK  = std::unique_ptr<DPWignerFunctionGeneral>(new DPWignerFunctionGeneral(JKK)); // This should only happen for the rho_3 (1690)
+			std::cerr << "Can't construct Wigner function for spin " << JKK << std::endl;
 			break;
 	}
+	if(Ahel.empty() || !UseObservable[Bs2PhiKK::_ctheta_1_] || !UseObservable[Bs2PhiKK::_ctheta_2_])
+		AngularPart = &Bs2PhiKKSignalComponent::AngularPartNonRes;
+	else if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
+		AngularPart = &Bs2PhiKKSignalComponent::AngularPartSpline;
+	else if(!UseObservable[Bs2PhiKK::_phi_])
+		AngularPart = &Bs2PhiKKSignalComponent::AngularPartNoPhi;
+	if(UseObservable[Bs2PhiKK::_mKK_] || lineshape == "NR")
+		MassPart = &Bs2PhiKKSignalComponent::MassPartNonRes;
+	else if(lineshape == "SP")
+		MassPart = &Bs2PhiKKSignalComponent::MassPartSpline;
 	UpdateAmplitudes();
 	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
 // Angular part of the amplitude
-std::complex<double> Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK::datapoint_t& datapoint) const
+double Bs2PhiKKSignalComponent::F(const int lambda, const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	std::complex<double> returnval;
-	const double d_phi = wignerPhi->function(datapoint.at(Bs2PhiKK::_ctheta_1_), lambda, 0);
-	const double d_KK  = wignerKK ->function(datapoint.at(Bs2PhiKK::_ctheta_2_), lambda, 0);
-	returnval = d_phi * d_KK;
-	if(datapoint.count(Bs2PhiKK::_phi_) == 1)
-		returnval *= std::polar<double>(1, lambda*datapoint.at(Bs2PhiKK::_phi_));
-	else if(lambda != 0)
-		returnval *= 2.; // Account for the missing helicity state
-	return returnval;
+	const double d_phi = wignerPhi(datapoint[Bs2PhiKK::_ctheta_1_], lambda, 0);
+	const double d_KK  = wignerKK (datapoint[Bs2PhiKK::_ctheta_2_], lambda, 0);
+	return d_phi * d_KK;
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPart(const Bs2PhiKK::datapoint_t& datapoint) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartNonRes(const Bs2PhiKK::datapoint_t& datapoint) const
+{
+	(void)datapoint;
+	return std::complex<double>(1, 0); // Either nonresonant or helicity angles not present
+}
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartSpline(const Bs2PhiKK::datapoint_t& datapoint) const
+{
+	return F(0, datapoint);
+}
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const Bs2PhiKK::datapoint_t& datapoint) const
 {
 	std::complex<double> angularPart(0, 0);
-	if(Ahel.empty() || datapoint.count(Bs2PhiKK::_ctheta_1_) == 0 || datapoint.count(Bs2PhiKK::_ctheta_2_) == 0)
-		return std::complex<double>(1, 0); // Either nonresonant or helicity angles not present
-	else if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
-		angularPart = F(0, datapoint);
-	else
-		for(const auto& A : Ahel)
-		{
-			int lambda = A.first;
-			angularPart += A.second * F(lambda, datapoint);
-		}
+	for(const auto& A : Ahel)
+	{
+		int lambda = A.first;
+		angularPart += A.second * F(lambda, datapoint) * std::abs(2. * lambda);
+	}
+	return angularPart;
+}
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartDefault(const Bs2PhiKK::datapoint_t& datapoint) const
+{
+	std::complex<double> angularPart(0, 0);
+	for(const auto& A : Ahel)
+	{
+		int lambda = A.first;
+		angularPart += A.second * F(lambda, datapoint) * std::polar<double>(1, lambda*datapoint[Bs2PhiKK::_phi_]);
+	}
 	return angularPart;
 }
 // Orbital and barrier factor
@@ -173,8 +197,6 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 {
 	if(mKK < 2*Bs2PhiKK::mK)
 		return 0;
-	if(lineshape=="NR" || lineshape == "SP")
-		return 1;
 	// Momenta
 	const double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, Bs2PhiKK::mphi, mKK);
 	const double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
@@ -190,28 +212,32 @@ double Bs2PhiKKSignalComponent::OFBF(const double mKK) const
 	return orbitalFactor*barrierFactor;
 }
 // Mass-dependent part
-std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
+std::complex<double> Bs2PhiKKSignalComponent::MassPartNonRes(const double mKK) const
 {
-	std::complex<double> massPart = KKLineShape->massShape(mKK);
-	if(lineshape != "SP")
-	{
-		massPart *= fraction.value * OFBF(mKK);
-	}
-	return massPart;
+	(void)mKK;
+	return std::complex<double>(1,0);
+}
+
+std::complex<double> Bs2PhiKKSignalComponent::MassPartSpline(const double mKK) const
+{
+	return KKLineShape->massShape(mKK);
+}
+
+std::complex<double> Bs2PhiKKSignalComponent::MassPartResonant(const double mKK) const
+{
+	return KKLineShape->massShape(mKK) * fraction.value * OFBF(mKK);
 }
 // The full amplitude.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint) const
 {
-	Bs2PhiKK::amplitude_t angularPart = {AngularPart(datapoint), AngularPart(Bs2PhiKK::Parity(datapoint))};
-	std::complex<double> massPart(1, 0);
-	if(datapoint.count(Bs2PhiKK::_mKK_) == 1)
-		massPart = MassPart(datapoint.at(Bs2PhiKK::_mKK_));
+	Bs2PhiKK::amplitude_t angularPart = {(this->*AngularPart)(datapoint), (this->*AngularPart)(Bs2PhiKK::Parity(datapoint))};
+	std::complex<double> massPart = (this->*MassPart)(datapoint[Bs2PhiKK::_mKK_]);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 // The full amplitude with an option.
 Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoint_t& datapoint, const std::string option) const
 {
-	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || datapoint.count(Bs2PhiKK::_phi_) == 0)
+	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || !UseObservable[Bs2PhiKK::_phi_])
 		return Amplitude(datapoint);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
@@ -232,8 +258,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const Bs2PhiKK::datapoi
 		angularPart[true] += HelAmp[lambda+1] * F(lambda, Bs2PhiKK::Parity(datapoint));
 	}
 	std::complex<double> massPart(1, 0);
-	if(datapoint.count(Bs2PhiKK::_mKK_) == 1)
-		massPart = MassPart(datapoint.at(Bs2PhiKK::_mKK_));
+	massPart = (this->*MassPart)(datapoint[Bs2PhiKK::_mKK_]);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 /*****************************************************************************/

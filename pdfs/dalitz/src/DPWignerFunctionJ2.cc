@@ -1,7 +1,5 @@
-#include "TMath.h"
-#include <iostream>
-
 #include "DPWignerFunctionJ2.hh"
+#include <cmath>
 
 double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
 {
@@ -89,8 +87,6 @@ double DPWignerFunctionJ2::function(double cosTheta, double mm, double nn)
     }
   }
 
-  std::cerr<<"What is going on? For spin 2, m and n has to be 0, 1, -1, 2 or -2\n";
-
   return -1000; // Give crazy number, alternatively we can exit or throw exception
 }
 
@@ -101,8 +97,8 @@ double DPWignerFunctionJ2::d00(double cosTheta)
 
 double DPWignerFunctionJ2::dp10(double cosTheta)
 {
-  double sinTheta=TMath::Sqrt(1-cosTheta*cosTheta);
-  return -TMath::Sqrt(1.5)*sinTheta*cosTheta;
+  double sinTheta=std::sqrt(1-cosTheta*cosTheta);
+  return -std::sqrt(1.5)*sinTheta*cosTheta;
 }
 
 double DPWignerFunctionJ2::dp1p1(double cosTheta)
@@ -124,21 +120,21 @@ double DPWignerFunctionJ2::dp2p2(double cosTheta)
 
 double DPWignerFunctionJ2::dp2p1(double cosTheta)
 {
-  double sinTheta=TMath::Sqrt(1-cosTheta*cosTheta);
+  double sinTheta=std::sqrt(1-cosTheta*cosTheta);
 
   return -0.5*(1+cosTheta)*sinTheta;
 }
 
 double DPWignerFunctionJ2::dp20(double cosTheta)
 {
-  double sinTheta=TMath::Sqrt(1-cosTheta*cosTheta);
+  double sinTheta=std::sqrt(1-cosTheta*cosTheta);
 
-  return TMath::Sqrt(6)/4.*sinTheta*sinTheta;
+  return std::sqrt(6.)/4.*sinTheta*sinTheta;
 }
 
 double DPWignerFunctionJ2::dp2m1(double cosTheta)
 {
-  double sinTheta=TMath::Sqrt(1-cosTheta*cosTheta);
+  double sinTheta=std::sqrt(1-cosTheta*cosTheta);
 
   return -0.5*(1-cosTheta)*sinTheta;
 }
