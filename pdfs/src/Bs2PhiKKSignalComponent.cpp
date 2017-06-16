@@ -148,7 +148,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 		AngularPart = &Bs2PhiKKSignalComponent::AngularPartSpline;
 	else if(!UseObservable[Bs2PhiKK::_phi_])
 		AngularPart = &Bs2PhiKKSignalComponent::AngularPartNoPhi;
-	if(UseObservable[Bs2PhiKK::_mKK_] || lineshape == "NR")
+	if(!UseObservable[Bs2PhiKK::_mKK_] || lineshape == "NR")
 		MassPart = &Bs2PhiKKSignalComponent::MassPartNonRes;
 	else if(lineshape == "SP")
 		MassPart = &Bs2PhiKKSignalComponent::MassPartSpline;

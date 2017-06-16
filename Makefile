@@ -72,7 +72,7 @@ LINKFLAGS = -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -lpthread
 
 LIBS=-lstdc++
 
-CXXFLAGS     = $(CXXFLAGS_BASE_COMMON) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$(INCGSL) $(ROOTCFLAGS) $(COMCXXFLAGS) -std=c++1y
+CXXFLAGS     = $(CXXFLAGS_BASE_COMMON) -I$(INCDIR) -I$(INCPDFDIR) -I$(INCDALITZDIR) -I$(INCGSL) $(ROOTCFLAGS) $(COMCXXFLAGS)
 
 #CHECKGCCABI := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
 #ifeq ("$(CHECKGCCABI)","1")
