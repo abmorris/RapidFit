@@ -219,7 +219,7 @@ double Bs2PhiKKSignalComponent::OFBF(const double& mKK) const
 std::complex<double> Bs2PhiKKSignalComponent::MassPartNonRes(const double& mKK) const
 {
 	(void)mKK;
-	return std::complex<double>(1,0);
+	return std::complex<double>(fraction.value,0);
 }
 
 std::complex<double> Bs2PhiKKSignalComponent::MassPartSpline(const double& mKK) const
