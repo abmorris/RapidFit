@@ -240,11 +240,17 @@ double ExternalConstraint::GetChi2() const
 		std::vector<std::string> arguments = StringProcessing::SplitString(name,';');
 		std::vector<std::string> prefices = StringProcessing::SplitString(arguments[1],' ');
 		std::vector<std::string> paramnames = StringProcessing::SplitString(arguments[2],' ');
+		int power = 1;
+		if( name.find("SQ") != string::npos )
+			power = 2; // If you want to require sum of squares < 1
 		for(const auto& prefix: prefices)
 		{
 			double excess = -value;
 			for(const auto& param: paramnames)
-				excess += internalParameterSet->GetPhysicsParameter(prefix+param)->GetValue();
+			{
+				double paramvalue = internalParameterSet->GetPhysicsParameter(prefix+param)->GetValue();
+				excess += std::pow(paramvalue, power);
+			}
 			double penalty = excess <= 0 ? 0 : (excess*excess) / (error*error);
 			returnable += penalty;
 		}
@@ -266,16 +272,6 @@ double ExternalConstraint::GetChi2() const
 	}
 	else
 	{
-		//if( name == "mistagP1_OS" )
-		//{
-//			cout << endl;
-//			cout << name << ": " << internalParameterSet->GetPhysicsParameter(name)->GetValue() << endl;
-//			double parameterValuea = internalParameterSet->GetPhysicsParameter(name)->GetValue();
-//			cout << "value: " << value << endl;
-//			cout << "error: " << error << endl;
-//			cout << "Chi2:  " << ((parameterValuea - value ) / error)*((parameterValuea - value ) / error) << endl;
-//			cout << endl;
-		//}
 		double parameterValue = internalParameterSet->GetPhysicsParameter(name)->GetValue();
 		double gaussSqrt = (parameterValue - value ) / error;
 		returnable += gaussSqrt * gaussSqrt;

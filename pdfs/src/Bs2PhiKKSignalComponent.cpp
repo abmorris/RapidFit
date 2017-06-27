@@ -53,7 +53,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	{
 		long unsigned int n = helicities.size();
 		std::vector<std::string> phasesuffices;
-		std::vector<std::string> magsqsuffices;
+		std::vector<std::string> magsuffices;
 		switch(n)
 		{
 			case 0:
@@ -62,11 +62,11 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 				phasesuffices = {"deltazero"};
 				break;
 			case 2:
-				magsqsuffices = {"Azerosq"};
+				magsuffices = {"Azero"};
 				phasesuffices = {"deltazero","deltaplus"};
 				break;
 			case 3:
-				magsqsuffices = {"Azerosq","Aplussq"};
+				magsuffices = {"Azero","Aplus"};
 				phasesuffices = {"deltazero","deltaplus","deltaminus"};
 				break;
 			default:
@@ -74,8 +74,8 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 				std::exit(-1);
 				break;
 		}
-		for(std::string suffix: magsqsuffices)
-			magsqs.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
+		for(std::string suffix: magsuffices)
+			mags.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
 		for(std::string suffix: phasesuffices)
 			phases.push_back(Bs2PhiKK::PhysPar(config,KKname+"_"+suffix));
 		// Make the helicity amplitude vector
@@ -89,7 +89,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 	// Floatable parameters
 	: fraction(other.fraction)
 	, Ahel(other.Ahel)
-	, magsqs(other.magsqs)
+	, mags(other.mags)
 	, phases(other.phases)
 	, KKpars(other.KKpars)
 	, BsBFradius(other.BsBFradius)
@@ -181,8 +181,11 @@ std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const double& cth
 	std::complex<double> angularPart(0, 0);
 	for(const auto& A : Ahel)
 	{
-		int lambda = A.first;
-		angularPart += A.second * F(lambda, ctheta_1, ctheta_2) * std::abs(2. * lambda);
+		const int lambda = A.first;
+		std::complex<double> thisterm = A.second * F(lambda, ctheta_1, ctheta_2);
+		if(lambda != 0)
+			thisterm *= M_PI/3.;
+		angularPart += thisterm;
 	}
 	return angularPart;
 }
@@ -246,8 +249,8 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, cons
 		return Amplitude(mKK, ctheta_1, ctheta_2, phi);
 	// Angular part
 	Bs2PhiKK::amplitude_t angularPart = {std::complex<double>(0, 0), std::complex<double>(0, 0)};
-	std::complex<double> Aperp = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
-	std::complex<double> Apara = std::polar<double>(std::sqrt(1. - magsqs[0].value - magsqs[1].value),phases[2].value);
+	std::complex<double> Aperp = std::polar<double>(mags[0].value,phases[0].value);
+	std::complex<double> Apara = std::polar<double>(std::sqrt(1. - std::pow(mags[0].value,2) - std::pow(mags[1].value,2)),phases[2].value);
 	// Temporary helicity amplitudes
 	std::vector<std::complex<double>> HelAmp;
 	// CP-odd component
@@ -278,7 +281,7 @@ void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 		KKBFradius.Update(fitpars);
 		BsBFradius.Update(fitpars);
 	}
-	for(auto* set: {&magsqs,&phases,&KKpars})
+	for(auto* set: {&mags,&phases,&KKpars})
 		for(auto& par: *set)
 			par.Update(fitpars);
 	UpdateBarriers();
@@ -294,18 +297,18 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 		Ahel[0] = std::polar<double>(1.0,phases[0].value);
 	else if(Ahel.size() == 2)
 	{
-		double Aplus_mag = std::sqrt(1. - magsqs[0].value);
+		double Aplus_mag = std::sqrt(1. - std::pow(mags[0].value,2));
 		if(std::isnan(Aplus_mag)) Aplus_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
-		Ahel[ 0] = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
-		Ahel[+1] = std::polar<double>(Aplus_mag,                 phases[1].value);
+		Ahel[ 0] = std::polar<double>(mags[0].value,phases[0].value);
+		Ahel[+1] = std::polar<double>(Aplus_mag    ,phases[1].value);
 	}
 	else if(Ahel.size() == 3)
 	{
-		double Aminus_mag = std::sqrt(1. - magsqs[0].value - magsqs[1].value);
+		double Aminus_mag = std::sqrt(1. - std::pow(mags[0].value,2) - std::pow(mags[1].value,2));
 		if(std::isnan(Aminus_mag)) Aminus_mag = 0; // Handle this gracefully. Impose external constraints to stop this happening.
-		Ahel[ 0] = std::polar<double>(std::sqrt(magsqs[0].value),phases[0].value);
-		Ahel[+1] = std::polar<double>(std::sqrt(magsqs[1].value),phases[1].value);
-		Ahel[-1] = std::polar<double>(Aminus_mag,                phases[2].value);
+		Ahel[ 0] = std::polar<double>(mags[0].value,phases[0].value);
+		Ahel[+1] = std::polar<double>(mags[1].value,phases[1].value);
+		Ahel[-1] = std::polar<double>(Aminus_mag   ,phases[2].value);
 	}
 	else
 	{
@@ -330,7 +333,7 @@ void Bs2PhiKKSignalComponent::UpdateBarriers()
 vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 {
 	vector<ObservableRef> parameters;
-	for(const auto& set: {magsqs,phases,KKpars})
+	for(const auto& set: {mags,phases,KKpars})
 		for(const auto& par: set)
 			parameters.push_back(par.name);
 	// Add barrier factors if this is a resonant component

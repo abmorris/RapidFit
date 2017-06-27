@@ -26,7 +26,7 @@ class Bs2PhiKKSignalComponent
 		Bs2PhiKK::PhysPar BsBFradius; // Bs barrier factor radius
 		Bs2PhiKK::PhysPar KKBFradius; // KK barrier factor radius
 		// Polarisation amplitude components (perp, zero, para)
-		std::vector<Bs2PhiKK::PhysPar> magsqs; // Square of magnitudes: para will be calculated from the other two
+		std::vector<Bs2PhiKK::PhysPar> mags; // Magnitudes
 		std::vector<Bs2PhiKK::PhysPar> phases; // Phases
 		std::map<int,std::complex<double>> Ahel; // Helicity amplitudes as complex numbers
 		// Resonance parameters
