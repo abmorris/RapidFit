@@ -13,20 +13,20 @@
 // GSL
 #include <gsl/gsl_randist.h>
 
-PDF_CREATOR( Bs2PhiKKSignal )
+PDF_CREATOR(Bs2PhiKKSignal)
 /*****************************************************************************/
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments(config->isTrue("UseAcceptance"))
-	, GH(config,"GH")
-	, GL(config,"GL")
+	, GH(config, "GH")
+	, GL(config, "GL")
 {
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	if(config->isTrue("convolve"))
 	{
-		for(const std::string& name: {"nsteps","nsigma"})
+		for(const std::string& name: {"nsteps", "nsigma"})
 			mKKresconfig[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
-		mKKres_sigmazero = Bs2PhiKK::PhysPar(config,"mKKres_sigmazero");
+		mKKres_sigmazero = Bs2PhiKK::PhysPar(config, "mKKres_sigmazero");
 	}
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::vector<std::string> swave_spline_knots;
@@ -38,16 +38,16 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	{
 		if(option=="")
 			continue;
-		// Syntax: <resonance name>(<spin>,<lineshape>)
+		// Syntax: <resonance name>(<spin>, <lineshape>)
 		// - the list is space-delimited: no extra spaces, please!
 		// - resonance name must be alphanumeric
 		// - spin must be a single digit 0, 1 or 2, or you have to implement the code for higher spins
 		// - lineshape name must be 2 capital letters
 		// - see Bs2PhiKKSignalComponent.cpp for implemented lineshapes (BW, FT, SP, NR... but more can be added)
-		// Example: "phi1020(1,BW)"
-		std::string KKname = option.substr(0,option.find('('));
-		int JKK = atoi(option.substr(option.find('(')+1,1).c_str());
-		std::string lineshape = option.substr(option.find(',')+1,2);
+		// Example: "phi1020(1, BW)"
+		std::string KKname = option.substr(0, option.find('('));
+		int JKK = atoi(option.substr(option.find('(') + 1, 1).c_str());
+		std::string lineshape = option.substr(option.find(',') + 1, 2);
 		// Print a line in the table
 		std::cout << "┃ ";
 		std::cout << std::left << std::setw(13) << KKname;
@@ -86,12 +86,15 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	{
 		for(const unsigned trig : {0, 1})
 		{
-			thraccscale[trig] = Bs2PhiKK::PhysPar(config,"thraccscale"+std::to_string(trig));
-			acc_m[trig] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(config->getConfigurationValue("CoefficientsFile"+std::to_string(trig))));
+			thraccscale[trig] = Bs2PhiKK::PhysPar(config, "thraccscale" + std::to_string(trig));
+			acc_m[trig] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape());
+			std::string accfilename = config->getConfigurationValue("CoefficientsFile" + std::to_string(trig));
+			unsigned entry = std::stoi(config->getConfigurationValue("AcceptanceEntry"));
+			acc_m[trig]->Open(accfilename, entry);
 		}
 	}
 	// Enable numerical normalisation and disable caching
-	this->SetNumericalNormalisation( true );
+	this->SetNumericalNormalisation(true);
 	this->TurnCachingOff();
 	MakePrototypes();
 }
@@ -139,8 +142,8 @@ void Bs2PhiKKSignal::MakePrototypes()
 	for(const auto& comp: components)
 		for(std::string par: comp.second.GetPhysicsParameters())
 			parameterNames.push_back(par);
-	std::sort(parameterNames.begin(),parameterNames.end());
-	parameterNames.erase(std::unique(parameterNames.begin(),parameterNames.end()),parameterNames.end());
+	std::sort(parameterNames.begin(), parameterNames.end());
+	parameterNames.erase(std::unique(parameterNames.begin(), parameterNames.end()), parameterNames.end());
 	std::cout << "Parameters:" << std::endl;
 	for(const auto& par: parameterNames)
 		std::cout << "\t" << par << "\n";
@@ -185,7 +188,7 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	const double trigger = datapoint[Bs2PhiKK::_trigger_];
 	// Evaluation
 	MsqFunc_t EvaluateMsq = compName=="interference"? &Bs2PhiKKSignal::InterferenceMsq : &Bs2PhiKKSignal::ComponentMsq; // Choose the function to calcualte the |M|²
-	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(mKK, ctheta_1, ctheta_2, phi,compName) : Convolve(EvaluateMsq,mKK, ctheta_1, ctheta_2, phi,compName); // Do the convolved or unconvolved |M|² calculation
+	double MatrixElementSquared = mKKresconfig.empty()? (this->*EvaluateMsq)(mKK, ctheta_1, ctheta_2, phi, compName) : Convolve(EvaluateMsq, mKK, ctheta_1, ctheta_2, phi, compName); // Do the convolved or unconvolved |M|² calculation
 	return Evaluate_Base(MatrixElementSquared, trigger, mKK, ctheta_1, ctheta_2, phi);
 }
 // Evaluate the entire PDF
@@ -199,7 +202,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 	const double phi = datapoint[Bs2PhiKK::_phi_];
 	const double trigger = datapoint[Bs2PhiKK::_trigger_];
 	// Evaluation
-	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(mKK, ctheta_1, ctheta_2, phi) : Convolve(&Bs2PhiKKSignal::TotalMsq,mKK, ctheta_1, ctheta_2, phi,""); // Do the convolved or unconvolved |M|² calculation
+	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(mKK, ctheta_1, ctheta_2, phi) : Convolve(&Bs2PhiKKSignal::TotalMsq, mKK, ctheta_1, ctheta_2, phi, ""); // Do the convolved or unconvolved |M|² calculation
 	if(std::isnan(MatrixElementSquared))
 		std::cerr << "Matrix element is not a number" << std::endl;
 	return Evaluate_Base(MatrixElementSquared, trigger, mKK, ctheta_1, ctheta_2, phi);
@@ -263,7 +266,7 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const double& mKK, const 
 	// Integrate over range −nσ to +nσ
 	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
 		if(mKK - nsigma*resolution > 2*Bs2PhiKK::mK)
-			Msq_conv += gsl_ran_gaussian_pdf(x,resolution) * (this->*EvaluateMsq)(mKK-x, ctheta_1, ctheta_2, phi,compName) * stepsize;
+			Msq_conv += gsl_ran_gaussian_pdf(x, resolution) * (this->*EvaluateMsq)(mKK-x, ctheta_1, ctheta_2, phi, compName) * stepsize;
 	return Msq_conv;
 }
 /*Stuff that factors out of the time integral*********************************/
@@ -273,7 +276,7 @@ double Bs2PhiKKSignal::Acceptance(const unsigned& trig, const double& mKK, const
 	if(acceptance_moments)
 	{
 		// Get the shape from stored Legendre moments
-		acceptance = acc_m[trig]->Evaluate({mKK,phi,ctheta_1,ctheta_2});
+		acceptance = acc_m[trig]->Evaluate({mKK, phi, ctheta_1, ctheta_2});
 		// Multiply by a switch-on function
 		acceptance *= std::erf(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK));
 //		acceptance *= std::tanh(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK));
