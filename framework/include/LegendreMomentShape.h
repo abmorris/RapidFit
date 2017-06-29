@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <array>
+#include <random>
 #include "IDataSet.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -13,7 +14,7 @@ class LegendreMomentShape
 		LegendreMomentShape(std::string); // Immediately call Open() on the passed string
 		LegendreMomentShape(const LegendreMomentShape&);
 		~LegendreMomentShape();
-		void Open(const std::string); // Load the coefficients from a file
+		void Open(const std::string, const int entry = 0); // Load the coefficients from a file
 		void Save(const std::string); // Save generated coefficients to a file
 		void Generate(std::vector<DataPoint>&, const PhaseSpaceBoundary*, const std::string, const std::string, const std::string, const std::string, const bool); // strings are variable names: mass, phi, cosθ1, cosθ2. boolean is "mass_dependent": don't divide by phase space function if true
 		void SetMax(const double _l_max, const double _i_max, const double _k_max, const double _j_max) // Only needed when generating coefficients; loaded from file otherwise
@@ -31,18 +32,23 @@ class LegendreMomentShape
 	private:
 		struct coefficient
 		{
+			coefficient(int _l, int _i, int _k, int _j, double _val, double _err)
+				: l(_l), i(_i), k(_k), j(_j), val(_val), err(_err)
+				, randval(std::normal_distribution<double>(val, err)) {}
+			coefficient(const coefficient& other)
+				: l(other.l), i(other.i), k(other.k), j(other.j), val(other.val), err(other.err)
+				, randval(std::normal_distribution<double>(val, err)) {}
 			int l,i,j,k;
 			double val;
+			double err;
+			std::normal_distribution<double> randval;
 			void print() const
 			{
-				printf("c[%d][%d][%d][%d] = %f\n", l, i, k, j, val);
+				printf("c[%d][%d][%d][%d] = %f ± %f with significance %f\n", l, i, k, j, val, err, std::abs(val/err));
 			}
 		};
 		std::vector<coefficient> coeffs;
 		bool init;
-		double**** newcoefficients() const;
-		void deletecoefficients(double****) const;
-		void storecoefficients(double****);
 		void printcoefficients() const;
 		int l_max;
 		int i_max;
