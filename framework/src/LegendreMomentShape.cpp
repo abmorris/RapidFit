@@ -71,10 +71,8 @@ void LegendreMomentShape::Open(const std::string filename, const int entry)
 		for ( int i = 0; i < i_max; i++ )
 			for ( int k = 0; k < k_max; k++ )
 				for ( int j = 0; j < j_max; j++ )
-				{
-					if(c[l][i][k][j] > 1e-12)
+					if(std::abs(c[l][i][k][j]) > 1e-12)
 						coeffs.push_back(coefficient(l, i, k, j, c[l][i][k][j], 0.0));
-				}
 	if(coeffs.size() == 0)
 	{
 		std::cerr << "No coefficients found. Defaulting to uniform shape." << std::endl;
