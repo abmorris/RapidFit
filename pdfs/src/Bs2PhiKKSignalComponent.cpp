@@ -46,7 +46,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 			usect1 = true;
 		else if(name == "ctheta_2")
 			usect2 = true;
-	if(lineshape != "NR" && lineshape != "SP")
+	if(lineshape != "SP")
 		for(int lambda = usephi ? -lambda_max : 0; lambda <= lambda_max; lambda++)
 			helicities.push_back(lambda);
 	if(usect1 && usect2)
@@ -142,7 +142,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 			std::cerr << "Can't construct Wigner function for spin " << JKK << std::endl;
 			break;
 	}
-	if(Ahel.empty() || !UseObservable[Bs2PhiKK::_ctheta_1_] || !UseObservable[Bs2PhiKK::_ctheta_2_])
+	if(!UseObservable[Bs2PhiKK::_ctheta_1_] || !UseObservable[Bs2PhiKK::_ctheta_2_] || lineshape == "NR")
 		AngularPart = &Bs2PhiKKSignalComponent::AngularPartNonRes;
 	else if(lineshape == "SP") // Phase already accounted-for by complex spline, so just return generic S-wave shape
 		AngularPart = &Bs2PhiKKSignalComponent::AngularPartSpline;
@@ -168,7 +168,7 @@ std::complex<double> Bs2PhiKKSignalComponent::AngularPartNonRes(const double& ct
 	(void)ctheta_1;
 	(void)ctheta_2;
 	(void)phi;
-	return std::complex<double>(1, 0); // Either nonresonant or helicity angles not present
+	return Ahel.at(0); // Either nonresonant or helicity angles not present
 }
 std::complex<double> Bs2PhiKKSignalComponent::AngularPartSpline(const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
