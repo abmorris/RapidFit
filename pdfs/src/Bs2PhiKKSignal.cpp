@@ -89,7 +89,15 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 			thraccscale[trig] = Bs2PhiKK::PhysPar(config, "thraccscale" + std::to_string(trig));
 			acc_m[trig] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape());
 			std::string accfilename = config->getConfigurationValue("CoefficientsFile" + std::to_string(trig));
-			unsigned entry = std::stoi(config->getConfigurationValue("AcceptanceEntry"));
+			unsigned entry = 0;
+			try
+			{
+				entry = std::stoi(config->getConfigurationValue("AcceptanceEntry"));
+			}
+			catch(std::invalid_argument)
+			{
+				entry = 0;
+			}
 			acc_m[trig]->Open(accfilename, entry);
 		}
 	}
