@@ -75,7 +75,7 @@ double Bs2PhiKKBackgroundComponent::Evaluate(const Bs2PhiKK::datapoint_t& datapo
 		massPart = val > 0 ? val : 0;
 	}
 	else if(type == "histogram")
-		massPart = mKKhist.Eval({mKK});
+		massPart = mKKhist.Eval({mKK})/mKKhist.Integral();
 	double angularPart = angulardistribution.Evaluate({datapoint[Bs2PhiKK::_mKK_],datapoint[Bs2PhiKK::_phi_],datapoint[Bs2PhiKK::_ctheta_1_],datapoint[Bs2PhiKK::_ctheta_2_]});
 	if(std::isnan(massPart)) std::cerr << "Mass part is nan" << std::endl;
 	if(massPart < 0) std::cerr << "Mass part is negative" << std::endl;
