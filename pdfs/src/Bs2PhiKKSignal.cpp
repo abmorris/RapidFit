@@ -24,7 +24,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::cout << "\nBuilding Bs → ϕ K+ K− signal PDF\n\n";
 	if(config->isTrue("convolve"))
 	{
-		for(const std::string& name: {"nsteps", "nsigma", "power"})
+		for(const std::string& name: {"nsteps", "nsigma"})
 			mKKresconfig[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
 		mKKres_sigmazero = Bs2PhiKK::PhysPar(config, "mKKres_sigmazero");
 	}
@@ -271,8 +271,7 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const double& mKK, const 
 {
 	const double nsigma = mKKresconfig.at("nsigma");
 	const int nsteps = mKKresconfig.at("nsteps");
-	const double power = mKKresconfig.at("power");
-	const double resolution = std::pow(mKKres_sigmazero.value*(mKK-2*Bs2PhiKK::mK),power); // Mass-dependent Gaussian width
+	const double resolution = std::sqrt(mKKres_sigmazero.value*(mKK-2*Bs2PhiKK::mK)); // Mass-dependent Gaussian width
 	// If the integration region goes below threshold, don't do the convolution
 	double Msq_conv = 0.;
 	const double stepsize = 2.*nsigma*resolution/nsteps;
