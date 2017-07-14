@@ -11,7 +11,7 @@
 class Bs2PhiKKSignalComponent
 {
 	public:
-		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, int, std::string, const std::vector<bool>&); // config, resonance name, spin, info about datapoint dimensions
+		Bs2PhiKKSignalComponent(PDFConfigurator*, std::string, int, int, std::string, const std::vector<bool>&); // config, resonance name, LBs, LKK, info about datapoint dimensions
 		Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent&);
 		~Bs2PhiKKSignalComponent() {}
 		void SetPhysicsParameters(ParameterSet* pars);
@@ -31,7 +31,8 @@ class Bs2PhiKKSignalComponent
 		std::map<int,std::complex<double>> Ahel; // Helicity amplitudes as complex numbers
 		// Resonance parameters
 		std::vector<Bs2PhiKK::PhysPar> KKpars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
-		int JKK; // Spin of the KK resonance (0, 1 or 2)
+		int LKK; // Spin of the KK resonance (0, 1 or 2)
+		int LBs; // Orbital angular momentum of the Bs (default min LB = |LKK-1| for LKK = 0, 1, 2)
 		std::string lineshape; // Choose the resonance shape: "spline", "BW", "FT" or "NR"
 		// Helper functions
 		void Initialise();

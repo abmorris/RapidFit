@@ -10,11 +10,12 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 // Constructor
-Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string KKname, int _JKK, std::string _lineshape, const std::vector<bool>& _UseObservable)
-	: JKK(_JKK)
+Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string KKname, int _LBs, int _LKK, std::string _lineshape, const std::vector<bool>& _UseObservable)
+	: LBs(_LBs)
+	, LKK(_LKK)
 	, lineshape(_lineshape)
-	, Bsbarrier(DPBarrierFactor(std::abs(JKK-1), 1.0, 0)) // Min L_B approximation
-	, KKbarrier(DPBarrierFactor(JKK, 3.0, 0))
+	, Bsbarrier(DPBarrierFactor(LBs, 1.0, 0))
+	, KKbarrier(DPBarrierFactor(LKK, 3.0, 0))
 	, UseObservable(_UseObservable)
 	, MassPart(&Bs2PhiKKSignalComponent::MassPartResonant)
 	, AngularPart(&Bs2PhiKKSignalComponent::AngularPartDefault)
@@ -36,7 +37,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 		std::cerr << "Bs2PhiKKSignalComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << std::endl;
 	}
 	// Helicity amplitude observables
-	int lambda_max = std::min(1, JKK); // Maximum helicity
+	int lambda_max = std::min(1, LKK); // Maximum helicity
 	std::vector<int> helicities;
 	bool usephi = false, usect1 = false, usect2 = false;
 	for(const auto& name: config->GetPhaseSpaceBoundary()->GetAllNames())
@@ -95,7 +96,8 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 	, BsBFradius(other.BsBFradius)
 	, KKBFradius(other.KKBFradius)
 	// Fixed parameters
-	, JKK(other.JKK)
+	, LBs(other.LBs)
+	, LKK(other.LKK)
 	// DP objects
 	, Bsbarrier(other.Bsbarrier)
 	, KKbarrier(other.KKbarrier)
@@ -112,7 +114,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 {
 	// Breit Wigner
 	if(lineshape=="BW")
-		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, JKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
+		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, LKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
 	// Flatte
 	else if(lineshape=="FT")
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
@@ -127,7 +129,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
 	// Build the barrier factor and Wigner function objects
 	wignerPhi = &DPWignerFunctionJ1::function;
-	switch (JKK) // I hate this but I'd rather it just worked...
+	switch (LKK) // I hate this but I'd rather it just worked...
 	{
 		case 0:
 			wignerKK  = &DPWignerFunctionJ0::function;
@@ -139,7 +141,7 @@ void Bs2PhiKKSignalComponent::Initialise()
 			wignerKK  = &DPWignerFunctionJ2::function;
 			break;
 		default:
-			std::cerr << "Can't construct Wigner function for spin " << JKK << std::endl;
+			std::cerr << "Can't construct Wigner function for spin " << LKK << std::endl;
 			break;
 	}
 	if(!UseObservable[Bs2PhiKK::_ctheta_1_] || !UseObservable[Bs2PhiKK::_ctheta_2_] || lineshape == "NR")
@@ -211,8 +213,8 @@ double Bs2PhiKKSignalComponent::OFBF(const double& mKK) const
 	const double mBs0 = Bs2PhiKK::mBs;
 	const double mKK0 = KKpars[0].value;
 	// Orbital factor
-	const double orbitalFactor = std::pow(pBs/mBs0, abs(JKK-1))* // Min L_B approximation
-	                             std::pow(pKK/mKK0, JKK);
+	const double orbitalFactor = std::pow(pBs/mBs0, LBs)*
+	                             std::pow(pKK/mKK0, LKK);
 	// Barrier factors
 	const double barrierFactor = Bsbarrier.barrier(pBs)*
 	                             KKbarrier.barrier(pKK);

@@ -65,8 +65,12 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 				std::cerr << "Spin>0 splines not implemented. Ignoring component " << option << std::endl;
 			continue; // The spline component will be created later
 		}
+		// Calculate LBs
+		int LBs = std::abs(JKK-1); // Min LB approximation for JKK = 0, 1, 2
+		if(config->isTrue("NoMinLB") && JKK > 0)
+			LBs++;
 		// Store the component and its name
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, KKname, JKK, lineshape, UseObservable));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, KKname, LBs, JKK, lineshape, UseObservable));
 		componentnames.push_back(KKname);
 	}
 	// If there are spline knots, then create a spline shape
@@ -76,7 +80,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::string KKname = "S-wave";
 		for(const auto& knot: swave_spline_knots)
 			knotnames += ":" + knot;
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, knotnames, 0, "SP", UseObservable));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, knotnames, 1, 0, "SP", UseObservable));
 		componentnames.push_back(KKname);
 	}
 	if(components.size() > 1)
