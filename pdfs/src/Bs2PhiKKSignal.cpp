@@ -31,9 +31,9 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	std::vector<std::string> swave_spline_knots;
 	// Print the table heading
-	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
-	std::cout << "┃ Component     │ Spin  │ Lineshape     ┃\n";
-	std::cout << "┠───────────────┼───────┼───────────────┨\n";
+	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
+	std::cout << "┃ Component     │ JKK   │ LBs   │ Lineshape     ┃\n";
+	std::cout << "┠───────────────┼───────┼───────┼───────────────┨\n";
 	for(const auto& option: reslist)
 	{
 		if(option=="")
@@ -51,6 +51,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		// Print a line in the table
 		std::cout << "┃ ";
 		std::cout << std::left << std::setw(13) << KKname;
+		std::cout << " │ ";
+		std::cout << std::right << std::setw(5) << LBs;
 		std::cout << " │ ";
 		std::cout << std::right << std::setw(5) << JKK;
 		std::cout << " │ ";
@@ -85,7 +87,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	}
 	if(components.size() > 1)
 		componentnames.push_back("interference");
-	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
+	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
 		for(const unsigned trig : {0, 1})
