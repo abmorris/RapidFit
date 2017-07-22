@@ -25,7 +25,7 @@ CXX          = $(CC) $(shell if [ "$(shell root-config --arch | grep 32)" = "" ]
 RM           = rm -f
 
 CXXFLAGS_BASE_MINIMAL = -D_GNU_SOURCE -D__USE_GNU -fPIC
-CXXFLAGS_BASE_WARNINGS = -Werror -Wall -Wextra -Wno-non-virtual-dtor -Wno-reorder -Wshadow -Wmissing-noreturn -Wcast-align
+CXXFLAGS_BASE_WARNINGS = -Werror -Wall -Wextra -Wno-non-virtual-dtor -Wno-reorder -Wshadow -Wmissing-noreturn -Wcast-align -Wno-maybe-uninitialized
 #		Compiler Flags
 CXXFLAGS_BASE_COMMON  = $(CXXFLAGS_BASE_MINIMAL) -D__ROOFIT_NOBANNER  $(CXXFLAGS_BASE_WARNINGS)
 CXXFLAGS_BASE = $(CXXFLAGS_BASE_COMMON) -O3 -msse2 -msse3 -m3dnow -ftree-vectorize -finline-limit=2000 -fprefetch-loop-arrays -fmerge-all-constants
