@@ -25,69 +25,62 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	if(config->isTrue("convolve"))
 	{
 		for(const std::string& name: {"nsteps", "nsigma"})
+		{
 			mKKresconfig[name] = std::stod(config->getConfigurationValue("mKKres_"+name));
+		}
 		mKKres_sigmazero = Bs2PhiKK::PhysPar(config, "mKKres_sigmazero");
 	}
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
-	std::vector<std::string> swave_spline_knots;
 	// Print the table heading
-	std::cout << "┏━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
-	std::cout << "┃ Component     │ JKK   │ LBs   │ Lineshape     ┃\n";
-	std::cout << "┠───────────────┼───────┼───────┼───────────────┨\n";
+	std::cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
+	std::cout << "┃ Component                  │ Jphi  │ JKK   │ LBs   │ Lineshape     ┃\n";
+	std::cout << "┠────────────────────────────┼───────┼───────┼───────┼───────────────┨\n";
 	for(const auto& option: reslist)
 	{
 		if(option=="")
+		{
 			continue;
+		}
 		// Syntax: <resonance name>(<spin>, <lineshape>)
 		// - the list is space-delimited: no extra spaces, please!
 		// - resonance name must be alphanumeric
 		// - spin must be a single digit 0, 1 or 2, or you have to implement the code for higher spins
 		// - lineshape name must be 2 capital letters
 		// - see Bs2PhiKKSignalComponent.cpp for implemented lineshapes (BW, FT, SP, NR... but more can be added)
-		// Example: "phi1020(1, BW)"
-		std::string KKname = option.substr(0, option.find('('));
-		int JKK = atoi(option.substr(option.find('(') + 1, 1).c_str());
-		std::string lineshape = option.substr(option.find(',') + 1, 2);
-		// Print a line in the table
-		std::cout << "┃ ";
-		std::cout << std::left << std::setw(13) << KKname;
-		std::cout << " │ ";
-		std::cout << std::right << std::setw(5) << LBs;
-		std::cout << " │ ";
-		std::cout << std::right << std::setw(5) << JKK;
-		std::cout << " │ ";
-		std::cout << std::left << std::setw(13) << lineshape;
-		std::cout << " ┃\n";
-		// Add knots to the spline, if there are any
-		if(lineshape == "SP")
-		{
-			if(JKK == 0)
-				swave_spline_knots.push_back(KKname);
-			else
-				std::cerr << "Spin>0 splines not implemented. Ignoring component " << option << std::endl;
-			continue; // The spline component will be created later
-		}
+		// Example: "phi1020,ftwop1525LHCb(12BW)"
+		std::string phiname = option.substr(0                   , option.find(','));
+		std::string  KKname = option.substr(option.find(',') + 1, option.find('('));
+		std::string decayname = phiname+" "+KKname;
+		int Jphi    = std::stoi(option.substr(option.find('(') + 1, 1));
+		int JKK     = std::stoi(option.substr(option.find('(') + 2, 1));
+		std::string lineshape = option.substr(option.find('(') + 3, 2);
 		// Calculate LBs
 		int LBs = std::abs(JKK-1); // Min LB approximation for JKK = 0, 1, 2
 		if(config->isTrue("NoMinLB") && JKK > 0)
+		{
 			LBs++;
+		}
+		// Print a line in the table
+		std::cout << "┃ ";
+		std::cout << std::left << std::setw(26) << decayname;
+		std::cout << " │ ";
+		std::cout << std::right << std::setw(5) << Jphi;
+		std::cout << " │ ";
+		std::cout << std::right << std::setw(5) << JKK;
+		std::cout << " │ ";
+		std::cout << std::right << std::setw(5) << LBs;
+		std::cout << " │ ";
+		std::cout << std::left << std::setw(13) << lineshape;
+		std::cout << " ┃\n";
 		// Store the component and its name
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, KKname, LBs, JKK, lineshape, UseObservable));
-		componentnames.push_back(KKname);
-	}
-	// If there are spline knots, then create a spline shape
-	if(swave_spline_knots.size() > 0)
-	{
-		std::string knotnames;
-		std::string KKname = "S-wave";
-		for(const auto& knot: swave_spline_knots)
-			knotnames += ":" + knot;
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, knotnames, 1, 0, "SP", UseObservable));
+		components.emplace(KKname, Bs2PhiKKSignalComponent(config, phiname, KKname, LBs, Jphi, JKK, lineshape, UseObservable));
 		componentnames.push_back(KKname);
 	}
 	if(components.size() > 1)
+	{
 		componentnames.push_back("interference");
-	std::cout << "┗━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
+	}
+	std::cout << "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━┷━━━━━━━┷━━━━━━━┷━━━━━━━━━━━━━━━┛" << std::endl;
 	if(acceptance_moments)
 	{
 		for(const unsigned trig : {0, 1})
@@ -133,8 +126,12 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	, acceptance_moments(copy.acceptance_moments)
 {
 	if(acceptance_moments)
+	{
 		for(const unsigned trig : {0, 1})
+		{
 			acc_m[trig] = std::unique_ptr<LegendreMomentShape>(new LegendreMomentShape(*copy.acc_m[trig]));
+		}
+	}
 }
 /*****************************************************************************/
 // Make the data point and parameter set
@@ -147,27 +144,44 @@ void Bs2PhiKKSignal::MakePrototypes()
 	std::vector<std::string> parameterNames;
 	// Resonance parameters
 	for(const auto& par: {GH, GL})
+	{
 		parameterNames.push_back(par.name);
+	}
 	if(!mKKresconfig.empty())
+	{
 		parameterNames.push_back(mKKres_sigmazero.name);
+	}
 	if(acceptance_moments)
+	{
 		for(const auto& par: thraccscale)
+		{
 			parameterNames.push_back(par.name);
+		}
+	}
 	for(const auto& comp: components)
+	{
 		for(std::string par: comp.second.GetPhysicsParameters())
+		{
 			parameterNames.push_back(par);
+		}
+	}
 	std::sort(parameterNames.begin(), parameterNames.end());
 	parameterNames.erase(std::unique(parameterNames.begin(), parameterNames.end()), parameterNames.end());
 	std::cout << "Parameters:" << std::endl;
 	for(const auto& par: parameterNames)
+	{
 		std::cout << "\t" << par << "\n";
+	}
 	allParameters = ParameterSet(parameterNames);
 }
 // List of components
 std::vector<std::string> Bs2PhiKKSignal::PDFComponents()
 {
 	// Avoid redundant plotting for single-component PDFs
-	if(components.size() == 1) return {};
+	if(components.size() == 1)
+	{
+		return {};
+	}
 	return componentnames;
 }
 /*****************************************************************************/
@@ -176,14 +190,24 @@ bool Bs2PhiKKSignal::SetPhysicsParameters(ParameterSet* NewParameterSet)
 {
 	bool isOK = allParameters.SetPhysicsParameters(NewParameterSet);
 	for(auto* par: {&GH, &GL})
+	{
 		par->Update(&allParameters);
+	}
 	if(!mKKresconfig.empty())
+	{
 		mKKres_sigmazero.Update(&allParameters);
+	}
 	if(acceptance_moments)
+	{
 		for(auto& par: thraccscale)
+		{
 			par.Update(&allParameters);
+		}
+	}
 	for(auto& comp: components)
+	{
 		comp.second.SetPhysicsParameters(&allParameters);
+	}
 	return isOK;
 }
 /*Calculate the likelihood****************************************************/
@@ -193,7 +217,9 @@ double Bs2PhiKKSignal::EvaluateComponent(DataPoint* measurement, ComponentRef* c
 	std::string compName = component->getComponentName();
 	// Verification
 	if(compName.find_first_not_of("0123456789") == string::npos)
+	{
 		return Evaluate(measurement); // If the component name is purely numerical, then we're being asked for the total PDF
+	}
 	const Bs2PhiKK::datapoint_t datapoint = ReadDataPoint(measurement);
 	const double mKK = datapoint[Bs2PhiKK::_mKK_];
 	const double ctheta_1 = datapoint[Bs2PhiKK::_ctheta_1_];
@@ -218,7 +244,9 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 	// Evaluation
 	double MatrixElementSquared = mKKresconfig.empty()? TotalMsq(mKK, ctheta_1, ctheta_2, phi) : Convolve(&Bs2PhiKKSignal::TotalMsq, mKK, ctheta_1, ctheta_2, phi, ""); // Do the convolved or unconvolved |M|² calculation
 	if(std::isnan(MatrixElementSquared))
+	{
 		std::cerr << "Matrix element is not a number" << std::endl;
+	}
 	return Evaluate_Base(MatrixElementSquared, trigger, mKK, ctheta_1, ctheta_2, phi);
 }
 // The stuff common to both Evaluate() and EvaluateComponent()
@@ -239,7 +267,9 @@ double Bs2PhiKKSignal::TotalMsq(const double& mKK, const double& ctheta_1, const
 		{
 			std::cerr << comp.first << " amplitude evaluates to " << CompAmp[0] << std::endl;
 			for(const auto& par: allParameters.GetAllNames())
+			{
 				std::cout << par << " = " << allParameters.GetPhysicsParameter(par)->GetValue() << std::endl;
+			}
 			std::exit(1);
 		}
 		TotalAmp[false] += CompAmp[false];
@@ -258,7 +288,9 @@ double Bs2PhiKKSignal::InterferenceMsq(const double& mKK, const double& ctheta_1
 	(void)dummy;
 	double MatrixElementSquared = TotalMsq(mKK, ctheta_1, ctheta_2, phi);
 	for(const auto& comp : components)
+	{
 		MatrixElementSquared -= TimeIntegratedMsq(comp.second.Amplitude(mKK, ctheta_1, ctheta_2, phi));
+	}
 	return MatrixElementSquared;
 }
 // Take the amplitudes of the B and Bbar decay and return the time-integrated |M|²
@@ -279,8 +311,12 @@ double Bs2PhiKKSignal::Convolve(MsqFunc_t EvaluateMsq, const double& mKK, const 
 	const double stepsize = 2.*nsigma*resolution/nsteps;
 	// Integrate over range −nσ to +nσ
 	for(double x = -nsigma*resolution; x < nsigma*resolution; x += stepsize)
+	{
 		if(mKK - nsigma*resolution > 2*Bs2PhiKK::mK)
+		{
 			Msq_conv += gsl_ran_gaussian_pdf(x, resolution) * (this->*EvaluateMsq)(mKK-x, ctheta_1, ctheta_2, phi, compName) * stepsize;
+		}
+	}
 	return Msq_conv;
 }
 /*Stuff that factors out of the time integral*********************************/
@@ -297,7 +333,9 @@ double Bs2PhiKKSignal::Acceptance(const unsigned& trig, const double& mKK, const
 //		acceptance *= std::atan(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK))*2.0/M_PI;
 	}
 	if(std::isnan(acceptance))
+	{
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
+	}
 	return acceptance;
 }
 double Bs2PhiKKSignal::p1stp3(const double& mKK) const
@@ -306,7 +344,9 @@ double Bs2PhiKKSignal::p1stp3(const double& mKK) const
 	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, Bs2PhiKK::mphi);
 	double pRpB = pR * pB;
 	if(std::isnan(pRpB))
+	{
 		std::cerr << "p1stp3 evaluates to nan" << std::endl;
+	}
 	return pRpB;
 }
 /*****************************************************************************/
