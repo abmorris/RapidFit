@@ -64,7 +64,12 @@ void LegendreMomentShape::Open(const std::string filename, const int entry)
 		limbranchtitle.find(']', found);
 		*maximum = atoi(limbranchtitle.substr(found+1, 1).c_str());
 	}
-	double c[l_max][i_max][k_max][j_max] = {};
+	double c[l_max][i_max][k_max][j_max];
+        for ( int l = 0; l < l_max; l++ )
+                for ( int i = 0; i < i_max; i++ )
+                        for ( int k = 0; k < k_max; k++ )
+                                for ( int j = 0; j < j_max; j++ )
+                                        c[l][i][k][j] = 0;
 	tree->SetBranchAddress("c",&c);
 	tree->GetEntry(entry);
 	for ( int l = 0; l < l_max; l++ )
@@ -86,7 +91,12 @@ void LegendreMomentShape::Save(const std::string filename)
 {
 	TTree* outputTree = new TTree("LegendreMomentsTree", "");
 	char limbranchtitle[20];
-	double c[l_max][i_max][k_max][j_max] = {};
+	double c[l_max][i_max][k_max][j_max];
+        for ( int l = 0; l < l_max; l++ )
+                for ( int i = 0; i < i_max; i++ )
+                        for ( int k = 0; k < k_max; k++ )
+                                for ( int j = 0; j < j_max; j++ )
+					c[l][i][k][j] = 0;
 	sprintf(limbranchtitle, "c[%d][%d][%d][%d]/D", l_max, i_max, k_max, j_max);
 	outputTree->Branch("c", c, limbranchtitle);
 	outputTree->Branch("mKK_min", &mKK_min, "mKK_min/D");
@@ -112,8 +122,16 @@ void LegendreMomentShape::Generate(std::vector<DataPoint>& DataSet, const PhaseS
 {
 	if(!init)
 		coeffs.clear();
-	double c[l_max][i_max][k_max][j_max] = {};
-	double c_sq[l_max][i_max][k_max][j_max] = {};
+	double c[l_max][i_max][k_max][j_max];
+	double c_sq[l_max][i_max][k_max][j_max];
+        for ( int l = 0; l < l_max; l++ )
+                for ( int i = 0; i < i_max; i++ )
+                        for ( int k = 0; k < k_max; k++ )
+                                for ( int j = 0; j < j_max; j++ )
+				{
+                                        c[l][i][k][j] = 0;
+					c_sq[l][i][k][j] = 0;
+				}
 	mKK_min = boundary->GetConstraint(mKKname)->GetMinimum();
 	mKK_max = boundary->GetConstraint(mKKname)->GetMaximum();
 	const double mK  = 0.493677; // TODO: read these from config somehow
