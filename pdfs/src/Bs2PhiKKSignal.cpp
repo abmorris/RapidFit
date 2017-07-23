@@ -48,6 +48,8 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::string KKname = option.substr(0, option.find('('));
 		int JKK = atoi(option.substr(option.find('(') + 1, 1).c_str());
 		std::string lineshape = option.substr(option.find(',') + 1, 2);
+		// Calculate LBs
+		int LBs = std::abs(JKK-1); // Min LB approximation for JKK = 0, 1, 2
 		// Print a line in the table
 		std::cout << "┃ ";
 		std::cout << std::left << std::setw(13) << KKname;
@@ -67,8 +69,6 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 				std::cerr << "Spin>0 splines not implemented. Ignoring component " << option << std::endl;
 			continue; // The spline component will be created later
 		}
-		// Calculate LBs
-		int LBs = std::abs(JKK-1); // Min LB approximation for JKK = 0, 1, 2
 		if(config->isTrue("NoMinLB") && JKK > 0)
 			LBs++;
 		// Store the component and its name
