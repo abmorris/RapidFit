@@ -54,9 +54,9 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::cout << "┃ ";
 		std::cout << std::left << std::setw(13) << KKname;
 		std::cout << " │ ";
-		std::cout << std::right << std::setw(5) << LBs;
-		std::cout << " │ ";
 		std::cout << std::right << std::setw(5) << JKK;
+		std::cout << " │ ";
+		std::cout << std::right << std::setw(5) << LBs;
 		std::cout << " │ ";
 		std::cout << std::left << std::setw(13) << lineshape;
 		std::cout << " ┃\n";
