@@ -11,17 +11,16 @@
 #include "DPWignerFunctionJ1.hh"
 #include "DPWignerFunctionJ2.hh"
 // Constructor
-Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string phiname, std::string KKname, int _LBs, int _Lphi, int _LKK, std::string _lineshape, const std::vector<bool>& _UseObservable)
+Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string phiname, std::string KKname, int _LBs, int _Lphi, int _LKK, std::string _philineshapename, std::string _KKlineshapename, const std::vector<bool>& _UseObservable)
 	: LBs(_LBs)
 	, Lphi(_Lphi)
 	, LKK(_LKK)
-	, lineshape(_lineshape)
+	, philineshapename(_philineshapename)
+	, KKlineshapename(_KKlineshapename)
 	, Bsbarrier(DPBarrierFactor(LBs, 1.0, 0))
 	, KKbarrier(DPBarrierFactor(LKK, 3.0, 0))
 	, UseObservable(_UseObservable)
-	, MassPart(&Bs2PhiKKSignalComponent::MassPartResonant)
 	, AngularPart(&Bs2PhiKKSignalComponent::AngularPartDefault)
-	, firstnonres(phiname == "nonres")
 {
 	// sort phiname and KKname alphabetically so that Bs->AB has the same fraction and amplitues as Bs->BA
 	std::vector<std::string> daughternames = {phiname, KKname};
@@ -29,25 +28,30 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(PDFConfigurator* config, std::s
 	std::string decayname = daughternames[0] + "_" + daughternames[1];
 	fraction = Bs2PhiKK::PhysPar(config,decayname+"_fraction");
 	// Barrier factors
-	if(lineshape != "NR")
+	BsBFradius = Bs2PhiKK::PhysPar(config,"BsBFradius");
+	KKBFradius = Bs2PhiKK::PhysPar(config,"KKBFradius");
+	// phi resonance parameters
+	for(string phipar: Bs2PhiKK::LineShapeParameterNames(phiname,philineshapename))
 	{
-		BsBFradius = Bs2PhiKK::PhysPar(config,"BsBFradius");
-		KKBFradius = Bs2PhiKK::PhysPar(config,"KKBFradius");
+		phipars.push_back(Bs2PhiKK::PhysPar(config,phipar));
 	}
-	// "phi" mass
-	phimass = Bs2PhiKK::PhysPar(config, phiname+"_mass");
 	// KK resonance parameters
-	for(string KKpar: Bs2PhiKK::LineShapeParameterNames(KKname,lineshape))
+	for(string KKpar: Bs2PhiKK::LineShapeParameterNames(KKname,KKlineshapename))
 	{
 		KKpars.push_back(Bs2PhiKK::PhysPar(config,KKpar));
 	}
-	if(KKpars.empty() && lineshape!="NR")
+	if(phipars.empty() && philineshapename!="NR")
 	{
-		lineshape = "NR";
-		std::cerr << "Bs2PhiKKSignalComponent WARNING: unknown lineshape '" << lineshape << "'. Treating this component non-resonant." << std::endl;
+		philineshapename = "NR";
+		std::cerr << "Bs2PhiKKSignalComponent WARNING: unknown lineshape '" << philineshapename << "'. Treating this component non-resonant." << std::endl;
+	}
+	if(KKpars.empty() && KKlineshapename!="NR")
+	{
+		KKlineshapename = "NR";
+		std::cerr << "Bs2PhiKKSignalComponent WARNING: unknown lineshape '" << KKlineshapename << "'. Treating this component non-resonant." << std::endl;
 	}
 	// Helicity amplitude observables
-	int lambda_max = std::min(1, LKK); // Maximum helicity
+	int lambda_max = std::min(Lphi, LKK); // Maximum helicity
 	std::vector<int> helicities;
 	bool usephi = false, usect1 = false, usect2 = false;
 	for(const auto& name: config->GetPhaseSpaceBoundary()->GetAllNames())
@@ -117,7 +121,7 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 	, Ahel(other.Ahel)
 	, mags(other.mags)
 	, phases(other.phases)
-	, phimass(other.phimass)
+	, phipars(other.phipars)
 	, KKpars(other.KKpars)
 	, BsBFradius(other.BsBFradius)
 	, KKBFradius(other.KKBFradius)
@@ -129,24 +133,22 @@ Bs2PhiKKSignalComponent::Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent& 
 	, Bsbarrier(other.Bsbarrier)
 	, KKbarrier(other.KKbarrier)
 	// Options
-	, lineshape(other.lineshape)
+	, philineshapename(other.philineshapename)
+	, KKlineshapename(other.KKlineshapename)
 	, UseObservable(other.UseObservable)
-	, MassPart(&Bs2PhiKKSignalComponent::MassPartResonant)
 	, AngularPart(&Bs2PhiKKSignalComponent::AngularPartDefault)
-	, firstnonres(other.firstnonres)
 {
 	Initialise();
 }
 /*****************************************************************************/
 void Bs2PhiKKSignalComponent::Initialise()
 {
-	// Breit Wigner
-	if(lineshape=="BW")
+	if(KKlineshapename=="BW")
 	{
 		KKLineShape = std::unique_ptr<DPBWResonanceShape>(new DPBWResonanceShape(KKpars[0].value, KKpars[1].value, LKK, Bs2PhiKK::mK, Bs2PhiKK::mK, KKpars[2].value));
 	}
 	// Flatte
-	else if(lineshape=="FT")
+	else if(KKlineshapename=="FT")
 	{
 		KKLineShape = std::unique_ptr<DPFlatteShape>(new DPFlatteShape(KKpars[0].value, KKpars[1].value, Bs2PhiKK::mpi, Bs2PhiKK::mpi, KKpars[1].value*KKpars[2].value, Bs2PhiKK::mK, Bs2PhiKK::mK));
 	}
@@ -154,38 +156,29 @@ void Bs2PhiKKSignalComponent::Initialise()
 	{
 		KKLineShape = std::unique_ptr<DPNonresonant>(new DPNonresonant());
 	}
-	// Build the barrier factor and Wigner function objects
-	switch (Lphi)
+	auto phistuff = std::make_tuple(&Lphi, &wignerPhi);
+	auto KKstuff = std::make_tuple(&LKK, &wignerKK);
+	for(auto& stuff: {phistuff, KKstuff})
 	{
-		case 0:
-			wignerPhi  = &DPWignerFunctionJ0::function;
-			break;
-		case 1:
-			wignerPhi  = &DPWignerFunctionJ1::function;
-			break;
-		case 2:
-			wignerPhi  = &DPWignerFunctionJ2::function;
-			break;
-		default:
-			std::cerr << "Can't construct Wigner function for spin " << LKK << std::endl;
-			break;
+		const auto L = *std::get<0>(stuff);
+		auto& wigner = *std::get<1>(stuff);
+		switch (L)
+		{
+			case 0:
+				wigner = &DPWignerFunctionJ0::function;
+				break;
+			case 1:
+				wigner = &DPWignerFunctionJ1::function;
+				break;
+			case 2:
+				wigner = &DPWignerFunctionJ2::function;
+				break;
+			default:
+				std::cerr << "Can't construct Wigner function for spin " << L << std::endl;
+				break;
+		}
 	}
-	switch (LKK)
-	{
-		case 0:
-			wignerKK  = &DPWignerFunctionJ0::function;
-			break;
-		case 1:
-			wignerKK  = &DPWignerFunctionJ1::function;
-			break;
-		case 2:
-			wignerKK  = &DPWignerFunctionJ2::function;
-			break;
-		default:
-			std::cerr << "Can't construct Wigner function for spin " << LKK << std::endl;
-			break;
-	}
-	if(!UseObservable[Bs2PhiKK::_ctheta_1_] || !UseObservable[Bs2PhiKK::_ctheta_2_] || lineshape == "NR" || firstnonres)
+	if(!UseObservable[Bs2PhiKK::_ctheta_1_] || !UseObservable[Bs2PhiKK::_ctheta_2_] || KKlineshapename == "NR" || philineshapename == "NR")
 	{
 		AngularPart = &Bs2PhiKKSignalComponent::AngularPartNonRes;
 	}
@@ -193,29 +186,25 @@ void Bs2PhiKKSignalComponent::Initialise()
 	{
 		AngularPart = &Bs2PhiKKSignalComponent::AngularPartNoPhi;
 	}
-	if(!UseObservable[Bs2PhiKK::_mKK_] || lineshape == "NR")
-	{
-		MassPart = &Bs2PhiKKSignalComponent::MassPartNonRes;
-	}
 	UpdateAmplitudes();
-	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
+	Bs2PhiKK::UpdateLineshape(KKlineshapename, *KKLineShape, KKpars);
 }
 /*****************************************************************************/
 // Angular part of the amplitude
-double Bs2PhiKKSignalComponent::F(const int& lambda, const double& ctheta_1, const double& ctheta_2) const
+double Bs2PhiKKSignalComponent::F(const int& lambda, const double ctheta_1, const double ctheta_2) const
 {
 	const double d_phi = wignerPhi(ctheta_1, lambda);
 	const double d_KK  = wignerKK (ctheta_2, lambda);
 	return d_phi * d_KK;
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartNonRes(const double& ctheta_1, const double& ctheta_2, const double& phi) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartNonRes(const double ctheta_1, const double ctheta_2, const double phi) const
 {
 	(void)ctheta_1;
 	(void)ctheta_2;
 	(void)phi;
 	return Ahel.at(0); // Either nonresonant or helicity angles not present
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const double& ctheta_1, const double& ctheta_2, const double& phi) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const double ctheta_1, const double ctheta_2, const double phi) const
 {
 	(void)phi;
 	std::complex<double> angularPart(0, 0);
@@ -231,7 +220,7 @@ std::complex<double> Bs2PhiKKSignalComponent::AngularPartNoPhi(const double& cth
 	}
 	return angularPart;
 }
-std::complex<double> Bs2PhiKKSignalComponent::AngularPartDefault(const double& ctheta_1, const double& ctheta_2, const double& phi) const
+std::complex<double> Bs2PhiKKSignalComponent::AngularPartDefault(const double ctheta_1, const double ctheta_2, const double phi) const
 {
 	std::complex<double> angularPart(0, 0);
 	for(const auto& A : Ahel)
@@ -242,42 +231,51 @@ std::complex<double> Bs2PhiKKSignalComponent::AngularPartDefault(const double& c
 	return angularPart;
 }
 // Orbital and barrier factor
-double Bs2PhiKKSignalComponent::OFBF(const double& mKK) const
+double Bs2PhiKKSignalComponent::OFBF(const double mKK, const double mKK0, const double mphi0, const std::string& lineshape, const int _LKK, const DPBarrierFactor& barrier) const
 {
 	if(mKK < 2*Bs2PhiKK::mK)
+	{
 		return 0;
+	}
+	if(lineshape == "NR")
+	{
+		return 1;
+	}
 	// Momenta
-	const double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, phimass.value, mKK);
+	const double pBs = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mphi0, mKK);
 	const double pKK = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
 	// Masses
 	const double mBs0 = Bs2PhiKK::mBs;
-	const double mKK0 = KKpars[0].value;
 	// Orbital factor
-	const double orbitalFactor = std::pow(pBs/mBs0, LBs) * std::pow(pKK/mKK0, LKK);
+	const double orbitalFactor = std::pow(pBs/mBs0, LBs) * std::pow(pKK/mKK0, _LKK);
 	// Barrier factors
-	const double barrierFactor = Bsbarrier.barrier(pBs) * KKbarrier.barrier(pKK);
-	return orbitalFactor*barrierFactor;
+	const double barrierFactor = Bsbarrier.barrier(pBs) * barrier.barrier(pKK);
+	return orbitalFactor*barrierFactor*std::sqrt(pBs*pKK);
 }
 // Mass-dependent part
-std::complex<double> Bs2PhiKKSignalComponent::MassPartNonRes(const double& mKK) const
+std::complex<double> Bs2PhiKKSignalComponent::MassPart(const double mKK) const
 {
-	(void)mKK;
-	return std::complex<double>(fraction.value,0);
-}
-std::complex<double> Bs2PhiKKSignalComponent::MassPartResonant(const double& mKK) const
-{
-	return KKLineShape->massShape(mKK) * fraction.value * OFBF(mKK);
+	if(!UseObservable[Bs2PhiKK::_mKK_])
+	{
+		return std::complex<double>(1,0);
+	}
+	const double mphi0 = phipars[0].value; // pole mass of the "phi"
+	const double mKK0 = KKpars[0].value; // pole mass of the "KK"
+//	double norm =  std::abs(KKmasspartintegral);
+//	std::cout << KKlineshapename << " norm: " << norm << "\n";
+	std::complex<double> KKmasspart = KKLineShape->massShape(mKK) * OFBF(mKK, mKK0, mphi0, KKlineshapename, LKK, KKbarrier);
+	return fraction.value * KKmasspart;
 }
 // The full amplitude.
-Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi) const
+Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double mKK, const double ctheta_1, const double ctheta_2, const double phi) const
 {
 	std::complex<double> angularPartBs    = (this->*AngularPart)( ctheta_1,  ctheta_2,  phi);
 	std::complex<double> angularPartBsbar = (this->*AngularPart)(-ctheta_1, -ctheta_2, -phi);
-	std::complex<double> massPart = (this->*MassPart)(mKK);
+	std::complex<double> massPart = MassPart(mKK);
 	return {massPart*angularPartBs, massPart*angularPartBsbar};
 }
 // The full amplitude with an option.
-Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi, const std::string option) const
+Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double mKK, const double ctheta_1, const double ctheta_2, const double phi, const std::string option) const
 {
 	if(Ahel.empty() || option == "" || option.find("odd") == std::string::npos || option.find("even") == std::string::npos || !UseObservable[Bs2PhiKK::_phi_])
 	{
@@ -306,7 +304,7 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, cons
 		angularPart[true] += HelAmp[lambda+1] * F(lambda, -ctheta_1, -ctheta_2) * std::polar<double>(1, -lambda*phi);
 	}
 	std::complex<double> massPart(1, 0);
-	massPart = (this->*MassPart)(mKK);
+	massPart = MassPart(mKK);
 	return {massPart*angularPart[false], massPart*angularPart[true]};
 }
 /*****************************************************************************/
@@ -314,14 +312,11 @@ Bs2PhiKK::amplitude_t Bs2PhiKKSignalComponent::Amplitude(const double& mKK, cons
 void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 {
 	// Update the parameters objects first
-	phimass.Update(fitpars);
-	fraction.Update(fitpars);
-	if(lineshape != "NR")
+	for(auto* par: {&fraction, &KKBFradius, &BsBFradius})
 	{
-		KKBFradius.Update(fitpars);
-		BsBFradius.Update(fitpars);
+		par->Update(fitpars);
 	}
-	for(auto* set: {&mags,&phases,&KKpars})
+	for(auto* set: {&mags,&phases,&phipars,&KKpars})
 	{
 		for(auto& par: *set)
 		{
@@ -330,7 +325,7 @@ void Bs2PhiKKSignalComponent::SetPhysicsParameters(ParameterSet* fitpars)
 	}
 	UpdateBarriers();
 	UpdateAmplitudes();
-	Bs2PhiKK::UpdateLineshape(lineshape, *KKLineShape, KKpars);
+	Bs2PhiKK::UpdateLineshape(KKlineshapename, *KKLineShape, KKpars);
 }
 void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 {
@@ -372,39 +367,30 @@ void Bs2PhiKKSignalComponent::UpdateAmplitudes()
 }
 void Bs2PhiKKSignalComponent::UpdateBarriers()
 {
-	if(lineshape == "NR")
-	{
-		return;
-	}
-	double mphi = phimass.value;
-	double Mres = KKpars[0].value;
+	double mphi0 = phipars[0].value;
+	double mKK0 = KKpars[0].value;
 	double m_min  = Bs2PhiKK::mK + Bs2PhiKK::mK;
-	double m_max  = Bs2PhiKK::mBs - mphi;
-	double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((Mres - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
-	double pBs0 = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mphi, m0_eff);
-	double pKK0 = DPHelpers::daughterMomentum(Mres, Bs2PhiKK::mK, Bs2PhiKK::mK);
+	double m_max  = Bs2PhiKK::mBs - mphi0;
+	double m0_eff = m_min + (m_max - m_min) * (1 + std::tanh((mKK0 - (m_min + m_max) / 2) / (m_max - m_min))) / 2;
+	double pBs0 = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mphi0, m0_eff);
+	double pKK0 = DPHelpers::daughterMomentum(mKK0, Bs2PhiKK::mK, Bs2PhiKK::mK);
 	Bsbarrier.setparameters(BsBFradius.value,pBs0);
 	KKbarrier.setparameters(KKBFradius.value,pKK0);
 }
 vector<ObservableRef> Bs2PhiKKSignalComponent::GetPhysicsParameters() const
 {
-	vector<ObservableRef> parameters = {phimass.name};
-	for(const auto& set: {mags,phases,KKpars})
+	vector<ObservableRef> parameters;
+	for(const auto& set: {mags,phases,phipars,KKpars})
 	{
 		for(const auto& par: set)
 		{
 			parameters.push_back(par.name);
 		}
 	}
-	// Add barrier factors if this is a resonant component
-	if(lineshape != "NR")
+	for(const auto& par: {BsBFradius,KKBFradius,fraction})
 	{
-		for(const auto& par: {BsBFradius,KKBFradius})
-		{
-			parameters.push_back(par.name);
-		}
+		parameters.push_back(par.name);
 	}
-	parameters.push_back(fraction.name);
 	return parameters;
 }
 

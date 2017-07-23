@@ -45,7 +45,6 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		double InterferenceMsq(const double&, const double&, const double&, const double&, const std::string& dummy = "") const; // Calculate the difference between the total |M|² and the sum of individual |M|²s. An MsqFunc_t object can point to this
 		// Turn the matrix element into the PDF
 		double Evaluate_Base(const double&, const unsigned&, const double&, const double&, const double&, const double&) const;
-		double p1stp3(const double&) const;
 		double Convolve(MsqFunc_t, const double&, const double&, const double&, const double&, const std::string&) const; // Take one of the three above functions and convolve it with a double Gaussian for m(KK) resolution
 		double Acceptance(const unsigned&, const double&, const double&, const double&, const double&) const;
 		// Stuff to do on creation

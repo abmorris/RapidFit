@@ -33,7 +33,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	std::vector<std::string> reslist = StringProcessing::SplitString(config->getConfigurationValue("resonances"), ' ');
 	// Print the table heading
 	std::cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━┯━━━━━━━┯━━━━━━━┯━━━━━━━━━━━━━━━┓\n";
-	std::cout << "┃ Component                  │ Jphi  │ JKK   │ LBs   │ Lineshape     ┃\n";
+	std::cout << "┃ Component                  │ Jphi  │ JKK   │ LBs   │ Lineshapes    ┃\n";
 	std::cout << "┠────────────────────────────┼───────┼───────┼───────┼───────────────┨\n";
 	for(const auto& option: reslist)
 	{
@@ -41,22 +41,23 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		{
 			continue;
 		}
-		// Syntax: <resonance name>(<spin>, <lineshape>)
+		// Syntax: <resonances>(<spins><lineshapes>)
 		// - the list is space-delimited: no extra spaces, please!
 		// - resonance name must be alphanumeric
 		// - spin must be a single digit 0, 1 or 2, or you have to implement the code for higher spins
 		// - lineshape name must be 2 capital letters
 		// - see Bs2PhiKKSignalComponent.cpp for implemented lineshapes (BW, FT, SP, NR... but more can be added)
-		// Example: "phi1020,ftwop1525LHCb(12BW)"
+		// Example: "phi1020,fzero980(10BWFT)"
 		std::string phiname = option.substr(0                   , option.find(','));
-		std::string  KKname = option.substr(option.find(',') + 1, option.find('('));
+		std::string  KKname = option.substr(option.find(',') + 1, option.find('(')-option.find(',')-1);
 		std::string decayname = phiname+" "+KKname;
 		int Jphi    = std::stoi(option.substr(option.find('(') + 1, 1));
 		int JKK     = std::stoi(option.substr(option.find('(') + 2, 1));
-		std::string lineshape = option.substr(option.find('(') + 3, 2);
+		std::string philineshape = option.substr(option.find('(') + 3, 2);
+		std::string  KKlineshape = option.substr(option.find('(') + 5, 2);
 		// Calculate LBs
-		int LBs = std::abs(JKK-1); // Min LB approximation for JKK = 0, 1, 2
-		if(config->isTrue("NoMinLB") && JKK > 0)
+		int LBs = std::abs(JKK-Jphi); // Min LB approximation for JKK = 0, 1, 2
+		if(config->isTrue("NoMinLB") && Jphi > 0 && JKK > 0)
 		{
 			LBs++;
 		}
@@ -70,11 +71,11 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 		std::cout << " │ ";
 		std::cout << std::right << std::setw(5) << LBs;
 		std::cout << " │ ";
-		std::cout << std::left << std::setw(13) << lineshape;
+		std::cout << std::left << std::setw(13) << philineshape+" "+KKlineshape;
 		std::cout << " ┃\n";
 		// Store the component and its name
-		components.emplace(KKname, Bs2PhiKKSignalComponent(config, phiname, KKname, LBs, Jphi, JKK, lineshape, UseObservable));
-		componentnames.push_back(KKname);
+		components.emplace(decayname, Bs2PhiKKSignalComponent(config, phiname, KKname, LBs, Jphi, JKK, philineshape, KKlineshape, UseObservable));
+		componentnames.push_back(decayname);
 	}
 	if(components.size() > 1)
 	{
@@ -252,7 +253,7 @@ double Bs2PhiKKSignal::Evaluate(DataPoint* measurement)
 // The stuff common to both Evaluate() and EvaluateComponent()
 double Bs2PhiKKSignal::Evaluate_Base(const double& MatrixElementSquared, const unsigned& trig, const double& mKK, const double& ctheta_1, const double& ctheta_2, const double& phi) const
 {
-	return MatrixElementSquared * p1stp3(mKK) * Acceptance(trig, mKK, ctheta_1, ctheta_2, phi);
+	return MatrixElementSquared * Acceptance(trig, mKK, ctheta_1, ctheta_2, phi);
 }
 /*Calculate matrix elements***************************************************/
 // Total |M|²: coherent sum of all amplitudes
@@ -337,17 +338,6 @@ double Bs2PhiKKSignal::Acceptance(const unsigned& trig, const double& mKK, const
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
 	}
 	return acceptance;
-}
-double Bs2PhiKKSignal::p1stp3(const double& mKK) const
-{
-	double pR = DPHelpers::daughterMomentum(mKK, Bs2PhiKK::mK, Bs2PhiKK::mK);
-	double pB = DPHelpers::daughterMomentum(Bs2PhiKK::mBs, mKK, Bs2PhiKK::mphi);
-	double pRpB = pR * pB;
-	if(std::isnan(pRpB))
-	{
-		std::cerr << "p1stp3 evaluates to nan" << std::endl;
-	}
-	return pRpB;
 }
 /*****************************************************************************/
 double Bs2PhiKKSignal::Normalisation(PhaseSpaceBoundary* boundary)

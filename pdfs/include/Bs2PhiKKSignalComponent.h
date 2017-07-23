@@ -11,14 +11,14 @@
 class Bs2PhiKKSignalComponent
 {
 	public:
-		Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string phiname, std::string KKname, int _LBs, int _Lphi, int _LKK, std::string _lineshape, const std::vector<bool>& _UseObservable); 
+		Bs2PhiKKSignalComponent(PDFConfigurator* config, std::string phiname, std::string KKname, int _LBs, int _Lphi, int _LKK, std::string _philineshape, std::string _KKlineshape, const std::vector<bool>& _UseObservable); 
 		Bs2PhiKKSignalComponent(const Bs2PhiKKSignalComponent&);
 		~Bs2PhiKKSignalComponent() {}
 		void SetPhysicsParameters(ParameterSet* pars);
 		std::vector<ObservableRef> GetPhysicsParameters() const;
 		// These Amplitude functions return a 2-element array of the complex amplitudes of the B and Bbar decays
-		Bs2PhiKK::amplitude_t Amplitude(const double&, const double&, const double&, const double&) const; // KK_M, Phi_angle, cos_theta1, cos_theta2
-		Bs2PhiKK::amplitude_t Amplitude(const double&, const double&, const double&, const double&, const std::string) const; // Same but with an option "even" or "odd"
+		Bs2PhiKK::amplitude_t Amplitude(const double, const double, const double, const double) const; // KK_M, Phi_angle, cos_theta1, cos_theta2
+		Bs2PhiKK::amplitude_t Amplitude(const double, const double, const double, const double, const std::string) const; // Same but with an option "even" or "odd"
 	private:
 		const std::vector<bool> UseObservable; // Cache whether or not we use each dimension. Saves a lot of cycles compared to repeatedly calling ObservableNames.count()
 		// Floatable parameters
@@ -30,29 +30,28 @@ class Bs2PhiKKSignalComponent
 		std::vector<Bs2PhiKK::PhysPar> phases; // Phases
 		std::map<int,std::complex<double>> Ahel; // Helicity amplitudes as complex numbers
 		// Resonance parameters
-		Bs2PhiKK::PhysPar phimass; // Mass of the "phi"
-		std::vector<Bs2PhiKK::PhysPar> KKpars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
+		std::vector<Bs2PhiKK::PhysPar> phipars; // Mass and width of Breit Wigner, or mass, g_pipi and R=(g_KK/g_pipi) of Flatte. Empty for non-resonant
+		std::vector<Bs2PhiKK::PhysPar> KKpars;
 		int Lphi; // Spin of the "phi" (might actually be f0)
 		int LKK; // Spin of the KK resonance (0, 1 or 2)
 		int LBs; // Orbital angular momentum of the Bs (default min LB = |LKK-1| for LKK = 0, 1, 2)
-		std::string lineshape; // Choose the resonance shape: "BW", "FT" or "NR"
-		bool firstnonres; // If the "first" KK pair is nonresonant
+		std::string philineshapename; // Choose the resonance shape: "BW", "FT" or "NR"
+		std::string KKlineshapename;
 		// Helper functions
 		void Initialise();
 		void UpdateAmplitudes();
 		void UpdateBarriers();
-		double F(const int&, const double&, const double&) const; // Angular distribution: helicity, datapoint
-		std::complex<double> (Bs2PhiKKSignalComponent::*AngularPart)(const double&, const double&, const double&) const;
-		std::complex<double> AngularPartNonRes(const double&, const double&, const double&) const;
-		std::complex<double> AngularPartNoPhi(const double&, const double&, const double&) const;
-		std::complex<double> AngularPartDefault(const double&, const double&, const double&) const;
-		std::complex<double> (Bs2PhiKKSignalComponent::*MassPart)(const double&) const;
-		std::complex<double> MassPartNonRes(const double&) const;
-		std::complex<double> MassPartResonant(const double&) const;
-		double OFBF(const double&) const; // Product of orbital and barrier factors
+		std::complex<double> IntegrateLineshape(const std::unique_ptr<DPMassShape>&, const std::vector<Bs2PhiKK::PhysPar>&, const std::vector<Bs2PhiKK::PhysPar>&, const int, const std::string&, const DPBarrierFactor&, const double, const double) const;
+		double F(const int&, const double, const double) const; // Angular distribution: helicity, datapoint
+		std::complex<double> (Bs2PhiKKSignalComponent::*AngularPart)(const double, const double, const double) const;
+		std::complex<double> AngularPartNonRes(const double, const double, const double) const;
+		std::complex<double> AngularPartNoPhi(const double, const double, const double) const;
+		std::complex<double> AngularPartDefault(const double, const double, const double) const;
+		std::complex<double> MassPart(const double) const;
+		double OFBF(const double mKK, const double mKK0, const double mphi, const std::string& lineshape, const int _LKK, const DPBarrierFactor&) const; // Product of orbital and barrier factors
 		// Wigner d-functions for the angular-dependent part
-		double (*wignerKK)(double, int);
 		double (*wignerPhi)(double, int);
+		double (*wignerKK)(double, int);
 		// Blatt-Weisskopf barrier penetration factors
 		DPBarrierFactor Bsbarrier;
 		DPBarrierFactor KKbarrier;
