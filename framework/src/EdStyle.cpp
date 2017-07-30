@@ -226,67 +226,67 @@ TString EdStyle::GetParamRootUnit( string Param_Name )
 
 	if( Param_Name == "gamma" )
 	{
-		returnable_string = "[ps^{-1}]";
+		returnable_string = "ps^{-1}";
 
 	} else if( Param_Name == "deltaGamma" ) {
 
-		returnable_string = "[ps^{-1}]";
+		returnable_string = "ps^{-1}";
 
 	} else if( Param_Name == "Phi_s" ) {
 
-		returnable_string = "[rad]";
+		returnable_string = "rad";
 
 	} else if ( Param_Name == "Azero_sq" ) {
 
-		returnable_string = "[unitless]";
+		returnable_string = "unitless";
 
 	} else if ( Param_Name == "Aperp_sq" ) {
 
-		returnable_string = "[unitless]";
+		returnable_string = "unitless";
 
 	} else if ( Param_Name == "Apara_sq" ) {
 
-		returnable_string = "[unitless]";
+		returnable_string = "unitless";
 
 	} else if ( Param_Name == "As_sq" ) {
 
-		returnable_string = "[unitless]";
+		returnable_string = "unitless";
 
 	} else if ( Param_Name == "F_s" ) {
 
-		returnable_string = "[unitless]";
+		returnable_string = "unitless";
 
 	} else if ( Param_Name == "delta_para" ) {
 
-		returnable_string = "[rad]";
+		returnable_string = "rad";
 
 	} else if ( Param_Name == "delta_perp" ) {
 
-		returnable_string = "[rad]";
+		returnable_string = "rad";
 
 	} else if ( Param_Name == "delta_s" ) {
 
-		returnable_string = "[rad]";
+		returnable_string = "rad";
 
 	} else if ( Param_Name == "deltaM" ) {
 
 		//returnable_string = "MeV/c^{2}";
-		returnable_string = "[ps^{-1}]";
+		returnable_string = "ps^{-1}";
 	} else if ( Param_Name == "time" ) {
 
-		returnable_string = "[ps]";
+		returnable_string = "ps";
 
 	} else if ( Param_Name == "mass" || Param_Name == "mKK" ) {
 
-		returnable_string = "[GeV/#it{c}^{2}]";
+		returnable_string = "GeV/#it{c}^{2}";
 
 	} else if ( Param_Name == "tau" ) {
 
-		returnable_string = "[ps]";
+		returnable_string = "ps";
 
 	} else if ( ( ( Param_Name == "helphi" ) || ( Param_Name == "trphi" ) ) || Param_Name == "phi" ) {
 
-		returnable_string = "[rad]";
+		returnable_string = "rad";
 
 	} else if ( ( ( Param_Name == "helcosthetaK" || Param_Name == "helcosthetaL" ) || ( Param_Name == "trcostheta" || Param_Name == "trcospsi" ) )
 
@@ -424,7 +424,7 @@ TString EdStyle::GetParamRootName( string Param_Name_orig )
 
 	} else if ( Param_Name == "mKK" ) {
 
-		returnable_string = "m(K^{#plus}K^{#minus})";
+		returnable_string = "#it{m}(#it{K}^{#plus}#it{K}^{#minus})";
 
 	} else if (Param_Name == "sigma_m1" ) {
 
@@ -580,11 +580,11 @@ TString EdStyle::GetParamRootName( string Param_Name_orig )
 
 	} else if ( Param_Name == "ctheta_1" ) {
 
-		returnable_string = "cos(#theta_{1})";
+		returnable_string = "cos(#it{#theta}_{1})";
 
 	} else if ( Param_Name == "ctheta_2" ) {
 
-		returnable_string = "cos(#theta_{2})";
+		returnable_string = "cos(#it{#theta}_{2})";
 
 	} else if ( Param_Name == "helphi" ) {
 
@@ -602,13 +602,9 @@ TString EdStyle::GetParamRootName( string Param_Name_orig )
 
 		returnable_string = "#phi_{tr}";
 
-  } else if ( Param_Name == "phi" ) {
+  } else if ( Param_Name == "phi" || Param_Name == "Phi" ) {
 
-    returnable_string = "#Phi";
-
-  } else if ( Param_Name == "Phi" ) {
-
-    returnable_string = "#Phi";
+    returnable_string = "#it{#Phi}";
 
 	} else {
 

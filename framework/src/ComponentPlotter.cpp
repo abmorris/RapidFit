@@ -857,25 +857,30 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 	stringstream thisStream;
 	if( conf != NULL )
 	{
-		thisStream << setw(4) << setprecision(3) /*<< scientific*/ << fabs(X_max-X_min)/((double)(conf->data_bins));
+		thisStream << setw(4) << setprecision(1) /*<< scientific*/ << fabs(X_max-X_min)/((double)(conf->data_bins));
 	}
 	else
 	{
-		thisStream << setw(4) << setprecision(3) /*<< scientific*/ << fabs(X_max-X_min)/100.;
+		thisStream << setw(4) << setprecision(1) /*<< scientific*/ << fabs(X_max-X_min)/100.;
 	}
 	Y_ext.Append( thisStream.str() );
 	Y_ext.Append(" ");
 	TString Unit; Unit.Append( EdStyle::GetParamRootUnit( observableName ) );
-	if( !StringProcessing::is_empty(Unit) ) Unit.Append(" ");
-	Y_ext.Append(Unit); Y_ext.Append(")");
+	if( !StringProcessing::is_empty(Unit) )
+	{
+		Y_ext.Append(Unit);
+		Y_ext.Append(" ");
+	}
+	Y_ext.Append(")");
 	if( StringProcessing::is_empty( X_Title ) )
 	{
 		X_Title = EdStyle::GetParamRootName( observableName );
 		TString unit = EdStyle::GetParamRootUnit( observableName );
 		if( !StringProcessing::is_empty( unit ) )
 		{
-			X_Title.Append( " " );
+			X_Title.Append( " [" );
 			X_Title.Append( unit );
+			X_Title.Append( "]" );
 		}
 	}
 	if( StringProcessing::is_empty( Y_Title ) )
@@ -1262,6 +1267,8 @@ TGraphErrors* ComponentPlotter::PullPlot1D( vector<double> input_bin_theory_data
 		if( conf->LimitPulls )
 		{
 			pullGraph->GetYaxis()->SetRangeUser(-5.,5.);
+			pullGraph->SetMinimum(-5);
+			pullGraph->SetMaximum(+5);
 			c1->Update();
 		}
 	}
