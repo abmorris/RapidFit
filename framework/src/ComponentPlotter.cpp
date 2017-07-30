@@ -1022,21 +1022,23 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		}
 		TGraphErrors* pullGraph = new TGraphErrors( pull_value.size(), x_values.data(), pull_value.data(), x_errs.data(), pull_error_value.data() );
 		pullGraph->Draw("AB");
-		pad2->Modified();
-		pad2->Update();
-		c1->Update();
+		// Style Y axis
 		pullGraph->GetYaxis()->SetTitle( "Pull" );
-		pullGraph->GetYaxis()->SetTitleSize( input_data->GetYaxis()->GetTitleSize() );
-		pullGraph->GetYaxis()->SetLabelSize( input_data->GetYaxis()->GetLabelSize() *(Float_t)(1./0.5) );
-		pullGraph->GetXaxis()->SetTitleSize( input_data->GetXaxis()->GetTitleSize() );
-		pullGraph->GetXaxis()->SetLabelSize( input_data->GetXaxis()->GetLabelSize() *(Float_t)(1./0.5) );
+		pullGraph->GetYaxis()->SetTitleSize( input_data->GetYaxis()->GetTitleSize() * 3 );
+		pullGraph->GetYaxis()->SetLabelSize( input_data->GetYaxis()->GetLabelSize() * 2. );
+		// Style X axis
+		pullGraph->GetXaxis()->SetTitleSize( input_data->GetXaxis()->GetTitleSize() * 3. );
+		pullGraph->GetXaxis()->SetLabelSize( input_data->GetXaxis()->GetLabelSize() * 3. );
+		pullGraph->GetXaxis()->SetTitleOffset(pullGraph->GetXaxis()->GetTitleOffset() / 3.);
 		pullGraph->GetXaxis()->SetRangeUser( X_min, X_max );
-		pad2->Modified();
-		pad2->Update();
-		pullGraph->GetYaxis()->SetTitleOffset((Float_t)(pullGraph->GetYaxis()->GetTitleOffset()/3.));
-		pullGraph->GetYaxis()->SetTitleSize((Float_t)(pullGraph->GetYaxis()->GetTitleSize()*2.));
-		pullGraph->GetXaxis()->SetTitleOffset((Float_t)(pullGraph->GetXaxis()->GetTitleOffset()/2.));
-		pullGraph->GetXaxis()->SetTitleSize((Float_t)(pullGraph->GetXaxis()->GetTitleSize()*2.));
+		// Move X-axis title and unit from main plot to pull plot
+		pullGraph->GetXaxis()->SetTitle(input_data->GetXaxis()->GetTitle());
+		input_data->GetXaxis()->SetLabelSize(0.);
+		input_data->GetXaxis()->SetTitleSize(0.);
+		pad1->SetBottomMargin(0.03);
+		pad2->SetTopMargin(0.02);
+		pad2->SetBottomMargin(0.50);
+		// Pull limits
 		if( limitPulls )
 		{
 			pullGraph->GetYaxis()->SetNdivisions( 3 );
@@ -1044,6 +1046,8 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 			pullGraph->SetMaximum( 5. );
 			pullGraph->SetMinimum( -5. );
 		}
+		pad1->Modified();
+		pad1->Update();
 		pad2->Modified();
 		pad2->Update();
 		c1->Update();
