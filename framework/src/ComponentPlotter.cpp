@@ -1035,7 +1035,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		pullGraph->GetXaxis()->SetRangeUser( X_min, X_max );
 		// Move X-axis title and unit from main plot to pull plot
 		pullGraph->GetXaxis()->SetTitle(input_data->GetXaxis()->GetTitle());
-		pullGraph->GetXaxis()->SetTickLength(pullGraph->GetXaxis()->GetTickLength());
+		pullGraph->GetXaxis()->SetTickLength(pullGraph->GetXaxis()->GetTickLength() * 3.);
 		input_data->GetXaxis()->SetLabelSize(0.);
 		input_data->GetXaxis()->SetTitleSize(0.);
 		pad1->SetBottomMargin(0.03);
