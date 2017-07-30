@@ -1024,15 +1024,18 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		pullGraph->Draw("AB");
 		// Style Y axis
 		pullGraph->GetYaxis()->SetTitle( "Pull" );
-		pullGraph->GetYaxis()->SetTitleSize( input_data->GetYaxis()->GetTitleSize() * 3 );
+		pullGraph->GetYaxis()->CenterTitle();
+		pullGraph->GetYaxis()->SetTitleSize( input_data->GetYaxis()->GetTitleSize() * 2 );
 		pullGraph->GetYaxis()->SetLabelSize( input_data->GetYaxis()->GetLabelSize() * 2. );
+		pullGraph->GetYaxis()->SetTitleOffset(pullGraph->GetYaxis()->GetTitleOffset() / 2.);
 		// Style X axis
 		pullGraph->GetXaxis()->SetTitleSize( input_data->GetXaxis()->GetTitleSize() * 3. );
 		pullGraph->GetXaxis()->SetLabelSize( input_data->GetXaxis()->GetLabelSize() * 3. );
-		pullGraph->GetXaxis()->SetTitleOffset(pullGraph->GetXaxis()->GetTitleOffset() / 3.);
+//		pullGraph->GetXaxis()->SetTitleOffset(pullGraph->GetXaxis()->GetTitleOffset() / 2.);
 		pullGraph->GetXaxis()->SetRangeUser( X_min, X_max );
 		// Move X-axis title and unit from main plot to pull plot
 		pullGraph->GetXaxis()->SetTitle(input_data->GetXaxis()->GetTitle());
+		pullGraph->GetXaxis()->SetTickLength(pullGraph->GetXaxis()->GetTickLength());
 		input_data->GetXaxis()->SetLabelSize(0.);
 		input_data->GetXaxis()->SetTitleSize(0.);
 		pad1->SetBottomMargin(0.03);
@@ -1041,7 +1044,7 @@ void ComponentPlotter::OutputPlot( TGraphErrors* input_data, vector<TGraph*> inp
 		// Pull limits
 		if( limitPulls )
 		{
-			pullGraph->GetYaxis()->SetNdivisions( 3 );
+			pullGraph->GetYaxis()->SetNdivisions( 5 );
 			pullGraph->GetYaxis()->SetRangeUser( -5., 5. );
 			pullGraph->SetMaximum( 5. );
 			pullGraph->SetMinimum( -5. );
