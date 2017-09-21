@@ -598,7 +598,15 @@ namespace Mathematics
 			const double mK  = 0.493677; // TODO: read these from config somehow
 			const double mBs  = 5.36677;
 			const double mPhi= 1.019461;
-			unsigned trigger  = dataSet.begin()->GetObservable("trigger")->GetValue();
+			unsigned trigger;
+			try
+			{
+				trigger = dataSet.begin()->GetObservable("trigger")->GetValue();
+			}
+			catch(int e) //Observable name trigger not found (2)
+			{
+				trigger = 0;
+			}
 			for(auto& event : dataSet)
 			{
 				// Retrieve the data point
@@ -606,6 +614,7 @@ namespace Mathematics
 				double ctheta_1   = event.GetObservable("ctheta_1")->GetValue();
 				double ctheta_2   = event.GetObservable("ctheta_2")->GetValue();
 				double mKK        = event.GetObservable("mKK")->GetValue();
+				double weight     = event.GetEventWeight();
 				// Calculate phase space element
 				double val = 1;
 				// If "mass dependent" then calculate phase space element (for acceptance)
@@ -616,7 +625,7 @@ namespace Mathematics
 					double p3    = DPHelpers::daughterMomentum(mBs,mKK,mPhi);
 					val = p1_st*p3;
 				}
-				dataacctree.Fill(mKK, phi, ctheta_1, ctheta_2, 1./val);
+				dataacctree.Fill(mKK, phi, ctheta_1, ctheta_2, weight/val);
 			}
 			// Now sample the acceptance surface so that we can make projections to check that it looks sensible
 			TNtuple sampledtree("sampledtuple", "", "mKK:phi:ctheta_1:ctheta_2:weight");
@@ -633,6 +642,14 @@ namespace Mathematics
 			unsigned int nSample(500000);
 			vector<double> minima = {lms.mKK_min,-M_PI,-1,-1};
 			vector<double> maxima = {lms.mKK_max,+M_PI,+1,+1};
+			double thraccscale = 0;
+			try
+			{
+				thraccscale = params->GetPhysicsParameter("thraccscale"+std::to_string(trigger))->GetValue();
+			}
+			catch(...)
+			{
+			}
 			for ( int i = 0; i < (int)nSample; i++ )
 			{
 				double* point = new double[4];
@@ -643,8 +660,9 @@ namespace Mathematics
 				{
 					*point_mapped[j] = point[j] * (maxima[j] - minima[j]) + minima[j];
 				}
-				double thraccscale = params->GetPhysicsParameter("thraccscale"+std::to_string(trigger))->GetValue();
-				weight = std::erf(thraccscale*(mKK)-2*mK)*lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
+				weight = lms.Evaluate(mKK, phi, ctheta_1, ctheta_2);
+				if(thraccscale > 0)
+					weight *= std::erf(thraccscale*(mKK)-2*mK);
 				sampledtree.Fill(mKK, phi, ctheta_1, ctheta_2, weight);
 				delete point;
 			}

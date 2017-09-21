@@ -153,6 +153,7 @@ void LegendreMomentShape::Generate(std::vector<DataPoint>& DataSet, const PhaseS
 		double ctheta_2   = event.GetObservable(ctheta_2name)->GetValue();
 		double mKK        = event.GetObservable(mKKname)->GetValue();
 		double mKK_mapped = (mKK - mKK_min)/(mKK_max-mKK_min)*2.+ (-1);
+		double weight     = event.GetEventWeight();
 		double val = 1;
 		// If "mass dependent" then calculate phase space element (for acceptance)
 		// Otherwise just keep it as 1 (for background)
@@ -167,7 +168,7 @@ void LegendreMomentShape::Generate(std::vector<DataPoint>& DataSet, const PhaseS
 				for ( int k = 0; k < k_max; k++ )
 					for ( int j = 0; j < j_max; j++ )
 					{
-						double coeff = ((2*l + 1)/2.)*((2*i + 1)/2.)*Moment(l, i, k, j, mKK_mapped, phi, ctheta_1, ctheta_2)/val;
+						double coeff = ((2*l + 1)/2.)*((2*i + 1)/2.)*Moment(l, i, k, j, mKK_mapped, phi, ctheta_1, ctheta_2)*weight/val;
 						c[l][i][k][j] += coeff;
 						c_sq[l][i][k][j] += coeff * coeff;
 					}
