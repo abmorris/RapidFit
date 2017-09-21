@@ -35,8 +35,9 @@ class Bs2PhiKKSignal : public BasePDF, public Bs2PhiKK
 		std::map<std::string,double> mKKresconfig; // configuration parameters
 		// Options
 		bool acceptance_moments; // Use Legendre moments for acceptance
-		// Acceptance objects
+		// Acceptance
 		std::array<std::unique_ptr<LegendreMomentShape>,2> acc_m;
+		double phiwindowweight;
 		// Calculation of the matrix element
 		double TimeIntegratedMsq(const Bs2PhiKK::amplitude_t&) const; // Receive a complex amplitude and turn it into a |M|²
 		typedef double (Bs2PhiKKSignal::*MsqFunc_t)(const double&, const double&, const double&, const double&, const std::string&) const;

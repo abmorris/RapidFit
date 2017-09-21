@@ -18,6 +18,7 @@ PDF_CREATOR(Bs2PhiKKSignal)
 // Constructor
 Bs2PhiKKSignal::Bs2PhiKKSignal(PDFConfigurator* config) : Bs2PhiKK(config)
 	, acceptance_moments(config->isTrue("UseAcceptance"))
+	, phiwindowweight(config->getConfigurationValue("PhiWindowWeight").empty()? 1.0 : std::stod(config->getConfigurationValue("PhiWindowWeight")))
 	, GH(config, "GH")
 	, GL(config, "GL")
 {
@@ -122,6 +123,7 @@ Bs2PhiKKSignal::Bs2PhiKKSignal(const Bs2PhiKKSignal& copy)
 	, GL(copy.GL)
 	// threshold acceptance scale
 	, thraccscale(copy.thraccscale)
+	, phiwindowweight(copy.phiwindowweight)
 	// mass resolution parameters
 	, mKKres_sigmazero(copy.mKKres_sigmazero)
 	, mKKresconfig(copy.mKKresconfig)
@@ -295,6 +297,9 @@ double Bs2PhiKKSignal::Acceptance(const unsigned& trig, const double& mKK, const
 		acceptance *= std::erf(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK));
 //		acceptance *= std::tanh(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK));
 //		acceptance *= std::atan(thraccscale[trig].value*(mKK-2*Bs2PhiKK::mK))*2.0/M_PI;
+		// Lower efficiency in phi window after removal of multiple candidates
+		if(std::abs(mKK-Bs2PhiKK::mphi)<0.015)
+			acceptance *= phiwindowweight;
 	}
 	if(std::isnan(acceptance))
 		std::cerr << "Acceptance evaluates to nan" << std::endl;
