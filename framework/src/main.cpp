@@ -1041,6 +1041,12 @@ int calculateAcceptanceCoefficients( RapidFitConfiguration* config, bool massdep
 	pdfAndData->SetPhysicsParameters( params );
 	IDataSet * dataSet = pdfAndData->GetDataSet();
 	IPDF * pdf = pdfAndData->GetPDF();
+	FitFunctionConfiguration * FunctionConfig = config->theFunction;
+	if( FunctionConfig->GetWeightsWereUsed() )
+	{
+		dataSet->UseEventWeights( FunctionConfig->GetWeightName() );
+		dataSet->PrintYield();
+	}
 
 	return Mathematics::calculateAcceptanceCoefficients(dataSet, pdf, params, massdependent);
 }
